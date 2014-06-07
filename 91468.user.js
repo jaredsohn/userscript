@@ -1,0 +1,61 @@
+// ==UserScript==
+// @name           indowebster_ip
+// @namespace      indowebster
+// @description    buka blok poskum by chipul
+// @include        http://119.110.76.19/*
+// @include        http://*.indowebster.com/*
+// ==/UserScript==
+document.title = 'chipul';
+document.body.innerHTML = document.body.innerHTML.replace(/www1.indowebster.com/gi,"119.110.77.116");
+document.body.innerHTML = document.body.innerHTML.replace(/www.indowebster.com/gi,"175.103.53.4");
+
+document.body.innerHTML = document.body.innerHTML.replace(/www2.indowebster.com/gi,"119.110.77.116");
+document.body.innerHTML = document.body.innerHTML.replace(/www3.indowebster.com/gi,"119.110.77.115");
+document.body.innerHTML = document.body.innerHTML.replace(/www4.indowebster.com/gi,"119.110.77.104");
+document.body.innerHTML = document.body.innerHTML.replace(/www5.indowebster.com/gi,"119.110.77.116");
+document.body.innerHTML = document.body.innerHTML.replace(/www6.indowebster.com/gi,"119.110.77.116");
+document.body.innerHTML = document.body.innerHTML.replace(/www7.indowebster.com/gi,"119.110.77.116");
+document.body.innerHTML = document.body.innerHTML.replace(/www8.indowebster.com/gi,"119.110.77.120");
+document.body.innerHTML = document.body.innerHTML.replace(/www9.indowebster.com/gi,"119.110.77.116");
+document.body.innerHTML = document.body.innerHTML.replace(/www10.indowebster.com/gi,"119.110.77.117");
+document.body.innerHTML = document.body.innerHTML.replace(/www11.indowebster.com/gi,"119.110.77.117");
+document.body.innerHTML = document.body.innerHTML.replace(/www12.indowebster.com/gi,"119.110.77.115");
+document.body.innerHTML = document.body.innerHTML.replace(/www13.indowebster.com/gi,"119.110.77.117");
+document.body.innerHTML = document.body.innerHTML.replace(/www14.indowebster.com/gi,"119.110.77.115");
+document.body.innerHTML = document.body.innerHTML.replace(/www15.indowebster.com/gi,"119.110.77.116");
+document.body.innerHTML = document.body.innerHTML.replace(/www16.indowebster.com/gi,"119.110.77.119");
+document.body.innerHTML = document.body.innerHTML.replace(/www17.indowebster.com/gi,"119.110.77.119");
+document.body.innerHTML = document.body.innerHTML.replace(/www18.indowebster.com/gi,"119.110.77.119");
+document.body.innerHTML = document.body.innerHTML.replace(/www19.indowebster.com/gi,"119.110.77.110");
+document.body.innerHTML = document.body.innerHTML.replace(/www20.indowebster.com/gi,"119.110.77.110");
+document.body.innerHTML = document.body.innerHTML.replace(/www21.indowebster.com/gi,"119.110.77.110");
+document.body.innerHTML = document.body.innerHTML.replace(/www22.indowebster.com/gi,"119.110.77.110");
+document.body.innerHTML = document.body.innerHTML.replace(/www23.indowebster.com/gi,"119.110.77.110");
+document.body.innerHTML = document.body.innerHTML.replace(/www24.indowebster.com/gi,"119.110.77.119");
+document.body.innerHTML = document.body.innerHTML.replace(/www25.indowebster.com/gi,"119.110.77.119");
+document.body.innerHTML = document.body.innerHTML.replace(/www26.indowebster.com/gi,"119.110.77.119");
+document.body.innerHTML = document.body.innerHTML.replace(/www27.indowebster.com/gi,"119.110.77.119");
+document.body.innerHTML = document.body.innerHTML.replace(/www28.indowebster.com/gi,"119.110.77.112");
+document.body.innerHTML = document.body.innerHTML.replace(/www29.indowebster.com/gi,"119.110.77.112");
+document.body.innerHTML = document.body.innerHTML.replace(/www30.indowebster.com/gi,"119.110.77.114");
+document.body.innerHTML = document.body.innerHTML.replace(/www31.indowebster.com/gi,"119.110.77.114");
+document.body.innerHTML = document.body.innerHTML.replace(/www32.indowebster.com/gi,"119.110.77.120");
+document.body.innerHTML = document.body.innerHTML.replace(/www33.indowebster.com/gi,"119.110.77.115");
+document.body.innerHTML = document.body.innerHTML.replace(/www34.indowebster.com/gi,"119.110.77.116");
+document.body.innerHTML = document.body.innerHTML.replace(/www35.indowebster.com/gi,"119.110.77.117");
+document.body.innerHTML = document.body.innerHTML.replace(/www36.indowebster.com/gi,"119.110.77.118");
+document.body.innerHTML = document.body.innerHTML.replace(/www37.indowebster.com/gi,"119.110.77.119");
+document.body.innerHTML = document.body.innerHTML.replace(/www38.indowebster.com/gi,"119.110.77.120");
+document.body.innerHTML = document.body.innerHTML.replace(/www39.indowebster.com/gi,"119.110.77.121");
+document.body.innerHTML = document.body.innerHTML.replace(/www40.indowebster.com/gi,"119.110.77.122");
+document.body.innerHTML = document.body.innerHTML.replace(/www41.indowebster.com/gi,"119.110.77.114");
+document.body.innerHTML = document.body.innerHTML.replace(/www42.indowebster.com/gi,"119.110.77.123");
+document.body.innerHTML = document.body.innerHTML.replace(/www43.indowebster.com/gi,"119.110.77.124");
+document.body.innerHTML = document.body.innerHTML.replace(/www44.indowebster.com/gi,"119.110.77.125");
+document.body.innerHTML = document.body.innerHTML.replace(/www45.indowebster.com/gi,"119.110.77.128");
+document.body.innerHTML = document.body.innerHTML.replace(/www46.indowebster.com/gi,"119.110.77.127");
+document.body.innerHTML = document.body.innerHTML.replace(/www47.indowebster.com/gi,"119.110.77.128");
+document.body.innerHTML = document.body.innerHTML.replace(/www48.indowebster.com/gi,"119.110.77.129");
+document.body.innerHTML = document.body.innerHTML.replace(/www49.indowebster.com/gi,"119.110.77.130");
+document.body.innerHTML = document.body.innerHTML.replace(/down.php\?path\=/gi,"");
+

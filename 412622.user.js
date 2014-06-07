@@ -1,0 +1,4 @@
+// ==UserScript==
+// @name Dark Souls Download
+// @description Before discussing more about what kind of cruel this game, you should see the first gate to hell Dark Souls. You can create a character that is divided into several classes. Each class has its own advantages and disadvantages that you must understand through the (many) dead. For example, a character that has a great defense like Knight and Warrior are more concerned with using the shield than dodge enemy blows. Their shields are better able to withstand physical attacks than any other class, thanks to demand Strength (STR) that great anyway. Another concerned with character attacks such as Thief, Pyromancer, Sorcerer, and Hunter. They must avoid enemy attacks cause more rapid movements and their shields can not withstand an enemy perfectly.
+// ==/UserScript==

@@ -1,0 +1,19 @@
+// ==UserScript==
+// @name           Antichat.ru New Smiles kolobok.us version
+// @description    New smiles in reply form!
+// @include        *://forum.antichat.*/newreply.php
+// @include        *://forum.antichat.*/editpost.php*
+// @author         nelz
+// @version        2.5
+// ==/UserScript==
+var smilebox = document.getElementById('smiliebox');
+var html = 	'<legend>Смайлики</legend>' +
+			'<table cellpadding="4" cellspacing="0" border="0" align="center">' +
+			'<tr align="center" valign="bottom">' +
+			'<td><a href="#" onclick="smilie(\':)\'); return false;"><img src="images/smilies/smile.gif" alt="Smile" border="0" /></a></td>	<td><a href="#" onclick="smilie(\':mad:\'); return false;"><img src="images/smilies/mad.gif" alt="Mad" border="0" /></a></td>	<td><a href="#" onclick="smilie(\':p\'); return false;"><img src="images/smilies/tongue.gif" alt="Stick Out Tongue" border="0" /></a></td></tr>' +
+			'<tr align="center" valign="bottom"><td><a href="#" onclick="smilie(\':confused:\'); return false;"><img src="images/smilies/confused.gif" alt="Confused" border="0" /></a></td>	<td><a href="#" onclick="smilie(\':o\'); return false;"><img src="images/smilies/redface.gif" alt="Embarrassment" border="0" /></a></td>	<td><a href="#" onclick="smilie(\':rolleyes:\'); return false;"><img src="images/smilies/rolleyes.gif" alt="Roll Eyes (Sarcastic)" border="0" /></a></td></tr>' +
+			'<tr align="center" valign="bottom"><td><a href="#" onclick="smilie(\':cool:\'); return false;"><img src="images/smilies/cool.gif" alt="Cool" border="0" /></a></td>	<td><a href="#" onclick="smilie(\':eek:\'); return false;"><img src="images/smilies/eek.gif" alt="EEK!" border="0" /></a></td>	<td colspan="1"><a href="#" onclick="smilie(\'[img]http://kolobok.us/smiles/icq/sad.gif[/img]\'); return false;"><img src="http://kolobok.us/smiles/icq/sad.gif" alt="EEK!" border="0" /></a></td></tr>' +
+			'<tr align="center" valign="bottom"><td><a href="#" onclick="smilie(\'[img]http://kolobok.us/smiles/icq/drinks.gif[/img]\'); return false;"><img src="http://kolobok.us/smiles/icq/drinks.gif" alt="Grey" border="0" /></a></td>	<td><a href="#" onclick="smilie(\'[img]http://kolobok.us/smiles/icq/smile.gif[/img]\'); return false;"><img src="http://kolobok.us/smiles/icq/smile.gif" alt="bobek!" border="0" /></a></td>	<td colspan="1"><a href="#" onclick="smilie(\'[img]http://kolobok.us/smiles/icq/pardon.gif[/img]\'); return false;"><img src="http://kolobok.us/smiles/icq/pardon.gif" alt="EEK!" border="0" /></a></td></tr>' +
+			'<tr align="center" valign="bottom"><td><a href="#" onclick="smilie(\'[img]http://kolobok.us/smiles/icq/good.gif[/img]\'); return false;"><img src="http://kolobok.us/smiles/icq/good.gif" alt="Grey" border="0" /></a></td>	<td><a href="#" onclick="smilie(\'[img]http://kolobok.us/smiles/icq/yahoo.gif[/img]\'); return false;"><img src="http://kolobok.us/smiles/icq/yahoo.gif" alt="bobek!" border="0" /></a></td>	<td colspan="1"><a href="#" onclick="smilie(\'[img]http://kolobok.us/smiles/icq/hi.gif[/img]\'); return false;"><img src="http://kolobok.us/smiles/icq/hi.gif" alt="EEK!" border="0" /></a></td></tr>' +
+			'<tr align="center" valign="bottom"><td><a href="#" onclick="smilie(\'[img]http://kolobok.us/smiles/icq/rofl.gif[/img]\'); return false;"><img src="http://kolobok.us/smiles/icq/rofl.gif" alt="Grey" border="0" /></a></td>	<td><a href="#" onclick="smilie(\'[img]http://kolobok.us/smiles/icq/kiss3.gif[/img]\'); return false;"><img src="http://kolobok.us/smiles/icq/kiss3.gif" alt="bobek!" border="0" /></a></td>	<td colspan="1"><a href="#" onclick="smilie(\'[img]http://kolobok.us/smiles/icq/sorry.gif[/img]\'); return false;"><img src="http://kolobok.us/smiles/icq/sorry.gif" alt="EEK!" border="0" /></a></td></tr>';
+smilebox.innerHTML = html;		

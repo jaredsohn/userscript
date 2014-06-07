@@ -1,0 +1,47 @@
+/*
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+// ==UserScript==
+// @name          eLeaning Back to Black
+// @description   Changes eLearning back to black.
+// @include				https://elearning.utdallas.edu/webct/*
+// @author        Evan Severson
+// @namespace     severson.evan.elearningblack
+// @version       2.0
+// ==/UserScript==
+
+function addCss(cssString) {
+	var head = document.getElementsByTagName('head')[0];
+	var newCss = document.createElement('style');
+	newCss.type = "text/css";
+	newCss.innerHTML = cssString;
+	head.appendChild(newCss);
+}
+addCss (
+	'.dkgrayband { background-color: black ! important; }' + 
+	'.backgroundColour { background-color: black ! important; }'
+);
+
+var logo = 'data:image/jpg;base64,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';
+
+try{
+	document.getElementById('logoimg').src = logo;
+}catch(e){}
+
+var a = document.getElementsByTagName('img');
+for(var i = 0; i< a.length;i++){
+	if(a[i].src == "https://elearning.utdallas.edu/webct/RelativeResourceManager?contentID=26141011"){
+		a[i].src = logo;
+	}
+}

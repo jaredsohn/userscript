@@ -1,0 +1,8 @@
+// ==UserScript==
+// @name           More smiley for the neoboard
+// @description    you can click more smileys =D
+// @include        http://www.neopets.com/neoboards/topic.phtml*
+// ==/UserScript==
+
+
+document.getElementsByName("message_form")[0].getElementsByTagName("table")[0].getElementsByTagName("td")[1].innerHTML += '<a href="javascript:;" onclick=\'insertSmiley(":*"); return false;\'><img src="http://images.neopets.com/neoboards/smilies/kisskiss.gif" border="0"></a><br>		<a href="javascript:;" onclick=\'insertSmiley("*yarr*"); return false;\'><img src="http://images.neopets.com/neoboards/smilies/yarr.gif" border="0"></a>&nbsp;<a href="javascript:;" onclick=\'insertSmiley("*clap*"); return false;\'><img src="http://images.neopets.com/neoboards/smilies/clap.gif" border="0"></a>&nbsp;<a href="javascript:;" onclick=\'insertSmiley("*complain*"); return false;\'><img src="http://images.neopets.com/neoboards/smilies/complain.gif" border="0"></a>&nbsp;<a href="javascript:;" onclick=\'insertSmiley("*angry*"); return false;\'><img src="http://images.neopets.com/neoboards/smilies/angry.gif" border="0"></a>&nbsp;<a href="javascript:;" onclick=\'insertSmiley("*cry*"); return false;\'><img src="http://images.neopets.com/neoboards/smilies/cry.gif" border="0"></a><br>		<a href="javascript:;" onclick=\'insertSmiley("*unsure*"); return false;\'><img src="http://images.neopets.com/neoboards/smilies/unsure.gif" border="0"></a>&nbsp;<a href="javascript:;" onclick=\'insertSmiley("*cough*"); return false;\'><img src="http://images.neopets.com/neoboards/smilies/cough.gif" border="0"></a>&nbsp;<a href="javascript:;" onclick=\'insertSmiley("*lol*"); return false;\'><img src="http://images.neopets.com/neoboards/smilies/lol.gif" border="0"></a>' ;

@@ -1,0 +1,28 @@
+// ==UserScript==
+// @name          Perfect FerFer
+// @namespace     http://userstyles.org
+// @description   Perfect persian friendfeed
+// @author        Siavash Keshmiri
+// @include       http://friendfeed.com/*
+// @include       https://friendfeed.com/*
+// @include       http://*.friendfeed.com/*
+// @include       https://*.friendfeed.com/*
+// ==/UserScript==
+(function() {
+  var css = "* {\n font-family:Tahoma, Geneva, sans-serif !important;\n  font-size: 12px !important;\n  line-height: 18px;\n  padding: 2px; }\n \n body { color: #444 !important; }\n \na:focus, a:active { outline: none !important }\n \n #feed {\n background-color:#fff !important;\n color:#000; !important\n text-shadow:0 1px 0 #fff !important;\n } \n \n box-bottom {\n display:none !important;\n } \n \n .entry {\n margin: 5px 0 !important;\n  padding: 10px !important; \n  border-bottom:1px solid #ccc !important; \n  }\n \n .buttons input{\n background:#000 !important;\n border:none !important;\n color:#fff !important; \n margin:3px !important; \n padding:2px 5px 2px 5px !important; \n }\n \n .entry .title .text {\n    color: #111 !important;\n  direction: rtl;\n  font-size: 11px !important; }\n \n  .entry .title .name a {\n    color: #333333 !important;\n    font-family:   Tahoma, Geneva, sans-serif !important;\n    font-size: 12px !important;\n }\n \n    .entry .title .name a:hover {\n      color: #666666 !important;\n      text-decoration: none !important; }\n \n  .entry .info {\n    font-size: 11px !important;\n    margin: 10px 0 !important; }\n \n    .entry .info a { font-size: 11px !important; }\n \n  .entry.private .info {\n    font-size: 12px !important;\n    margin: 10px 0 !important; }\n \n  .entry .comment .content { font-size: 12px !important; direction:rtl;}\n \n  .entry .comment a { font-size: 12px !important; }\n \n  .entry .comment.friend {\n border-radius: 2px;\n    -moz-border-radius: 2px;\n    -webkit-border-radius: 2px;\n    background-color: #ededed !important;\n  color: #000 !important;\n  border: 1px solid #e5e5e5 !important;\n    padding: 2px !important; }\n \n  .entry .comment.owner {\nborder-radius: 2px;\n    border-radius: 2px;\n -moz-border-radius: 2px;\n    -webkit-border-radius: 2px;\n    background-color: #d1dbe4  !important;\n border: 1px solid #a2bad0 !important;\n  color: #12314b !important;\n text-shadow:0 1px  0 #e6e9ec; !important;\n   padding: 2px !important; }\n \n .entry .comment.owner a{  color:#0096ff !important;\n  text-shadow: none !important;\n   } \n \n .entry .info a.service {\n    -moz-border-radius: 2px;\n    -webkit-border-radius: 2px;\n border-radius: 2px;\n    background-color: #f5f5f5;\n color: #000;\n    border: 1px solid #e5e5e5;\n    padding: 3px 8px; }\n \n    .entry .info a.service:hover {\n      background-color: #f5f5f5;\n      border: 1px solid #c8c8c8;\n      text-decoration: none !important; }\n \n .likes, .likes a { font-size: 11px !important; }\n \n #sidebar .box .box-bottom .box-corner {\n  -moz-border-radius-bottomleft: 0px !important;\n  -moz-border-radius-bottomright: 10px !important;\n  -webkit-border-radius-bottomleft: 0px !important;\n  -webkit-border-radius-bottomright: 10px !important; }\n \n  .box-body .section {\n padding-bottom:4px !important;  margin-bottom:0px !important; border-bottom:1px #ddd ridge !important;    } \n \n   .box ul li {\n padding-bottom:0 !important;  } \n \n .box .box-bottom {\n  -moz-border-radius-bottomleft: 10px !important;\n  -moz-border-radius-bottomright: 0px !important;\n  -webkit-border-radius-bottomleft: 10px !important;\n  -webkit-border-radius-bottomright: 0px !important; }\n \n#sidebar .box .updated { color: #888 !important; \n   font-size:10px !important;\n }\n \n.text input { font-size: 12px !important;\n direction:rtl !important;\n text-align:right !important;\n }\n \n .text textarea{direction:rtl !important;\n text-align:right !important;\n }\n \n .entry .expandcomment, .entry .bottomcomment { font-style: normal !important; }\n \nimg.picture {\n  -moz-border-radius: 3px;\n  -webkit-border-radius: 3px;\n  border: 1px solid rgba(0, 0, 0, 0.25) !important;\n  padding: 3px !important; }\n \n  img.picture:hover {\n   border-color: rgba(0, 182, 222, 0.5) !important; }\n \n.entry .profile { margin-right: -5px !important; }\n \n .profile img{\n border-radius: 2px;\n  } \n \n .entry .media img {\n border-radius: 2px;\n -moz-border-radius: 2px;\n   -webkit-border-radius: 2px;\n   border: 1px solid rgba(0, 0, 0, 0.25) !important;\n  margin: 5px !important;\n  padding: 4px !important; }\n \n  .entry .media img:hover {\n  border-color: rgba(0, 182, 222, 0.5) !important; }\n \n.profile .header h1 a.name {\n  font-family: arial !important;\n  font-size: 17px !important; }\n\n#popup {\noverflow: hidden; \npadding-bottom: 10px !important;\n}\n\n#popupshadow {\n  display: none; }\n\n#popup .profilepopup{\n  -moz-border-radius: 10px;\n   -webkit-border-radius: 10px;\n   background-color: #fff !important;\n  border: 1px solid rgba(0, 0, 0, 0.25) !important;\n  padding: 10px; }";
+if (typeof GM_addStyle != "undefined") {
+  GM_addStyle(css);
+} else if (typeof PRO_addStyle != "undefined") {
+  PRO_addStyle(css);
+} else if (typeof addStyle != "undefined") {
+  addStyle(css);
+} else {
+  var heads = document.getElementsByTagName("head");
+  if (heads.length > 0) {
+    var node = document.createElement("style");
+    node.type = "text/css";
+    node.appendChild(document.createTextNode(css));
+    heads[0].appendChild(node); 
+  }
+}
+})();

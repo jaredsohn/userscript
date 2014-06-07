@@ -1,0 +1,96 @@
+// ==UserScript==
+// @name				Markt offers aanmaken
+// @author				Laoujin / De Goede Fee
+// @namespace			
+// @description			
+// @include			http://nl*.tribalwars.nl/game.php*screen=market*mode=own_offer*
+// @include			http://nl*.tribalwars.nl/game.php*mode=own_offer*screen=market*
+// ==/UserScript==
+// aanpassing op 20130403 door inFamouspsp
+// aanpassing op 20130217 door Dracona ivm TW8.11
+// aanpassing op 20100803 om aan de regels te voldoen: geen auto click
+// De configuratie:
+var sell_for = 1000; //zoveel bied je aan
+var buy_for = 1000; //zoveel koop je
+var tijd = 30; //zoveel uren mag de de looptijd zijn
+var aantalKeer = 80; //standaard worden er zoveel aanbiedingen geplaatst
+
+var useConfig = false;
+// Bij useConfig=true wordt sell voor buy geruild
+var sell = 'leem'; // gebruik leem / hout / ijzer
+var buy = 'ijzer'; // hier mag niet hetzelfde staan als bij sell (hierboven)
+
+// Bij useConfig=false worden de grondstoffen in het dorp bekeken
+// en als het verschil meeste - minste groter is dan minVerschil
+// wordt dat aanbod * offersCoef op de markt gezet
+var minVerschil = 75000;
+var offersCoef = new Array();
+offersCoef[0] = 0.5; // coef wanneer we hout verkopen
+offersCoef[1] = 0.5; // coef wanneer we leem verkopen
+offersCoef[2] = 0; // ijzer - ie niemand neemt een ijzer voor leem offer aan :)
+
+if (document.documentElement.innerHTML.indexOf('Ter beschikking gesteld') == -1) {
+    var reg = /Maximale transporthoeveelheid\s(\d+)/;
+    var setOffer = true;
+    var regexResult;
+    if ((regexResult = reg.exec(document.documentElement.innerHTML))) {
+        var merchants;
+        if (aantalKeer > Math.floor(regexResult[1] / buy_for)) aantalKeer = Math.floor(regexResult[1] / buy_for);
+        if (!useConfig) {
+            var res = new Array();
+            res[0] = document.getElementById('wood').innerHTML;
+            res[1] = document.getElementById('stone').innerHTML;
+            res[2] = document.getElementById('iron').innerHTML;
+            var resExplain = new Array();
+            resExplain[0] = 'wood';
+            resExplain[1] = 'clay';
+            resExplain[2] = 'iron';
+            var i;
+            var meeste = 0;
+            var minste = 400000;
+            for (i = 0; i < 3; i++) {
+                if (res[i] * 1 > meeste) {
+                    meeste = res[i];
+                    meesteIndex = i
+                }
+                if (res[i] * 1 < minste) {
+                    minste = res[i];
+                    minsteIndex = i
+                }
+            }
+            if (meeste - minste > minVerschil) {
+                sell = resExplain[meesteIndex];
+                buy = resExplain[minsteIndex];
+                merchants = Math.floor(((meeste - minste) * offersCoef[meesteIndex]) / buy_for)
+            } else setOffer = false
+        } else {
+            merchants = aantalKeer
+        }
+         if (merchants > aantalKeer) merchants = aantalKeer;
+        if (true) {
+            if (sell == 'leem' || sell == 'clay') sell = 'res_sell_stone';
+            if (sell == 'hout' || sell == 'wood') sell = 'res_sell_wood';
+            if (sell == 'ijzer' || sell == 'iron') sell = 'res_sell_iron';
+            if (buy == 'leem' || buy == 'clay') buy = 'res_buy_stone';
+            if (buy == 'hout' || buy == 'wood') buy = 'res_buy_wood';
+            if (buy == 'ijzer' || buy == 'iron') buy = 'res_buy_iron';
+            document.getElementsByName('multi')[0].value = aantalKeer;
+            document.getElementById(buy).checked = true;
+            document.getElementById(sell).checked = true;
+            document.getElementsByName('max_time')[0].value = tijd;
+            document.getElementsByName('sell')[0].value = sell_for;
+            document.getElementsByName('buy')[0].value = buy_for
+        }
+    }
+}
+
+function submitForm() {
+    var candidates = document.getElementsByTagName("input");
+    var t;
+    for (t = 0; t < candidates.length; t++) {
+        if (candidates[t].type == "submit") {
+            break
+        }
+    }
+    candidates[t].click();
+}

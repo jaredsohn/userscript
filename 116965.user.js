@@ -1,0 +1,14 @@
+// ==UserScript==
+// @name SU V4 Background Test 9.5
+// @version 1.01
+// @namespace http://www.justmyimagination.com
+// @description A Background Test Script - don't install this yet..k?
+// @include http://*.stumbleupon.com/*
+// @copyright Â© JustMyImagination 2011
+// ==/UserScript==
+
+var headID = document.getElementsByTagName("head")[0];
+var cssNode = document.createElement('style');
+cssNode.type = 'text/css';
+cssNode.innerHTML ='.hilight { background-color: transparent !important; } .listStumble .hilight ul.controls a{background-color: transparent !important; } body {background-color: #1f1f1f !important;} body #content{background: #1f1f1f !important; } body #wrapperFooter{width:100%;clear:both;background-color:#1f1f1f} body #wrapperContent{background-color: #1f1f1f !important;} .reviewProfile .img img{ margin: -5px -3px -20px 0 !important; } body, textarea, input { font-family: "Maiandra GD" !important; color: #84837f; text-shadow: 01px 1px 1px Black !important; } #wrapperNav{min-height:8px;border-top:1px solid #000;border-bottom:1px solid #000;padding:1px 0px 2px 0px;background:#000 -moz-linear-gradient(top, #d60040 0%, #520019 0%, #3e0013 29%, #90002b 100%);} #wrapperHeader {background-color: #1F1F1F; height: 60px; width: 100%;} .favorites #navMain .favorites a{background-color:transparent;color:#606060;text-decoration:none;border-color:transparent;-moz-box-shadow: 1px 1px 10px 0px black inset; -moz-border-radius: 16px/ 12px;border-bottom-color:transparent;} .stumblers #navMain .stumblers a{background-color:transparent;color:#606060;text-decoration:none;border-color:transparent;-moz-box-shadow: 1px 1px 10px 0px black inset; -moz-border-radius: 16px/ 12px;border-bottom-color:transparent;} .discover #navMain .discover a{background-color: transparent;color:#606060;text-decoration:none;border-color:transparent;-moz-box-shadow: 1px 1px 10px 0px black inset; -moz-border-radius: 16px/ 12px;border-bottom-color:transparent;} .homeLoggedIn #navMain .home a{background-color: transparent;color:#606060;text-decoration:none;border-color:transparent;-moz-box-shadow: 1px 1px 10px 0px black inset; -moz-border-radius: 16px/ 12px;border-bottom-color:transparent;} #navSecondary{border:0px solid #000;background: #1f1f1f -moz-linear-gradient(top, #d60040 0%, #520019 0%, #3e0013 29%, #90002b 100%); -moz-box-shadow: 0px 0px 010px 0px black inset, 0px -1px 020px 0px black;} .listStumble li.active{background-color:#1f1f1f;} #navSecondary, .filter{border:0px solid #000;background: #1f1f1f -moz-linear-gradient(top, #d60040 0%, #520019 0%, #3e0013 29%, #90002b 100%); -moz-box-shadow: 0px 0px 010px 0px black inset, 0px -1px 020px 0px black;}  ';
+headID.appendChild(cssNode);

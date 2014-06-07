@@ -1,0 +1,29 @@
+// ==UserScript==
+// @name        More Submissions for Furaffinity
+// @namespace   binarte.greasemonkey
+// @description When browsing through pages, new submissions are added to the current page rather than opening a new one.
+// @include     http://www.furaffinity.net/gallery/*
+// @include     http://www.furaffinity.net/scraps/*
+// @include     http://www.furaffinity.net/favorites/*
+// @include     http://www.furaffinity.net/search/
+// @include     http://www.furaffinity.net/browse/*
+// @include     http://www.furaffinity.net/browse/
+// @include     http://www.furaffinity.net/msg/submissions/*
+// @include     http://www.furaffinity.net/msg/submissions
+// @version     1.1
+// @grant       none
+// @author      Jack Mcslay
+// ==/UserScript==
+
+Element.prototype.g=function(a,b){b||(b=0);for(var d=0;d<this.childNodes.length;d++){var e=this.childNodes[d];if(e.nodeName==a&&0==b--)return e}};Element.prototype.n=function(a){a||(a=this.nodeName);for(var b=this.nextSibling;b;){if(b.nodeName==a)return b;b=b.nextSibling}};Element.prototype.p=function(a){a||(a=this.nodeName);for(var b=this.previousSibling;b;){if(b.nodeName==a)return b;b=b.previousSibling}};var submissions;window.AddDesc=function(a,b){descriptions[b]=a};
+var elem,form1,form2,page,btn1,btn2,isSearch=!1,isInbox=!1;
+try{var tbody;(tbody=document.getElementById("gallery"))||(tbody=document.getElementById("scraps"));tbody||(tbody=document.getElementById("favorites"));tbody=tbody.g("TABLE",1).g("TBODY").g("TR").g("TD").g("TABLE").g("TBODY");elem=tbody.g("TR",1).g("TD").g("CENTER").g("B");form1=tbody.g("TR",2).g("TD").g("TABLE").g("TBODY").g("TR").g("TD").g("FORM");form2=tbody.g("TR",2).g("TD").g("TABLE").g("TBODY").g("TR").g("TD",1).g("FORM");btn1=form1.g("BUTTON");btn2=form2.g("BUTTON")}catch(ex){try{tbody=document.getElementById("browse").g("TABLE").g("TBODY").g("TR").g("TD").g("TABLE").g("TBODY"),
+elem=tbody.g("TR",1).g("TD").g("CENTER").g("B"),form1=tbody.g("TR",2).g("TD").g("FORM"),form2=tbody.g("TR",2).g("TD",1).g("FORM"),btn1=form1.g("BUTTON"),btn2=form2.g("BUTTON"),btn1._form=form1,btn2._form=form2}catch(ex$$1){try{var Form=document.getElementById("search-form"),res=document.getElementById("search-results").g("FIELDSET");elem=res.g("CENTER").g("B");btn1=res.g("INPUT");btn2=res.g("INPUT",1);page=document.getElementById("page");isSearch=!0;Form.g("FIELDSET").g("INPUT",2).addEventListener("click",
+function(){Form.target=""});Form.target="RequestIframe"}catch(ex$$2){Form=document.getElementById("messages-form"),elem=Form.g("CENTER").g("B"),btn1=Form.g("DIV").g("A",2),btn2=Form.g("DIV",3).g("A",2),btn1.target=btn2.target="RequestIframe",isInbox=!0}}}var insElem;
+if(window==window.parent){window._submissions={};window._insElem=elem.parentNode;window._form1=form1;window._form2=form2;window._page=page;window._btn1=btn1;window._btn2=btn2;window._description_icon_click=function(a){console.group("description_icon_click()");console.log("preventing click event");a.stop();description_popup_hide();a=a.element().up("b");console.log("cell: %o",a);a?_description_show_for_container(a):console.log("image cell not found");console.groupEnd()};submissions=window._submissions;
+insElem=window._insElem;form1&&(form1.target="RequestIframe",form2.target="RequestIframe");var body=document.getElementsByTagName("body")[0],iframe=document.createElement("iframe");iframe.name=iframe.id="RequestIframe";iframe.style.display="none";body.appendChild(iframe);window._iframe=iframe}else submissions=window.parent._submissions,insElem=window.parent._insElem,window.parent._form1?(window.parent._form1.action=form1.action,window.parent._form2.action=form2.action):window.parent._page?window.parent._page.value=
+page.value:(window.parent._btn1.href=btn1.href,window.parent._btn2.href=btn2.href);var c=0,regex=/view\/([0-9]+)/,parent=elem.parentNode,first=null,last=null;window!=window.parent&&(first=window.parent._first,last=window.parent._last);
+for(;parent;){for(;elem;){var next=elem.n(),matches=elem.g("U").g("S").g("A").href.match(regex);window!=window.parent&&(window.parent.AddDesc(descriptions[matches[1]],matches[1]),elem=window.parent.document.importNode(elem,!0),elem.g("U").g("S").g("A").g("I").addEventListener("click",window.parent._description_icon_click),elem._imgsrc=elem.g("U").g("S").g("A").g("IMG").src.split("#")[0]);elem.SID=matches[1];submissions[elem.SID]||(last=null==first?first=elem:last._next=elem,submissions[elem.SID]=
+elem);elem=next}(parent=parent.n())&&(elem=parent.g("B"))}window.parent._first=first;window.parent._last=last;insElem.innerHTML="";for(elem=first;elem;){console.log(elem.SID);insElem.appendChild(elem);if(elem._imgsrc){var _img=elem.g("U").g("S").g("A").g("IMG"),src=""+elem._imgsrc+"?1",img=window.parent.document.createElement("img");img.setAttribute("src",src);_img.parentNode.insertBefore(img,_img);_img.parentNode.removeChild(_img);console.log(elem.outerHTML)}elem=elem._next}var isBack;
+if(isSearch)window.parent._btn1.className=btn1.className,window.parent._btn1.value=btn1.value,window.parent._btn2.className=btn2.className,window.parent._btn2.value=btn2.value;else if(isInbox)0>btn1.href.indexOf("~")&&(window.parent._btn1.style.visibility="hidden",window.parent._btn2.style.visibility="hidden");else{btn1.addEventListener("click",function(){isBack=!0});btn2.addEventListener("click",function(){isBack=!1});var str1=""+window.location,str2=str1+"1/";if(window.parent._btn1.form.action==
+str1||window.parent._btn1.form.action==str2)window.parent._btn1.form.style.display="none";if(window.parent._btn2.form.action==str1||window.parent._btn2.form.action==str2)window.parent._btn2.form.style.display="none"}window!=window.parent&&(window.parent._iframe.src="");console.log("done");

@@ -1,0 +1,3502 @@
+// ==UserScript==
+// @name           Wall Manager Sidekick (FV, chrome, test only)
+// @description    Assists Wall Manager with Farm Ville posts
+// @include        /(^http(s)?:\/\/(apps\.facebook\.com\/onthefarm\/|(.*)\.farmville\.com))/
+// @include        http*://www.facebook.com/plugins/serverfbml.php
+// @include        http://www.facebook.com/pages/FB-Wall-Manager/*
+// @include        /https?:\/\/www\.facebook\.com\/dialog\/apprequests\?(.*)(app_id=102452128776)(.*)/
+// @exclude        /(suggestionhub|neighbors)(\.php)?/
+// @exclude        http*farmville.com/flash.php?*
+// @require        http://userscripts.org/scripts/source/123889.user.js
+// @license        http://creativecommons.org/licenses/by-nc-nd/3.0/us/
+// @version        0.1chrome
+// @copyright      Charlie Ewing & Donald Mapes
+// ==/UserScript== 
+
+(function() { 
+	//make sure the sidekick listener is active on the top window no matter what
+	if (window.top==window.self) Sidekick.listen();
+	window.addEventListener("onBeforeUnload", Sidekick.unlisten, false);
+
+	var version = "0.1chrome";
+	var thisApp = "102452128776";
+	
+	var defaultTO=null;
+
+	//reconstruct an array, turning it into definitions using a prefix
+	//custom: not found in wmLibrary
+	Array.prototype.toDefinitions = function(prefix){
+		if (this) for (var i=0;(this[i]);i++) this[i]=prefix+this[i].noSpaces().toLowerCase();
+		return this;
+	};
+
+
+	//prevent reading data from top page because it does not contain useful information and can trick the sidekick
+	//don't delete this yet, we might need it for backward WM2 support
+	/*if ((window.top==window.self) && !window.location.href.match( /(^http:\/\/www\.facebook\.com\/pages\/FB-Wall-Manager\/)/ )) {
+	
+		//add listener which will hot potato details back to WM if in https top document
+		if (location==top.location) try {
+			//alert("top document");
+			if (location.href.startsWith("https:")) {
+				//alert("https:");
+				var hotPotatoTicker;
+				hotPotatoTicker=setInterval(function(){try{
+					var status="";
+					if ((status=location.hash.getUrlParam("status"))!="") {
+						clearInterval(hotPotatoTicker);
+						location.href="http://apps.facebook.com/?#status="+status;
+					}
+				}catch(e){
+					//alert("cannot pass details to alternate url");
+				}},1000);
+			}
+		} catch (e){
+			//alert("cannot interact with top document, assume this document is not the top document");
+		}
+		
+		return;
+	}*/
+
+	//clicks an object using the mouse
+	//does not run default actions like opening links
+	//custom: not the same as in wmLibrary. do not delete
+	function click(e) {
+		if(!e && typeof e=='string') e=document.getElementById(e);
+		if(!e) return;
+		var evObj = e.ownerDocument.createEvent('MouseEvents');
+		evObj.initMouseEvent("click",true,true,e.ownerDocument.defaultView,0,0,0,0,0,false,false,false,false,0,null);
+		e.dispatchEvent(evObj);
+		e.className += " noHammer";
+	};
+	
+	//sidekick ability to pass information via hash parameter
+	//modified to service WM3
+	function sendMessage(s){
+		//do stuff for WM 3
+		Sidekick.sendStatus(s);
+		
+		//do stuff for WM 2		
+		hwnd = window.top;
+		try {
+			hwnd.location.hash = s;
+		} catch (e) {
+			hwnd.location.href = "http://apps.facebook.com/?#"+s;	
+		}
+	};
+
+	//use this array to replace texts for purposely screwed up test texts below
+	//this allows to search correctly yet not display stuff wrong in recognition
+	//or in the options menu when using quick arrays and the createMenuFromArray function below
+	//keep all the text here in lowercase
+	var screwyTexts = {"purple popp":"purple poppy","orange dais":"orange daisy","electric lil":"electric lily","daylil":"daylily",
+		"golden popp":"golden poppy","chrome dais":"chrome daisy","sun popp":"sun poppy","lucky penn":"lucky penny",
+		"school supp":"school supply","gold piece":"gold","real ca milk":"Real CA Milk"};
+
+	//set your properties for each NewItem array here
+	//WM can make use of backgroundColor, foregroundColor, newitem:[true, 1, 2, or 3] and a css classname
+	//current predefined css names include: newOpt, newOpt[1-3], underline, overline, unreleased, hidden, ghost, ended, green, red, blue
+	//orange, yellow, silver, gray, white, black, box, and highlight
+	//** I left this open so that if an item appears in more than one newItems array, then it will attempt to take on all the visual properties given for each group
+	var newItemColors={
+		unreleased:{css:"unreleased"}, //or set your own colors
+		items1:{backgroundColor:"green"}, //or css:"newOpt1"
+		items2:{backgroundColor:"darkRed"}, //or css:"newOpt2"
+		items3:{backgroundColor:"royalBlue"}, //or css:"newOpt3"
+	};
+	
+	//mark all these as new while building the menus
+	//this collection of arrays is accessed directly by createmenufromarray so you dont need to pass it each time.
+	var newItems={
+		unreleased:[
+			"sendmeasuringcup",
+			"sendchilipot",
+			"sendtitaniumspoon",
+			"sendchilipowder",
+			"sendbean",
+			"sendoregano",
+			"sendcelery",
+			"sendpaprika",
+			"sendshreddedcheese",
+			"sendlegend",
+			"sendfacepaint",
+			"sendparadeflag",
+			"sendtiara",
+			"sendcandle",
+			"sendmooncake",
+			"sendmagicbean",
+		],
+		
+		items1:[
+			"sendtube",
+			"sendice",
+			"sendcrystal",
+			"sendsolarpanel",
+			"sendpropeller",
+			"sendballoon",
+			"sendanemometer",
+			"sendbarometer",
+			"sendwindsock",
+
+			"bushel_lollipop",
+			"egg_ceres",
+			"egg_chili",
+			"egg_wizard",
+			"adopt_calfvenus",
+			"adopt_calfchili",
+			"adopt_calfmoon",
+			"adopt_calfconstellation",
+			"adopt_calfrealcamilk",
+			"adopt_foaljupiter",
+			"adopt_foalapollo",
+			"adopt_foalcelestial",
+			"adopt_foalrubberpony",
+			"adopt_foalmoonsteed",
+			"adopt_foalluxegemunicorn",
+			"adopt_foalstarrypegasus",
+			"adopt_foalwizard",
+			"adopt_foalgemunicorn",
+			"adopt_foalmagicalpegacorn",
+			"adopt_foalpirate",
+			"adopt_foalfirepegasus",
+			"adopt_foalstudent",
+			"mat_turtlepen",
+			"driftwood",
+			"pottingsoil",
+			"javafern",
+			"mat_farmhandcenter",
+			"scientificscale",
+			"massagestone",
+			"buffettray",
+			"mat_arboristcenter",
+			"researchpaper",
+			"treeincubator",
+			"cloningsolution",
+			"mat_floatingcastle",
+			"cloudbrick",
+			"enchantedbamboo",
+			"hoveringcharm",
+			"gem",
+			"tree_bonsaicrapemyrtle",
+			"tree_magiclamp",
+			"tree_magicwand",
+			"tree_fire&ice",
+			"tree_leozodiac",
+			"tree_giantpencil",
+			"tree_giantpeumo",
+			"tree_giantfullmoon",
+			"tree_giantstarrywillow",
+			"tree_giantwizard",
+			"tree_giantpiratesail",
+			"tree_gianttreasuremap",
+			"tree_giantmercury",
+			"tree_giantaquarius",
+			"tree_giantceres",
+			"tree_giantcapricorn",
+			"tree_giantlunar",
+			"tree_giantaries",
+			"tree_giantvenus",
+			"tree_giantjupiter",
+			"tree_giantapollo",
+			"tree_giantcelestial",
+			"tree_giantalbinoredwood",
+			"bulb_impalalily",
+			"bulb_leopardorchid",
+			"bulb_africandaisies",
+			"bulb_redclover",
+			"bulb_goldenlotus",
+			"bulb_magicalflower",		
+		],
+		
+		items2:[
+			"sendredlantern",
+			"sendbluelantern",
+			"sendyellowlantern",
+			"sendgreenlantern",
+			"sendfishlantern",
+			"senddragonlantern",
+		],
+	
+		items3:[
+			"sendrubyshard",
+			"sendfirefeather",
+			"sendmahoganyseed",
+			"sendorangeflower",
+			"sendambershard",
+			"sendyellowspur",
+			"sendmanchineelfruit",
+			"sendgreencap",
+			"sendturquoiseleaf",
+			"sendbluesshade",
+			"sendindigodye",
+			"sendvioletflower",
+			"statue",
+			"arboristflag",
+			"farmhandflag",
+			"adopt_jugglermonkey",
+			"adopt_crownofthornsstarfish",
+			"tree_bubble",
+			"bbqgnome",
+			"fruitbasketgnome",
+			"adopt_tennistretriever",
+			"sendplatform",
+			"sendunicycle",
+			"sendclownwig",
+			"sendjugglingpin",
+			"sendtightrope",
+			"sendtophat",
+			"sendticketroll",
+			"sendcaramelapple",
+			"sendhorsefeather",
+			"mat_babynursery",
+			"pinkbabyblanket",
+			"pacifier",
+			"babymobile",
+			"mat_cupcakedoghouse",
+			"mat_sturdydoghouse",
+			"mat_sportydoghouse",
+			"tree_giantmanchineel",
+			"tree_giantmahogany",
+			"tree_giantwhitecloud",
+			"tree_giantornado",
+			"tree_giantturquoise",
+			"tree_giantpuzzle",
+			"tree_giantglitterbutterfly",
+			"tree_giantgrocery",
+			"tree_gianttoybrick",
+			"tree_giantconstellation",
+			"tree_toydoh",
+			"tree_jungle",
+			"tree_glitterplum",
+			"tree_stackingrings",
+			"tree_scorpiozodiac",
+			"tree_bonsaicrownofthorn",
+			"egg_environmentalist",
+			"egg_student",
+			"bulb_wildindigo",
+			"bulb_ladyslipper",
+			"bulb_lavender",
+			"bulb_pinkcarnation",
+			"adopt_calffire",
+			"adopt_calfscholar",
+			"adopt_foalprism",
+			"adopt_foalrocking",
+			"adopt_foalcrayon",
+			"adopt_foalglitterpegasus",
+			"adopt_foalconstellationpegasus",
+			"adopt_foalgemunicorn",
+			"adopt_foalglitter",
+			"adopt_foalneonunicorn",
+			"adopt_foalboerpony",
+			"adopt_foalsafari",
+			"adopt_foalcircus",
+			"adopt_foalpurplefairy",
+			"egg_sumo",	
+			"tree_gianttribalmask",
+			"tree_gianthologram",
+			"tree_giantsatellitedish",
+			"tree_giantchinesefringe",
+			"tree_giantredumbrella",
+			"tree_giantkoreanwhitebeam",
+			"tree_giantcamphor",
+			"tree_giantkakipersimmon",
+			"tree_giantchinesetallow",
+			"tree_giantrainbowglitter",
+			"tree_giantwishing",
+			"tree_giantsmore",
+			"tree_giantbubble",
+			"tree_giantsnake",
+			"tree_marula",
+			"tree_smore",
+			"tree_zebra",
+			"tree_oleander",
+			"tree_purpleglitterpalm",
+			"tree_bonsaihoneysuckle",
+			"bulb_pinkdaisies",
+			"bulb_yellowgerbera",
+			"bulb_redrose",
+			"bulb_orangezinnia",
+			"bulb_yellowbuttercup",
+			"bulb_pinktulip",
+			"bulb_birdofparadise",
+			"bulb_spriteflower",
+			"bushel_beansprout",
+			"bushel_babycarrot",
+			"bushel_jasminerice",
+			"bushel_rednori",
+			"bushel_snappea",
+			"bushel_brownrice",
+			"bushel_ginseng",
+			"bushel_udon",
+			"bushel_forbiddenginseng",
+			"bushel_forbiddenudon",
+			"bushel_forbiddensprouts",
+			"bushel_forbiddencarrot",
+			"bushel_agave",
+			"bushel_lentil",
+			"bushel_kidneybean",
+			"bushel_alfalfa",
+			"bushel_flax",
+			"bushel_buckwheat",
+			"bushel_celery",
+			"bushel_lettuce",
+			"bushel_brusselsprout",
+			"bushel_okra",
+			"bushel_parsnip",
+			"bushel_garlic",
+			"bushel_begonia",
+			"bushel_yellowmarigold",
+			"bushel_orangemarigold",
+			"bushel_gojiberry",
+			"bushel_kale",
+			"bushel_greenbean",
+			"bushel_ceresescarrot",
+			"bushel_capri-corn",
+			"bushel_moonflower",
+			"bushel_mercurymelon",
+			"bushel_aquariusarugala",
+			"bushel_ariesazalea",
+			"bushel_venusflytrap",
+			"bushel_jupiterjuniperus",
+			"bushel_apolloaster",
+			"bushel_celestialcamellia",
+			
+			"egg_paradise",
+			"egg_meditating",
+			"egg_bulb",
+			"egg_budding",
+			"egg_flowering",
+			"egg_aromatic",
+			"egg_delicate",
+			"egg_perennial",
+			"egg_adventure",
+			"tree_giantchineserain",
+			"tree_gianttiedye",
+			"tree_giantpeace",
+			"tree_giantdreamtrumpet",
+			"tree_gianttreasure",
+			"tree_giantgoblet",
+			"tree_giantfairywing",
+			"tree_giantsolarpower",
+			"tree_neonpalm",
+			"tree_fairybellflower",
+			"tree_fairyplum",
+			"tree_fairylantern",
+			"tree_bonsaichineseperfume",
+			"adopt_foalaviatorpegasus",
+			"adopt_foaltiedye",
+			"adopt_foalredrose",
+			"adopt_foalsummerdonkey",
+			"adopt_foaldreamunicorn",
+			"adopt_foalbulb",
+			"adopt_foalbudding",
+			"adopt_foalflowering",
+			"adopt_foalaromatic",
+			"adopt_foaldelicate",
+			"adopt_foalperennial",
+			"adopt_foalfairypegacorn",
+			"adopt_foalfireflyunicorn",
+			"adopt_foalfireflymini",
+			"adopt_foalneon",
+			"adopt_foalpinkfairystallion",
+			"adopt_calfbulb",
+			"adopt_calfperennial",
+			"adopt_calfdelicate",
+			"adopt_calfaromatic",
+			"adopt_calfflowering",
+			"adopt_calfbudding",
+			"adopt_calfhologram",
+			"bulb_purpleprimrose",
+			"bulb_royalbluebell",
+			"bulb_desertrose",
+			"bulb_goldenwattle",		
+			"dreamdrop",
+			"tree_gianthorseshoe",
+			"tree_giantshootingstar",
+			"tree_giantsteel",
+			"tree_giantgemstone",
+			"tree_gianteccentricelm",
+			"tree_giantcedarcarriagedriver",
+			"tree_giantfarmvillegames",
+			"tree_bonsaiquince",
+			"tree_patchouli",
+			"tree_macrame",
+			"tree_dawneucalyptus",
+			"tree_waterdroplet",
+			"tree_matchstick",
+			"tree_redmulga",
+			"tree_ceiba",
+			"tree_oldvine",
+			"adopt_calfmilkyway",
+			"adopt_calfadventure",
+			"adopt_calfjavelin",
+			"adopt_calfankolelonghorn",
+			"adopt_calfbovinebelle",
+			"adopt_calfdaisy",
+			"adopt_calfearth",		
+			"adopt_foalwater",
+			"adopt_foalpackhorse",
+			"adopt_foalbrumbybutler",
+			"adopt_foalwild",
+			"adopt_foalflower",
+			"adopt_foalaustralianstock",
+			"adopt_foalendurance",
+			"adopt_foaloutback",
+			"adopt_foalwildburro",
+			"adopt_foalearth",
+			"adopt_foalemeraldpegacorn",
+			"adopt_foalglasspegacorn",
+			"adopt_foalwindpegacorn",
+			"adopt_foallightningpegacorn",
+			"adopt_foalicyfirepegacorn",
+			"adopt_foalangelpegacorn",
+			"adopt_foalphoenixpegacorn",
+			"adopt_foalrainbowunicorn",
+			"adopt_foalsparklystarsunicorn",
+			"adopt_foaltiaraunicorn",
+			"adopt_foalrobotunicorn",
+			"adopt_foalpirateunicorn",
+			"adopt_foalmossunicorn",
+			"adopt_foalsununicorn",
+			"adopt_foalstarrynightunicorn",
+			"adopt_foalpinklemonadeunicorn",
+			"adopt_foalbubblegum",
+			"adopt_foalballerinaunicorn",
+			"adopt_foalfancypantsunicorn",
+			"adopt_foalprincessunicorn",
+			"adopt_foalmoonunicorn",
+			"adopt_foaldreamunicorn",
+			"adopt_foalsparklystarsunicorn",
+			"purpleamethyst",
+			"whitediamond",
+			"greenemerald",
+			"redruby",
+			"bluesapphire",
+			"mat_unicornisland",		
+			"mat_masterlu'sstudy",
+			"mat_harmonygarden",
+			"book",
+			"parchment",
+			"dowel",
+			"yellowbamboo",
+			"zensand",
+			"stonelantern",
+			"rainbowclover",
+			"heartofgold",
+			"enchantedblossom",
+			"mat_sunshinedoghouse",
+			"dogbed",
+			"chewtoy",
+			"tennisball",
+			"adopt_foalseastar",
+			"adopt_foalcoralunicorn",
+			"adopt_foaloceanunicorn",
+			"adopt_foalmurgese",
+			"adopt_foalmasquerade",
+			"adopt_foalwaler",
+			"adopt_foalaustralianstock",
+			"adopt_foalgoldenmini",
+			"adopt_foalseastarpony",
+			"adopt_calfcaptain",
+			"adopt_calfcasanova",
+			"adopt_calfmilkingzebu",
+			"tree_anchor",
+			"tree_nauticalstar",
+			"tree_gordonia",
+			"tree_venetianchandelier",
+			"tree_riberry",
+			"tree_deepyellowwood",
+			"tree_giantharmonybonsai",
+			"tree_giantalstonia",
+			"tree_giantsail",
+			"tree_giantgelato",
+			"tree_giantvenetianmask",
+			"tree_giantseastar",
+			"tree_giantribbonwand",
+			"tree_gianttrophy",
+			"egg_masquerade",
+			"egg_captain",
+			"bulb_purpleaster",
+			"bulb_hydrangea",
+			"bulb_cardinalflower",
+			"tree_celtic",
+			"tree_bluebell",
+			"tree_comet",
+			"tree_galaxy",
+			"tree_goldmedal",
+			"tree_topiary",
+			"tree_cistenaplum",
+			"tree_englishoak",
+			"tree_gianttorch",
+			"tree_giantjujube",
+			"tree_giantmoonlitmulberry",
+			"adopt_foalceltic",
+			"adopt_foalalienunicorn",
+			"adopt_foalcelticunicorn",
+			"adopt_foalvanner",
+			"adopt_foalkerrybogpony",
+			"adopt_foalchampion",
+			"adopt_foalirishsport",
+			"adopt_foaldosanko",
+			"adopt_foalsummernight",
+			"adopt_foalplumblossom",
+			"adopt_foalmilkywayunicorn",
+			"adopt_calfmilkyway",
+			"adopt_calfaubrac",
+			"egg_jetpack",
+			"egg_gymnastics",
+			"bushel_pearlbarley",
+			"bushel_waterlily",
+			"bushel_unagi",
+			"bushel_babycorn",
+			"bushel_watercress",
+			"bushel_forbiddenbarley",
+			"bushel_forbiddenlily",
+			"bushel_forbiddenunagi",
+			"bushel_forbiddenonion",
+			"bulb_pyramidialorchid",
+			"bulb_kerrylily",
+			"bulb_groundsel",
+			"adopt_foalfloridacracker",
+			"adopt_foalracking",
+			"adopt_foalspottedsaddle",
+			"adopt_foalrockymountain",
+			"adopt_foalnokota",
+			"adopt_foalmoyle",
+			"adopt_foalinnertube",
+			"adopt_foalmagnolia",
+			"adopt_foalroman",
+			"adopt_foalblacktennessee",
+			"adopt_foalchincoteague",
+			"adopt_foalrobot",
+			"adopt_calfswiss",
+			"adopt_calfsouthernbelle",
+			"adopt_calfspanish",
+			"adopt_calfastronaut",
+			"egg_mysterycluckrogers",
+			"tree_giantshaveice",
+			"tree_giantmechanical",
+			"tree_giantmartian",
+			"tree_giantmexicanhand",
+			"tree_giantaustralianboab",
+			"tree_giantrobot",
+			"tree_boogieboard",
+			"tree_mars",
+			"tree_saucermagnolia",
+			"tree_chickasawplum",
+			"tree_pecanpie",
+			"tree_lightningbug",
+			"bulb_goldenrose",
+			"bulb_fairyflower",
+			"bulb_whitelily",
+			"bulb_yellowpansy",
+			"bulb_pinkhollyhock",
+			"bulb_flameazalea",
+			"skimmer",
+			"leafnet",
+			"waterbucket",
+			"mat_swimmingpond",
+			"adopt_foalkabardin",
+			"adopt_foallokai",
+			"adopt_calfgaur",
+			"tree_giantmetasequoia",
+			"tree_gianttridentmaple",
+			"tree_giantthreeflowered",
+			"tree_giantchampak",
+			"tree_giantpurplejapanese",
+			"tree_giantjapanesewisteria",
+			"tree_giantpurpleempress",
+			"tree_giantteak",
+			"tree_giantmagicmushroom",
+			"tree_giantglassslippers",
+			"tree_giantclog",
+			"tree_giantwaterslide",
+			"tree_gianttwistingvine",
+			"tree_giantredwillow",
+			"tree_giantwhitecypress",
+			"tree_giantmagnifyingglass",
+			"tree_blackelderberry",
+			"tree_flippers",
+			"tree_goldthread",
+			"tree_bonsaipinkalmond",
+			"tree_bonsaiweepingwillow",
+			"tree_bonsaihibiscus",
+			"tree_bonsaiandromeda",
+			"adopt_foalfrogprince",
+			"adopt_foaldutchwarmblood",
+			"adopt_foalrapunzelpony",
+			"adopt_foalsnorkelmini",
+			"adopt_foalrapunzelunicorn",
+			"adopt_foalchateau",
+			"adopt_foalvineyard",
+			"adopt_foalinspector",
+			"adopt_calfcheese",
+			"adopt_calffrogprince",
+			"egg_fairytale",
+			"egg_barnevelder",
+			"egg_groundskeeper",
+			"bushel_sangiovese",
+			"bushel_cabernetsauvignon",
+			"bushel_syrah",
+			"bushel_pinotnoir",
+			"bushel_riesling",
+			"bushel_moscato",
+			"bushel_sauvignonblanc",
+			"picnicbasket",
+			"adopthorse_nomadic",
+			"adopt_cowghengis",
+			"peekingducks",
+			"tree_giantparasol",
+			"zengnome",
+			"adopt_sheepwhtieninja",
+			"mat_imperialshipyard",
+			"sail",
+			"rigging",
+			"woodplank",
+			"bushel_horseradish",
+			"bushel_greenonion",
+			"bushel_sesame",
+			"bushel_scallop",
+			"tree_giantstaranise",
+			"tree_giantshuriken",
+			"tree_giantdumpling",
+			"tree_giantparasol",
+			"tree_gianttropicalbird",
+			"tree_giantjulycupcake",
+			"tree_giantpinklemon",
+			"tree_giantluxegem",
+			"tree_awarra",
+			"tree_sandbox",
+			"tree_rubber",
+			"tree_bluerose",
+			"tree_sweetgum",
+			"tree_purpletulip",
+			"tree_bonsaigem",
+			"tree_bonsairainbowprism",
+			"tree_bonsaipinkazalea",
+			"egg_orange",
+			"floatingrock",
+			"magicwater",
+			"sparkleseed",
+			"mat_floatingwaterfall",
+			"bushel_swisschard",
+			"bushel_flamingo",
+			"bushel_cherokeerose",
+			"adopt_foalcherrypegacorn",
+			"adopt_foaldoublerainbow",
+			"adopt_foalstar",
+			"adopt_foalfriendship",
+			"adopt_foalyellowbutterfly",
+			"adopt_foalbumblebee",
+			"adopt_foalballoonpony",
+			"adopt_foalnomadic",
+			"adopt_foalsancaiii",
+			"adopt_foalmayan",
+			"adopt_foalrainforest",
+			"adopt_foalamericanmini",
+			"adopt_foaldutchdraft",
+			"adopt_foalfriendshippegasus",
+			"adopt_foalgempegacorn",
+			"adopt_calfghengis",
+			"adopt_calfmayan",
+			"tree_tachibana",
+			"tree_mysticwave",
+			"tree_mysticwater",
+			"tree_giantlibertybell",
+			"tree_giantjulyfirework",
+			"tree_giantgrenadapomegranate",
+			"tree_giantjapanesefern",
+			"tree_giantpossumhawholly",
+			"tree_giantringpop",
+			"tree_giantalexandrite",
+			"tree_giantrainbowprism",
+			"tree_giantgeode",
+			"tree_giantmysticstone",
+			"adopt_foalfireflypony",
+			"adopt_foalfirefly",
+			"adopt_foalfire",
+			"adopt_foalalexandrite",
+			"adopt_foalamericanunicorn",
+			"adopt_foalkimono",
+			"adopt_foalgarden",
+			"adopt_foalbedazzledunicorn",
+			"adopt_calffirefly",
+			"egg_american",
+			"vintnergnome",
+			"grapecrushingbarrel",
+			"valetgnome",
+			"tree_whitecypress",
+			"oakbarrelrack",
+			"tree_redwillow",
+		]
+		//holy shit!
+	};
+
+	//build a menu list based on an array of text
+	//add a prefix to the return word using prefix
+	//automatically sorts alphabetically, set sort=false to disable
+	//automatically capitalizes first letter of every word
+	//point markAsNew to your collection of new items or leave blank
+	//point markWithColors to your color collection or leave blank
+	function createMenuFromArray(arr,prefix,sort,markAsNew,markWithColors){
+		markAsNew=markAsNew||newItems;
+		markWithColors=markWithColors||newItemColors;
+		sort=(sort==null)?true:sort;
+		var ret={};
+		if (arr) {
+			//clone the array before sorting
+			arr2=arr.slice(0);
+			if (sort) arr2=arr2.sort();
+			for (var i=0,len=arr2.length;i<len;i++){
+				//build the real keyname
+				var keyName = (prefix||'')+arr2[i].noSpaces().toLowerCase();
+				//fix its label if needed
+				var fixedLabel=screwyTexts[arr2[i].toLowerCase()];
+				//create the element constructing code
+				ret[keyName]={type:'checkbox',label:(fixedLabel || arr2[i]).upperWords()};
+				
+				//mark new and stylize
+				for (var colorGroup in markAsNew) {
+					if (markAsNew[colorGroup].inArray(keyName)) {
+						//item found listed under colorGroup
+						for (var newProp in markWithColors[colorGroup]) {
+							//push properties to this element
+							ret[keyName][newProp]=markWithColors[colorGroup][newProp];
+							//console.log(markWithColors[colorGroup][newProp]);
+						}					
+					}
+				}
+			}
+			arr2=null;
+		}
+		return ret;
+	};
+	
+	//build Accept Text object from an array
+	//add a prefix to the return key using keyPrefix, ie "cow_"
+	//add a suffix to the return value using textSuffix, id " Cow"	
+	function createAccTextFromArray(arr,keyPrefix,textSuffix){
+		var ret={};
+		if (arr) {
+			for (var i=0,len=arr.length;i<len;i++){
+				ret[(keyPrefix||'')+arr[i].noSpaces().toLowerCase()]=arr[i].upperWords()+(textSuffix||'');
+			}
+		}
+		return ret;
+	};
+
+
+	//try to dock with WM 1.5 main script
+	function dock(){
+		//check that dock exists
+		var door=$('wmDock');
+		if (!door) {
+			//cannot find dock
+			window.setTimeout(dock, 1000);
+			return;
+		} 
+
+		//check that the dock does not not already have us listed
+		var doorMark=$('wmDoor_app'+thisApp);
+		if (doorMark) return; //already posted to door
+
+
+		//define types here
+		//provide text as it appears in the post body/link, even if spelled wrong (ie. cirtus = citrus for FV collection items)
+		//search texts do not need to be in proper case as the search engine in WM 1.5 sets everything to lowercase anyway
+		//you cannot search for specific case text via a WM sidekick
+		//texts are case corrected later when they are added to the options menu
+		//add text entires in any order and use .optimize() to make sure order does not cause issues during searching
+
+
+		//bushel types are grouped as they were in FVWM	
+		//types are defined in separate arrays for easier use in options menu	
+
+		var fruitTypes=["bell pepper","blackberry","blueberry","fire pepper","chardonnay","cranberry","chinese eggplant","elderberry",
+				"ghost chili","grape","jalapeno","leek","sichuan pepper","hilo pineapple","purple tomato","raspberry","red currant",
+				"square melon","straspberry","strawberry","tomato","watermelon","white grape","yellow melon","zinfandel",
+				"darrow blackberry","chandler blueberry","cove cranberry","red iceberry","frozen grapes","love strawberry",
+				"sangiovese","cabernet sauvignon","syrah","pinot noir","riesling","moscato","sauvignon blanc","pineapple",
+				"lilikoi","royal cantaloupe","cantaloupe","pepper","forbidden eggplant","eggplant","goji berry",
+			].optimize();
+				
+		var vegTypes=["acorn squash","royal artichoke","asparagus","broccoli","cabbage","cara potato","carnival squash",
+				"baby carrot","chickpea","cucumber","english pea","field bean","heirloom carrot","long onion","green onion",
+				"pea","potato","pumpkin","purple asparagus","purple pod pea","radish","red spinach","rhubarb","spinach",
+				"soybean","squash","squmpkin","turnip","zucchini","rappi","swiss chard","kennebec potato","pattypan",
+				"butter & sugar corn","cauliflower","candied yam","carrotcicle","iceberg lettuce","kelp","royal taro",
+				"taro","nagaimo","edamame","chinese daikon","bok choy","azuki","water chestnut","yam","forbidden onion",
+				"artichoke","forbidden daikon","daikon","forbidden chestnut","swiss chard","onion","baby corn","parsnip",
+				"garlic","okra","snap pea","carrot","lettuce","celery","brussel sprout","green bean","bean sprout",
+				"forbidden sprouts","forbidden carrot","lentil","kidney bean","kale",
+			].optimize();
+				
+		var grainTypes=["amaranth","barley","corn","double grain","hops","oat","posole corn","red wheat","royal hops",
+				"rye","wheat","whisky peat","triticale","iced rice","sticky rice","imperial rice","millet","forbidden barley",
+				"pearl barley","brown rice","jasmine rice","rice","buckwheat",
+			].optimize();
+				
+		var otherBushels=["aloe vera","jade bamboo","basil","black tea","kona coffee","chinese cotton","lowland ginger",
+				"green tea","lemon balm","peppermint","golden sugar cane","hay","dill","tarragon","holly","forbidden tea",
+				"gummi bear","mint candy","hawaiian ginger","wasabi","saba","ramen","lemongrass","gingerbread","imperial tea",
+				"white cloud tea","jade peanut","royal mustard","red nori","sugar cane","mustard","ginger","cotton","coffee",
+				"peanut","bamboo","sesame","horseradish","water cress","nori","forbidden ginseng","ginseng","forbidden udon",
+				"udon","lollipop",
+			].optimize();
+				
+		var specialBushels=["birthday cake","crystal","cupid corn","snow cone","white pumpkin","candy cane","balloon","gnome",
+				"red toadstool","purple toadstool","jack o lantern","green peppermint","snow carnation","king cake","rainbow",
+				"candy corn","cereses carrot","capri-corn","moon flower","mercury melon","aquarius arugala","aries azalea",
+				"venus fly trap","jupiter juniperus","apollo aster","celestial camellia",	
+			].optimize();
+				
+		var flowerTypes=["red tulip","purple popp","morning glory","pink rose","white rose","orange dais","electric lil",
+				"pink carnation","fire & ice rose","flamingo flower","yellow rose","pink hibiscus","green hellebore","alpine rose",
+				"green rose","golden popp","red clover","black rose","white poinsettia","pink aster","electric rose","star flower",
+				"chrome dais","sun popp","english rose","forget me not","spring squill","lilac daffy","lady slipper","black tulip",
+				"snow tulip","glacial rose","red rose","landini lilies","bells of ireland","double pikake","yellow hibiscus",
+				"hawaiian orchid","lava flower","purple orchid","grass widow","night cereus","royal forget-me-not","sundew plant",
+				"walking iris","pitcher plant","dragon flower","royal mum","water lily","forbidden lily","yellow marigold",
+				"orange marigold",
+				
+				"edelweiss","lotus","hollyhock","columbine","cornflower","gardenia","foxglove","peony","lokelani","dandelion",
+				"spiral flower","lotus","flamingo","cherokee rose","bluebell","poinsettia","gladiolus","sunflower","lilac",
+				"daffodil","iris","saffron","lavender","clover","daylil","lily","alfalfa","flax","agave","begonia",
+			].optimize();
+				
+		var seafoodTypes=["forbidden calamari","forbidden rock cod","clam","lobster","seafood","shrimp","oyster","mussel",
+				"yellowfin tuna","rock crab","ono","hamachi","grouper","squid","rock cod","prawns","scallop","forbidden unagi",
+				"unagi"
+			].optimize();
+				
+		//list of bushels needed per crafting cottage
+
+		var bakeryBushels=["pumpkin","wheat","strawberry","carrot","pepper","ghost chili","pattypan","onion","rice",
+				"blueberry","blackberry","raspberry","peanut","sugar cane","pea","broccoli","asparagus",
+				"coffee","oat","cucumber","basil","tomato","ginger","posole corn","potato","red wheat","cranberry",
+				"white pumpkin","green rose","pink carnation","butter & sugar corn","cauliflower","rye","shrimp",
+				"taro"].toDefinitions("bushel_");
+				
+		var pubBushels=["hops","barley","red currant","royal hops","english rose","english pea","bluebell","spring squill",
+				"cornflower","black tea","pink aster","field bean","electric rose","pink carnation","kennebec potato",
+				"radish","turnips","darrow blackberry"].toDefinitions("bushel_");
+				
+		var wineryBushels=["rice","cranberry","white grape","sugar cane","strawberry","grape","raspberry","blueberry","tomato",
+				"pepper","carrot","green tea","lilac","blackberry","basil","ginger","pumpkin","acorn squash","cucumber",
+				"squash","pink rose","lavender","morning glory","sunflower","yellow melon","watermelon","white pumpkin",
+				"greeen rose","pink carnation","cove cranberry","tarragon","hawaiian ginger","rye","oyster","ghost chili"].toDefinitions("bushel_");
+				
+		var craftshopBushels=["cotton","soybean","carrot","chickpea","sunflower","barley","tomato","aloe vera","jalapeno",
+				"pink aster","rhubarb","peanut","leek","wheat","strawberry","lilac","cranberry","double grain","morning glory",
+				"coffee","black tea","spring squill","cornflower","rice","rye","spinach","pattypan","field bean","cotton",
+				"pepper","red tulip","foxglove","golden popp","grape","red currant","radish","hops","english pea","bluebell"].toDefinitions("bushel_");
+				
+		var spaBushels=["pumpkin","cranberry","sunflower","blueberry","morning glory","aloe vera","green tea","blackberry","lilac",
+				"basil","iris","sunflower","pepper","red tulip","ghost chili","lily","lemon balm","ginger","coffee",
+				"purple popp","daffodil","strawberry","pink rose","lavender","white pumpkin","green rose",
+				"daylily","dill","kelp","double pikake"].toDefinitions("bushel_");
+				
+		var restrauntBushels=["darrow blackberry","chandler blueberry","strawberry","red clover","hay","rhubarb","butter & sugar corn",
+				"tarragon","pepper","wheat","raspberry","white grape","cove cranberry","red currant","green tea","dill",
+				"lady slipper","field beans","cauliflower","tomato","pumpkin","hops","daylily","black tea","peppermint",
+				"pineapple","kennebec potato","clam","leeks","red clover","basil","lobster","seafood"].toDefinitions("bushel_");
+				
+		var sweetshoppeBushels=["gingerbread","iced rice","sunflower","gummi bear","candied yam","wheat","glacial rose","cranberry",
+				"peanut","holly","red iceberry","chickpea","mint candy","coffee","snow tulip","sugar cane","iceberg lettuce",
+				"pumpkin","frozen grapes","blueberry","rye","iceberg lettuce","carrotcicle","pattypan","leeks","blackberry"].toDefinitions("bushel_");
+				
+		var tikibarBushels=["taro","hilo pineapple","kona coffee","yam","lilikoi","double pikake","yellow hibiscus","oyster",
+				"golden sugar cane","hawaiian orchid","hawaiian ginger","kelp","shrimp","yellow fin tuna","mussel","rock crab",
+				"ono","chickpea","spinach","sugar cane","strawberry","white grape","pepper","blueberry","coffee","leek","rice",
+				"jalapeno","carrot","tomato","onion"].toDefinitions("bushel_");
+				
+		var teagardenBushels=["hamachi","edamame","chinese daikon","chinese eggplant","bok choy","azuki","water chestnut",
+				"grouper","squid","wasabi","sichuan pepper","saba","rock cod","prawns","ramen","lowland ginger","lemongrass",
+				"chinese cotton","nori","imperial tea","white cloud tea","jade peanut","lotus","sticky rice","imperial rice",
+				"millet","rice","green tea","wheat","jalapeno","basil","ginger","pepper","eggplant","cabbage","coffee","sugar",
+				"rye"].toDefinitions("bushel_");
+		
+		//this array used to clear highlights
+		var allCraftBushels=[].concat(bakeryBushels,pubBushels,wineryBushels,craftshopBushels,spaBushels,restrauntBushels,sweetshoppeBushels,tikibarBushels,teagardenBushels);
+		
+		//Crafting cottage items
+		//define separately for easy options menu
+		var craftPub=["duke's stout","oliviaberry beer","lionhead ale","barley crumpet","floral scone","red currant trifle",
+				"rosehip tea","spark rose mead","pink carnation tea","potato soup","blackberry brandy"];
+		
+		var craftWinery=["sweet sake","white sangria","red table wine",
+				"fruit wine","spicy tomato juice","dry sake","blackberry wine","strawberry & cranberry juice","raspberry wine",
+				"blueberry wine","herbal elixir","pumpkin vinegar","cucumber wine","rose petal water","melon juice","pumpkin cider",
+				"green rose water","carnation vinegar","tarragon vinegar","cranberry cooler","daiquiri","ice wine",
+				"snowflake cocktail","island ginger beer","oyster shot","jade falls beer","plum wine"];
+
+		var craftSpa=["fresh sachet","floral perfume","soothing herbal lotion","relaxation oil","devotion perfume","petal sachet",
+				"energizing lotion","restoring candle","lily of the valley soap","iris soap","meditation candle","pick me up sachet",
+				"farmer's frenzy perfume","daffodil lotion","transcendent candle","harvest candle","green potpourri","daylily perfume",
+				"dill candle","gingerbread candle","mint lotion","snowflake soap","flower lei","seaweed soap","lotus candel","bubble tea"];		
+
+		var craftBakery=["pumpkin bread","strawberry shortcake","spicy muffin","patty pan tart","triple berry pie","peanut butter cookie",
+				"raspberry blondie","vegetable tart","mocha-berry cake","oatmeal cookies","baked cucumber","pizza bread","ginger snaps",
+				"potato and onion bread","carrot cake","harvest casserole","green mocha cake","candied pink carnation","cornbread",
+				"cauliflower gratin","gingerbread cake","ice cream carrot cake","snowflake cookie","shrimp toast","egg bread",
+				"green tea ice cream","green onion pancake"];
+				
+		var craftRestraunt=["blackberry ice cream","cheddar cheese","creamed corn","wild blueberry pie","black raspberry wine","fruit cider",
+				"dill potato skin","jonny cake","cranberry-pineapple relish","clam chowder","baked beans","cream pie","new england lager",
+				"boiled dinner","lobster roll"];
+
+		var craftSweetShoppe=["candied apple","candied yam pie","candy cane","daiquiri","frozen fruit tart","ginger s'more",
+				"gingerbread candle","gingerbread house","healthy donut","holly wreath","ice cream sundae","ice wine",
+				"lollipop","mint lotion","orange taffy","peanut brittle","peppermint fudge","rock candy","sorbet","sugar snowflake"];
+				
+		var craftTikiBar=["poi","pineapple sunrise","coffee & cream","inamona","sweet and sour shrimp","plantation iced tea",
+				"pineapple hash","shrimp salad","hawaiian kabob","island fried rice","mussel poke","yam fries","seaweed soup",
+				"shave ice"];
+				
+		var	craftTeaGarden=["pho soup","bao","hamachi maki","yin yang dessert","tom yum","thai tea","ikura nigini","kimchi","nian gao",
+				"oolong tea","portuguese rice","milk tea","hot and sour eggplant","egg roll","egg tart","dragon boat rice","congee",
+				"chow mein","bibimbap"];
+		
+		//I dont know if the craftshop does or will ever actually share an item, but if it does, add them here.
+		var craftShop=["bright yellow tractor","mechanic scarecrow","sheep topiary","apple red seeder","bonsai",
+				"tree house","apple red harvester","post office","evergreen train","farmhand","yellow racer tractor",
+				"stone wall","fertilize all","dainty fence","shovel","watering can","iron fence","arborist",
+				"lamp post","animal feed","vehicle part","swiss cabin","stone archway","milking stool","scythe",
+				"brick","wooden board","nail","lucky penn","fuel","bottle","love potion","pine fence i",
+				"pine fence ii","modern table","puppy kibble","dog treat","moat i","moat ii","moat iii","moat iv",
+				"moat corner i","moat corner ii","moat corner iii","moat corner iv","castle bridge","england postcard",
+				"beach ball","magic snowflake","ice pig sculpture","ice horse sculpture","horse sculpture"].optimize();
+
+		var craftUnidentified=["chardonnay frosted cake","chardonnay preserves","zinfandel sachet","zinfandel wine"];
+
+		//merge craft types for searching
+		var craftTypes=craftBakery.concat(craftSpa,craftWinery,craftPub,craftShop,craftRestraunt,craftSweetShoppe,craftTikiBar,craftTeaGarden,craftUnidentified);	
+		
+		//only those crops that can provide crossbred seeds
+
+		var seedTypes=["straspberry","long onion","squmpkin","red spinach","lilac daffy","fire pepper","double grain","purple tomato",
+				"sun poppy","whisky peat","purple orchid"].optimize();
+
+		//only those crops that can be of the supercrop status
+
+		var superCrops=["strawberry","pumpkin","cotton","cranberry","pepper","grape","pink aster","watermelon","yellow melon"].optimize();
+
+		//merge all crop types for actual searches
+		//do not merge with seedTypes and superCrops as they are searched for differently
+
+		var bushelTypes=[].concat(flowerTypes,fruitTypes,grainTypes,vegTypes,seafoodTypes,otherBushels,specialBushels).optimize();
+
+		//trees
+		var treeTypes=[//multiple words
+				"alma fig","angel red pomegranate","autumn ginkgo","bahri date","bay laurel","bird cherry",
+				"black locust","blood orange","bubble gum","chanee durian","chinese lantern","chinese strawberry",
+				"chinese tamarisk","chrome cherry","cork oak","crab apple","crack willow","cuban banana","disco ball",
+				"downy birch","dwarf almond","elberta peach","european beech","european pear","golden apple",
+				"golden apricot","golden malayan coconut","golden plum","golden starfruit","granny smith apple",
+				"hass avocado","heart candy","indian laurel","key lime","manila mango","midland hawthorn","mimosa silk",
+				"mint candy","mission olive","monterey cypress","mountain ebony","ornament 2","peach palm","kamani nut",
+				"picholine olive","pink dogwood","ponderosa lemon","purple hanging flower","purple magnolia","ohia ai",
+				"rainbow apple","rainier cherry","red alder","red maple","red pine","royal crystal","ruby guava",
+				"sartre guava","shinko pear","silver maple","singapore jackfruit","star ruby grapefruit","umbrella pine",
+				"vera wood","white pine","white plumeria","white walnut","wild cashew","wild service","wych elm",
+				"yellow maple","yellow passion fruit","african tulip","japanese maple","lombardy poplar","white cedar",
+				"speckled alder","umbrella bamboo","pin oak","weeping birch","bradford pear","european aspen",
+				"dahurian birch","gold tinsel","montmorency cherry","paperbark maple","bitternut hickory","purple holiday",
+				"shagbark hickory","golden bell","winter spruce","ice crystal","radiant sun","starry night","a sweater",
+				"schreink's spruce","yellow rowan","pink magnolia","poinsettia","white apple","pink plum","heart shape",
+				"spruce birdhouse","red rocket crape","pink trumpet","pink smoke","oklahoma redbud","kwanzan cherry",
+				"tonto crape","california redbud","northern catalpa","hawaiian cherry","rainbow gum","yellow plumeria",
+				"yellow magnolia","choco macadamia","white wisteria","sugar apple","candle nut","majestic redwood",
+				"sparkling palm","banana peel","mountain silverbell","corinthian peach","red horse chestnut","may ribbon",
+				"kilimarnock willow","crimson cloud hawthorn","ice cream sundae","kalamata olive","white weeping cherry",
+				"japanese persimmon","royal poinciana","scarlet buckeye","chainfruit cholla","dragon's blood","date palm",
+				"pink rose","pacific madrone","western red cedar","pink diamond","quaking aspen","moth orchid","foxtail palm",
+				"yellow hibiscus","conch shell","stone pine","blue cloud","yellow watermelon","pink camellia","stormy cloud",
+				"chinese rain","tung oil","japanese snowbell","oyama magnolia","jade bamboo","crystal banana","cisten plum",
+				"japanese angelica","japanese privet","mystic wave","mystic water","sweet gum","blue rose","purple tulip",
+				"black elderberry","gold thread","boogie board","saucer magnolia","chickasaw plum","pecan pie","lightning bug",
+				"white cypress","red willow","gold medal","english oak","blue bell","cistena plum","deep yellow wood",
+				"venetian chandelier","nautical star","old vine","match stick","water droplet","red mulga","dawn eucalyptus",
+				"fairy lantern","fairy plum","fairy bell flower","neon palm","dream trumpet","purple glitter palm","toy doh",
+				"glitter plum","stacking rings","scorpio zodiac","fire & ice","magic lamp","magic wand","leo zodiac",
+
+				//single words
+				"amherstia","apple","ash","banana","broom","breadnut","cashew","date","gem","ginkgo","gulmohar","hazelnut",
+				"holiday","jackfruit","lemon","longan","mango","oak","olive","ornament","pine","tamarind","walnut","chicle",
+				"candelabra","melaleuca","halloween","pistachio","moon","lychee","durian","popsicle","empress","tulip",
+				"jaca","shamrock","ohia","banyan","perfume","tempskya","goldenchain","carob","baobab","daisy","goat",
+				"ribbon","octopus","candle","gerber","sunrise","dusk","sunflower","star","willamsonia","saxophone","lilac",
+				"gladiolus","chaste","tachibana","awarra","sandbox","rubber","flippers","mars","galaxy","celtic","comet",
+				"topiary","anchor","gordonia","riberry","ceiba","patchouli","macrame","marula","zebra","oleander","smore",
+				"bubble","jungle",
+			].optimize();
+		
+		//giant trees
+		//do not provide the words big or giant in front of these as that is done programatically later
+		var treeTypes2=[//multiple words
+				"bell flower","black cherry","candy apple","caramel apple","chocolate heart","chrome cherry","hot cocoa",
+				"cocoa truffle","disco ball","fleur de lis","french bread","frozen gem fruit","golden apple","heart candy",
+				"july balloon","july confetti","july ice cream","ice cream sundae","lucky cookie","mardi gras","pink gem","red gem",
+				"purple bubble gum","ribbon flower","sour apple","spring egg","magic orange","star flower","magic peach",
+				"halloween candy","candy corn","fire peach","jack o lantern","halloween lantern","dark apple","trick or treat",
+				"halloween cookie","candy pumpkin","dark peach","honeycrisp apple","sugar skull","halloween candle","golden fairy",
+				"forbidden gem","purple crystal","santa hat","golden holiday","fall ribbon flower","snowy gumdrop","snowflake ii",
+				"holiday cookie","candy cane","holiday candle","holiday chocolate","holiday corn","spiral crystal","gum drop",
+				"fraiser fir","teddy bear","party hat","frozen apple","holiday lantern","jingle bell","new year lantern",
+				"white golden apple","icy peach","ice sculpture","amethyst gem","frosted fairy","winter spirit","bare crystal",
+				"gem fruit","broken heart","spruce birdhouse","sugar cookie","dark heart","heart cotton candy","valentine cookies",
+				"dark butterfly","heart balloon","potato chips","spring apple","dark willow","white trumpet","caribbean trumpet",
+				"celtic knot","gold sitka spruce","red coral","monkey pod","flip flop","dog treat","lucky charm","sea shell",
+				"sand dollar","rocky candy","mini cupcake","gummy bear","star fish","crystal ball","majestic redwood",
+				"sparkling palm","coconut punch","fire apple","lava stone","lava banyan","fire gem","ribbon candy","hard candy",
+				"strawberry cake","dinosaur eggs","dinosaur fossil","chocolate apple","ice cream","tea party","spring cookies",
+				"bumble bee","yellow shower","diamond ring","enchanted iris","pink pearl","kwanzan cherry","queen's crape",
+				"rainbow shower","angel trumpet","bristlecone pine","young sequoia","paper umbrella","skinny palm","paper flower",
+				"candy bouquet","white pearl","mother's cookies","blue ribbon baobab","pink diamond","baby bundle","red dogwood",
+				"red magnolia","cake pop","impressionist ii","fan palm","ice cream mango","crystal cave","red cassia",
+				"rainbow cotton candy","bell pepper","phoenix fire","stained glass","art deco","crown flower","black apple",
+				"muskogee crape","natchez crape","feather palm","brazil nut","animal cloud","chinese mulberry","summer cherry",
+				"jade fireworks","asian white birch","fujian birch","white mulberry","chinese hackberry","cherry blossom",
+				"ginkgo maple","golden larch","glowing lantern","dragon boat","beach ball","evergreen pear","hand fan",
+				"lava flower","navel orange","birthday hat","birthday candles","fortune cookies","party favor","wind chime",
+				"animal balloon","crystal heart","liberty bell","july firework","grenada pomegranate","japanese fern","luxe gem",
+				"possumhaw holly","ring pop","rainbow prism","mystic stone","tropical bird","july cupcake","pink lemon",
+				"magic mushroom","glass slippers","water slide","twisting vine","red willow","white cypress","magnifying glass",
+				"star anise","shave ice","mexican hand","australian boab","trident maple","three flowered","purple japanese",
+				"japanese wisteria","purple empress","moonlit mulberry","harmony bonsai","venetian mask","sea star","ribbon wand",
+				"cedar carriage driver","farmville games","eccentric elm","shooting star","fairy wing","solar power","tie dye",
+				"dream trumpet","chinese rain","tribal mask","satellite dish","chinese fringe","chinese tallow","red umbrella",
+				"korean white beam","kaki persimmon","rainbow glitter","white cloud","glitter butterfly","toy brick","full moon",
+				"starry willow","pirate sail","treasure map","albino redwood",
+				
+				//single words
+				"broom","bubblegum","cupcake","father","jewel","balloon","mac&cheese","rainbow","snowcone","wedding",
+				"fairy","mossy","spider","butterfly","gnarled","labyrinth","speaker","cornucopia","bowtie","stocking",
+				"borealis","snowflake","gingerbread","nutcracker","poinsettia","present","firework","noir","snowball",
+				"whittled","sculpted","sapphire","wilted","gem","heart","sweater","cocoa","heartflake","cupid","mask",
+				"headdress","sequin","shamrock","blossoming","instrument","clover","emerald","lollipop","prism","beads",
+				"tiki","label","shade","miracle-gro","bjuvia","mustache","wing","sprung","corsages","origami","dragon",
+				"earth","lace","basket","lei","chandelier","candle","birthstone","impressionist","cypress","wolfsbane",
+				"aromita","crown","sword","dandelion","salad","climbing","dove","fruit","sachet","pinwheel","volleyball",
+				"alexandrite","geode","coin","shuriken","dumpling","parasol","clog","mechanical","martian","robot",
+				"metasequoia","champak","teak","torch","jujube","sail","trophy","gelato","alstonia","horseshoe","steel",
+				"gemstone","treasure","goblet","peace","hologram","camphor","wishing","smore","bubble","snake","manchineel",
+				"mahogany","tornado","turquoise","puzzle","grocery","constellation","pencil","peumo","wizard","mercury",
+				"aquarius","ceres","capricorn","lunar","aries","venus","jupiter","apollo","celestial",
+			].optimize();
+			
+		//bonsai trees
+		var treeTypes3=["pink azalea","white wisteria","rainbow prism","red rose","flowery","tulip","crabapple","bamboo",
+				"wisteria","pomergrante","cherry","maple","camellia","magnolia","orange","fuchsia","ginkgo","rhododendron",
+				"pink almond","weeping willow","hibiscus","andromeda","azalea","gem","quince","chinese perfume","honeysuckle",
+				"crown of thorn","crape myrtle",
+			].optimize();
+				
+		//building type catcher for random materials
+		var buildings=["maison","nursery barn","botanical garden","japanese barn","beehive","garage","pig pen","haunted house",
+				"orchard","turkey roost","funhouse","gingerbread house","winter workshop","party barn","duck pond","combine",
+				"cupid's castle","greenhouse","leprechaun's cottage","sheep pen","spring garden","craftshop","bedazzled cottage",
+				"water wheel","crafting silo","horse stable","wildlife habitat","winter pet run","winter zoo","winter aviary",
+				"cove","winter livestock pen","castle duckula","harvest hoedown","winter animal pen","winter wonderland train station",
+				"snow treasure","santa's sleigh","winter water wheel","winter pasture","winter paddock","feed mill","ice palace",
+				"crop mastery billboard","romantic carriage","animal mastery billboard","tree mastery billboard","baby playpen",
+				"baby bunny hutch","recipe mastery billboard","volcano reef","aquarium","island paddock","island pasture",
+				"island zoo","island livestock","island aviary","island pet run","island habitat","market stall","hawaiian treasure",
+				"jade gnome garden","candy castle","grove","beach resort","fishing hole","gas pump","hot spring","mountain palace",
+				"jade habitat","jade playpen","jade pasture","jade aviary","jade paddock","jade aquarium","dino lab","bloom garden",
+				"ultimate treehouse","jade wildlife pen","jade pet run","jade zoo","cow pasture","horse paddock","livestock pen",
+				"aviary","zoo","pet run","gnome garden","floating waterfall","imperial shipyard","swimming pond","unicorn island",
+				"master lu's study","harmony garden","sunshine doghouse","cupcake doghouse","dream house","baby nursery",
+				"sturdy doghouse","sporty doghouse","floating castle","turtle pen","arborist center","farmhand center",
+			].optimize();
+
+		//material types
+		//defined separately for easy options menu
+		var standardMaterials=["goo ","haunted brick","knockers","creepy candle","clay brick","wooden board","harness","horseshoe",
+				"aged brick","clinging vine","paned window","slate tile","weathered board","blue baby blanket","bottle","floral bracket",
+				"glass sheet","green beam","irrigation pipe","white trellis","bamboo rail","reed thatch","smoker","beeswax","shovel", 
+				"gear","axle","rope","hammer","twine","concrete","hinge","screwdriver","tin sheet","vehicle part","pink baby blanket",
+				"honeybee","wrench","clamps","pipe","shrub","grazing grass","fence post","painted wood","water pump","log","stone lantern",
+				"steel beam","wire","hay bundle","saddle","bridle","punch","snacks","paint","red beam","screw","aluminum siding",
+				"candy cane beam","conifer dust","ice post","rail spike","rail tie","coal","pickaxe","hair dryer","milk and cookies",
+				"gps","silver bell","holiday lights","reindeer treat","holiday cheer","snow axle","snow chain","snow gear","sack ",
+				"scoop ","belt ","snow brick","snowflake","ice nail","snow globe","ice board","frozen beam","blue roller","white paste",
+				"white paper","white overalls","black light","light plywood","love","flower trim","fancy chocolate","cozy blanket",
+				"horse treat","carriage lamp","green paper","green light","orange overalls","red paste","red roller","dark plywood",
+				"wood stain","masking tape","scaffolding","brush","blanket","salt lick","sod piece","grass seed","water pail",
+				"raw wood","feed bucket","wooden peg","baby carrot bunch","bunny bed","branch ball","hutch wire","bunny tunnel",
+				"wood block","wood glue","clamp","sand paper","baby fish","ocean rock","stony coral","volcano monitor","buoy",
+				"filter","small fishing net","large fishing net","small crowbar","large crowbar","awning","basket","price card",
+				"garden fence","daffodil","potting soil","twig","tiny window","toadstool","chocolate brick","gingerbread siding",
+				"gumdrop accent","lollipop lamp","marshmallow mortar","cotton candy insulation","mulch soil","turf roll","mini boulder",
+				"swim suit","beach sandal","tropical cup","lure","lily pad","fishing pole","fuel pipe","level gauger","steel sheet",
+				"bed rock","mineral infusion","steam","stone pillar","terra cotta","hanging incense","small axe","boat hook","wheelbarrow",
+				"cement","fill dirt","metal post","flower tie","garden edging","trellis","floating rock","sparkle seed",
+				"magic water","rigging","sail","wood plank","leaf net","water bucket","skimmer","parchment","dowel","book","yellow bamboo",
+				"zen sand","stone","rainbow clover","heart of gold","enchanted blossom","chew toy","dog bed","tennis ball","baby mobile",
+				"queen bee","pacifier","drift wood","java fern","scientific scale","research paper","tree incubator","cloning solution",
+				"massage stone","buffet tray","cloud brick","enchanted bamboo","hovering charm",
+				
+				"nail","bamboo","brick"].optimize();
+				
+		var fixTitles={
+				mat_livestockpen:"Steel Beam, Water Pump, Wire",mat_winterlivestockpen:"Steel Beam, Water Pump, Wire",
+				mat_wildlifehabitat:"Fence Post, Grazing Grass, Shrub",mat_petrun:"Fence Post, Painted Wood, Water Pump",
+				mat_zoo:"Pipe, Shrub, Wrench",mat_aviary:"Clamp, Hinge, Screwdriver",mat_winteraviary:"Clamp, Hinge, Screwdriver",
+				mat_winterpastaure:"Hay Bundle, Stone, Tin Sheet",mat_winterpetrun:"Fence Post, Painted Wood, Water Pump",
+				mat_horsepaddock:"Bridle, Log, Saddle",mat_winterpaddock:"Bridle, Log, Saddle",mat_cowpasture:"Hay Bundle, Stone, Tin Sheet",
+				mat_winterzoo:"Pipe, Shrub, Wrench",mat_babyplaypen:"Blue Baby Blanket, Brush, Salt Lick",
+				mat_babybunnyhutch:"1: Baby Carrot Bunch, Hutch Wire, Wood Block 2. Bunny Bed, Bunny Tunnel, Branch Ball",
+				mat_cropmasterybillboard:"Black Light, Blue Roller, Light Plywood, White Overalls, White Paper, White Paste",
+				mat_animalmasterybillboard:"Dark Plywood, Green Light, Green Paper, Orange Overalls, Red Roller, Red Paste",
+				mat_treemasterybillboard:"Masking Tape, Scaffolding, Wood Stain",mat_recipemasterybillboard:"Clamps, Sand Paper, Wood Glue",
+				mat_volcanoreef:"Baby Fish, Stony Coral, Volcano Monitor",mat_aquarium:"Buoy, Filter, Ocean Rock",
+				mat_islandpaddock:"Bridle, Log, Saddle",mat_islandpasture:"Hay Bundle, Stone, Tin Sheet",
+				mat_islandlivestock:"Steel Beam, Water Pump, Wire",mat_islandzoo:"Pipe, Shrub, Wrench",
+				mat_islandpetrun:"Fence Post, Painted Wood, Water Pump",mat_islandhabitat:"Fence Post, Grazing Grass, Shrub",
+				mat_islandaviary:"Clamp, Hinge, Screwdriver",mat_marketstall:"Awning, Basket, Price Card",
+				mat_gnomegarden:"Toadstool, Garden Fence, Tiny Window",mat_grove:"Mulch Soil, Turf Roll, Mini Boulder",
+				mat_candycastle:"Chocolate Brick, Cotton Candy Insulation, Gingerbread Siding, Gumdrop Accent, Lollipop Lamp, Marshmallow Mortar",
+				mat_beachresort:"Beach Sandal, Swim Suit, Tropical Cup",mat_fishinghole:"Lure, Fishing Pole, Lily Pad",
+				mat_gaspump:"Fuel Pipe, Level Gauger, Steel Sheet",mat_hotspring:"Steam, Mineral Infusion, Bed Rock",
+				mat_jadehabitat:"Bamboo Rail, Clay Brick, Reed Thatch",mat_mountainpalace:"Terra Cotta, Stone Pillar, Hanging Incense",
+				mat_jadeplaypen:"Blue Baby Blanket, Brush, Salt Lick",mat_jadepasture:"Hay Bundle, Stone, Tin Sheet",
+				mat_jadeaviary:"Clamp, Hinge, Screwdriver",mat_jadepaddock:"Bridle, Log, Saddle",
+				mat_jadeaquarium:"Buoy, Filter, Ocean Rock",mat_dinolab:"Cement, Fill Dirt, Metal Post",
+				mat_jadegnomegarden:"Toadstool, Garden Fence, Tiny Window",mat_jadezoo:"Pipe, Shrub, Wrench",
+				mat_jadewildlifepen:"Fence Post, Grazing Grass, Shrub",mat_jadepetrun:"Fence Post, Painted Wood, Water Pump",
+				mat_floatingwaterfall:"Floating Rock, Magic Water, Sparkle Seed",mat_imperialshipyard:"Rigging, Sail, Wood Plank",
+				mat_swimmingpond:"Water Bucket, Leaf Net, Skimmer",mat_unicornisland:"Enchanted Blossom, Rainbow Clover, Heart of Gold",
+				"mat_masterlu'sstudy":"Book, Dowel, Parchment",mat_harmonygarden:"Zen Sand, Stone Lantern, Yellow Bamboo",
+				mat_sunshinedoghouse:"Tennis Ball, Dog Bed, Chew Toy",mat_cupcakedoghouse:"Tennis Ball, Dog Bed, Chew Toy",
+				mat_babynursery:"Pink Baby Blanket, Baby Mobile, Pacifier",mat_turtlepen:"Drift Wood, Potting Soil, Java Fern",
+				mat_farmhandcenter:"Buffet Tray, Massage Stone, Scientific Scale",mat_arboristcenter:"Cloning Solution, Research Paper, Tree Incubator",
+				mat_floatingcastle:"Cloud Brick, Enchanted Bamboo, Hovering Charm",
+
+		};
+
+		var otherConsumables=["watering can","puppy kibble","arborist","farmhand","white truffle","flower food",
+				"black truffle","gold truffle","brown truffle","animal feed","fertilize all","sunshine dog treat",
+				"cupcake dog treat","sturdy dog treat","sporty dog treat","mystery seedling","love potion","instagrow",
+				"fuel","mystery gift","special delivery","unwither","capital one gift","turbo charge","double avatar",
+				"gardener","mystery bulb","dog treat","coins","mystery game dart"].optimize();
+		
+		var specialMaterials=["fruit cake","beach toys","apple","treats","tricks","bonfire supplies","holiday gifts",
+				"stocking stuffer","snowman parts","token of affection","lucky charms","dream vacation","ice cream",
+				"perfect pet","charming vineyard","picnic basket","dream drop","statue","gem"].optimize();
+
+		var craftingMaterials=["apple wood basket","walnut basket","orange basket","lemon basket","milk jug","wool bundle",
+				"cherry basket","maple syrup basket","manure bag","poplar wood basket","poplar wood basket"].optimize();
+
+		var questItems=[//multiple words
+				"magnifying glass","carrier pigeon","classified ad","giant toothpick","missing poster","sasquatch flakes",
+				"sasquatch shoes","party whistle","sasquatch bait","snow sweeper","sculpture plan","ice brush","score card",
+				"whittled animal","sculpt by numbers kit","block of ice","inspirational photo","wonder ice","smocks and beret",
+				"fair ribbon","slalom flag","sports drink","fan poster","ski pants","penguin helmet","penguin goggles",
+				"cleaning dust","lift pass","running shoes","yo,ga mat","scrub brush","skinny clothes","snowboard outfit",
+				"alarm clock","rabbit ear warmer","duck beanie","hoof warmer","horse rug","pig tail cover","cow sweater",
+				"insulated boots","warm pet bed","heat lamp","sturdy tarp","burlap screen","warm bird house","heated bird bath",
+				"windbreak fence","pinecone feeder","warm thermos","winter chili","string of lights","jack in the box","teddy bear",
+				"frannie farm doll","toy fire truck","model train","roasted chestnuts","glass of eggnog","bough of holly",
+				"song book","gift box","gift tag","fancy bow","fire log","hot spark","colorful light","gold pocketwatch",
+				"brass knob","crystal whatzit","wooden gear","spinning whirl","flange flinger","polarized goggles","egg nog",
+				"hot chocolate","snow polish","jingle bells","arctic beach ball","snow shoe","holiday tune","perfect snowflake",
+				"pen and paper","farmville stamp","water bottle","bow tie","gravy boat","fresh bread","warm sweater",
+				"fire pit stones","baked potato","marshmallow fork","fire spade","cook book","potato masher","corn basket",
+				"stand up bass","kick drum","mermaid tales","sea shell","sweet butter","honey tea","fairy slippers",
+				"strong rope","light stick","jack-o-lantern flashlight","candy map","confetti bomb","centerpiece",
+				"jack-o-lantern","halloween mask","party favor","old books","banquet invitation","scary decoration",
+				"candy corn","tasty fish","wrapped candy","apple basket","horsehead rake","popcorn machine","map pieces",
+				"horse saddle","horse comb","horse tiara","carrot on a stick","horse shoe","blue ribbon","tree fertilizer",
+				"cow treat","cow tether","sugar cube","salt lick","milk bucket","brass cow bell","hobby horse rake","oat sack",
+				"farmer's boots","farmer's overalls","livestock tags","wool blanket","chew toy","scratch post","eau du skunk",
+				"bird seed bunch","bird nest","bird whistle","zookeeper hat","zoo tickets","monkey mask","baby bonnets","pet bed",
+				"squirrel feeder","scritchy brush","raffle drum","raffle poster","fuzzy dice","racing stripe","picnic blanket",
+				"fairy wand","burlap sack","holiday treats","holiday lights","wrapping paper","sheep shampoo","airship patch",
+				"piggy toy","grape juice","electric torch","pint glass","mouse trap","cheese culture","post card","grow light",
+				"work order","elbow grease","praise for henry","love potion","heat pack","surf board","tanning lotion","cool shades",
+				"firewood basket","cocoa marshmallow","cocoa mix","perfect hot cocoa","everything nice","pinches of snow",
+				"rich chocolate","fishing line","sparkly doodad","shiny bobbdinger","fish sweater","ice saw","photos with elves",
+				"yummy drink","cheers for you","goodbye gift","construction paper","appreciation note","glue stick","glitter jar",
+				"punch bowl","party popper","social guide","large flashlight","sasquatch cologne","heart snowball","paint brush",
+				"red envelope","high five","cake decoration","snug sweater","large water bottle","ducky lift shoes","feather gel",
+				"eau du duck","bread crumbs","anti valentine's day card","cupid cake","cupid party decoration","party game",
+				"like arrow","cupid candies","baby doll trinket","apple core","apple wood stick","cedar mulch bag","fertilizer spike",
+				"string of yarn","twigs and sticks","cotton ball","black rose bouquet","rose bouquet","sour candy","party invitation",
+				"king cake","horse blanket","pond pebble","sheep shampoo","airplane snack","crime scene tape","snowy footprints",
+				"fan letter","aqua microphone","tiny umbrella","welcome lei","tourist map","diving mask","pool raft","tiki torch",
+				"board shorts","surf song","surf report","surf wax","lucky tiki","case of drinks","puka shell necklace","chewy bone",
+				"hawaiian shirt","strong rope","banana bunch","sun visor","tropical cup","water dish","doggie treat","picnic blanket",
+				"water bottle","dog toy","beach bag","morning dew","striped apron","camera memory card","beach sand","green cap",
+				"hiking boots","top hat","magic wand","crystal ball","kiawe log","conch shell","aloha shirt","parrot treat",
+				"swizzle stick","lava bowl","hula skirt","luau invitation","snappy hat","bongo drum","hurricane glass","reef map",
+				"life preserver","shark suit","chum bucket","telephoto lens","paniolo boot","paniolo hat","paniolo lasso",
+				"tropical paint","riding helmet","straight jacket","white glove","clever container","feather duster","to-do list",
+				"label maker","spring cheese","chopping board","hawaii t-shirt","aqua camera","fairy berries","bubbly berries",
+				"framed flower","flower cupcake","finger puppet","egg hunt mask","ice cream cone","cookie pop","flower seed",
+				"red thread spool","tug rope","floating candle","picnic blanket","picnic basket","bug zapper","floating chair",
+				"flower basket","tree twine","romantic music","love sonnet","engagement ring","wedding invitation","bridal bouquet",
+				"bridal veil","volcano mitt","safety helmet","lava blob","weight belt","oyster basket","oyster knife","sun hat",
+				"lemon slice","volcano map","volcano drill","bridal garter","wedding ring","wedding lei","flower petal",
+				"purple orchid seeds","bark sample","soil sample","tree photograph","organic fertilizer","sun dial",
+				"sun box","garden marker","garden hat","flower cart","corsage","gardening glove","flower bed","garden spade",
+				"garden stone","pixie pebble","fairy flute","dowsing rod","crystal seedling","fairy harp","pineapple slice",
+				"fairy mask","fairy gardening tool","magic oat","flower crown","tea pot","aqua lamp","diving helmet","tree seed",
+				"tropical tray","aloha lei","shiny apple","horse caller","hoofprint","rocking horse","stick horse","sonar pinger",
+				"saddle pillow","scarlet begonia","fairy dust","flame lily","fair lute","flower snip","bright ribbon","damsel perfume",
+				"juggling torch","ribbon tape","jester bell","stage puppet","gingerbread oat","tiger lily","veggie skewer",
+				"patio furniture","cargo shorts","sun hat","all terrain shoe","car wax","fuzzy dice","animal guide","tree guide",
+				"tilley hat","insect repellant","sleeping bag","explorer shirt","explorer jacket","fishing pole","lily pad",
+				"peanut jar","bug catcher","tent stake","sewing jar","raincoat","pepper pick-me-up","eggplant peeler",
+				"seed spreader","shrub planter","alpaca lead","alpaca feed","alpaca call","feed trough","wool spool","wool dye",
+				"wool brush","toenail trimmer","anniversary gift","birthday hat","fishing pole","new mitt","football ticket",
+				"gas card","plane ticket","watermelon slice","jump rope","tanning lotion","climbing rope","hula hoop",
+				"walking stick","inner tube","cherry bunch","sushi platter","broken shack","mountain climber","bread crumb",
+				"hiking stick","sashimi piece","sushi piece","maki piece","mud brick","clay stone","hay roof","climbing tent",
+				"climbing boot","climbing axe","maze map","sushi order","blueprint","mountain map","water bucket","dog leash",
+				"game tile","fish hook","tiny carrot","tea candle","tiger track","tabi shoe","water jar","tea spoon",
+				"silk cloth","tea bowl","boat plan","ancient log","dragon drum","dragon oar","dragon breath","panda poem",
+				"bamboo bouquet","chocolate bamboo","sulfur vial","panda brush","panda cologne","saltpeter vial","paper tube",
+				"charcoal","gopher treat","birthday balloon","birthday hat","squash bowl","garden sprinkler","moss roll",
+				"sauce jar","animal pool","pepper paste","field cooler","melon scoop","sunflower basket","water noodle",
+				"beach towel","suntan lotion","swim goggle","squirt gun","pomegranate juice","pink silk","pink orchid",
+				"stained glass","fern leaf","garden shears","red silk","mosaic tile","lotus flower","painting kit",
+				"red berries","firefly net","firefly jar","firefly food","firefly book","firefly globe","firefly sign",
+				"red firefly","green firefly","yellow firefly","energy saving window","jade kettle","lime slice","soy sauce",
+				"wood axe","rolling pin","pine board","double rainbow","fallen star","magic brush","rays of sunshine",
+				"tea cup","solar heater","hot tub component","spy microphone","spy glass","spy camera","fingerprint kit",
+				"notepad","motion light","pest book","space helmet","jetpack","rocket fin","rocket engine","escape pod",
+				"astro drink","gravity boots","space suit","rocket fuel","swiss cowbell","spanish fan","scottish cloth",
+				"falcon feather","green leaves","nesting dolls","riverstone pile","opera costume","opera mask","opera prop",
+				"opera fan","bangu","zoologist hat","baby bear bottle","bear track","maple leaf","champak petal",
+				"teak leaf","lilac sprig","wisteria leaf","empress leaf","paste","paper mache","track surface",
+				"finishing tape","fairy feather","silver horn","forest mask","pixie piccolo","dryad drop","fairy acorn",
+				"sugarplum cupcake","fairy bead","fern frond","dino chow","japanese bee","lady beetle","japanese dragonfly",
+				"swamp pad","lizard net","paper butterfly kite","sand rake","wind chime","jade pebble","tranquil statue",
+				"calming flower","harmony stone","taiko drum","wettering can","lu's parchment","grooming kit","saddle pad",
+				"packed lunch","riding boots","cowboy hat","saddle bag","constable cap","fancy pant","pilot goggle",
+				"pocket watch","gold necklace","constellation guide","hot coco","folding chair","war medallion",
+				"bug spray","driver glove","kangaroo paw","bird of paradise","baby's breath","chinese rain blossom",
+				"red rose","red lantern","blue lantern","yellow lantern","green lantern","fish lantern","dragon lantern",
+				"paper lantern","tennis ball","hoop of fire","treasure key","kung fu book","clown wig","juggling pin",
+				"tightrope","ticket roll","caramel apple","horse feather","ferris wheel chair","motor part",
+				"enchanted board","enchanted nail","fairy sweet","fairy festival plan","solar panel","ruby shard",
+				"fire feather","mahogany seed","orange flower","amber shard","yellow spur","manchineel fruit",
+				"green cap","turquoise leaf","blues shade","indigo dye","violet flower","curtain fabric","treasure map",
+				"measuring cup","chili pot","titanium spoon","chili powder","shredded cheese","face paint","parade flag",
+				"magic bean",
+				
+				//single words
+				"soup","mittens","testimonial","chisel","judge","podium","skis","toboggan","dumbbell","cookbook","resolution",
+				"string","stake","wreath","stockings","nutcracker","cookie","mistletoe","souvenir","suitcase","lantern","stump",
+				"guitar","fiddle","banjo","mandolin","spyglass","nectar","twig","lollipop","thread","bucket","blindfold","hay",
+				"catnip","pacifier","sawhorse","toadstools","storybook","cheque","magnet","lemon","sprinkler","beanie","mug",
+				"spice","snowboard","sugar","high-five-matic","streamer","whooziwhutsit","broom","wok","firecracker","hugs",
+				"mask","beads","doubloons","balloon","alfalfa","surfboard","birdhouse","loveseat","suitcase","passport","clover",
+				"baggage","flippers","binocular","hammock","sandals","cracker","sunscreen","sunglasses","snorkel","nuts","seashell",
+				"sham-rock","leash","backpack","bag ","oar ","toolbox","almanac","swimsuit","collar","gloves","handcuff","acorn",
+				"sugarcube","mop","flutterby","boardshorts","firewood","camera","machete","dynamite","ukulele","rsvp","leaves",
+				"volunteer","mulch","wheelbarrow","boronia","cornflower","dahlia","gerberas","snowdrop","daisy","allium","zinnia",
+				"sponge","shammie","tent","water","telescope","journal","pigarazzi","autograph","voucher","bodyguard","spur",
+				"entourage","interview","fans","cd","autobiography",/*"ticket",*/"lure","cupcake","loom","recliner","calculator",
+				"confetti","fuse","reservation","match","chalk","maze","soda","snorkel","kick board","ladybug","wisdom","balloons",
+				"gochujang","chopsticks","bumblebee","butterfly","friendship","clue","alarm","croissant","sandbottle","sombrero",
+				"dumpling","banana","spaghetti","erhu","camouflage","canteen","horagai","gu-zheng","suona","pipa","sheng","oats",
+				"stirrup","blanket","flashlight","popcorn","sweater","umbrella","lipstick","monocle","blush","bowtie","boots",
+				"foxglove","iris","lavender","cockscomb","platform","unicycle","sprite","tube","ice","crystal","propeller",
+				"anemometer","barometer","wind sock","bean","oregano","celery","paprika","legend","tiara","candle","mooncake",
+			].optimize();
+
+		//merge materials for searching
+		var materials=[].concat(standardMaterials,otherConsumables,craftingMaterials,specialMaterials).optimize();
+		
+		//collectibles for menu
+		var colBerries=["fruit bar","sorbet","preserves","dried berry","berry basket"];
+		var colCitrus=["bubble gum","juicer","sherbet","fruit wedge","cirtus peel"];
+		var colCows=["cow bell","milking bucket","milking stool","milk bottle","more cowbell"];
+		var colFlowers=["corsage","hummingbird","dried petals","butterfly","pollen"];
+		var colGrains=["grindstone","scythe","bran","chaff","flour"];
+		var colSquash=["pumpkin seeds","stuffed pasta","decorative gourds","yerba mate","sitar"];
+
+		//merge collectibles for searching
+		var colTypes=[].concat(colBerries,colCitrus,colCows,colFlowers,colGrains,colSquash).optimize();
+
+		//collectible set names for collecting random items
+		var colGroups=["Berries","Citrus","Cows","Flowers","Grains","Squash"];
+
+		//getting back to animals
+		var calfTypes=[//multiple words
+				"candy cane","green patch","holiday wreath","lunar new year","pink patch","purple valentine","red brown",
+				"western longhorn","yellow patch","mini longhorn","black shorthorn","milking shorthorn","gray jersey",
+				"yellow referee","irish moiled","brown swiss","black angus","frankenstein bride","belgian blue",
+				"holiday light","holiday top hat","snow blading","sport fan","lion dance","frosty fairy","cherry blossom",
+				"fall fairy","welsh black","red heart","maple wreath","red poll","tea party","messy picnic","diving bell",
+				"kelly green","new year","blue patch","cream pie","galician blond","ankole watusie","birthday white park",
+				"white park","art deco","calfstruction worker","frog prince","southern belle","milky way","milking zebu",
+				"milky way","ankole longhorn","bovine belle","real ca milk",
+
+				//single words
+				"autumn","belted","chocolate","chrome","devon","dexter","disco","english","fan","flower","kerry",
+				"gelbvieh","groovy","hereford","highland","cornucopia","criollo","snowflake","santa","telemark","caroling",
+				"robot","simmental","tuscan","valentine","green","vineyard","fall","pineywoods","blue","canadienne","sailor",
+				"shorthorn","b0v1n3-11","jersey","holstein","referee","guernsey","ayrshire","milky","brown","red","randall",
+				"nightmare","skeleton","pumpkin","tourist","fairy","dragonfly","charolais","plush","flannel","pilgrim",
+				"holiday","mohawk","neapolitan","panda","pink","purple","rainbow","icicle","sweater","frozen","judge","baby",
+				"american","crystal","romance","romeo","vosges","cocoa","smitten","rose","carnival","headdress","aloha","luau",
+				"lowline","caddy","cupcake","shark","leprechaun","hibiscus","orchid","lava","longhorn","winged","spring",
+				"cracker","couture","mother","aurochs","natural","bovonia","jester","african","lavender","cloud","carabao",
+				"cotton","bride","flapper","beach","dairy","mongolian","yakow","dragon","yanbian","kimono","balloon","cool",
+				"firefly","ghengis","mayan","cheese","jade","astronaut","spanish","swiss","gaur","aubrac","captain","casanova",
+				"earth","daisy","adventure","javelin","perennial","delicate","aromatic","flowering","budding","hologram","bulb",
+				"fire","scholar","venus","chili","moon","constellation",
+			].optimize();
+		
+		var oxenTypes=["blue ox","grey oxen","red devon ox","baby ox"].optimize();
+		
+		var bullTypes=["pink patch bull","holstein bull","randall bull","irish moiled bull","flower bull","wagyu bull",
+				"groom bull","bull",
+			].optimize();
+		
+		//combines all calves to one array for easy searching
+		var allCalves=[].concat(calfTypes,bullTypes,oxenTypes).optimize();
+				
+		var yakTypes=["gray baby","black baby","baby"].optimize();
+
+		var foalTypes=[//mini
+				"appaloosa mini","black mini","fall fairy mini","cream mini","french mini","mini candycane",
+				"mini party","rainbow mini","stallion mini","valentine mini","vineyard mini","purple mini","fairy mini",
+				"mini bat","buckskin mini","brown pinto mini","harvest mini","chestnut mini stallion","tinsel mini",
+				"frosty mini","nightmare mini","snowflake mini","mini gold bell","frosted fairy mini","romance mini",
+				"black rose mini","black cherry mini","mini rose","carnival mini","green saddle mini","shamrock mini",
+				"aloha mini","orchid mini","mini apaloosa","buckskin mini","spring mini","hibiscus mini horse",
+				"purple fairy mini","natural mini","coral mini","mini blue gypsy","pinto mini","carnation mini",
+				"armored mini","cloud mini","jade mini","american mini","snorkel mini","australian stock",
+				"golden stallion mini","golden mini","firefly mini",
+
+				//pegacorn
+				"purple pegacorn","icy blue pegacorn","candy pegacorn","winter pegacorn","crystal pegacorn","pink pegacorn",
+				"spring pegacorn","black cherry pegacorn","rainbow pegacorn","rose pegacorn","lava pegacorn","gem pegacorn",
+				"cherry pegacorn","emerald pegacorn","glass pegacorn","wind pegacorn","lightning pegacorn","angel pegacorn",
+				"icy fire pegacorn","phoenix pegacorn","fairy pegacorn","magical pegacorn",
+			
+				//pegasus
+				"chrome pegasus","lavender pegasus","mini zebra pegasus","white pegasus","candy corn pegasus","lava pegasus",
+				"nightmare mini pegasus","nightmare pegasus","mini pegasus","maple pegasus","icy blue pegasus","rainbow pegasus",
+				"snowflake pegasus","frozen pegasus","rose pegasus","pegasus pink","headdress pegasus","carnival pegasus",
+				"shamrock pegasus","spring pegasus","athena pegasus","red carnation pegasus","friendship pegasus","pegasus",
+				"aviator pegasus","glitter pegasus","constellation pegasus","fire pegasus","starry pegasus",
+			
+				//unicorn
+				"valentine unicorn","single unicorn","orchid unicorn","pink fairy unicorn","carnation unicorn",
+				"rose unicorn","shamrock unicorn","hibiscus unicorn","cherry unicorn","pearl unicorn","butterfly unicorn",
+				"nightmare blue unicorn","zebra unicorn","skeleton unicorn","dragonfly unicorn","crystal unicorn",
+				"candycane unicorn","golden unicorn","holiday tinsel unicorn","frosted fairy unicorn","aurora unicorn",
+				"candy corn unicorn","clover unicorn","pink unicorn","lady gaga unicorn","mexican unicorn","nightmare unicorn",
+				"purple unicorn","white unicorn","yellow unicorn","white mini unicorn","fairy unicorn","french unicorn",
+				"purple mini unicorn","black mini unicorn","winged unicorn","harvest unicorn","icy blue unicorn",
+				"black unicorn","candycorn unicorn","carnival unicorn","aloha unicorn","spring unicorn","sea shell unicorn",
+				"cloud unicorn","armored unicorn","camellia unicorn","dahlia unicorn","american unicorn","bedazzled unicorn",
+				"rapunzel unicorn","alien unicorn","celtic unicorn","milky way unicorn","coral unicorn","ocean unicorn",
+				"rainbow unicorn","sparky stars unicorn","tiara unicorn","robot unicorn","pirate unicorn","firefly unicorn",
+				"moss unicorn","sun unicorn","starry night unicorn","pink lemonade unicorn","ballerina unicorn","moon unicorn",
+				"fancy pants unicorn","princess unicorn","dream unicorn","star unicorn","neon unicorn","luxe gem unicorn",
+				"gem unicorn",
+
+				//pony
+				"black pony","blue pony","connemara pony","dales pony","dartmoor pony","disco pony","eriskay pony",
+				"exmoor pony","golden pony","merens pony","pinto pony","pottok pony","rainbow pony","shamrock pony",
+				"shetland pony","yakut pony","new forest pony","pink pony","purple pony","fairy pony","harvest pony",
+				"walking pony","candy corn pony","nightmare pony","hackney palomino pony","dragonfly pony","grass pony",
+				"icy blue pony","butterfly pony","tinsel pony","holiday wreath pony","holiday pony","golden bell pony",
+				"snowflake pony","valentine pony","rose pony","smitten pony","black cherry pony","beaded pony","noma pony",
+				"headdress pony","lucky pony","snorkeling pony","aloha pony","candy pony","daffodil pony","princess pony",
+				"pink carnation pony","galloway pony","queen pony","java pony","mongolian pony","firefly pony","balloon pony",
+				"rapunzel pony","kerry bog pony","sea star pony","boer pony","rubber pony",
+				
+				//multiple words
+				"asian wild","bedazzled","black gypsy","black percheron","black shire","black stallion",
+				"blue mane gypsy","blue ponytail","brown gypsy","candy cane","candy corn","cleveland bay","jet set",
+				"clydesdale stallion","cream draft","french percheron","golden stallion","irish cob","white shire",
+				"lunar new year","pink gypsy","pink ponytail","pink stallion","purple bedazzled","purple ponytail",
+				"purple stallion","rainbow stallion","red pinto","royal steed","snow stallion","swiss warmblood",
+				"white mustang","white thoroughbred","american quarter","irish hunter","gypsy stallion","new year",
+				"white andalusian","fairy pink","black n white","arabian stallion","friesian stallion","frosty fairy",
+				"new england pinto","morgan stallion","bay andalusian","spotted appaloosa","fire skeleton","high kick",
+				"black belgian","cream stallion","pink saddled","candy corn stallion","trotter stallion","black arabian",
+				"peruvian","black ponytail","glow skeleton","flowered","black dartmoor","hollow fairy","maple leaf",
+				"autumn stallion","fall lantern","spotted draft","black paint","palomino quarter","jingle bells",
+				"silver bell","fairy zebra","sugar plum fairy","white arabian","poinsettia","white snow fantasy",
+				"black snow fantasy","a winter rug","icy pink","green caroling","dark cherrasus","dark cherrycorn",
+				"black cherry","hawaiian shirt","rainbow body","pink aloha stallion","orchid stallion","dapple gypsy",
+				"open road","candycane zebra","cotton candy","ice horse","bashkir curly","spring bonnet","may fair",
+				"postier brenton","blue quarter","yellow rose","gypsy rainbow","gypsy daisy","mother's day",
+				"spanish mustang","camargue stallion","art deco","ice cream","asian war","blue samurai","orlov trotter",
+				"dutch draft","sancai ii","double rainbow","yellow butterfly","frog prince","dutch warmblood",
+				"black tennessee","rocky mountain","florida cracker","spotted saddle","inner tube","irish sport",
+				"plum blossom","summer night","sea star","brumby butler","wild burro","australian stock","bubble gum",
+				"tie dye","pink fairy stallion","red rose","purple fairy","moon steed",
+
+				//single words
+				"appaloosa","breton","brown","black","white","gypsy","pinto","red","shire","morgan","fairy","zesty",
+				"mustang","party","percheron","grey","green","forest","camargue","camarillo","carnival","charro","chrome",
+				"clown","clydesdale","buckskin","falabella","fjord","hackney","haflinger","hanoverian","galiceno","icelandic",
+				"king","knight","mongolian","paint","palouse","royal","saddle","silver","thoroughbred","valentine","pony",
+				"welsh","vineyard","american","maremmano","standardbred","quarter","draft","andalusian","nightmare","pseudocorn",
+				"spectator","brumby","trakehner","tennessee","batwing","comtois","apple","dapplegray","pumpkin","skeleton",
+				"dragonfly","autumn","canadian","butterfly","reindeer","santa","harvest","plush","icy","armored","holiday","dole",
+				"ornament","snowflake","wreath","caroling","glittering","tinsel","rainbow","nutcracker","disco","crystal","bird",
+				"dragon","romance","cocoa","smitten","rose","auxois","shamrock","beaded","headdress","aloha","cremello","hawaiian",
+				"princess","hibiscus","cherry","coral","lucky","chocolate","pearl","lava","friesian","mustache","caveman",
+				"prehistorical","sundae","gem","banker","bunny","andravida","spring","sun","moon","yonaguni","akhal-teke",
+				"natural","leopard","carnation","fancy","farmer","quagga","seashell","stargazer","suffolk","reitpony","cloud",
+				"lavender","miniature","firefly","racer","bride","settling","camellia","fishing","hokkaido","kiang","kulan",
+				"przwalski","samurai","summer","tropical","sunflower","jade","dream","pinata","noriker","amethyst","balloon",
+				"lotus","terracotta","garden","alexandrite","fire","kimono","friendship","rainforest","nomadic","mayan",
+				"bumblebee","star","vineyard","inspector","chateau","nokota","moyle","magnolia","robot","roman","racking",
+				"chincoteague","kabardin","lokai","celtic","vanner","champion","dosanko","azteca","sea star","masquerade",
+				"murgese","waler","water","packhorse","flower","wild","earth","endurance","outback","perennial","delicate",
+				"neon","aromatic","flowering","bulb","budding","glitter","circus","safari","prism","crayon","rocking","jupiter",
+				"apollo","celestial","wizard","pirate","student",
+			].optimize();
+		
+		var assTypes=["mini donkey","toy soldier donkey","african donkey","single donkey","spring donkey","mistle toe donkey",
+				"trick or treat donkey","mule","summer donkey","donkey"].optimize();
+		
+		//combines all foals to one array for easy searching
+		var allFoals=[].concat(foalTypes,assTypes).optimize();
+
+		var horseTypes=["brown","gray","grey","flowered","cream draft","red pinto","red ","candy corn",
+				"white snow fantasy","black snow fantasy","black","open road","jet set","buckskin mini",
+				"sundae","farmer","fancy","postier brenton","nomadic","firefly"].optimize();
+
+		var duckTypes=["belted","party","ugly","red-billed","red","brown","yellow","aztec","blue","campbell","cayuga",
+				"chrome","crested","female mandarin","male mandarin","fulvous whistling","gadwell","goldeneye","golfer",
+				"green mallard","green winged teal","indian runner","kungfu","longtail","muscovy","pekin","pochard",
+				"princess","goldeneye","rainbow","robin","royal guard","ruddy","scoter","tufted","valentine","warder",
+				"wizard","wood","orange","banjo","fighting irish","white grape"].optimize();
+
+		var ducklingTypes=["ugly","red","brown","yellow","blue"].optimize();
+
+		var pigTypes=["poolside","black","hot pink","ossabaw","pink pot belly","strawberry","white","ghost","snow flake"];
+
+		var sheepTypes=["miner","mouflon","polka dots","red","scuba","flower","clover","shamrock","spaghetti","vineyard",
+				"scared","luv","thank","sunny","schooled","caroling","star bright","smitten","dwarf blue","white ninja",
+				"connoisseur"].optimize();
+
+		var cowTypes=["brown","chocolate","dexter","disco","fan","groovy","irish moiled","longhorn","pink patch",
+				"pink","purple valentine","purple","yellow patch","green patch","milking shorthorn","pumpkin",
+				"flannel","caroling","smitten","red","mini longhorn","ghengis"].optimize();
+				
+		var eggTypes=["white","brown","black","cornish","golden","rhode island red","scots grey","rainbow","candycane",
+				"english","party","marans","faverolles","araucana","buttercup","candycorn","apple","fall fairy","new year",
+				"tourist","snowflake","crystal","cupid","love","carnival","headress","cochin","aloha","green silkie","spa",
+				"hawaiian","shamrock","ali-h3n-12","lava","sabertooth","strawberry fairy","bonnet","japanese bantam","wizard",
+				"golden polish","mother","bresse","mystery cluck rogers","junglefowl","mandolin","jazz","hiking","zen","beach",
+				"rocket","chabo","present","fortune cookie","american","orange","fairy tale","barnevelder","groundskeeper",
+				"cluck rogers","gymnastics","jet pack","captain","masquerade","paradise","meditating","flowering","budding",
+				"bulb","aromatic","delicate","perennial","adventure","sumo","environmentalist","student","chili","ceres",
+			].optimize();
+				
+		var eggTypes2=["white bunny","yellow bunny","pink bunny","purple bunny","blue bunny","gold bunny"];
+				
+		//two word or common animal catch all texts
+		var otherAnimals=["pink lamb","baby lamb","dorking chicken","persian cat","baby turkey",
+				"clumsy reindeer","yellow sow","boer goat","white kitty","white-tailed buck","nightmare stallion",
+				"himalayan kitty","black kitten","turtle","clover rabbit","baby bourbon turkey","english spot rabbit",
+				"rhode island red chicken","reindeer","dutch rabbit","poncho llama","white turkey","black rabbit",
+				"white goose","white llama","red goat","mouflon goat","clover chicken","red toggenburg goat","penguin",
+				"candycorn unicorn","black pony","white mustang","arctic rabbit","winter fox","mistletoe penguin",
+				"winter polar bear","elf penguin","red nose sheep","caroling goat","nutcracker stallion","aurora cat",
+				"aurora unicorn","light blue pony","holiday st bernard","snow leopard","smitten stallion","diamond ewe",
+				"gold floppy bunny","pink loppy bunny","purple puffy bunny","white daisy bunny","yellow chubby bunny",
+				"blue lily bunny","rainbow body mustang","large parrot","big blue tang fish","lesser flamingo",
+				"striped possum","treasure seagull","river float pug","accountant dog","spa bear","safari bear",
+				"blue dot elephant","ice cream dragon","hopper from dish","spotted lop rabbit","halloween tutu hippo",
+				"tiki mask turtle","american bobtail","american bulldog","marathon tortoise","marathon hare","farm goose",
+				"harbor seal","flower bull","ringtail","red giraffe","blue winged teal","merle corgi","brachiosaurus",
+				"carnotaurus","chateau stallion","vineyard steed","red grape rabbit","gardener chicken","gallimimus",
+				"coelophysis","chinchilla","dream unicorn","rose dragon","summer donkey","zebra giraffe","tennis retriever",
+				"crown of thorns starfish","juggler monkey","navy fuschia spotted turtle",
+			].optimize();
+				
+		//baby animals that aren't calves or foals
+		var babyAnimals=["baby goat","baby groundhog","red wolf","coyote pup","wolf cub","brown kitten","baby alpaca","white wolf",
+				"baby penguin","kodiak cub","baby turkey","baby zebra","andean bear cub","baby valentine giraffe","black bear cub",
+				"clever cub","lil pink peacock","romeo cub","trick or treat bear","jaguar cub","baby tiger","siberian tiger cub",
+				"nutcracker ballerina cub","panther cub","white lion cub","baby bobcat","baby monkey","flower mane cub","baby seal",
+				"spring puppy","bear cub","brown baby elephant","baby elephant","brown kitten","deer fawn","red fox kit","gray fox kit",
+				"lion cub"].optimize();
+				
+		var avatar=["spontaneous adventurer","casual traveler","pampered princess","practical lounger","sensible sunbather",
+				"outdoor explorer","wild spirit","teddy bear","koala","cat","hamster","dog","monkey","lion","tiger"].optimize();
+				
+		var dnaTypes=["red","blue","green","orange","yellow","purple"].optimize();
+		var gemTypes=["purple amethyst","white diamond","green emerald","red ruby","blue sapphire"].optimize();
+		
+		var bulbTypes=["anemone","damask rose","fire sunflower","fire weed","orange tulip","pink boat orchid","purple carnation",
+				"purple petunia","soho oriental poppy","tiger lily","white daisy","white lily","yellow pansy","pink hollyhock",
+				"flame azalea","fairy flower","golden rose","pyramidial orchid","kerry lily","groundsel","pink gladiolas",
+				"purple aster","cardinal flower","hydrangea","purple primrose","desert rose","royal bluebell","golden wattle",
+				"pink daisies","yellow gerbera","red rose","orange zinnia","yellow buttercup","pink tulip","bird of paradise",
+				"sprite flower","wild indigo","lavender","pink carnation","lady slipper","impala lily","leopard orchid",
+				"african daisies","red clover","golden lotus","magical flower",
+			].optimize();
+				
+		//contains the main list of "other" things you can collect
+		//decorations by event
+		var decorApples=["autumn fireplace","harvest gnome","fall flowerbed","apple barrel"];
+		
+		var decorHalloween=["pumpkin topiary","candied gnome","skele-scarecrow","bat tree","pumpkin house",
+				"mini jack-o'lantern","pumpkin terrier","halloween pond","headless horseman gnome","cobwebbed tree"];
+		
+		var decorThanksgiving=["harvest surprise","pilgrim gnome","harvest fountain","mayflower",
+				"railroad tie bench","bare tree decoration","iron fire pit","corn maze fence"];
+		
+		var decorChristmas=["silver nutcracker","holly arch","holiday bear","ice sculpture","snowflake pole",
+				"snow drift","horse snowglobe","lighted hedge","caroling snowman","teddy bear snowglobe","giant candy",
+				"white soldier","icy snowflake","frosty snowflake","blue soldier","silver ornament","gold ornament",
+				"gold soldier","cocoa bear","snow drift","snow pile","gold nutcracker","cream bear","luminary fence",
+				"frozen fountain","string lights","holly fence"].optimize();
+		
+		var decorHolidayHearth=["forest snowglobe","holiday carousel","gift giving gnome","north pole gnome","cupcake factory"];
+		
+		var decorMagicSnowman=["aurora fence","starry pond"];
+		
+		var decorWinterWonderland=["candy cane decoration","single candle","ice cube","lighted fence","holiday planter",
+				"giant snowflake 1","reindeer balloon","snowy track i","snowy track ii","snowy track iii","snowy track iv",
+				"snowy track v","snowy forest","winter cafe","santa's sleigh","gift mountain","winter cottage","ice castle",
+				"toy factory"];
+		
+		var decorValentines=["red heart hay","yellow rose stand","fancy carriage","giant teddy","valentine ram",
+				"pecking ducks","3 hearts fountain","pink patch cow","chocolate fountain","eiffel tower","pink swan",
+				"i love you stand","i love you sign","xoxo sign","purple hay bale","heart teddy","caramel bear",
+				"fuchsia greenery","pink greenery","provencal pot","fancy topiary","flax plant","love balloon",
+				"heart rose bed","swan pond"].optimize();
+				
+		var decorStPatty=["kelly green hay","clover gnome","lucky fountain","green lighthouse","spring flower cart",
+				"spring pond","shamrock castle","rainbow clover bridge","shamrock streetlight","irish pub"];
+				
+		var decorEaster=["mystery egg","bunny gnome","gilded egg","dutch windmill","pastel hay bale",
+				"flower bucket","little wagon","spring flowers","milk crate","azalea","stone archway",
+				"spring balloon arch","weather vane","fruit crate","bouncing horse","waffle fence",
+				"chocolate syrup waterfall","ice cream gnome"];
+				
+		var decorShovels=["mole","crystal rock","cave gnome","antique tractor"];
+		
+		var decorSchoolSupplies=["haiti flag","student gnome","tap tap bus","school seesaw","school house"];
+		
+		var decorTuscanWedding=["wedding cake","pig high art","apollo butterfly","bella fountain","leaning tower"];
+		
+		var decorWishingWell=["nightingale","leprechaun gnome","irish cottage","double-deck tractor"];
+		
+		var decorFlowers=["spring arch","flower fountain","flower tower"];
+		
+		var decorSandCastle=["beach umbrella","beach chair","beach hut","lifeguard tower"];
+		
+		var decorFV2Birthday=["doghouse","cowprint balloon arch","lamppost","blue bird","bird bath fountain","garden shelter",
+				"bicycle planter","ivy archway","bench planter","FV haybale"];
+				
+		var decorOther=["chef gnome","bacchus gnome","spa gnome","japanese relief flag","elf gnome","fireworks","english hat",
+				"hanging flowers","japanese trellis","pot of english rose","aster flower fence","flowerbed","picnic set",
+				"white willow","animated butterfly","green gazing ball","small pond","french air balloon","lunchbox",
+				"parisian bench ii","flower truck","lighted tiki torch","hanging flower","surfboard","giant maracija",
+				"hydrangea","mangrove tree","waiter gnome","outdoor spa pool","swimming hole","blue lawn chair",
+				"picnic gnome","coral fence","tiki totem gnome","neon building","suburban cottage","artist gnome",
+				"jock gnome","yellow mums","pink mums","sakura flower","yellow dome","dragon arch","zen gnome","peeking ducks",
+				"japanese trellis","enchanted tree ii","valet gnome","vintnor gnome","oak barrel rack","grape crushing barrel",
+				"jumping fountain","fairy rose","warrior i","rainbow barrel","bbq gnome","fruit basket gnome",
+				"arborist flag","farmhand flag"];
+				
+		// merge decorations for searching
+		var decorTypes=[].concat(decorHalloween,decorThanksgiving,decorChristmas,decorValentines,decorStPatty,
+				decorEaster,decorWinterWonderland,decorShovels,decorSchoolSupplies,decorTuscanWedding,
+				decorWishingWell,decorFlowers,decorSandCastle,decorFV2Birthday,decorApples,decorOther,
+				decorHolidayHearth,decorMagicSnowman).optimize();
+
+		//this animal catchall is for words that already appear earlier, and so must be searched AFTER horses, foals, materials or decorations
+		var animalCatchalls=["chicken","turkey","llama","cow","horse","sheep","pig",
+				"rabbit","boar","duckling","duck","foal","calf","ram","raccoon","porcupine","goat"].optimize();
+
+		//catchall for other items not listed as materials
+		var otherWords=["lucky penn","raffle ticket"];
+
+		//dynamically build accept texts from the arrays above
+		var t1 = createAccTextFromArray([].concat(otherWords,decorTypes,materials),"","");
+		var t2 = createAccTextFromArray(allCalves,"adopt_calf"," Calf");
+		var t3 = createAccTextFromArray(allFoals,"adopt_foal"," Foal");
+		var t31 = createAccTextFromArray(yakTypes,"adopt_yak"," Yak");
+		var t4 = createAccTextFromArray(horseTypes,"adopt_horse"," Horse");
+		var t5 = createAccTextFromArray(bushelTypes,"bushel_"," Bushel");
+		var t6 = createAccTextFromArray(flowerTypes,"perfect_"," Bunch");
+		var t7 = createAccTextFromArray(treeTypes,"tree_"," Tree");
+		var t8 = createAccTextFromArray(treeTypes2,"tree_giant"," Tree (Giant)");
+		var t34 = createAccTextFromArray(treeTypes3,"tree_bonsai"," Tree (Bonsai)");
+		var	t9 = createAccTextFromArray(craftShop,"join"," Team");
+	//	var t9 = createAccTextFromArray(craftTypes,"sample_"," Sample");
+		var t10 = createAccTextFromArray(colTypes,"col_"," Collectible");
+		var t11 = createAccTextFromArray(colGroups,"colX_"," Collectible");
+		var t12 = createAccTextFromArray(duckTypes,"adopt_duck"," Duck");
+		var t13 = createAccTextFromArray(ducklingTypes,"adopt_duckling"," Duckling");
+		var t14 = createAccTextFromArray(pigTypes,"adopt_pig"," Pig");
+		var t15 = createAccTextFromArray(sheepTypes,"adopt_sheep"," Sheep");
+		var t30 = createAccTextFromArray(sheepTypes,"adopt_ewe"," Ewe");
+		var t16 = createAccTextFromArray(cowTypes,"adopt_cow"," Cow");
+		var t17 = createAccTextFromArray(eggTypes,"egg_"," Mystery Egg");
+		var t18 = createAccTextFromArray([].concat(otherAnimals,babyAnimals,animalCatchalls),"adopt_","");
+		var t19 = createAccTextFromArray(buildings,"mat_"," Parts");
+		var t20 = createAccTextFromArray(questItems,"send","");
+		var t32 = createAccTextFromArray(eggTypes2,"egg_"," Egg");
+		var t33 = createAccTextFromArray(avatar, "costume_"," Costume");
+		var t35 = createAccTextFromArray(dnaTypes,"dna_"," DNA Strand");
+		var t37 = createAccTextFromArray(gemTypes,"gem_"," Gem");
+		var t36 = createAccTextFromArray(bulbTypes,"bulb_"," Bulb");
+
+		//use t21 below to create your own accTexts for non-arrayed items or for other special needs
+		var t21 = {
+			sendmat:"Material",sendbushel:"Bushel",order:"Unknown Bushel Order",sendhelp:"Help",bushel_random:"Random Bushel",
+			grabbag:"Grab Bag","100xp":"XP",adopt_lambewe:"Lamb (Ewe)",adopt_lambram:"Lamb (Ram)",tree_ornament2:"Ornament Tree II",
+			wanderingstallion:"Wandering Stallion",adopt_lamb:"Lamb (Unknown Sex)",adopt_piglet:"Piglet", tree:"Unknown Tree",
+			luckypenn:"Lucky Penny",bushel:"Unknown Bushel",perfectbunch:"Perfect Bunch",pollinated:"Unknown Seeds",sendbasket:"Basket",
+			adopt_ramfloweredgreen:"Flowered Green Ram",sample:"Unknown Level Sample",sample1:"Sample Level 1-20",sample2:"Sample Level 21-40",
+			sample3:"Sample Level 41-80",sample4:"Sample Level 81-100",sample5:"Sample Level 100+", schoolsupp:"School Supply",
+			wildlife_rare:"Wildlife Baby (Rare)",wildlife_common:"Wildlife Baby (Common)",petrun_common:"Mystery Baby (Common)",
+			petrun_rare:"Mystery Baby (Rare)",zoo_common:"Zoo Baby (Common)",zoo_rare:"Zoo Baby (Rare)",aviary_rare:"Egg (Rare)",
+			aviary_common:"Egg (Common)",livestock_common:"Mystery Baby (Common)",livestock_rare:"Mystery Baby (Rare)",
+			sendwishlist:"Wishlist",sendfeed:"Animal Feed",sendbottle:"Bottle",arctic_common:"Winter Baby (Common)",
+			arctic_rare:"Winter Baby (Rare)",unknown_baby:"Unknown Baby",adopt_holidaystbernard:"Holiday St. Bernard",
+			sea_common:"Water Baby (Common)",sea_rare:"Water Baby (Rare)",jade_common:"Jade Baby (Common)",jade_rare:"Jade Baby (Rare)",
+			ocean_common:"Jade Water Baby (Common)",ocean_rare:"Jade Water Baby (Rare)",join:"Unknown Crafting Team",
+		};
+
+		var t22 = createAccTextFromArray(seedTypes,"seeds_"," Seeds");
+		var t23 = createAccTextFromArray(bushelTypes,"polseeds_"," Pollinated Seeds");
+		var t29 = createAccTextFromArray(bushelTypes,"order_"," Bushel Orders");
+
+		//use t27 to repair accTexts for screwy test texts before converting to accept texts
+		var t27 = {"polseeds_purplepopp":"Purple Poppy Pollinated Seeds",
+			"polseeds_orangedais":"Orange Daisy Pollinated Seeds",
+			"polseeds_electriclil":"Electric Lily Pollinated Seeds",
+			"polseeds_daylil":"Daylily Pollinated Seeds",
+			"polseeds_goldenpopp":"Golden Poppy Pollinated Seeds",
+			"polseeds_chromedais":"Chrome Daisy Pollinated Seeds",
+			"polseeds_sunpopp":"Sun Poppy Pollinated Seeds",
+			"bushel_purplepopp":"Purple Poppy Bushel",
+			"bushel_orangedais":"Orange Daisy Bushel",
+			"bushel_electriclil":"Electric Lily Bushel",
+			"bushel_daylil":"Daylily Bushel",
+			"bushel_goldenpopp":"Golden Poppy Bushel",
+			"bushel_chromedais":"Chrome Daisy Bushel",
+			"bushel_sunpopp":"Sun Poppy Bushel",
+			"polseeds_purplepopp":"Purple Poppy Perfect Bunch",
+			"polseeds_orangedais":"Orange Daisy Perfect Bunch",
+			"polseeds_electriclil":"Electric Lily Perfect Bunch",
+			"polseeds_daylil":"Daylily Perfect Bunch",
+			"polseeds_goldenpopp":"Golden Poppy Perfect Bunch",
+			"polseeds_chromedais":"Chrome Daisy Perfect Bunch",
+			"polseeds_sunpopp":"Sun Poppy Perfect Bunch",
+			"order_purplepopp":"Purple Poppy Bushel Order",
+			"order_orangedais":"Orange Daisy Bushel Order",
+			"order_electriclil":"Electric Lily Bushel Order",
+			"order_daylil":"Daylily Bushel Order",
+			"order_goldenpopp":"Golden Poppy Bushel Order",
+			"order_chromedais":"Chrome Daisy Bushel Order",
+			"order_sunpopp":"Sun Poppy Bushel Order",
+		};
+
+		//create the actual attachment
+		var attachment={
+			appID:thisApp,
+			alias:'FV',
+			hrefKey:'key',
+			name:'FarmVille',
+			thumbsSource:'farmville.zgncdn.com',
+			flags:{httpsTrouble:true,requiresTwo:false,skipResponse:false,alterLink:true,postMessageCompatible:true}, //<-note the new flag here
+		/*	icon:"http://photos-g.ak.fbcdn.net/photos-ak-snc1/v43/144/102452128776/app_2_102452128776_416.gif", //corncob
+			icon:"http://fbcdn-photos-a.akamaihd.net/photos-ak-snc1/v85005/144/102452128776/app_2_102452128776_343.gif", //duckhead
+			icon:"http://photos-g.ak.fbcdn.net/photos-ak-snc1/v85005/144/102452128776/app_2_102452128776_3994.gif", //strawberry
+			icon:"http://photos-g.ak.fbcdn.net/photos-ak-snc1/v85005/144/102452128776/app_2_102452128776_3606.gif", //chicken
+			icon:"http://photos-g.ak.fbcdn.net/photos-ak-snc1/v85005/144/102452128776/app_2_102452128776_162286141.gif", //coconut
+			icon:"http://photos-g.ak.fbcdn.net/photos-ak-snc1/v85005/144/102452128776/app_2_102452128776_479416909.gif", //piggy
+			icon:"http://photos-g.ak.fbcdn.net/photos-ak-snc7/v85005/144/102452128776/app_2_102452128776_514042832.gif", //sheep
+			icon:"http://photos-g.ak.fbcdn.net/photos-ak-snc7/v85005/144/102452128776/app_2_102452128776_188884871.gif", //goat
+			icon:"http://fbcdn-photos-a.akamaihd.net/photos-ak-snc7/v85005/144/102452128776/app_2_102452128776_658246637.gif", //orchid
+			icon:"http://photos-g.ak.fbcdn.net/photos-ak-snc7/v85005/144/102452128776/app_2_102452128776_1802400414.gif", //watermelon
+			icon:"http://photos-g.ak.fbcdn.net/photos-ak-snc7/v85005/144/102452128776/app_2_102452128776_810647710.gif", //tractor
+			icon:"http://photos-g.ak.fbcdn.net/photos-ak-snc7/v85005/144/102452128776/app_2_102452128776_1575157638.gif", //barn
+			icon:"http://photos-g.ak.fbcdn.net/photos-ak-snc7/v85005/144/102452128776/app_2_102452128776_724451824.gif", //panda
+			icon:"http://photos-g.ak.fbcdn.net/photos-ak-snc7/v85005/144/102452128776/app_2_102452128776_1903979455.gif", //flower
+			icon:"http://photos-g.ak.fbcdn.net/photos-ak-snc7/v85005/144/102452128776/app_2_102452128776_981457788.gif", //flower2
+			icon:"http://photos-g.ak.fbcdn.net/photos-ak-snc7/v85005/144/102452128776/app_2_102452128776_732411100.gif", // xp
+			icon:"http://photos-g.ak.fbcdn.net/photos-ak-snc1/v85005/144/102452128776/app_2_102452128776_4389.gif", //fv
+			icon:"http://photos-g.ak.fbcdn.net/photos-ak-snc7/v85005/144/102452128776/app_2_102452128776_302226724.gif", //barn2
+			icon:"http://photos-g.ak.fbcdn.net/photos-ak-snc7/v85005/144/102452128776/app_2_102452128776_1935537816.gif", //fv2
+			icon:"http://photos-g.ak.fbcdn.net/photos-ak-snc7/v85005/144/102452128776/app_2_102452128776_1452563179.gif", //cow
+			icon:"http://photos-g.ak.fbcdn.net/photos-ak-snc7/v85005/144/102452128776/app_2_102452128776_81659645.gif", //tractor2
+		*/	icon:"http://photos-g.ak.fbcdn.net/photos-ak-snc7/v85005/144/102452128776/app_2_102452128776_1457410780.gif", //fv3
+		desc:"FarmVille Sidekick",
+			
+			//code for altering link destinations before processing (unique to FV at this time)
+			alterLink:{
+				//find in href
+				find:'next=gifts.php%3FgiftRecipient',
+				
+				//replace with, (note the {%1} in the replacement)
+				replace:'next=gifts.php%3FselectedGift%3D{%1}%26giftRecipient',
+				
+				//words in the post body text
+				words:["nail","wooden board","brick","honeybee","vehicle part","smoker","beeswax","blanket","bottle",
+					"horseshoe","harness","training their puppy","kibble","watering can","shovels","concrete","hammer",
+					"twine","tin sheet","hinge","screwdriver","wrench","pipe","clamps","stone","log","steel beam","wire",
+					"water pump","painted wood","shrub","grazing grass","hay bundle","fence post","special delivery",
+					"animal feed","saddle","bridle","punch","snacks","paint","red beam","screw","aluminum siding",
+					"candy cane beam","conifer dust","ice post","rail spike","rail tie","coal","pickaxe","hair dryer",
+					"milk and cookies","gps","silver bell","holiday lights","reindeer treat","holiday cheer","snow brick",
+					"snowflake","ice nail","snow globe","ice board","frozen beam","white paste","white overalls",
+					"light plywood","black light","blue roller","white paper","teaching their dog","wood stain",
+					"scaffolding","masking tape","brush","baby blanket","salt lick","sod piece","wooden peg","feed bucket",
+					"water pail","grass seed","raw wood","baby carrot bunch","bunny bed","bunny tunnel","branch ball",
+					"wood block","hutch wire","clamp","wood glue","sand paper","awning","basket","price card","twig",
+					"potting soil","daffodil","tiny window","toadstool","garden fence","chocolate brick","gumdrop accent",
+					"gingerbread siding","lollipop lamp","marshmallow mortar","cotton candy insulation","mini boulder",
+					"turf roll","mulch soil","tropical cup","swim suit","beach sandal","lily pad","fishing pole","lure",
+					"fuel pipe","level gauger","steel sheet","small axe","boat hook","wheelbarrow","mineral infusion",
+					"steam","bed rock","stone pillar","terra cotta","hanging incense","reed thatch","clay brick",
+					"bamboo rail","fill dirt","cement","metal post","mystery bulb","floating rock","sparkle seed",
+					"magic water","wood plank","sail","rigging","skimmer","water bucket","leaf net","chew toy",
+					"dog bed","tennis ball","pacifier","baby mobile","cloud brick","enchanted bamboo","hovering charm",
+					"scientific scale","massage stone","buffet tray","drift wood","java fern","research paper",
+					"tree incubator","cloning solution",
+
+					"nursery barn","horse paddock","cow pasture","livestock pen","wildlife habitat","aviary","pet run",
+					"zoo","winter animal pen","crafting silo","sheep pen","pig pen","orchard","garage","duck pond",
+					"horse stable","beehive","cove","winter wonderland train station","santa's sleigh","combine",
+					"count duckula's castle","harvest hoedown","winter water wheel","winter pasture","winter paddock",
+					"ice palace","crop mastery billboard","winter livestock pen","winter aviary","romantic carriage",
+					"winter pet run","winter zoo","animal mastery billboard","tree mastery billboard","baby playpen",
+					"baby bunny hutch","recipe mastery billboard","market stall","gnome garden","candy castle",
+					"aquarium","grove","beach resort","fishing hole","gas pump","hot spring","mountain palace",
+					"jade habitat","jade aviary","jade paddock","jade pasture","jade playpen","jade aquarium",
+					"dino lab","jade wildlife pen","jade pet run","jade gnome garden","jade zoo","floating waterfall", 
+					"imperial shipyard","swimming pond","sunshine doghouse","floating castle","turtle pen",
+					"farmhand center","arborist center"].optimize(),
+				
+				//change {%1} above to the value below based on found "word" above
+				//the values below should be the "code" for the gift item to send
+				conversionChart:{
+					nail:"nail",woodenboard:"woodenboard",honeybee:"beehive_bee",vehiclepart:"vehiclepart",
+					brick:"brick",smoker:"smoker",beeswax:"beeswax",blanket:"blanket",bottle:"bottle",horseshoe:"horseshoe",
+					harness:"harness",trainingtheirpuppy:"consume_treat",kibble:"consume_kibble",wateringcan:"wateringcan",
+					shovel:"shovel_item_01",concrete:"concrete",hammer:"hammer",twine:"crafting_twine",tinsheet:"tinsheet",
+					hinge:"hinge",screwdriver:"screwdriver",wrench:"wrench",pipe:"pipe",clamp:"clamp",stone:"stonepart",
+					log:"logpart",steelbeam:"steelbeampart",wire:"component_wire",waterpump:"component_waterpump",
+					paintedwood:"component_paintedwood",fencepost:"component_fencepost",grazinggrass:"component_grazinggrass",
+					haybundle:"component_haybundle",shrub:"component_shrub",animalfeed:"animalfeedtrough_feed",
+					specialdelivery:"socialplumbingmysterygift",saddle:"component_saddle",bridle:"component_bridle",
+					punch:"part_punch",snacks:"part_snacks",paint:"part_paint",redbeam:"redbeam",screw:"screws",
+					aluminumsiding:"aluminumsiding",candycanebeam:"candy_cane_beam",coniferdust:"ww_fairy_dust",
+					icepost:"ww_ice_post",railspike:"railspikepart",railtie:"railtiepart",coal:"coalpart",pickaxe:"pickaxepart",
+					hairdryer:"hairdryerpart",milkandcookies:"task_milkandcookies",gps:"task_gps",silverbell:"task_jinglebells",
+					holidaylights:"task_holidaylights",reindeertreat:"task_reindeertreat",holidaycheer:"task_holidaycheer",
+					goo:"goo",hauntedbrick:"haunted_brick",knockers:"door_knockers",belt:"feedbelt",sack:"feedsack",scoop:"feedscoop",
+					snowbrick:"parts_snowbrick",snowflake:"parts_magicsnowflake",icenail:"parts_icenail",snowglobe:"parts_snowglobe",
+					iceboard:"parts_iceboard",frozenbeam:"parts_frozenbeam",whiteoveralls:"part_painters_overalls",
+					lightplywood:"part_sheet_of_plywood",blacklight:"part_floodlight",whitepaper:"part_roll_of_paper",
+					blueroller:"part_paint_roller",whitepaste:"part_bucket_of_paste",love:"parts_love",flowertrim:"parts_flowertrim",
+					carriagelamp:"parts_carriagelamps",horsetreat:"parts_horsetreats",fancychocolate:"parts_fancychocolates",
+					cozyblanket:"parts_cozyblanket",darkplywood:"task_sheet_of_plywood_recolor",greenlight:"task_floodlight_recolor",
+					greenpaper:"task_roll_of_paper_recolor",orangeoveralls:"task_painters_overalls_recolor",
+					redroller:"task_paint_roller_recolor",redpaste:"task_bucket_of_paste_recolor",teachingtheirdog:"consume_treat",
+					woodstain:"task_woodstain",maskingtape:"task_maskingtape",scaffolding:"task_scaffolding",
+					brush:"part_brush",saltlick:"part_saltlick",babyblanket:"part_babyblanket",sodpiece:"part_sod",
+					rawwood:"part_raw_wood",feedbucket:"part_feed_bucket",waterpail:"part_water_pail",woodenpeg:"part_wood_peg",
+					grassseed:"part_grass_seed",babycarrotbunch:"part_babycarrotbunch",bunnybed:"part_bunnybed",
+					branchball:"part_branchball",woodblock:"part_woodblock",hutchwire:"part_hutchwire",bunnytunnel:"part_bunnytunnel",
+					clamps:"part_clamps",woodglue:"part_wood_glue",sandpaper:"part_sandpaper",babyfish:"part_babyfish",
+					oceanrock:"part_coral",filter:"part_filters",buoy:"part_buoys",smallcrowbar:"feedsmallcrowbar",
+					largecrowbar:"feedcrowbar",smallfishingnet:"feedsmallnet",largefishingnet:"feedfishingnet",
+					volcanomonitor:"part_volcanicmonitor",stonycoralpiece:"part_stonycoral",awning:"stall_awning",
+					basket:"stall_basket",pricecard:"stall_pricecard",toadstool:"part_toadstool",gardenfence:"part_gardenfence",
+					daffodil:"part_daffodils",twig:"part_twigs",tinywindow:"part_tinywindow",pottingsoil:"part_pinkpot",
+					chocolatebrick:"part_chocolate_bricks",gingerbreadsiding:"part_gingerbread_siding",
+					gumdropaccent:"part_gumdrop_accents",lollipoplamp:"part_lollipop_lamps",miniboulder:"part_mini_boulder",
+					mulchsoil:"part_mulch_soil",turfroll:"part_turf_roll",marshmallowmortar:"part_marshmallow_mortar",
+					cottoncandyinsulation:"part_cotton_candy_insulation",tropicalcup:"feed_r4r_tropical_cups",lilypad:"part_lily_pad",
+					beachsandal:"feed_r4r_beachsandals",swimsuit:"feed_r4r_swimmingsuits",lure:"part_lure",fishingpole:"part_fishing_pole",
+					fuelpipe:"part_steampipe",levelgauger:"part_levelgauger",steelsheet:"part_steelsheet",smallaxe:"part_smallaxe",
+					boathook:"part_boathook",wheelbarrow:"part_wheelbarrow",bedrock:"part_bedrock",steam:"part_steam",
+					mineralinfusion:"part_mineralinfusion",terracotta:"part_terracottastatue",hangingincense:"part_hangingincense",
+					stonepillar:"part_stonepillar",bamboorail:"part_bamboorail",claybrick:"part_claybrick",reedthatch:"part_reedthatch",
+					cement:"part_cement",filldirt:"part_filldirt",metalpost:"part_metalpost",mysterybulb:"part_flowerfood",
+					floatingrock:"part_floatingrocks",magicwater:"part_magicwater",sparkleseed:"part_sparkleseeds",
+					rigging:"part_rigging",sail:"part_sail",woodplank:"part_woodboard",skimmer:"part_skimmer",leafnet:"part_leafnet",
+					waterbucket:"part_waterbucket",tennisball:"part_dogball",dogbed:"part_dogbed",chewtoy:"part_dogtoy",
+					babyblanket:"part_babyblanket2",babymobile:"part_mobiles",pacifier:"part_pacifier",cloudbrick:"part_cloudbrick",
+					enchantedbamboo:"part_enchantedbamboo",hoveringcharm:"part_hoveringcharm",scientificscale:"part_scale",
+					massagestone:"part_massagestones",buffettray:"part_buffettray",driftwood:"part_driftwood",pottingsoil:"part_pottingsoil",
+					javafern:"part_javafern",researchpaper:"part_researchpaper",treeincubator:"part_treeincubator",
+					cloningsolution:"part_cloningsolution",
+
+					nurserybarn:"woodenboard,nail,brick,blanket,bottle",craftingsilo:"tinsheet,hinge,screwdriver",
+					beehive:"woodenboard,nail,brick,beeswax,smoker",horsestable:"woodenboard,brick,nail,horseshoe,harness",
+					cove:"logpart,stonepart,steelbeampart",winterwonderlandtrainstation:"coalpart,railtiepart,railspikepart",
+					"santa'ssleigh":"task_holidaylights,task_jinglebells,task_gps,task_holidaycheer,task_reindeertreat,task_milkandcookies",
+					orchard:"woodenboard,brick,nail",sheeppen:"woodenboard,brick,nail",zoo:"component_shrub,wrench,pipe",
+					winteranimalpen:"ww_ice_post,ww_fairy_dust,candy_cane_beam",pigpen:"woodenboard,brick,nail",
+					horsepaddock:"logpart,component_bridle,component_saddle",cowpasture:"component_haybundle,tinsheet,stonepart",
+					petrun:"component_paintedwood,component_waterpump,compoent_fencepost",duckpond:"shovel_item_01,wateringcan",
+					wildlifehabitat:"component_fencepost,component_shrub,component_grazinggrass",aviary:"clamp,hinge,screwdriver",
+					livestockpen:"component_waterpump,component_wire,steelbeampart",combine:"vehiclepart",garage:"woodenboard,brick,nail",
+					harvesthoedown:"part_punch,part_snacks,part_paint","countduckula'scastle":"goo,haunted_brick,door_knockers",
+					winterwaterwheel:"task_snowgear,task_snowchains,task_snowaxle",winterpaddock:"logpart,component_bridle,component_saddle",
+					winterpasture:"component_haybundle,tinsheet,stonepart",animalfeedmill:"feedsack,feedscoop,feedbelt",
+					icepalace:"parts_snowbrick,parts_magicsnowflake,parts_icenail,parts_snowglobe,parts_iceboard,parts_frozenbeam",
+					cropmasterybillboard:"part_painters_overalls,part_sheet_of_plywood,part_floodlight,part_roll_of_paper,part_paint_roller,part_bucket_of_paste",
+					romanticcarriage:"parts_love,parts_flowertrim,parts_carriagelamps,parts_horsetreats,parts_fancychocolates,parts_cozyblanket",
+					winterlivestockpen:"component_waterpump,component_wire,steelbeampart",winteraviary:"clamp,hinge,screwdriver",
+					winterpetrun:"component_paintedwood,component_waterpump,compoent_fencepost",winterzoo:"component_shrub,wrench,pipe",
+					animalmasterybillboard:"task_sheet_of_plywood_recolor,task_floodlight_recolor,task_roll_of_paper_recolor,task_painters_overalls_recolor,task_paint_roller_recolor,task_bucket_of_paste_recolor",
+					treemasterybillboard:"task_woodstain,task_scaffolding,task_maskingtape",babyplaypen:"part_brush,part_saltlick,part_babyblanket",
+					babybunnyhutch:"part_babycarrotbunch,part_bunnytunnel,part_branchball,part_hutchwire,part_woodblock,part_bunnybed",
+					recipemasterybillboard:"part_clamps,part_wood_glue,part_sandpaper",volcanoreef:"part_babyfish,part_volcanicmonitor,part_stonycoral",
+					aquarium:"part_buoys,part_filters,part_coral",marketstall:"stall_awning,stall_basket,stall_pricecard",
+					islandpaddock:"logpart,component_bridle,component_saddle",islandpasture:"component_haybundle,tinsheet,stonepart",
+					islandlivestock:"component_waterpump,component_wire,steelbeampart",islandzoo:"component_shrub,wrench,pipe",
+					islandpetrun:"component_paintedwood,component_waterpump,compoent_fencepost",islandaviary:"clamp,hinge,screwdriver",
+					islandhabitat:"component_fencepost,component_shrub,component_grazinggrass",fishinghole:"part_lure,part_lily_pad,part_fishing_pole",
+					gnomegarden:"part_toadstool,part_gardenfence,part_tinywindow",grove:"part_mini_boulder,part_mulch_soil,part_turf_roll",
+					candycastle:"part_chocolate_bricks,part_gingerbread_siding,part_gumdrop_accents,part_lollipop_lamps,part_marshmallow_mortar,part_cotton_candy_insulation",
+					beachresort:"feed_r4r_tropical_cups,feed_r4r_beachsandals,feed_r4r_swimmingsuits",gaspump:"part_steampipe,part_levelgauger,part_steelsheet",
+					hotspring:"part_bedrock,part_steam,part_mineralinfusion",mountainpalace:"part_stonepillar,part_hangingincense,part_terracottastatue",
+					jadehabitat:"part_reedthatch,part_bamboorail,part_claybrick",jadepasture:"component_haybundle,tinsheet,stonepart",
+					jadeplaypen:"part_brush,part_saltlick,part_babyblanket",jadeaviary:"clamp,hinge,screwdriver",
+					jadeaquarium:"part_buoys,part_filters,part_coral",jadepaddock:"logpart,component_bridle,component_saddle",
+					dinolab:"part_cement,part_filldirt,part_metalpost",jadepetrun:"component_paintedwood,component_waterpump,compoent_fencepost",
+					jadewildlifepen:"component_fencepost,component_shrub,component_grazinggrass",jadezoo:"component_shrub,wrench,pipe",
+					jadegnomegarden:"part_toadstool,part_gardenfence,part_tinywindow",floatingwaterfall:"part_floatingrocks,part_magicwater,part_sparkleseeds",
+					imperialshipyard:"part_rigging,part_sail,part_woodboard",swimmingpond:"part_skimmer,part_waterbucket,part_leafnet",
+					sunshinedoghouse:"part_dogball,part_dogbed,part_dogtoy",babynursery:"part_babyblanket2,part_mobiles,part_pacifier",
+					floatingcastle:"part_cloudbrick,part_enchantedbamboo,part_hoveringcharm",turtlepen:"part_driftwood,part_pottingsoil,part_javafern",
+					farmhandcenter:"part_scale,part_massagestones,part_buffettray",arboristcenter:"part_researchpaper,part_treeincubator,part_cloningsolution",
+				}
+			},
+
+			//merge accept texts from dynamically created lists above
+			accText: mergeJSON(t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15,t16,t17,t18,t19,t20,t21,t22,t23,t29,t27,t30,t31,t32,t33,t34,t35,t36,t37),
+
+			//tests for bonuses
+			//see http://fbwm.wikia.com/wiki/Sidekick_Tutorial for in depth how-to instructions
+			//changing the order of some of these tests will break this script
+			tests: [
+				//link excludes
+				{ret:"exclude", link:[
+					"Play FarmVille now","View full size!","feed their chickens","fertilize their crops",
+					"start trading!","visit trading","Join them now","Accept as Neighbor",
+					"visit","Join their Co-op","Help with the job","donate",
+				]},
+				
+				//just say no to scam posts
+				{ret:"exclude",url:[
+					"www.facebook.com/pages/","Farmville.Nation","Farmville.Universe","Farmville.INC","Fv.Help","bit.ly",
+					"FarmPrizes","Fv.Avg.Plane","FvWorld","zFarmvilleHelper","bit.ly","FarmvilleLatestHelpers",
+					"FarmVille.Fans","FVstuffs","Zynga.Farmville.World","Farmville.Genious","Yes.I.Love.You.XD","FVBonus",
+					"Farmville.Breeders","ZyngaFarmVilleFans","FarmvilleDailyNews","{*reward_link*}","&next=index.php",
+					"FarmVilleAwesomePrizes","farmville-feed-blog.blogspot.com",
+				]},
+
+				//body excludes
+				{ret:"exclude", search:["title","caption"],find:[
+					"just planted their mystery tree seedling and could use help watering them",
+					"found some extra bags of fertilizer","just Unwithered your crops!","posted a new comment on your farm",
+					"wants to help you farm faster","just posted a note on your farm","gave up city livin' to become a farmer",
+					"opened a Mystery Box and found","wants you to be their neighbor","has created a fantastic farm",
+					"could use some gifts","is having a great time playing","is playing FarmVille on the iPhone",
+					"is playing FarmVille on the iPad","has a new look!","found a lost pig with your name on her collar",
+					"needs help harvesting a Bumper Crop",
+				]},
+								
+				{link:"Get TWO",ret:"none",kids:[
+					{search:["link","title","caption"],find:"blue lawn chair",ret:"bluelawnchair"},
+					{search:["link","title","caption"],find:"surfboard",ret:"surfboard"},
+					{search:["link","title","caption"],find:"giant maracija",ret:"giantmaracija"},
+					{search:["link","title","caption"],find:"hydrangea",ret:"hydrangea"},
+					{search:["link","title","caption"],find:"harbor seal",ret:"adopt_harborseal"},
+					{search:["link","title","caption"],find:"postier brenton",ret:"adopt_horsepostierbrenton"},
+					{search:["link","title","caption"],find:"ringtail",ret:"adopt_ringtail"},
+					{search:["link","title","caption"],find:"sakura flower",ret:"sakuraflower"},
+					{search:["link","title","caption"],find:"yellow dome",ret:"yellow dome"},
+					{search:["link","title","caption"],find:"shamrock sheep",ret:"adopt_sheepshamrock"},
+					{search:["link","title","caption"],find:"lilac tree",ret:"tree_lilac"},
+					{search:["link","title","caption"],find:"blue-winged teal",ret:"adopt_bluewingedteal"},
+					{search:["link","title","caption"],find:"japanese trellis",ret:"japanesetrellis"},
+					{search:["link","title","caption"],find:"enchanted tree ii",ret:"enchantedtreeii"},
+					{search:["link","title","caption"],find:"brachiosaurus",ret:"adopt_brachiosaurus"},
+					{search:["link","title","caption"],find:"carnotaurus",ret:"adopt_carnotaurus"},
+					{search:["link","title","caption"],find:"gallimimus",ret:"adopt_gallimimus"},
+					{search:["link","title","caption"],find:"soho oriental poppy",ret:"bulb_sohoorientalpoppy"},
+					{search:["link","title","caption"],find:"coelophysis",ret:"adopt_coelophysis"},
+					{search:["link","title","caption"],find:"chinchilla",ret:"adopt_chinchilla"},
+					{search:["link","title","caption"],find:"fairy rose",ret:"fairyrose"},
+					{search:["link","title","caption"],find:"warrior i",ret:"warriori"},
+					{search:["link","title","caption"],find:"rainbow barrel",ret:"rainbowbarrel"},
+				]},
+				
+				{link:["claim it","claim prize","share prize"],ret:"none",kids:[
+				//	{search:["title","caption"],find:"{%1}",subTests:specialMaterials,ret:"none",kids:[
+						{search:["title","caption"],find:"{%1} horse",subTests:horseTypes,ret:"adopt_horse{%1}"},
+						{search:["title","caption"],find:"{%1} cow",subTests:cowTypes,ret:"adopt_cow{%1}"},
+						{search:["title","caption"],find:"{%1} sheep",subTests:sheepTypes,ret:"adopt_sheep{%1}"},
+						{search:["title","caption"],find:"{%1} ewe",subTests:sheepTypes,ret:"adopt_ewe{%1}"},
+						{search:["title","caption"],find:"{%1}",subTests:otherAnimals,ret:"adopt_{%1}"},
+						{search:["title","caption"],find:"{%1}",subTests:decorTypes,ret:"{%1}"},
+						{search:["title","caption"],find:"giant {%1}",subTests:treeTypes2,ret:"tree_giant{%1}"},
+						{search:["title","caption"],find:"{%1}",subTests:treeTypes,ret:"tree_{%1}"},
+						{search:["title","caption"],find:"{%1}",subTests:bulbTypes,ret:"bulb_{%1}"},
+						{search:["title","caption"],find:"{%1}",subTests:otherConsumables,ret:"{%1}"},
+				//	]},
+				]},
+				
+				//charming vineyard event
+				{link:"claim prize",ret:"none",kids:[
+					{search:["title","caption"],find:"Connoisseur Sheep",ret:"adopt_sheepconnoisseur"},
+					{search:["title","caption"],find:"Vintner Gnome",ret:"vintnergnome"},
+					{search:["title","caption"],find:"Red Grape Rabbit",ret:"adopt_redgraperabbit"},
+					{search:["title","caption"],find:"Grape Crushing Barrel",ret:"grapecrushingbarrel"},
+					{search:["title","caption"],find:"Vineyard Steed",ret:"adopt_vineyardsteed"},
+					{search:["title","caption"],find:"Valet Gnome",ret:"valetgnome"},
+					{search:["title","caption"],find:"White Cypress Tree",ret:"tree_whitecypress"},
+					{search:["title","caption"],find:"Oak Barrel Rack",ret:"oakbarrelrack"},
+					{search:["title","caption"],find:"Chateau Stallion",ret:"adopt_chateaustallion"},
+					{search:["title","caption"],find:"White Grape Duck",ret:"adopt_duckwhitegrape"},
+					{search:["title","caption"],find:"Red Willow Tree",ret:"tree_redwillow"},
+					{search:["title","caption"],find:"Gardener Chicken",ret:"adopt_gardenerchicken"},
+					{search:["title","caption"],find:"Bird of Paradise",ret:"bulb_birdofparadise"},
+				]},
+				
+				//mystery bulbs
+				{link:"get flower",ret:"none",kids:[
+					{search:["title","caption"],find:"now has a {%1} on their farm",subTests:bulbTypes,ret:"bulb_{%1}"},
+					{search:["title","caption"],find:"have a fully grown {%1}",subTests:bulbTypes,ret:"bulb_{%1}"},
+				]},
+				
+				//tests to distinguish between two types of baby blankets
+				{img:"f265afa84c6a43bc616b151417058203",ret:"pinkbabyblanket"},
+				{img:"9ec1a380594fa2c619e1ad18f28a048a",ret:"bluebabyblanket"},
+				{search:["title","caption"],find:"baby blanket",ret:"none",kids:[
+					{search:["title","caption"],find:"baby playpen",ret:"bluebabyblanket"},
+					{search:["title","caption"],find:"baby nursery",ret:"pinkbabyblanket"},
+				]},
+				
+				//specific text/url tests
+				{link:"adopt turtle",ret:"adopt_turtle",kids:[
+					{search:["title","caption"],find:"bred a new baby turtle in their Turtle Pen",ret:"adopt_babyturtle"},
+				]},
+				{link:"send wheelbarrow",ret:"wheelbarrow"},
+				{search:["title","caption"],find:"is collecting Dream Drop for their Dream Tree",ret:"dreamdrop"},
+				{url:"animal_mastery",ret:"animalfeed"},
+				{url:"crop_mastery",ret:"coins"},
+				{search:["title","caption"],find:"whisperer",ret:"animalfeed"},
+				{link:["get a bonus from them","Get a Job reward!"],ret:"coins"},
+				{search:["title","caption"],find:"needs {%1}",subTests:questItems,ret:"send{%1}"},
+				{link:"send",ret:"none",kids:[{link:"{%1}",subTests:questItems,ret:"send{%1}"},]},
+				{link:"send {%1}",subTests:questItems,ret:"send{%1}"},
+				{link:"get rewards",ret:"none",kids:[{search:["title","caption"],find:"leaderboard",ret:"coins"},]},
+				{url:["AchievementFriendReward","MasteryFriendReward","FertilizeThankFriendReward"], ret:"coins"},
+				{search:["title","caption"],find:"Refree Calf",ret:"adopt_calfreferee"},
+				{search:["title","caption"],find:"needs your help in the Craftshop!",ret:"bushel_random"},
+				{search:["title","caption"],find:"is hosting a barn raising", ret:"sendhelp"},
+				{search:["title","caption"],find:"needs more Turkeys for their Turkey Roost", ret:"sendturkey"},
+				{search:["title","caption"],find:"ram up for adopt", ret:"adopt_lambram"},
+				{search:["title","caption"],find:"ewe up for adopt", ret:"adopt_lambewe"},
+				{link:"adopt {%1}", subTests:["piglet","lamb"], ret:"adopt_{%1}"},
+				{search:["title","caption"],find:"wandering stallion", ret:"wanderingstallion"},
+				{search:["title","caption"],find:["helped find a lost rabbit","is helping the bunnies"], ret:"adopt_rabbit"},
+				{search:["title","caption"],find:"yellow cattle", ret:"adopt_calfgelbvieh"},
+				{search:["title","caption"],find:"has finished work on their Turtle Pen",ret:"adopt_navyfuschiaspottedturtle"},
+				{search:["title","caption"],find:"finished building their Zoo", ret:"adopt_babyelephant"},
+				{search:["title","caption"],find:"share this Black Tabby Cat", ret:"adopt_blackkitten"},
+				{search:["title","caption"],find:"has a free Himalayan Cat", ret:"adopt_himalayankitty"},
+				{search:["title","caption"],find:"has a free Dwarf Blue Sheep",ret:"adopt_sheepdwarfblue"},
+				{search:["title","caption"],find:"finished building their Wildlife Habitat", ret:"adopt_porcupine"},
+				{search:["title","caption"],find:"has completed a Maison", ret:"provencalpot"},
+				{search:["title","caption"],find:"has completed their Botanical Garden", ret:"hangingflowers"},
+				{search:["title","caption"],find:"has completed their Japanese Barn", ret:"japanesetrellis"},
+				{search:["title","caption"],find:"has finished expanding their Nursery Barn", ret:"adopt_calfbaby"},
+				{search:["title","caption"],find:["has built a Horse Stable","has finished expanding their horse stable"], ret:"adopt_horsebrown"},
+				{search:["title","caption"],find:"just finished building their Sheep Pen", ret:"adopt_ram"},
+				{search:["title","caption"],find:"just finished building their Aviary", ret:"adopt_farmgoose"},
+				{search:["title","caption"],find:"finished work on their Winter Livestock Pen",ret:"adopt_pigsnowflake"},
+				{search:["title","caption"],find:"has a free Red Goat that they want to share", ret:"adopt_redgoat"},
+				{search:["title","caption"],find:"finished building their Cow Pasture",ret:"adopt_cowirishmoiled"},
+				{search:["title","caption"],find:"finished building their Horse Paddock",ret:"adopt_horsecreamdraft"},
+				{search:["title","caption"],find:"has built a Nursery Barn in FarmVille",ret:"adopt_foalgrey"},
+				{search:["title","caption"],find:"just finished building their Baby Playpen",ret:"adopt_foalclydesdale"},
+				{search:["title","caption"],find:["just finished building their Winter Pet Run","Holiday St. Bernard"],ret:"adopt_holidaystbernard"},
+				{search:["title","caption"],find:"has a free Big Blue Tang Fish",ret:"adopt_bigbluetangfish"},
+				{search:["title","caption"],find:"has a free Treasure Seagull",ret:"adopt_treasureseagull"},
+				{search:["title","caption"],find:"has a free Striped Possum",ret:"adopt_stripedpossum"},
+				{search:["title","caption"],find:"has a free Lesser Flamingo",ret:"adopt_lesserflamingo"},
+				{search:["title","caption"],find:"has a free Black Horse",ret:"adopt_horseblack"},
+				{search:["title","caption"],find:"has a free White Pig",ret:"adopt_pigwhite"},
+				{search:["title","caption"],find:"has a free Red Cow",ret:"adopt_cowred"},
+				{search:["title","caption"],find:["has finished work on their Winter Zoo","Snow Leopard"],ret:"adopt_snowleopard"},
+				{search:["title","caption"],find:"finished building their Baby Bunny Hutch",ret:"adopt_whitedaisybunny"},
+				{link:"longtail duck", ret: "adopt_ducklongtail"},
+				{search:["title","caption"],find:"just completed this week's raffle and has extra tickets for you!",ret:"raffleticket"},
+				{search:["title","caption"],find:"Ram (Flowered Green)",ret:"adopt_ramfloweredgreen"},
+				{search:["title","caption"],find:"Flowered Horse",ret:"adopt_horseflowered"},
+				{search:["title","caption"],find:"was able to get {%1}", subTests:["arborist","farmhand","100 xp"], ret:"{%1}"},
+				{search:["title","caption"],find:"of the following items: {%1}", subTests:[].concat(decorTypes,materials,otherWords).optimize(), ret:"{%1}"},
+				{link:"claim",ret:"none",kids:[{search:["title","caption"],find:"of the following items: {%1}",subTests:["moon","shamrock","horseshoe"],ret:"luckycharms"},]},
+				{search:["title","caption"],find:"is farming with fewer clicks", ret:"vehiclepart"},
+				{search:["title","caption"],find:"special Greenhouse crops and just surpassed", ret:"specialdelivery"},
+				{search:["title","caption"],find:"is harvesting cross-bred crops", ret:"treehouse"},
+				{search:["title","caption"],find:"found some mixed bouquets", ret:"flowerbouquet"},
+				{search:["title","caption"],find:"has some Flowers to share", ret:"flowers"},
+				{caption:"your crops are no longer withered", ret:"fuel"},
+				{search:["title","caption"],find:"is entered in a Sweepstakes to win a trip to England", ret:"postcard"},
+				{search:["title","caption"],find:"is getting ready for the Village Faire", ret:"tree_lemon"},
+				{search:["title","caption"],find:"just sent you an extra special present", ret:"present"},
+				{search:["title","caption"],find:["Just click below to collect it!","Here's a little something you might find useful!"], ret:"grabbag"},
+				{search:["title","caption"],find:"celebration by claiming Animal Feed",ret:"animalfeed"},
+				{search:["title","caption"],find:"sharing the Milking Shorthorn",ret:"adopt_cowmilkingshorthorn"},
+				{search:["title","caption"],find:"decorating their farm with a wonderful",ret:"none",kids:[
+					{search:["title","caption"],find:"{%1} of their own creation",subTests:["shack","house","cottage","villa","mansion"],ret:"mat_dreamhouse"},
+				]},
+				{search:["title","caption"],find:"started working on their {%1}",subTests:buildings,ret:"mat_{%1}"},
+				{link:"claim pink gladiolas",ret:"bulb_pinkgladiolas"},
+				{link:"help out",ret:"sendhelp"},
+				{link:"reward",ret:"coins"},
+				{link:["get a goo","claim goo"],ret:"goo"},
+				{search:["title","caption"],find:["found some treats","is giving away treats"],ret:"treats"},
+				{link:["spooky bat","get spider","claim spider","vampire teeth","ghost cupcake","carmel apple","pumpkin lollipop"],ret:"treats"},
+				{link:["wieners","weiners","s'more","kindling","matches","plaid blanket","lumber"],ret:"bonfiresupplies"},
+				{link:["magic snowflake","magic top hat","shooting star","mound of snow","aurora dust","starry scarf"],ret:"snowmanparts"},
+				{search:["link","title","caption"],find:["love bow","wings","love arrow","cupid's bow"],ret:"tokenofaffection"},
+				{link:"apple barrel",ret:"applebarrel"},
+				{link:"apple wood basket",ret:"applewoodbasket"},
+				{link:"get apple core",ret:"sendapplecore"},
+				{link:"get apple",ret:"apple"},
+				{link:["get a trick",],ret:"tricks"},
+				{link:["get rope","claim rope"],ret:"rope"},
+				{link:"send lemon",ret:"sendlemon"},
+				{link:"get lemon basket",ret:"lemonbasket"},
+				{link:"raffle ticket",ret:"raffleticket"},
+				{link:["get saddle","claim saddle"],ret:"saddle"},
+				{search:["title","caption"],find:"is done collecting all the Saddle",ret:"saddle"},
+				{link:"adopt saddle foal",ret:"adopt_foalsaddle"},
+				{search:["title","caption"],find:"found an adorable Saddle foal",ret:"adopt_foalsaddle"},
+				{search:["title","caption"],find:"found a Firefly Horse while harvseting the Baby Playpen",ret:"adopt_horsefirefly"},
+				{search:["title","caption"],find:["Bamboo Fortune"],ret:"smallaxe"},
+				{search:["title","caption"],find:["Stone Fortune"],ret:"wheelbarrow"},
+				{search:["title","caption"],find:["Water Fortune"],ret:"boathook"},
+				{url:"BambooTreasure",ret:"smallaxe"},
+				{url:"RockTreasure",ret:"wheelbarrow"},
+				{url:"WaterBottleTreasure",ret:"boathook"},
+				{url:"WaterTreasure",ret:"smallfishingnet"},
+				{search:["title","caption"],find:"uncovered",ret:"none",kids:[{search:["title","caption"],find:"trapped in ice",ret:"mat_snowtreasure"},{search:["title","caption"],find:"trapped in a treasure",ret:"mat_hawaiiantreasure"},]},
+				{search:["title","caption"],find:["Extra Large Buried Treasure","Large Buried Treasure"],ret:"largecrowbar"},
+				{search:["title","caption"],find:["Medium Buried Treasure","Small Buried Treasure"],ret:"smallcrowbar"},
+				{search:["title","caption"],find:["Extra Large Sea Treasure","Large Sea Treasure"],ret:"largefishingnet"},
+				{search:["title","caption"],find:["Medium Sea Treasure","Small Sea Treasure"],ret:"smallfishingnet"},
+				{search:["title","caption"],find:["Extra Large Snow Treasure","Large Snow Treasure"],ret:"pickaxe"},
+				{search:["title","caption"],find:["Medium Snow Treasure","Small Snow Treasure"],ret:"hairdryer"},
+				{search:["title","caption"],find:"has finished building an Grove",ret:"mat_grove"},
+				{link:"get materials",ret:"none",kids:[{search:["title","caption"],find:"{%1}",subTests:buildings,ret:"mat_{%1}"},]},
+				{link:"get {%1}",subTests:otherConsumables,ret:"{%1}"},
+				{link:"screwdriver",ret:"screwdriver"},
+				{search:["title","caption"],find:"is done collecting all the Screwdriver",ret:"screwdriver"},
+				{search:["title","caption"],find:"grew up into a Cow in their Nursery Barn",ret:"adopt_calfbaby"},
+				{search:["title","caption"],find:["supplies and just surpassed","is stocking their Harvest Bonfire with supplies","to help stock their friends' Harvest Bonfires!"], ret:"bonfiresupplies"},
+				{link:["get log","claim log"],ret:"log"},
+				{link:"send fire log",ret:"sendfirelog"},
+				{search:["title","caption"],find:"pink patch calf bull",ret:"adopt_calfpinkpatchbull"},
+				{link:["send materials","send building parts","send parts"],ret:"sendmat"},
+				{link:"holiday gift",ret:"holidaygifts"},
+				{img:"58fc1d30b0a983020037300f97eb8a51",ret:"adopt_calfbull"},
+				{search:["title","caption"],find:["found an adorable calf","found a Calf"],ret:"adopt_calfbaby"},
+				{search:["title","caption"],find:"filled their Holiday Tree to earn a special gift",ret:"holidaygifts"},
+				{link:"north-polarized goggles",ret:"sendpolarizedgoggles"},
+				{link:"get one",ret:"none",kids:[{search:["title","caption"],find:"Magic Snowman",ret:"snowmanparts"},]},
+				{link:"vote now",ret:"none",kids:[
+					{search:["title","caption"],find:"naughty or nice",ret:"stockingstuffer"},
+					{search:["title","caption"],find:"ideal vacation",ret:"dreamvacation"},
+					{search:["title","caption"],find:"perfect pet",ret:"perfectpet"},
+					{search:["title","caption"],find:"charming vineyard",ret:"charmingvineyard"},
+					{search:["title","caption"],find:"statue",ret:"statue"},
+				]},
+				{img:"e3593e5c7c796def3e734cdc82e3b854",ret:"sendwarmthermos"},
+				{img:"252a7c266ba8f9274db69e6b77d610a1",ret:"sendwinterchili"},
+				{link:"claim {%1}",subTests:["goo","sack","scoop","belt"],ret:"{%1}"},
+				{link:"become a judge",ret:"sendjudge"},
+				{search:["title","caption"],find:"Romatic Carriage",ret:"mat_romanticcarriage"},
+				{link:"get",ret:"none",kids:[{search:["title","caption"],find:"{%1}",subTests:craftingMaterials,ret:"{%1}"},]},
+				{link:"adopt grass pony",ret:"adopt_foalgrasspony"},
+				{link:"get trinket",ret:"sendbabydolltrinket"},
+				{link:"diamond ewe",ret:"adopt_diamondewe"},
+				{link:"bring on the lava",ret:"mat_volcanoreef"},
+				{link:"pick axe",ret:"pickaxe"},
+				{link:["shamrock","moon","horseshoe"],ret:"none",kids:[{search:["title","caption"],find:"Lucky Rainbow",ret:"luckycharms"},]},
+				{search:["title","caption"],find:"thrilled with the Lighted Tiki Torch",ret:"lightedtikitorch"},
+				{link:"build a volcano",ret:"mat_volcanoreef"},
+				{link:"get feed",ret:"animalfeed"},
+				{search:["link","title","caption"],find:["double avatar","2x avatar"],ret:"doubleavatar"},
+				{search:["title","caption"],find:"care package",ret:"carepackage"},
+				{img:["f0b0589808ceddd836deef88f4235402","c4e6e4f5633662470d91c75a8e682feb","80bb93b0b14050bc2db9e47877a0a274","addc3659c1e10368ae062c0a8358b281"],ret:"mat_hawaiiantreasure"},
+				{url:"petrun_baby_common",ret:"petrun_common"},
+				{url:"petrun_baby_rare",ret:"petrun_rare"},
+				{url:"wildlife_baby_common",ret:"wildlife_common"},
+				{url:"wildlife_baby_rare",ret:"wildlife_rare"},
+				{url:"livestock_baby_common",ret:"livestock_common"},
+				{url:"livestock_baby_rare",ret:"livestock_rare"},
+				{url:"zoo_baby_common",ret:"zoo_common"},
+				{url:"zoo_baby_rare",ret:"zoo_rare"},
+				{url:"aviary_baby_common",ret:"aviary_common"},
+				{url:"aviary_baby_rare",ret:"aviary_rare"},
+				{url:"arctic_baby_common",ret:"arctic_common"},
+				{url:"arctic_baby_rare",ret:"arctic_rare"},
+				{url:["xhibabybasketcommonfloaty","swimhole_baby_common"],ret:"sea_common"},
+				{url:["xhibabybasketrarefloaty","swimhole_baby_rare"],ret:"sea_rare"},
+				{url:"xas_babybasketcommonfloaty",ret:"jade_common"},
+				{url:"xas_babybasketrarefloaty",ret:"jade_rare"},
+				{search:["title","caption"],find:"is sharing a free Hopper from DISH and wants you to have one",ret:"adopt_hopperfromdish"},
+				{url:"xhi_reef_expansionComplete",ret:"mat_volcanoreef"},
+				{img:"b5ef8d15cd6eb476b86ddc660476c04a",ret:"mat_snowtreasure"},
+				{search:["title","caption"],find:"wooden plank",ret:"woodplank"},
+				//{url:"fuel",ret:"fuel"},
+				{desc:"{%1}",subTests:otherConsumables,ret:"{%1}"},
+				{desc:"coins",ret:"{%1}"},
+				{link:"give and get",ret:"none",kids:[
+					{search:["title","caption"],find:"{%1}",subTests:materials,ret:"{%1}"},
+					{search:["title","caption"],find:"{%1}",subTests:buildings,ret:"mat_{%1}"},
+				]},
+				{link:"get {%1}",subTests:materials,ret:"{%1}"},
+				{link:"accept and send",ret:"none",kids:[
+					{search:["title","caption"],find:"{%1}",subTests:materials,ret:"{%1}"},
+					{search:["title","caption"],find:"Pink Boat Orchid",ret:"bulb_pinkboatorchid"},
+				]},
+				{link:["help and get","get"],ret:"none",kids:[{search:["title","caption"],find:["April Showers","Mother's Day"],ret:"sendhelp"},]},
+				{title:"needs {%1}",subTests:questItems,ret:"send{%1}"},
+				{search:["title","caption"],find:"is sharing",ret:"none",kids:[
+					{title:"{%1}",subTests:materials,ret:"{%1}"},
+					{title:"{%1}",subTests:questItems,ret:"send{%1}"},
+				]},
+				{title:"is asking their friends for the {%1}",subTests:questItems,ret:"send{%1}"},
+				{title:"finished building an {%1}",subTests:buildings,ret:"mat_{%1}"},
+				{title:"is working hard on an {%1}",subTests:buildings,ret:"mat_{%1}"},
+				{title:"is working hard on a {%1}",subTests:buildings,ret:"mat_{%1}"},
+				{search:["title","caption"],find:"building",ret:"none",kids:[
+					{search:["title","caption"],find:"gigantic {%1}",subTests:buildings,ret:"mat_{%1}"},
+					{search:["title","caption"],find:"{%1}",subTests:buildings,ret:"mat_{%1}"},
+				]},
+				{search:["title"],find:"has extra parts",ret:"none",kids:[{search:["desc"],find:"{%1}",subTests:materials,ret:"{%1}"},]},
+				{search:["title","caption"],find:"is sharing {%1}",subTests:questItems,ret:"send{%1}"},
+				{caption:["send a","needs a few","is sharing extra","needs"],ret:"none",kids:[
+					{caption:"{%1}",subTests:questItems,ret:"send{%1}"},
+				]},
+				{search:["title","caption"],find:"is giving away extra {%1}",subTests:materials,ret:"{%1}"},
+				{title:"has an extra {%1}",subTests:materials,ret:"{%1}"},
+				{link:["one","some","bonus","get gift"],ret:"none",kids:[
+					{search:["title","caption"],find:"{%1}",subTests:otherConsumables,ret:"{%1}"},
+					{search:["title","caption"],find:["big picnic","picnic basket"],ret:"picnicbasket"},
+					{search:["title","caption"],find:["ice cream","giant sundae"],ret:"icecream"},
+					{search:["title","caption"],find:"magic snowflake",ret:"snowmanparts"},
+					{search:["title","caption"],find:"holiday gift",ret:"holidaygifts"},
+					{search:["title","caption"],find:"stocking stuffer",ret:"stockingstuffer"},
+					{search:["title","caption"],find:["cupid bow","pair of wings","love arrow"],ret:"tokenofaffection"},
+					{search:["title","caption"],find:["shamrock","moon","horseshoe"],ret:"luckycharms"},
+					{search:["title","caption"],find:"shovels",ret:"shovel"},
+				]},
+				{title:"has built their {%1}",subTests:buildings,ret:"mat_{%1}"},
+				{title:"just found a",ret:"none",kids:[
+					{search:["title","caption"],find:"{%1} foal",subTests:allFoals,ret:"adopt_foal{%1}"},
+					{search:["title","caption"],find:"{%1} calf",subTests:allCalves,ret:"adopt_calf{%1}"},
+					{search:["title","caption"],find:"{%1} yak",subTests:yakTypes,ret:"adopt_yak{%1}"},
+					{search:["title","caption"],find:"{%1}",subTests:babyAnimals,ret:"adopt_{%1}"},
+				]},
+				{link:"send",ret:"none",kids:[{link:"{%1}",subTests:questItems,ret:"send{%1}"},]},
+				{link:"help and get one",ret:"sendhelp"},
+				{link:"Get the Tiki Torch",ret:"lightedtikitorch"},
+				{search:["title","caption"],find:"Big Candy Pumpkin",ret:"tree_giantcandypumpkin"},
+				
+				{search:["title","caption"],find:"avatar costume",ret:"costume",kids:[
+						//static-0.farmville.zgncdn.com/assets/hashed/
+						{img:"2613b0e7b51fa559642d5327264ae88b",ret:"costume_pamperedprincess"},
+						{img:"6d5a278f8928c05128e09249dbfe4067",ret:"costume_sensiblesunbather"},
+						{img:"6253bd20890c5c174a0df5f17d10086c",ret:"costume_casualtraveler"},
+						{img:"de8a7457788f439dc31e8d74e51de514",ret:"costume_practicallounger"},
+						{img:"2e108b39b850a1af884c6109edd56cd0",ret:"costume_outdoorexplorer"},
+						{img:"096da69403ca8a64c202f38611968c76",ret:"costume_spontaneousadventurer"},
+						{img:"cfe6812589f5c77091865ecfb30b84f0",ret:"costume_wildspirit"},
+						{img:"eb4b576243d01a47d47478515b739ca9",ret:"costume_teddybear"},
+						{img:"d89b62ce659649a17a200be6c9ca7289",ret:"costume_koala"},
+						{img:"bb6ccdfef16d514c5adecf18a8f6075f",ret:"costume_cat"},
+						{img:"27de181336b60fc59a8363e97a902441",ret:"costume_hamster"},
+						{img:"0e9c8baa8aaa9ef595814d1c036d0b70",ret:"costume_dog"},
+						{img:"dd2e0af021c9030c80f398a584fbf157",ret:"costume_monkey"},
+						{img:"8dba7c7b5286c06a71961d6f35a3a8e7",ret:"costume_lion"},
+						{img:"d398f39aa59eb5633480844fffdf9db6",ret:"costume_tiger"},
+						{search:["title","caption"],find:"{%1}",subTests:avatar,ret:"{%1}"},
+				]},
+				
+				{link:"claim it",ret:"none",kids:[
+					{img:"2057bb48e6218f7872275a5f598f3dbe",ret:"tree_giantpoinsettia"},
+					{img:"1daac2a32f3cff1e9d1e6be36d1ccb00",ret:"snowdrift"},
+					{img:"f0bb0874eebe3f8b82f2cfa08fbaf7d2",ret:"horsesnowglobe"},
+					{img:"a1fba272cce026483331d5a3b51da743",ret:"lightedhedge"},
+					{img:"9ef18f3747eaedc97e8b12ded42ff7b9",ret:"carolingsnowman"},
+					{img:"2d0fb731d3219e543b031dbd6ed17062",ret:"teddybearsnowglobe"},
+					{img:"386facd490ae76cf31876845a0893ab7",ret:"adopt_carolinggoat"},
+					{img:"afa8195c0a7a49514464a45faa1b6132",ret:"luminaryfence"},
+					{img:"c27998b5e780e9363db27db71a10c73d",ret:"coal"},
+					{img:"b42c0a157197ceb896afe22ec4c0e48f",ret:"animalfeed"},
+					{img:"417d2412991bdc6c5941e876b617071f",ret:"railspike"},
+					{img:"77bc73ef224bd9b0bd70e53a51c11d47",ret:"railtie"},
+					{img:"18bb508499a8369017208586170d3cf0",ret:"wateringcan"},
+					{img:"890e543735401b5e5325d214805aa029",ret:"arborist"},
+					{img:"4b8cc80501cc6d433b47b19bf3512337",ret:"farmhand"},
+					{img:"83162ebbc9e06677ef8121ef01906efe",ret:"fertilizeall"},
+					{img:"eba8a91b33b34f0f6505aad21a367990",ret:"frozenfountain"},
+					{img:"0e79859e7349415c5592bbc9bd9b1d58",ret:"log"},
+					{img:"b2144f972c0354950e7633b4bc3bc20a",ret:"stone"},
+					{img:"669e1eb90c73dfcc6342375aa2db67a1",ret:"steelbeam"},
+					{img:"3744842e1fd51242cc9b7c0da72f212e",ret:"hairdryer"},
+					{img:"aad46346769a3e818e5b3d233dc1443c",ret:"pickaxe"},
+					{img:"faf5bc0d1a4fef592f4b47b25ccc5196",ret:"stringlights"},
+					{img:"9db417e17c47331f0175b7abc0116838",ret:"hollyfence"},
+					{img:"cc77d40e3812adc785bfcdd2b2ff007d",ret:"giantcandy"},
+					{search:["title","caption"],find:"Giant Cupid Tree",ret:"tree_giantcupid"},
+					{search:["title","caption"],find:"Nomadic Horse",ret:"adopt_horsenomadic"},
+				]},
+					
+				{search:["title","caption"],find:"making good progress",ret:"none",kids:[
+					{img:"f77442b5256ee2bf9374ea0572441f0a",ret:"holidaylights"},
+					{img:"31a21629cef1a7ee9d048fbdcdd2300d",ret:"silverbell"},
+					{img:"27a8b5c7730f0aff50da3aeca3e21a56",ret:"gps"},
+					{img:"69f5031238453052f285d00d1538a9ca",ret:"snowflake"},
+					{img:"2b2e8ba2c576a3a672d5d440e9e58cde",ret:"snowbrick"},
+					{img:"cae16ae007e478c63228b8a3198bf1a2",ret:"icenail"},
+					{img:"e2938eba8c6400466b0f5fd1d51ee504",ret:"snowglobe"},
+					{img:"f360c4422127142e7d441b7c01a3495b",ret:"frozenbeam"},
+					{img:"88e8dfabdd00d14cf62fbeae6a8f24e8",ret:"iceboard"},
+				]},
+				
+				//search icon & stork images to distinguish animals with same body texts
+				{link:"adopt",ret:"none",kids:[
+				//http://zynga1-a.akamaihd.net/farmville/assets/hashed/
+					{img:["1d3980e4a5780f6cfe63ee4e187290c2","484c39d894fd448e0cc5da19883d2eab"],ret:"adopt_foalmoonsteed"},
+					{img:["03d8e5a6250c82aa763b5e0fd17d8bee","8574a8a55004d39b044b3dff36e83a42"],ret:"adopt_foalmoon"},
+					{img:["4101550aa6e8542d168d7dcbf5bb1d15","e2935e5d35f7f01a810fb004bb89b3aa"],ret:"adopt_foalcherrypegacorn"},
+					{img:["c72dbdd7c1afd0cfcd8437c0599ba09d","c25a050880fa0a90c3234a4b1edfb96c"],ret:"adopt_foalfriendshippegasus"},
+					{img:["1ad6ebfe43e67016bfd9bf8ee488bf5d","0303a994fbb2ed7c9a0a9c17729e5d89"],ret:"adopt_foalfriendship"},
+					{img:"824290b5bdcd1e702bbdb19e7f3b1a33",ret:"adopt_foalballoonpony"},
+					{img:["eec01f8a608e6fde02a908e5f031ffcd","319a871bd4cee80caa1000ba7844293f"],ret:"adopt_foalballoon"},
+					{img:["a3296aaf1c2f6ab5235f41038646aa0b","52531c423fa31d46978c5a5404966efa"],ret:"adopt_foalcandycorn"},
+					{img:["6c4f8f10802946b4d1c51755548809d9","c0601163daac553e141923dcdc48e0b6"],ret:"adopt_foalcandycornpony"},
+					{img:"6f82eb77932eff007e6a955467355681",ret:"adopt_foalnightmaremini"},
+					{img:["3809a8b10346e4b290ecfec94ad8da8e","ee48ca0cabfd337abddb077dddd9209d"],ret:"adopt_foalnightmare"},
+					{img:["a7a3d17cfd8add6e4cb5bd6198f694b3","a6fd6ad586ac5fb37bd5aba83524f279"],ret:"adopt_calfholidaywreath"},
+					{img:["ee174fe3388734c7a21cecee560cd30d","d8d444ea83aa160162e4fa59acc19835"],ret:"adopt_calfholiday"},
+					{img:["8829e58a2c7e39fc8e5012d0c8c2f679","7ea063c8cac4c65354366f00ddf58d50"],ret:"adopt_foalwhitepegasus"},
+					{img:["fd885b15f91752e200c0ebf0b58d6c5d","7e01d7f3c6e6940d4b98cc74321be3e3"],ret:"adopt_foalgypsystallion"},
+					{link:"Items:foal_gypsy_st",ret:"adopt_foalgypsystallion"},
+					{img:["57408b56ed20ae7f71e15f1036489160","c4daef35af7f7256226a7c7680dd9692"],ret:"adopt_foaldiscopony"},
+					{img:["9155daa26714cf89f5abeaf706bb6d4c","869cff415e74ac29dfd61c61d7f351a3"],ret:"adopt_foaldisco"},
+					{img:["727a79da46ba46d34e6d120d70eeb062","e43bf2f2e70ac9289290020d2e40fbeb"],ret:"adopt_calfnewyear"},
+					{img:["5dad5998d9f543dbb4675ef0ac44076c","4f478aa8e1a7c489795a25c5bcec0fac"],ret:"adopt_calfliondance"},
+					{img:["a30736e7038302d01883890e0aa45d8e","e54ac8b6e104e93ebd6c318bbb26c7de"],ret:"adopt_foalvalentinepony"},
+					{img:["0aabfc003d4d13fcdac155aa09f32544","0955750886dcf3a43f231b593393b622"],ret:"adopt_foalvalentine"},
+					{img:["8a84039faad7fbc1a1fac5c79cd0e0c4","37aa58ee438aab5b3a0af6f994c4664d"],ret:"adopt_foalromance"},
+					{img:["50926cd51434156b8f4d1b1f9cfde619","8cf02fbcc6c1d9045c5c8951392700c0"],ret:"adopt_foalromancemini"},
+					{img:["2cfba1572a2036e92ab170e782935918","7f88a0996956641994848c0b79e04926"],ret:"adopt_calfbullflower"},
+					{img:"1c4a03ceaa3cc411f7c4d71b3f1d4d18",ret:"adopt_foalfireflypony"},
+					{img:"1cc446cc8415ee741c1b382a842fabc7",ret:"adopt_foalfirefly"},
+					{img:"b24865d67e5eb688fdf7f104cb745c59",ret:"adopt_calfcalfstructionworker"},
+					{img:["60d3a70aeb3353530de9d0fd3eea65d7","4f4c0b033cd2fdd271a4454340fe65d0"],ret:"adopt_foalgoldenmini"},
+					{img:["4a10ac5cfef4bbb50ecfb9d9faed8e43","ea1b2a0f4d074d28a6aed83bcb6928a2"],ret:"adopt_foalgoldenstallionmini"},
+					{img:["9a3c74da8488a0bd61ee43849b4a1d95","89263f674488821212132ebc401b9993"],ret:"adopt_foalstarunicorn"},
+					{img:["d926a74a59c981d1c307399a3fa3e4e8","5acc468f763190bbfdfc993c908625ac"],ret:"adopt_foalstar"},
+					{img:["55af1affde7028ba9f3f4be1161a3fd9","e46fd82d6490a35b456b605a23bccc32"],ret:"adopt_foalcamarguestallion"},
+					{img:["e999952b2652f3dc53799119f58506b5","a69891e58e60af069acc6f8864b42748"],ret:"adopt_foalcamargue"},
+					{img:["62e722cfe219da98e065cbb1e3390956","5862781a30a49fdae2c2b50ffe66d09b"],ret:"adopt_foalglittering"},
+					{img:["2fdbbd27bc3c3d6ff5dea411e67ee601","fc8699e7c62ef4043990b29ed507613d"],ret:"adopt_foalglitter"},
+				]},
+				
+				//dino dna
+				{search:["title","caption"],find:"Common {%1} DNA Strand",subTests:dnaTypes,ret:"dna_{%1}"},
+				{search:["title","caption"],find:"Uncommon {%1} DNA Strand",subTests:dnaTypes,ret:"dna_{%1}"},
+				{search:["title","caption"],find:"Rare {%1} DNA Strand",subTests:dnaTypes,ret:"dna_{%1}"},
+				
+				//gems
+				{search:["title","caption"],find:"{%1}",subTests:gemTypes,ret:"gem_{%1}"},			
+				
+				//search calves/foals by link text before materials
+				{link:"{%1} baby",subTests:allFoals,ret:"adopt_foal{%1}"},
+				{link:"{%1} stud",subTests:allFoals,ret:"adopt_foal{%1}"},
+				{link:"{%1} colt",subTests:allFoals,ret:"adopt_foal{%1}"},
+				{link:"{%1} foal",subTests:allFoals,ret:"adopt_foal{%1}"},
+				{search:["title","caption"],find:"{%1}-foal",subTests:allFoals,ret:"adopt_foal{%1}"},
+				{link:"{%1} calf",subTests:allCalves,ret:"adopt_calf{%1}"},
+				{link:"adopt the calf",ret:"none",kids:[
+					{search:["title","caption"],find:"found a {%1} calf",subTests:allCalves,ret:"adopt_calf{%1}"},
+					{search:["title","caption"],find:"Baby Ox",ret:"adopt_calfbabyox"},
+				]},
+				
+				//send
+				{link:["give","send","lend"],ret:"none",kids:[
+					{link:"and get",ret:"none",kids:[
+						{search:["title","caption"],find:"needs another {%1}",subTests:materials,ret:"{%1}"}, //sogo
+					]},
+					{link:"{%1}",subTests:questItems,ret:"send{%1}"}, //quest items
+					{link:"item to",ret:"sendwishlist"}, //send wishlists
+					{link:"{%1}",subTests:["feed","bushel","help","bottle"],ret:"send{%1}"}, //specific sends
+					{link:"{%1}",subTests:craftingMaterials,ret:"sendbasket"},
+					{link:["materials","building parts","parts"],ret:"sendmat"},
+					{search:["title","caption"],find:"{%1}",subTests:buildings,ret:"sendmat"},
+					{search:["title","caption"],find:"{%1}",subTests:questItems,ret:"send{%1}"},
+					{search:["title","caption"],find:"{%1}",subTests:[].concat(materials,otherWords),ret:"sendmat"},
+				]},
+				
+				//building materials by building
+				{link:["materials","part"],ret:"none",kids:[
+					{link:"{%1}",subTests:materials,ret:"{%1}"}, //<---- added this to avoid marking vehicle parts as goo
+					{search:["title","caption"],find:"{%1}",subTests:materials,ret:"{%1}"},
+					{search:["title","caption"],find:"{%1}", ret:"none",
+						subTests:["upgrading","good progress","addition of a station","half-way","halfway","finished","expanding","completion of","upgrade of","progress on","built a","adding stations","adding a station"],
+						kids:[{search:["title","caption"],find:"{%1}",ret:"mat_{%1}",subTests:buildings}]
+					},
+					{search:["title","caption"],find:"{%1}",subTests:buildings,ret:"mat_{%1}"},
+					{img:"50ae3ca24932a8f905a81a78ea17a6a2",ret:"mat_beehive"},
+				]},
+				
+				//catchall for bushels. here we use body text because link text is sometimes wrong or truncated.
+				{search:["title","caption"],find:"bushel", ret:"bushel", kids:[
+					{search:["title","caption"],find:"{%1}", subTests:bushelTypes, ret:"bushel_{%1}"},
+				]},
+				
+				//hatch specific eggs
+				{search:["title","caption"],find:"found some treasured {%1} mystery eggs",subTests:eggTypes,ret:"egg_{%1}"},
+				{search:["title","caption"],find:"basket full of {%1} eggs",subTests:eggTypes2,ret:"egg_{%1}"},
+				{link:["hatch","grab an egg"],ret:"none",kids:[
+					{search:["title","caption"],find:"{%1}",subTests:eggTypes2,ret:"egg_{%1}"},
+					{search:["title","caption"],find:"{%1}",subTests:eggTypes,ret:"egg_{%1}"},
+				]},
+				
+				//trees
+				{search:["title","caption"],find:"{%1}",subTests:["tree","seedling grew up "],ret:"none",kids:[
+					{search:["title","caption"],find:"ornament tree II",ret:"tree_ornament2"},
+					{search:["title","caption"],find:"{%1}",subTests:["giant","gaint","big","large"],ret:"none",kids:[
+						{search:["title","caption"],find:"{%1}",subTests:treeTypes2,ret:"tree_giant{%1}"},
+					]},
+					{search:["title","caption"],find:"{%1} bonsai ii",subTests:treeTypes3,ret:"tree_bonsai{%1}"},
+					{search:["title","caption"],find:"magic {%1} bonasi",subTests:treeTypes3,ret:"tree_bonsai{%1}"},
+					{search:["title","caption"],find:"magic {%1}",subTests:treeTypes3,ret:"tree_bonsai{%1}"},
+					{search:["title","caption"],find:"{%1}",subTests:treeTypes,ret:"tree_{%1}"},
+				]},
+				
+				//crafted samples
+				{search:["title","caption"],find:"{%1}", subTests:["improved their","offering some free sample","now a master","bought some"], ret:"none",kids:[
+					//this entry may seem redundant but it actually prevents misidentification mistakes
+					{search:["title","caption"],find:"{%1}", subTests:craftTypes, ret:"sample",kids:[
+						{search:["title","caption"],find:"level {%1} ", subNumRange:"1,20", ret:"sample1"},
+						{search:["title","caption"],find:"level {%1} ", subNumRange:"21,40", ret:"sample2"},
+						{search:["title","caption"],find:"level {%1} ", subNumRange:"41,80", ret:"sample3"},
+						{search:["title","caption"],find:"level {%1} ", subNumRange:"81,100", ret:"sample4"},
+						{search:["title","caption"],find:"level {%1} ", subNumRange:"100,140", ret:"sample5"},						
+					]},
+					{link:"grab a good",ret:"sample2"},
+				]},
+				{link:"sample",ret:"sample"}, // prevents "goods" being mistaken for "goo" after other samples have been identified
+				
+				//simply by link texts
+				//here we create an array on the fly for special words, then we add other predefined arrays, then we fix the order before searching
+				{link:"{%1}", subTests:[].concat(decorTypes,materials,otherWords).optimize(), ret:"{%1}"},
+				
+				//order specific crops
+				{link:"place order", ret:"order",kids:[
+					{search:["title","caption"],find:"{%1}", subTests:bushelTypes, ret:"order_{%1}"},
+				]},			
+				
+				//mystery babies
+				{link:["adopt a mystery baby","adopt an egg","adopt a winter baby","adopt a cute baby","adopt a jade baby"],ret:"unknown_baby",kids:[
+					//img search
+					{img:"ef81171be39fcdcc9f6bb8825fb2e450",ret:"petrun_common"},
+					{img:"f87608154a4061f044e4ab92f55f3cfd",ret:"petrun_rare"},
+					{img:"f4619e66d335c667128c8dfa92f069ee",ret:"wildlife_common"},
+					{img:"0b27e2c1185116002e0475d50dde98b7",ret:"wildlife_rare"},
+					{img:"116fd9ef14a14c94aea71f959f99db93",ret:"livestock_common"},
+					{img:"1cfd92964ae41c740dfab9b7023271f1",ret:"livestock_rare"},
+					{img:"182233e7ca189ea69462039a0b303706",ret:"zoo_common"},
+					{img:"6d5347c8dae181c5afb15b03390b69e6",ret:"zoo_rare"},
+					{img:"3c1015497c7d352157196c823f6cad63",ret:"aviary_common"},
+					{img:"a94a8ddc8286fbc92d51a666ab23da55",ret:"aviary_rare"},
+					{img:"183e4a3ba7be02fca7f550989b3a80e1",ret:"arctic_common"},
+					{img:"7bf258c9ffdb411fa992b58e9994afc7",ret:"arctic_rare"},
+					{img:"57ca62ee6fb4b67333c3bbb4a07f839b",ret:"sea_common"},
+					{img:"241413129ffa5dc7e97af3edf0460781",ret:"sea_rare"},
+					{img:"c8b7382788c77ff3b61434c4336a44c9",ret:"jade_common"},
+					{img:"88bbb027d137cfeb4f8f91f475a15bda",ret:"jade_rare"},
+					{img:"db7cf610f60857e9ba3bbec9a11de4ae",ret:"ocean_common"},
+					{img:"8aa0550a5911cade1b597d4d7292d4bf",ret:"ocean_rare"},
+					
+					//body search
+					{search:["title","caption"],find:"rare",ret:"none",kids:[
+						{search:["title","caption"],find:"{%1}",subTests:["arctic","aviary","livestock","sea","pet run","petrun","wildlife","zoo"],ret:"{%1}_rare"},
+
+					]}, //end rare
+					{search:["title","caption"],find:"{%1}",subTests:["arctic","aviary","livestock","sea","pet run","petrun","wildlife","zoo"],ret:"{%1}_common"},
+				]}, //end adopt
+
+				
+				//new cow pasture/horse paddock catches
+				{link:["adopt a baby","adopt the baby"],ret:"none",kids:[
+					{search:["title","caption"],find:["found an adorable ","found a "],ret:"none",kids:[
+						{search:["title","caption"],find:"foal",ret:"adopt_foal",kids:[
+							{search:["title","caption"],find:"{%1} foal",subTests:allFoals,ret:"adopt_foal{%1}"},
+							{search:["title","caption"],find:"{%1}-foal",subTests:allFoals,ret:"adopt_foal{%1}"},
+						]},
+						{search:["title","caption"],find:"calf",ret:"adopt_calf",kids:[
+							{search:["title","caption"],find:"{%1} calf",subTests:allCalves,ret:"adopt_calf{%1}"},
+						]},
+						{search:["title","caption"],find:"{%1} yak",subTests:yakTypes,ret:"adopt_yak{%1}"},
+						{search:["title","caption"],find:"{%1}",subTests:babyAnimals,ret:"adopt_{%1}"},
+					]},
+					{search:["title","caption"],find:"Baby Mule",ret:"adopt_foalmule"},
+					{search:["title","caption"],find:"Mistletoe Donkey Baby",ret:"adopt_foalmistletoedonkey"},
+					{search:["title","caption"],find:"Trick Or Treat Donkey Baby",ret:"adopt_foaltrickortreatdonkey"},
+					{search:["title","caption"],find:"found an adorable Grass Pony and",ret:"adopt_foalgrasspony"},
+					{search:["title","caption"],find:"Pink Aloha Stallion Stud",ret:"adopt_foalpinkalohastallion"},
+					{search:["title","caption"],find:"Orchid Stallion Stud",ret:"adopt_foalorchidstallion"},
+					{search:["title","caption"],find:"Camargue Colt",ret:"adopt_foalcamarguestallion"},
+					{search:["title","caption"],find:"Pink Fairy Stallion Colt",ret:"adopt_foalpinkfairystallion"},
+					{search:["title","caption"],find:["Welsh Black Calf","Welsh Calf"],ret:"adopt_calfwelshblack"},
+					{search:["title","caption"],find:"Baby Ox",ret:"adopt_calfbabyox"},
+				]},
+					
+				//catchall for materials by link
+				{link:"{%1}",subTests:materials,ret:"{%1}"},
+				
+				//join crafting teams
+				{link:"join team",ret:"join",kids:[
+					{img:"690d86ce9c4143329ab5f872584e1169",ret:"joinicehorsesculpture"},
+					{img:"3699f5d32d503228bb5e0cd3afa75544",ret:"joinicepigsculpture"},
+					{img:"c5e70c211e82a0bcc1abda64949630fa",ret:"joinmagicsnowflake"},
+					{img:"fe063f1f8f1845c626dc868856dad075",ret:"joinbrightyellowtractor"},
+					{img:"26b4f3ae87b43f8734d4988bd2805d19",ret:"joinmechanicscarecrow"},
+					{img:"a10220ef5dc0a674dbc3ca263793328d",ret:"joinsheeptopiary"},
+					{img:"69811776a063c0855c1733f68a33dcb3",ret:"joinappleredseeder"},
+					{img:"6c01a99ead4203d971116324aca0e554",ret:"joinbonsai"},
+					{img:"e51a6ceffb36d2bec6216200aa95e2b7",ret:"jointreehouse"},
+					{img:"7839ea1528ff204e277e1fb47309abf3",ret:"joinappleredharvester"},
+					{img:"a860f784f9347030c3d199a191b26a78",ret:"joinpostoffice"},
+					{img:"b0f78411f7b6084cb32a9436e24a5658",ret:"joinevergreentrain"},
+					{img:"4b8cc80501cc6d433b47b19bf3512337",ret:"joinfarmhand"},
+					{img:"c38928055fddef53032e92de43d33342",ret:"joinyellowracertractor"},
+					{img:"0a7f6ed48f63a0b6e277e5421c4624ef",ret:"joinstonewall"},
+					{img:"83162ebbc9e06677ef8121ef01906efe",ret:"joinfertilizeall"},
+					{img:"068f8f2e0112c398403588b7f264b6da",ret:"joindaintyfence"},
+					{img:"b29c1f15b645f0d4e382a68a6fd3ff84",ret:"joinshovel"},
+					{img:"18bb508499a8369017208586170d3cf0",ret:"joinwateringcan"},
+					{img:"ee5dacb99882370f7b8662d862b4dda9",ret:"joinironfence"},
+					{img:"890e543735401b5e5325d214805aa029",ret:"joinarborist"},
+					{img:"d0ae91c4d9b02323ef3ae1133644e42c",ret:"joinlamppost"},					
+					{img:"b42c0a157197ceb896afe22ec4c0e48f",ret:"joinanimalfeed"},
+					{img:"78dff32c0ab8d3223d59278aba31166e",ret:"joinvehiclepart"},
+					{img:"338ab39ec2b0e49cc93a406802d109ba",ret:"joinswisscabin"},
+					{img:"738a3d1a5152e428317a25b39361e8d2",ret:"joinstonearchway"},
+					{img:"0da8d0cfb50ed7f3e311cf5e6aa73d81",ret:"joinmilkingstool"},
+					{img:"1f9040fc0b4f751852b851a4fdb644e0",ret:"joinscythe"},
+					{img:"c065c449db07f585caee3e5facdd5c54",ret:"joinhorsesculpture"},
+					{img:"53efef0cd100001a37cc1399a7f02cc5",ret:"joinbrick"},
+					{img:"4d64954699fe7f1f8a19a4827dee2134",ret:"joinnail"},
+					{img:"0efae744cf2befb26bc630b39cedaf81",ret:"joinwoodenboard"},
+					{img:"6817c5c650fd418149601cbc1c83e3e9",ret:"joinluckypenny"},
+					{img:"1a40c5d2f4f929a226b934e79c8f0602",ret:"joinfuel"},
+					{img:"72016f512ae1b34e43eb21816a8692ab",ret:"joinbottle"},
+					{img:"a8888075274db08167ebd4fafc4a7f91",ret:"joinlovepotion"},
+					{img:"689dfc368b7d4061e2646699970b1123",ret:"joinpinefencei"},
+					{img:"88a9d64c3a5f39e86dfc12575e76a950",ret:"joinpinefenceii"},
+					{img:"dd1f0f1981e691f51f0d45ac6b2d8f1c",ret:"joinmoderntable"},
+					{img:"6b19071a41140dc4944942be43d6def9",ret:"joinpuppykibble"},
+					{img:"3bb35cd13ddc95f5c077dee905cc5190",ret:"joindogtreat"},
+					{img:"b6dd31c53721c77db007b8a312b9f06b",ret:"joinmoati"},
+					{img:"152ccad7da5edd2257af934c82996c77",ret:"joinmoatii"},
+					{img:"5340407ec4d9395f55814d4da2260050",ret:"joinmoatiii"},
+					{img:"a793a74c34ea640b1c818aa67a42f9ec",ret:"joinmoativ"},
+					{img:"89ac1a38bcdc7ffbb18602b2e9bc1a00",ret:"joinmoatcorneri"},
+					{img:"88a738c8310aef87329e3a75103117df",ret:"joinmoatcornerii"},
+					{img:"3271cdc09b6cade975b9e96b3f977361",ret:"joinmoatcorneriii"},
+					{img:"656278391986c724bb150b45f806701f",ret:"joinmoatcorneriv"},
+					{img:"77d09f9046c790237bcfdf264cd80efc",ret:"joincastlebridge"},
+					{img:"0ef896833905a2abcb1bb2939bb2bd37",ret:"joinenglandpostcard"},					
+					{img:"a8d9fe654cb1a593046646c322ed8e5e",ret:"joinbeachball"},
+				]},
+				{url:["CraftingRandomLootFriendReward","CraftingRandomLootCrewFriendReward"],ret:"join",kids:[
+					{search:["title","caption"],find:"{%1}",subTests:craftShop,ret:"join{%1}"},
+				]},
+				
+				//collectibles and collection tradeins
+				{search:["title","caption","desc"],find:"{%1}", subTests:["noticed you could use a","has completed the","collect"], ret:"none",kids:[
+					{search:["title","caption","desc"],find:"{%1}", subTests:colTypes, ret:"col_{%1}"},
+					{search:["title","caption","desc"],find:"{%1}", subTests:colGroups, ret:"colX_{%1}"},
+				]},
+
+				//perfect bunches
+				{search:["title","caption"],find:"perfect bunch", ret:"perfectbunch", kids:[
+					{search:["title","caption"],find:"{%1}", subTests:flowerTypes, ret:"perfect_{%1}"},
+				]},
+
+				//seeds
+				{search:["title","caption"],find:"seed",ret:"none",kids:[
+					{link:"honeybee", ret:"honeybee"},
+					{search:["title","caption"],find:"pollinated", ret:"pollinated",kids:[
+						{search:["title","caption"],find:"{%1}", subTests:bushelTypes, ret:"polseeds_{%1}"},
+					]},
+					{search:["title","caption"],find:"{%1}", subTests:seedTypes, ret:"seeds_{%1}"},
+				]},
+
+				//dynamic adoptions when foal/calf/duckling is in the link
+				{link:"foal", ret:"adopt_foal",kids:[
+					{search:["link","title","caption"],find:" {%1}", subTests:allFoals, ret:"adopt_foal{%1}"},
+				]},
+				{link:"calf", ret:"adopt_calf",kids:[
+					{search:["link","title","caption"],find:" {%1}", subTests:allCalves, ret:"adopt_calf{%1}"},
+				]},
+				{link:"duckling", ret:"adopt_duckling",kids:[
+					{search:["title","caption"],find:"duckling grew up to become a", ret:"adopt_duckling"},
+					{search:["link","title","caption"],find:" {%1}", subTests:ducklingTypes, ret:"adopt_duckling{%1}"},
+				]},
+				
+				//catchalls for missed foal/calf/ducklings by link
+				{search:["title","caption"],find:"{%1} foal", subTests:allFoals, ret:"adopt_foal{%1}"},
+				{search:["title","caption"],find:"{%1} calf", subTests:allCalves, ret:"adopt_calf{%1}"},
+				{search:["title","caption"],find:"{%1} duckling", subTests:ducklingTypes, ret:"adopt_duckling{%1}"},
+
+				//catchalls for other known animals sets
+				{search:["title","caption"],find:"{%1} duck", subTests:duckTypes, ret:"adopt_duck{%1}"},
+				{search:["title","caption"],find:"{%1} pig", subTests:pigTypes, ret:"adopt_pig{%1}"},
+				{search:["title","caption"],find:"{%1} sheep", subTests:sheepTypes, ret:"adopt_sheep{%1}"},
+				{search:["title","caption"],find:"{%1} ewe", subTests:sheepTypes, ret:"adopt_ewe{%1}"},
+				{search:["title","caption"],find:"{%1} cow", subTests:cowTypes, ret:"adopt_cow{%1}"},
+				{search:["title","caption"],find:"{%1} horse", subTests:horseTypes, ret:"adopt_horse{%1}"},
+				
+				//catchall for known animal adoption
+				{search:["title","caption"],find:"{%1}", subTests:[].concat(otherAnimals,babyAnimals).optimize(), ret:"adopt_{%1}"},
+
+				//simply by link texts
+				//here we create an array on the fly for special words, then we add other predefined arrays, then we fix the order before searching
+				{link:"{%1}", subTests:["coins","bushel","perfect bunch","tree"].concat(decorTypes,materials,otherWords).optimize(), ret:"{%1}"},
+				{link:"{%1}",subTests:questItems,ret:"send{%1}"},
+				
+				//simply by body text
+				{search:["title","caption"],find:"{%1}", subTests:["coins","bushel","perfect bunch","tree"].concat(decorTypes,materials,otherWords).optimize(), ret:"{%1}"},
+
+				//animal catchalls
+				//these need to run after ALL other tests because they have text that may be misidentified earlier
+				{search:["title","caption"],find:"{%1}", subTests:animalCatchalls, ret:"adopt_{%1}"},
+				
+				{link:"get",ret:"none",kids:[
+					{search:["title","caption"],find:"is sharing {%1}",subTests:questItems,ret:"send{%1}"},
+					{search:["title","caption"],find:"has {%1}",subTests:questItems,ret:"send{%1}"},
+				]},
+				
+				//created for 'user has shared a link' posts
+				{title:"{%1}", ret:"none",
+					subTests:["upgrading","good progress","addition of a station","half-way","halfway","finished","expanding","completion of","upgrade of","progress on","built a","adding stations","adding a station"],
+					kids:[{title:"{%1}",ret:"mat_{%1}",subTests:buildings}]
+				},
+				{title:"looking for lava in all the wrong places",ret:"mat_volcanoreef"},
+				{search:["desc"],find:"{%1}",subTests:materials,ret:"{%1}"},
+				{search:["desc"],find:"{%1}",subTests:otherAnimals,ret:"adopt_(%1}"},
+				{search:["desc"],find:"is building their {%1}",subTests:buildings,ret:"mat_{%1}"},
+				{search:["desc"],find:"is sharing {%1}",subTests:questItems,ret:"send{%1}"},
+				{search:["desc"],find:["ranked 3 in the Rainbow Harvest Fest","100 xp"],ret:"100xp"},
+				{search:["desc"],find:"is raising a sweet Baby Sea Animal",ret:"none",kids:[
+					{img:"241413129ffa5dc7e97af3edf0460781",ret:"sea_rare"},
+					{img:"57ca62ee6fb4b67333c3bbb4a07f839b",ret:"sea_common"},
+				]},
+				{search:["desc"],find:"{%1}",subTests:decorTypes,ret:"{%1}"},
+				{caption:"{%1}",subTests:decorTypes,ret:"{%1}"},
+			],
+
+			//build the menu just as you would for FVWM except omit default values
+			//if this script moves, be sure to change the userscripts source id for the link below
+			//it should be the same number as in the @require line on top of this script
+
+			menu: {
+				section_main:{type:'section',label:'FarmVille ('+version+')',kids:{
+
+				updateSidekick:{type:'link',label:'Update Sidekick',href:'http://userscripts.org/scripts/source/111560.user.js'},
+
+				basicsep:{type:'separator',label:'Basics',kids:{
+				basictab:{type:'tab',label:'Basics',kids:{
+					coins:{type:'checkbox',label:"Bonuses (Coins)"},
+					"100xp":{type:'checkbox',label:"XP"},
+					doUnknown:{type:'checkbox',label:"Process Unrecognized Posts"},
+					dontsteal:{type:'checkbox',label:"Don't Process W2W Posts"},
+				}},
+
+				animalfeedsep:{type:'tab',label:"Animal Feed",kids:{
+					feedblock:{type:'optionblock',label:"Feed Types:",kids:{
+						animalfeed:{type:'checkbox',label:"Animal Feed"},
+						puppykibble:{type:'checkbox',label:"Puppy Kibble"},
+						dogtreat:{type:'checkbox',label:"Dog Treat"},
+					}},
+					dogtreatblock:{type:'optionblock',label:"Dog Treats:",newitem:true,kids:{
+						cupcakedogtreat:{type:'checkbox',label:"Cupcake"},
+						sportydogtreat:{type:'checkbox',label:"Sporty"},
+						sturdydogtreat:{type:'checkbox',label:"Sturdy"},
+						sunshinedogtreat:{type:'checkbox',label:"Sunshine"},
+					}}
+				}},
+
+				boostssep:{type:'tab',label:"Consumables",kids:{
+					boostblock:{type:'optionblock',label:"Consumables:",kids:{
+						arborist:{type:'checkbox',label:"Arborist"},
+						carepackage:{type:'checkbox',label:"Care Package"},
+						doubleavatar:{type:'checkbox',label:"Double Avatar"},
+						farmhand:{type:'checkbox',label:"Farmhand"},
+						fertilizeall:{type:'checkbox',label:"Fertilize All"},
+						fuel:{type:'checkbox',label:"Fuel"},
+						instagrow:{type:'checkbox',label:"Instagrow"},
+						lovepotion:{type:'checkbox',label:"Love Potion"},
+						mysterygamedart:{type:'checkbox',label:"Mystery Game Dart",newitem:true},
+						turbocharge:{type:'checkbox',label:"Turbo Charge"},
+						unwither:{type:'checkbox',label:"Unwither"},
+					}},
+
+					sampleblock:{type:'optionblock',label:"Crafting Samples (for fuel) By Level:", kids:{
+						sample1:{type:'checkbox',label:"1-20"},
+						sample2:{type:'checkbox',label:"21-40"},
+						sample3:{type:'checkbox',label:"41-80"},
+						sample4:{type:'checkbox',label:"80-100"},
+						sample5:{type:'checkbox',label:"100+"},
+						sample:{type:'checkbox',label:"??"},
+					}},					
+		
+					mysteryblock:{type:'optionblock',label:"Other:",kids:{
+						mysterygift:{type:'checkbox',label:"Mystery Gift"},
+						specialdelivery:{type:'checkbox',label:"Special Delivery"},
+						capitalonegift:{type:'checkbox',label:"Capital One Gift"},
+					}}
+				}},
+
+				eggsep:{type:'tab',label:"Eggs",kids:{
+					eggblock:{type:'optionblock',label:"Mystery Eggs:",kids:createMenuFromArray(eggTypes,'egg_')},
+					eggblock2:{type:'optionblock',label:"Bunny Eggs:",kids:createMenuFromArray(eggTypes2,'egg_')},
+				}},
+
+				trufflesep:{type:'tab',label:"Truffles",kids:{
+					truffleblock:{type:'optionblock',label:"Truffles",kids:{
+						browntruffle:{type:'checkbox',label:"Brown"},
+						blacktruffle:{type:'checkbox',label:"Black"},
+						whitetruffle:{type:'checkbox',label:"White"},
+						goldtruffle:{type:'checkbox',label:"Gold"},
+					}}
+				}},
+
+				//here we make use of the new function createMenuFromArray
+				//we can make whole menu blocks from a single array
+				//that function sorts the array by alphabetical order for you
+				//and also capitalizes words for better display with the menu
+
+				/*craftsep:{type:'tab',label:"Craft Samples",kids:{
+					craftbakeryblock:{type:'optionblock',label:"Bakery:",kids:createMenuFromArray(craftBakery,'sample_')},
+					craftspablock:{type:'optionblock',label:"Spa:",kids:createMenuFromArray(craftSpa,'sample_')},
+					craftwineryblock:{type:'optionblock',label:"Winery:",kids:createMenuFromArray(craftWinery,'sample_')},
+					craftpubblock:{type:'optionblock',label:"Pub:",kids:createMenuFromArray(craftPub,'sample_')},
+					craftrestrauntblock:{type:'optionblock',label:"Restraunt",kids:createMenuFromArray(craftRestraunt,'sample_')},
+				}},*/
+		
+				helpsep:{type:'tab',label:"Tasks",kids:{
+					helpblock:{type:'optionblock',label:"Participate in:",kids:{
+						sendhelp:{type:'checkbox',label:"Barn Raisings & Send Help"},
+						bushel_random:{type:'checkbox',label:"Crafting Workshops (random bushel)"},
+					}},
+					sendall:{type:'checkbox',label:"Send All Requested Items or Select From Below (also does barn raisings)"},
+					sendblock:{type:'optionblock',label:"Send Neighbors:",kids:{
+						sendmat:{type:'checkbox',label:"Consumables/Materials"},
+						sendwishlist:{type:'checkbox',label:"Wishlists"},
+						sendfeed:{type:'checkbox',label:"Animal Feed"},
+						sendbottle:{type:'checkbox',label:"Bottles"},
+						sendbushel:{type:'checkbox',label:"Bushels"},
+						sendbasket:{type:'checkbox',label:"Baskets"},
+						sendturkey:{type:'checkbox',label:"Turkeys"},
+					}},
+					questblock:{type:'optionblock',label:"Send-One-Get-One Goal Items:",kids:createMenuFromArray(questItems,"send")},
+				}},
+
+				matsep:{type:'tab',label:"Materials",kids:{
+					matBlock:{type:'optionblock',label:"Standard:",kids:createMenuFromArray(standardMaterials,"")},
+					matBlock2:{type:'optionblock',label:"Special:",kids:createMenuFromArray(specialMaterials,"")},
+					matBlock3:{type:'optionblock',label:"Crafing:",kids:createMenuFromArray(craftingMaterials,"")},
+					matBlock4:{type:'optionblock',label:"Other:",kids:createMenuFromArray(otherWords,"")},				
+					matbybuilding:{type:'optionblock',label:'Random Materials by Building: (does not automatically include items above)',kids:createMenuFromArray(buildings,'mat_')},
+				}},
+				
+				avatartab:{type:'tab',label:'Avatars',kids:{
+					costumetab:{type:'optionblock',label:"Avatar Costumes:",kids:createMenuFromArray(avatar,"costume_")},
+					costume:{type:'checkbox',label:"Unknown Costumes"},
+				}},
+
+				}}, //end basics section
+
+				orchardsep:{type:'separator',label:"Orchard",kids:{
+					mysteryseedling:{type:'checkbox',label:"Mystery Seedlings"},
+					wateringcan:{type:'checkbox',label:"Watering Cans"},
+					treestab1:{type:'tab',label:"Standard Trees",kids:{
+						trees:{type:'optionblock',label:"Normal:",kids:createMenuFromArray(treeTypes,'tree_')},
+					}},
+					treestab2:{type:'tab',label:"Giant Trees",kids:{
+						treeslg:{type:'optionblock',label:"Giant:",kids:createMenuFromArray(treeTypes2,'tree_giant')},
+					}},
+					treestab3:{type:'tab',label:"Bonsai Trees",kids:{
+						treesbnsi:{type:'optionblock',label:"Bonsai:",kids:createMenuFromArray(treeTypes3,'tree_bonsai')},
+					}},
+					tree:{type:'checkbox',label:"Unknown Trees"},
+				}},
+				
+				bloomsep:{type:'separator',label:"Bloom Garden",kids:{
+					mysterybulb:{type:'checkbox',label:"Mystery Bulbs"},
+					flowerfood:{type:'checkbox',label:"Flower Food"},
+					bloomtab1:{type:'tab',label:"Mystery Bulbs:",kids:{
+						blooms:{type:'optionblock',label:"Bulbs:",kids:createMenuFromArray(bulbTypes,'bulb_')},
+					}},
+				}},
+				
+				colsep:{type:'separator',label:"Collectibles",kids:{
+					colBlock1:{type:'optionblock',label:"Berries:",kids:createMenuFromArray(colBerries,"col_")},
+					colBlock2:{type:'optionblock',label:"Citrus:",kids:createMenuFromArray(colCitrus,"col_")},
+					colBlock3:{type:'optionblock',label:"Cows:",kids:createMenuFromArray(colCows,"col_")},
+					colBlock4:{type:'optionblock',label:"Flowers:",kids:createMenuFromArray(colFlowers,"col_")},				
+					colBlock5:{type:'optionblock',label:"Grains:",kids:createMenuFromArray(colGrains,"col_")},				
+					colBlock6:{type:'optionblock',label:"Squash:",kids:createMenuFromArray(colSquash,"col_")},				
+					colBlockX:{type:'optionblock',label:"Unknown Collectibles by Collection:",kids:createMenuFromArray(colGroups,"colX_")},
+				}},
+
+				decosep:{type:'separator',label:"Decorations",kids:{
+				decortab:{type:'tab',label:'Decorations',kids:{
+				//	decoblock:{type:'optionblock',label:"Various Decorations and Odd Animals:",kids:createMenuFromArray(decorTypes,"")},
+					decoBlock01:{type:'optionblock',label:"Halloween: (event-specific animals not included)",kids:createMenuFromArray(decorHalloween,"")},
+					decoBlock02:{type:'optionblock',label:"Thanksgiving:",kids:createMenuFromArray(decorThanksgiving,"")},
+					decoBlock03:{type:'optionblock',label:"Christmas:",kids:createMenuFromArray(decorChristmas,"")},
+					decoBlock19:{type:'optionblock',label:"Winter Wonderland:",kids:createMenuFromArray(decorWinterWonderland,"")},
+					decoBlock20:{type:'optionblock',label:"Holiday Hearth:",kids:createMenuFromArray(decorHolidayHearth,"")},
+					decoBlock21:{type:'optionblock',label:"Magic Snowman:",kids:createMenuFromArray(decorMagicSnowman,"")},
+					decoBlock05:{type:'optionblock',label:"Valentine's Day:",kids:createMenuFromArray(decorValentines,"")},
+					decoBlock07:{type:'optionblock',label:"St. Patrick's Day:",kids:createMenuFromArray(decorStPatty,"")},
+					decoBlock08:{type:'optionblock',label:"Wishing Well:",kids:createMenuFromArray(decorWishingWell,"")},
+					decoBlock09:{type:'optionblock',label:"Easter:",kids:createMenuFromArray(decorEaster,"")},
+					decoBlock11:{type:'optionblock',label:"Shovels:",kids:createMenuFromArray(decorShovels,"")},
+					decoBlock12:{type:'optionblock',label:"School Supplies:",kids:createMenuFromArray(decorSchoolSupplies,"")},				
+					decoBlock13:{type:'optionblock',label:"Tuscan Wedding:",kids:createMenuFromArray(decorTuscanWedding,"")},
+					decoBlock14:{type:'optionblock',label:"Flowers:",kids:createMenuFromArray(decorFlowers,"")},
+					decoBlock15:{type:'optionblock',label:" Birthday 2:",kids:createMenuFromArray(decorFV2Birthday,"")},
+					decoBlock16:{type:'optionblock',label:"Sand Castle:",kids:createMenuFromArray(decorSandCastle,"")},
+					decoBlock17:{type:'optionblock',label:"Bobbing For Apples:",kids:createMenuFromArray(decorApples,"")},
+					decoBlock18:{type:'optionblock',label:"Other:",kids:createMenuFromArray(decorOther,"")},		
+				}},
+				
+				flowerssep:{type:'tab',label:"Flowers",kids:{
+					perfectblock1:{type:'optionblock',label:"Perfect Bunches:",kids:createMenuFromArray(flowerTypes,"perfect_")},
+					perfectbunch:{type:'checkbox',label:"Unknown Bunches"},
+				}},
+				
+				}}, // end decorations
+				
+				adoptsep:{type:'separator',label:"Adopt Specific Animals",kids:{
+				bovinetab:{type:'tab',label:"Cows & Calves",kids:{
+					cowBlock:{type:'optionblock',label:"Cows:",kids:createMenuFromArray(cowTypes,"adopt_cow")},
+					bullblock:{type:'optionblock',label:"Bulls:",kids:{
+						adopt_flowerbull:{type:'checkbox',label:"Flower Bull"},
+					}},
+					calfBlock:{type:'optionblock',label:"Calves:",kids:createMenuFromArray(calfTypes,"adopt_calf")},
+					bullBlock:{type:'optionblock',label:"Bull Calves:",kids:createMenuFromArray(bullTypes,"adopt_calf")},
+					oxenBlock:{type:'optionblock',label:"Baby Oxen:",kids:createMenuFromArray(oxenTypes,"adopt_calf")},
+					adopt_calf:{type:'checkbox',label:"Unknown Calves"},
+				}},
+				equinetab:{type:'tab',label:"Horses & Foals",kids:{
+					horseBlock:{type:'optionblock',label:"Horses:",kids:{
+						adopt_auroraunicorn:{type:'checkbox',label:"Aurora Unicorn"},
+						adopt_horseblack:{type:'checkbox',label:"Black"},
+						adopt_blackpony:{type:'checkbox',label:"Black Pony"},
+						adopt_horseblacksnowfantasy:{type:'checkbox',label:"Black Snow Fanstasy"},
+						adopt_horsebrown:{type:'checkbox',label:"Brown"},
+						adopt_horsebuckskinmini:{type:'checkbox',label:"Buckskin Mini"},
+						adopt_horsecandycorn:{type:'checkbox',label:"Candy Corn"},
+						adopt_candycornunicorn:{type:'checkbox',label:"Candycorn Unicorn"},
+						adopt_chateaustallion:{type:'checkbox',label:"Chateau Stallion"},
+						adopt_horsecreamdraft:{type:'checkbox',label:"Cream Draft"},
+						adopt_dreamunicorn:{type:'checkbox',label:"Dream Unicorn",newitem:true},
+						adopt_horsefancy:{type:'checkbox',label:"Fancy"},
+						adopt_horsefarmer:{type:'checkbox',label:"Farmer"},
+						adopt_horsefirefly:{type:'checkbox',label:"Firefly"},
+						adopt_horseflowered:{type:'checkbox',label:"Flowered"},
+						adopt_horsegray:{type:'checkbox',label:"Gray"},
+						adopt_horsegrey:{type:'checkbox',label:"Grey"},
+						adopt_horsejetset:{type:'checkbox',label:"Jet Set"},
+						adopt_lightbluepony:{type:'checkbox',label:"Light Blue Pony"},
+						adopt_nightmarestallion:{type:'checkbox',label:"Nightmare Stallion"},
+						adopt_horsenomadic:{type:'checkbox',label:"Nomadic"},
+						adopt_nutcrackerstallion:{type:'checkbox',label:"Nutcracker Stallion"},
+						adopt_horseopenroad:{type:'checkbox',label:"Open Road"},
+						adopt_horsepostierbrenton:{type:'checkbox',label:"Postier Brenton"},
+						adopt_rainbowbodymustang:{type:'checkbox',label:"Rainbow Body Mustang"},
+						adopt_horsered:{type:'checkbox',label:"Red"},
+						adopt_horseredpinto:{type:'checkbox',label:"Red Pinto"},
+						adopt_smittenstallion:{type:'checkbox',label:"Smitten Stallion"},
+						adopt_horsesundae:{type:'checkbox',label:"Sundae"},
+						adopt_summerdonkey:{type:'checkbox',label:"Summer Donkey",newitem:true},
+						adopt_vineyardsteed:{type:'checkbox',label:"Vineyard Steed"},
+						adopt_whitemustang:{type:'checkbox',label:"White Mustang"},
+						adopt_horsewhitesnowfantasy:{type:'checkbox',label:"White Snow Fantasy"},
+					}},
+					adopt_horse:{type:'checkbox',label:"Unknown Horses"},
+					
+					foalBlock:{type:'optionblock',label:"Foals:",kids:createMenuFromArray(foalTypes,"adopt_foal")},
+					assBlock:{type:'optionblock',label:"Donkey Foals:",kids:createMenuFromArray(assTypes,"adopt_foal")},
+					adopt_foal:{type:'checkbox',label:"Unknown Foals"},
+				}},
+				porcinetab:{type:'tab',label:"Pigs & Piglets",kids:{				
+					pigBlock:{type:'optionblock',label:"Pigs:",kids:{
+						adopt_boar:{type:'checkbox',label:"Boar"},
+						adopt_yellowsow:{type:'checkbox',label:"Yellow Sow"},
+						adopt_pig:{type:'checkbox',label:"Plain Pink"},
+						adopt_pigblack:{type:'checkbox',label:"Black"},
+						adopt_pigwhite:{type:'checkbox',label:"White"},
+						adopt_pigstrawberry:{type:'checkbox',label:"Strawberry"},
+						adopt_pighotpink:{type:'checkbox',label:"Hot Pink"},
+						adopt_pigossabaw:{type:'checkbox',label:"Ossabaw"},
+						adopt_pigpinkpotbelly:{type:'checkbox',label:"Pink Pot Belly"},
+						adopt_pigpoolside:{type:'checkbox',label:"Poolside"},
+						adopt_pigghost:{type:'checkbox',label:"Ghost"},
+						adopt_pigsnowflake:{type:'checkbox',label:"Snow Flake"},
+					}},	
+					pigletblock:{type:'optionblock',label:"Pig Pen Piglets:",kids:{
+						adopt_piglet:{type:'checkbox',label:"Indeterminate"},
+					}},
+				}},
+				sheepistab:{type:'tab',label:"Goats, Sheep & Lambs",kids:{				
+					sheepBlock:{type:'optionblock',label:"Sheep:",kids:{
+						adopt_sheepcaroling:{type:'checkbox',label:"Caroling"},
+						adopt_sheepconnoisseur:{type:'checkbox',label:"Connoisseur",newitem:true},
+						adopt_diamondewe:{type:'checkbox',label:"Diamond Ewe"},
+						adopt_sheepdwarfblue:{type:'checkbox',label:"Dwarf Blue"},
+						adopt_ramfloweredgreen:{type:'checkbox',label:'Flowered Green Ram'},
+						adopt_eweluv:{type:'checkbox',label:"Luv Ewe"},
+						adopt_sheepminer:{type:'checkbox',label:"Miner"},
+						adopt_sheepmouflon:{type:'checkbox',label:"Mouflon"},
+						adopt_sheep:{type:'checkbox',label:"Plain White"},
+						adopt_sheeppolkadot:{type:'checkbox',label:"Polkadot"},
+						adopt_ram:{type:'checkbox',label:"Ram"},
+						adopt_sheepred:{type:'checkbox',label:"Red"},
+						adopt_rednosesheep:{type:'checkbox',label:"Red Nose"},
+						adopt_sheepscuba:{type:'checkbox',label:"Scuba"},
+						adopt_ewescared:{type:'checkbox',label:"Scared Ewe"},
+						adopt_sheepshamrock:{type:'checkbox',label:"Shamrock"},
+						adopt_sheepsmitten:{type:'checkbox',label:"Smitten"},
+						adopt_sheepstarbright:{type:'checkbox',label:"Star Bright"},
+						adopt_ewesunny:{type:'checkbox',label:"Sunny Ewe"},
+						adopt_eweschooled:{type:'checkbox',label:"Schooled Ewe"},
+						adopt_ewethank:{type:'checkbox',label:"Thank Ewe"},
+						adopt_sheepwhiteninja:{type:'checkbox',label:"White Ninja"},
+					}},
+
+					goatBlock:{type:'optionblock',label:"Goats:",kids:{
+						adopt_boergoat:{type:'checkbox',label:"Boer"},
+						adopot_carolinggoat:{type:'checkbox',label:"Caroling"},
+						adopt_redgoat:{type:'checkbox',label:"Red"},
+						adopt_redtoggenburggoat:{type:'checkbox',label:"Red Toggenburg"},
+						adopt_mouflongoat:{type:'checkbox',label:"Mouflon"},
+					}},
+					adopt_goat:{type:'checkbox',label:"Unknown Goats"},
+
+					lambBlock:{type:'optionblock',label:"Lambs:",kids:{
+						adopt_babylamb:{type:'checkbox',label:"Brown"},
+						adopt_pinklamb:{type:'checkbox',label:"Pink"},
+					}},
+
+					lambBlock2:{type:'optionblock',label:"Sheep Pen Lambs:",kids:{
+						adopt_lamb:{type:'checkbox',label:"Indeterminate Sex"},
+						adopt_lambram:{type:'checkbox',label:"Known Male"},
+						adopt_lambewe:{type:'checkbox',label:"Known Female"},
+					}},
+				}},
+				duckustab:{type:'tab',label:"Ducks & Ducklings",kids:{				
+					duckBlock:{type:'optionblock',label:"Ducks:",kids:{
+						adopt_duckbanjo:{type:'checkbox',label:"Banjo"},
+						adopt_duckbelted:{type:'checkbox',label:"Belted"},
+						adopt_bluewingedteal:{type:'checkbox',label:"Blue Winged Teal"},
+						adopt_duckgoldeneye:{type:'checkbox',label:"Goldeneye"},
+						adopt_ducklongtail:{type:'checkbox',label:"Longtail"},
+						adopt_duckparty:{type:'checkbox',label:"Party"},
+						adopt_duckugly:{type:'checkbox',label:"Ugly"},
+						adopt_duckwarder:{type:'checkbox',label:"Warder"},
+						adopt_duckwhitegrape:{type:'checkbox',label:"White Grape",newitem:true},
+					}},
+					adopt_duck:{type:'checkbox',label:"Unknown Ducks"},
+
+					ducklingBlock:{type:'optionblock',label:"Ducklings:",kids:{
+						adopt_ducklingbrown:{type:'checkbox',label:"Brown"},
+						adopt_ducklingblue:{type:'checkbox',label:"Blue"},
+						adopt_ducklingred:{type:'checkbox',label:"Red"},
+						adopt_ducklingyellow:{type:'checkbox',label:"Yellow"},
+						adopt_ducklingugly:{type:'checkbox',label:"Ugly"},
+					}},
+					adopt_duckling:{type:'checkbox',label:"Unknown Ducklings"},
+				}},
+				
+				mysterybabytab:{type:'tab',label:"Mystery Babies",kids:{
+					wildlifeblock:{type:'optionblock',label:"Wildlife Habitat:",kids:{
+						wildlife_common:{type:'checkbox',label:"Common"},
+						wildlife_rare:{type:'checkbox',label:"Rare"},
+					}},
+					
+					petrunblock:{type:'optionblock',label:"Pet Run:",kids:{
+						petrun_common:{type:'checkbox',label:"Common"},
+						petrun_rare:{type:'checkbox',label:"Rare"},
+					}},
+
+					zooblock:{type:'optionblock',label:"Zoo:",kids:{
+						zoo_common:{type:'checkbox',label:"Common"},
+						zoo_rare:{type:'checkbox',label:"Rare"},
+					}},
+					
+					aviaryblock:{type:'optionblock',label:"Aviary:",kids:{
+						aviary_common:{type:'checkbox',label:"Common"},
+						aviary_rare:{type:'checkbox',label:"Rare"},
+					}},
+					
+					livestockblock:{type:'optionblock',label:"Livestock Pen:",kids:{
+						livestock_common:{type:'checkbox',label:"Common"},
+						livestock_rare:{type:'checkbox',label:"Rare"},
+					}},
+					
+					winterpenblock:{type:'optionblock',label:"Winter Animal Pen:",kids:{
+						arctic_common:{type:'checkbox',label:"Common"},
+						arctic_rare:{type:'checkbox',label:"Rare"},
+					}},
+					
+					aquariumblock:{type:'optionblock',label:"Aquarium:",kids:{
+						sea_common:{type:'checkbox',label:"Common"},
+						sea_rare:{type:'checkbox',label:"Rare"},
+					}},
+					
+					jadeblock:{type:'optionblock',label:"Jade Habitat:",kids:{
+						jade_common:{type:'checkbox',label:"Common"},
+						jade_rare:{type:'checkbox',label:"Rare"},
+					}},
+					
+					jade1block:{type:'optionblock',label:"Jade Aquarium:",kids:{
+						ocean_common:{type:'checkbox',label:"Common"},
+						ocean_rare:{type:'checkbox',label:"Rare"},
+					}},
+					
+					unknown_baby:{type:'checkbox',label:"Unknown Babies"},
+				}},
+				
+				othertab:{type:'tab',label:"Other",kids:{
+					dinoblock:{type:'optionblock',label:"Dino DNA Strand:",kids:createMenuFromArray(dnaTypes,"dna_")},
+					gemblock:{type:'optionblock',label:"Gems:",kids:createMenuFromArray(gemTypes,"gem_")},
+				}},
+				
+				miscanimstab:{type:'tab',label:"Other Animals",kids:{
+					babyBlock:{type:'optionblock',label:"Baby Animals:",kids:createMenuFromArray(babyAnimals,"adopt_")},
+					
+					bunny2Block:{type:'optionblock',label:"Bunnies:",kids:{
+						adopt_bluelilybunny:{type:'checkbox',label:"Blue Lily"},
+						adopt_goldfloppybunny:{type:'checkbox',label:"Gold Floppy"},
+						adopt_pinkloppybunny:{type:'checkbox',label:"Pink Loppy"},
+						adopt_purplepuffybunny:{type:'checkbox',label:"Purple Puffy"},
+						adopt_whitedaisybunny:{type:'checkbox',label:"White Daisy"},
+						adopt_yellowchubbybunny:{type:'checkbox',label:"Yellow Chubby"},
+					}},
+					
+					catBlock:{type:'optionblock',label:"Cats:",kids:{
+						adopt_americanbobtail:{type:'checkbox',label:"American Bobtail"},
+						adopt_auroracat:{type:'checkbox',label:"Aurora"},
+						adopt_blackkitten:{type:'checkbox',label:"Black"},
+						adopt_himalayankitty:{type:'checkbox',label:"Himalayan"},
+						adopt_persiancat:{type:'checkbox',label:"Persian"},
+						adopt_whitekitty:{type:'checkbox',label:"White"},
+					}},
+					
+					chickenBlock:{type:'optionblock',label:"Chickens:",kids:{
+						adopt_cloverchicken:{type:'checkbox',label:"Clover"},
+						adopt_dorkingchicken:{type:'checkbox',label:"Dorking"},
+						adopt_gardenerchicken:{type:'checkbox',label:"Gardener",newitem:true},
+						adopt_rhodeislandredchicken:{type:'checkbox',label:"Rhode Island Red"},
+						adopt_chicken:{type:'checkbox',label:"White"},
+					}},
+					
+					gooseBlock:{type:'optionblock',label:"Geese:",kids:{
+						adopt_farmgoose:{type:'checkbox',label:"Farm Goose"},
+						adopt_whitegoose:{type:'checkbox',label:"White Goose"},
+					}},
+					
+					llamaBlock:{type:'optionblock',label:"Llamas:",kids:{
+						adopt_llama:{type:'checkbox',label:"Llama"},
+						adopt_ponchollama:{type:'checkbox',label:"Poncho Llama"},
+						adopt_whitellama:{type:'checkbox',label:"White Llama"},
+					}},
+					
+					bunnyBlock:{type:'optionblock',label:"Rabbits:",kids:{
+						adopt_arcticrabbit:{type:'checkbox',label:"Arctic"},
+						adopt_blackrabbit:{type:'checkbox',label:"Black"},
+						adopt_cloverrabbit:{type:'checkbox',label:"Clover"},
+						adopt_dutchrabbit:{type:'checkbox',label:"Dutch"},
+						adopt_englishspotrabbit:{type:'checkbox',label:"English Spot"},
+						adopt_marathonhare:{type:'checkbox',label:"Marathon Hare"},
+						adopt_redgraperabbit:{type:'checkbox',label:"Red Grape",newitem:true},
+						adopt_spottedloprabbit:{type:'checkbox',label:"Spotted Lop"},
+						adopt_rabbit:{type:'checkbox',label:"White"},
+					}},
+
+					reindeerBlock:{type:'optionblock',label:"Reindeer:",kids:{
+						adopt_reindeer:{type:'checkbox',label:"Reindeer"},
+						adopt_clumsyreindeer:{type:'checkbox',label:"Clumsy Reindeer"},
+					}},
+					
+					turklingBlock:{type:'optionblock',label:"Turkeys:",kids:{
+						adopt_turkey:{type:'checkbox',label:"Turkey"},
+						adopt_whiteturkey:{type:'checkbox',label:"White Turkey"},
+						adopt_babybourbonturkey:{type:'checkbox',label:"Baby Bourbon Turkey"},
+					}},
+
+					yakBlock:{type:'optionblock',label:"Yaks:",kids:createMenuFromArray(yakTypes,"adopt_yak")},
+					
+					otheranimalsBlock:{type:'optionblock',label:"Other Animals:",kids:{
+						adopt_accountantdog:{type:'checkbox',label:"Accountant Dog"},
+						adopt_americanbulldog:{type:'checkbox',label:"American Bulldog"},
+						adopt_bigbluetangfish:{type:'checkbox',label:"Big Blue Tang Fish"},
+						adopt_bluedotelephant:{type:'checkbox',label:"Blue Dot Elephant"},
+						adopt_brachiosaurus:{type:'checkbox',label:"Brachiosaurus"},
+						adopt_carnotaurus:{type:'checkbox',label:"Carnotaurus"},
+						adopt_chinchilla:{type:'checkbox',label:"Chinchilla"},
+						adopt_coelophysis:{type:'checkbox',label:"Coelophysis"},
+						adopt_crownofthornsstarfish:{type:'checkbox',label:"Crown of Thorns Starfish"},
+						adopt_elfpenguin:{type:'checkbox',label:"Elf Penguin"},
+						adopt_gallimimus:{type:'checkbox',label:"Gallimimus"},
+						adopt_halloweentutuhippo:{type:'checkbox',label:"Halloween Tutu Hippo"},
+						adopt_harborseal:{type:'checkbox',label:"Harbor Seal"},
+						adopt_holidaystbernard:{type:'checkbox',label:"Holiday St. Bernard"},
+						adopt_hopperfromdish:{type:'checkbox',label:"Hopper From DISH"},
+						adopt_icecreamdragon:{type:'checkbox',label:"Ice Cream Dragon"},
+						adopt_largeparrot:{type:'checkbox',label:"Large Parrot"},
+						adopt_lesserflamingo:{type:'checkbox',label:"Lesser Flamingo"},
+						adopt_marathontortoise:{type:'checkbox',label:"Marathon Tortoise"},
+						adopt_merlecorgi:{type:'checkbox',label:"Merle Corgi"},
+						adopt_mistletoepenguin:{type:'checkbox',label:"Mistletoe Penguin"},
+						adopt_navyfuschiaspottedturtle:{type:'checkbox',label:"Navy Fuschia Spotted Turtle",newitem:true},
+						adopt_penguin:{type:'checkbox',label:"Penguin"},
+						adopt_porcupine:{type:'checkbox',label:"Porcupine"},
+						adopt_raccoon:{type:'checkbox',label:"Raccoon"},
+						adopt_redgiraffe:{type:'checkbox',label:"Red Giraffe"},
+						adopt_ringtail:{type:'checkbox',label:"Ringtail"},
+						adopt_riverfloatpug:{type:'checkbox',label:"River Float Pug"},
+						adopt_rosedragon:{type:'checkbox',label:"Rose Dragon"},
+						adopt_safaribear:{type:'checkbox',label:"Safari Bear"},
+						adopt_snowleopard:{type:'checkbox',label:"Snow Leopard"},
+						adopt_spabear:{type:'checkbox',label:"Spa Bear"},
+						adopt_stripedpossum:{type:'checkbox',label:"Striped Possum"},
+						adopt_tikimaskturtle:{type:'checkbox',label:"Tiki Mask Turtle"},
+						adopt_treasureseagull:{type:'checkbox',label:"Treasure Seagull"},
+						adopt_turtle:{type:'checkbox',label:"Turtle"},
+						adopt_babyturtle:{type:'checkbox',label:"Baby Turtle",newitem:true},
+						"adopt_white-tailedbuck":{type:'checkbox',label:"White-tailed Buck"},
+						adopt_winterfox:{type:'checkbox',label:"Winter Fox"},
+						adopt_winterpolarbear:{type:'checkbox',label:"Winter Polar Bear"},
+						adopt_zebragiraffe:{type:'checkbox',label:"Zebra Giraffe"},
+					}},
+				}} 
+				}}, //end adoption section
+
+				
+				farmcropssep:{type:'separator',label:"Seeds, Bushels & Crafting",kids:{
+				seedsep:{type:'tab',label:"Seeds",kids:{
+					seedblock1:{type:'optionblock',label:"Pollinated Fruit:",kids:createMenuFromArray(fruitTypes,"polseeds_")},
+					seedblock2:{type:'optionblock',label:"Pollinated Vegetables:",kids:createMenuFromArray(vegTypes,"polseeds_")},
+					seedblock3:{type:'optionblock',label:"Pollinated Grains:",kids:createMenuFromArray(grainTypes,"polseeds_")},
+					seedblock4:{type:'optionblock',label:"Pollinated Flowers:",kids:createMenuFromArray(flowerTypes,"polseeds_")},
+					seedblock5:{type:'optionblock',label:"Pollinated Other:",kids:createMenuFromArray(otherBushels,"polseeds_")},
+					seedblock6:{type:'optionblock',label:"Pollinated Special:",kids:createMenuFromArray(specialBushels,"polseeds_")},
+					seedblock8:{type:'optionblock',label:"Crossbred Seeds:",kids:createMenuFromArray(seedTypes,"seeds_")},
+
+					pollinated:{type:'checkbox',label:"Unknown Seeds"},
+				}},
+
+				bushelsep:{type:'tab',label:"Bushels",kids:{
+					hlbushelblock:{type:'optionblock',label:"Highlight Bushels By Crafting Cottage",hideSelectAll:true,kids:{
+						btnbakery:{type:'button_highlight',label:"Bakery",options:bakeryBushels,clearfirst:allCraftBushels},
+						btnwinery:{type:'button_highlight',label:"Winery",options:wineryBushels,clearfirst:allCraftBushels},
+						btnspa:{type:'button_highlight',label:"Spa",options:spaBushels,clearfirst:allCraftBushels},
+						btnpub:{type:'button_highlight',label:"Pub",options:pubBushels,clearfirst:allCraftBushels},
+						btnrestraunt:{type:'button_highlight',label:"Restraunt",options:restrauntBushels,clearfirst:allCraftBushels},
+						btncraftshop:{type:'button_highlight',label:"Craftshop",options:craftshopBushels,clearfirst:allCraftBushels},
+						btnsweetshoppe:{type:'button_highlight',label:"Sweet Shoppe",options:sweetshoppeBushels,clearfirst:allCraftBushels},
+						btntikibar:{type:'button_highlight',label:"Tiki Bar",options:tikibarBushels,clearfirst:allCraftBushels},
+						btnteagarden:{type:'button_highlight',label:"Tea Garden",options:teagardenBushels,clearfirst:allCraftBushels},
+						btnhlnone:{type:'button_highlight',label:"None",clearfirst:allCraftBushels},
+					}},
+
+					bushelblock1:{type:'optionblock',label:"Fruit:",kids:createMenuFromArray(fruitTypes,"bushel_")},
+					bushelblock2:{type:'optionblock',label:"Vegetables:",kids:createMenuFromArray(vegTypes,"bushel_")},
+					bushelblock3:{type:'optionblock',label:"Grains:",kids:createMenuFromArray(grainTypes,"bushel_")},
+					bushelblock4:{type:'optionblock',label:"Flowers:",kids:createMenuFromArray(flowerTypes,"bushel_")},
+					bushelblock7:{type:'optionblock',label:"Seafood:",kids:createMenuFromArray(seafoodTypes,"bushel_")},
+					bushelblock5:{type:'optionblock',label:"Other:",kids:createMenuFromArray(otherBushels,"bushel_")},
+					bushelblock6:{type:'optionblock',label:"Special:",kids:createMenuFromArray(specialBushels,"bushel_")},
+
+					bushel:{type:'checkbox',label:"Unknown Bushels"},
+				}},
+
+				preordersep:{type:'tab',label:"Order Crops", kids:{
+					preorderblock1:{type:'optionblock',label:"Fruit:",kids:createMenuFromArray(fruitTypes,"order_")},
+					preorderblock2:{type:'optionblock',label:"Vegetables:",kids:createMenuFromArray(vegTypes,"order_")},
+					preorderblock3:{type:'optionblock',label:"Grains:",kids:createMenuFromArray(grainTypes,"order_")},
+					preorderblock4:{type:'optionblock',label:"Flowers:",kids:createMenuFromArray(flowerTypes,"order_")},
+					preorderblock7:{type:'optionblock',label:"Seafood:",kids:createMenuFromArray(seafoodTypes,"order_")},
+					preorderblock5:{type:'optionblock',label:"Other:",kids:createMenuFromArray(otherBushels,"order_")},
+					preorderblock6:{type:'optionblock',label:"Special:",kids:createMenuFromArray(specialBushels,"order_")},
+
+					order:{type:'checkbox',label:"Order Unknown Crops"},
+				}},
+				
+				jointeamsep:{type:'tab',label:"Join Teams",kids:{
+					jointeamblock:{type:'optionblock',label:"Join Teams:",kids:createMenuFromArray(craftShop,"join")},
+					join:{type:'checkbox',label:"Unknown Crafting Teams"},
+				}},
+				
+				}} //end farms separator
+
+				}} //end farmville section
+			} //end menu
+		};
+
+		//this converts the menu above to a text string
+		//it erases all functions, preventing sidekicks from making destructive changes to the WM script
+		//it also provides an early error checking stage before the menu is attached to the WM script
+		attString=JSON.stringify(attachment);
+	
+		//put note on the door
+		door.appendChild(createElement('div',{id:'wmDoor_app'+thisApp,'data-ft':attString}));
+
+		//knock on the door
+		window.setTimeout(function(){click(door);},1000);
+
+		//cleanup
+		doorMark=null;calfTypes=null;foalTypes=null;horseTypes=null;bushelTypes=null;flowerTypes=null;
+		treeTypes=null;craftPub=null;craftWinery=null;craftSpa=null;craftBakery=null;craftTypes=null;
+		standardMaterials=null;otherConsumables=null;specialMaterials=null;seafoodTypes=null;
+		craftingMaterials=null;materials=null;colBerries=null;colCitrus=null;colCows=null;colFlowers=null;
+		colGrains=null;colSquash=null;colTypes=null;colGroups=null;questItems=null;duckTypes=null;
+		pigTypes=null;sheepTypes=null;cowTypes=null;decorTypes=null;eggTypes=null;otherAnimals=null;
+		otherWords=null;buildings=null;attachment=null;attString=null;seedTypes=null;animalCatchalls=null;
+		craftRestraunt=null;craftSweetShoppe=null;eggTypes2=null;babyAnimals=null;allCalves=null;
+		assTypes=null;allFoals=null;
+		
+		t1=null;t2=null;t3=null;t4=null;t5=null;t6=null;t7=null;t8=null;t10=null;t11=null;
+		t12=null;t13=null;t14=null;t15=null;t16=null;t17=null;t18=null;t19=null;t20=null;t21=null;
+		t22=null;t23=null;t27=null;t29=null;t30=null;t31=null;t32=null;t33=null;t34=null;t35=null;
+		t36=null;t37=null;
+	};
+
+	//a function similar to Facebook Auto Publisher for some FV reward pages autopub does not see
+	function sendWishGift(){
+		//console.log("sendWishGift");
+		//color the panel so we know where the script is right now
+		//document.body.style.backgroundColor=["blue","red","white","green","pink","lime","orange"].pickRandom();
+
+		var node = selectSingleNode(".//input[(@name='sendit') and not(contains(@class,'noHammer'))]");
+		var vote=Math.floor(Math.random()*2);
+		var html = document.documentElement.innerHTML;
+		var isSendBushel = html.find("AskForBushels");
+
+		//check for image button gift page
+		if (!node) {
+			var itemID = location.search.getUrlParam("selectedGift");
+			//alert(itemID);
+			if (itemID) {
+				//check that selectedGift is not a comma delimited list. If it is, separate and choose one
+				if (itemID.find(",")) itemID = itemID.split(",").pickRandom();
+				else if (itemID.find("%2C")) itemID = itemID.split("%2C").pickRandom();
+				//alert(itemID);
+			}
+			node = $("add_"+itemID);
+		}
+
+		//check for radio button gift page
+		if (!node) {
+			//check for gift page buttons
+			var nodes=selectNodes(".//*[contains(@class,'giftLi')]//span[contains(@class,'fb_protected_wrapper')]/input[contains(@class,'request_form_submit')]");
+			if (nodes.snapshotLength) {
+				//pick one randomly
+				node = nodes.snapshotItem( Math.floor(Math.random()*nodes.snapshotLength) );
+				node.style.backgroundColor="green";
+			}
+		}
+
+		//check for single send buttons for pages like send bushel
+		if (!node) node=selectSingleNode(".//input[contains(@class,'request_form_submit') and not(contains(@class,'noHammer'))]");
+		if (!node) node=selectSingleNode(".//div[contains(@class,'gift_form_buttons')]/a[contains(@class,'giftformsubmit') and not(contains(@class,'noHammer'))]");
+		if (!node) node=selectSingleNode(".//div[@class='rfloat']/input[(@name='try_again_button') and not(contains(@class,'noHammer'))]");
+		if (!node) node=selectSingleNode(".//input[(@name='acceptReward') and not(contains(@class,'noHammer'))]");
+		if (!node) node=selectSingleNode(".//input[(@class='input"+vote+"submit') and not(contains(@class,'noHammer'))]");
+		if (!node) node=selectSingleNode(".//div[(@id='vote"+vote+"') and not(contains(@class,'noHammer'))]");
+
+		//if we found a useful button or element to click, click it. 
+		//THEN if we expect another button or element to appear on the same window, wait and click that too.
+		if (node) {setTimeout(function(){
+			if (isSendBushel) {
+				/*var hwnd = window.top;
+				hwnd.*/
+				setTimeout(function(){sendMessage(1);},2000);
+			}
+			click(node);
+		},500); } else {
+			//check for stuff that denotes being done
+			node=selectSingleNode(".//input[@class='playButton' and @name='playFarm']");
+			if (node) {
+				sendMessage(1);
+			}
+		}
+		window.setTimeout(sendWishGift,1000); //keep looking
+		
+	};
+	
+	//main script function
+	function run(){
+		//console.log("run");
+		var href=window.location.href;
+		var text = document.documentElement.textContent;
+		var thisLoc; (thisLoc=(location.protocol+"//"+location.host+location.pathname).split("/")).pop(); thisLoc=thisLoc.join("/");
+		
+		//check for apprequest popup
+		if (href.contains('apprequests')) {
+			var node = selectSingleNode(".//input[@name='ok_clicked']");
+			if (node) click (node);
+			return;
+		}
+		
+		//check for preconstructed facebook request items
+		else if (href.contains("/plugins/serverfbml.php")) {
+			//validate correct app id
+			var html = document.documentElement.innerHTML;
+			var isSendBushel = html.find("AskForBushels");
+			if (html.contains("app_id=102452128776") || html.contains("app_content_102452128776")){
+				if (text.find("Sorry, you can't give this user any more gifts") || text.find("Sorry, you can't send this gift")) {sendMessage(-1);return;}
+				var node = selectSingleNode(".//span[contains(@class,'fb_protected_wrapper')]/input[contains(@class,'request_form_submit')]");
+				if (node) {
+					//make sure this node is not on the neighbors.php form
+					var avoidForm = selectSingleNode(".//ancestor::form[contains(@action,'neighbors.php') or contains(@action,'gifts.php?ref=neighbors')]",{node:node});
+					if (!avoidForm) {
+						click (node);
+						window.setTimeout(sendWishGift,1000); //there is another button named sendit here
+					}
+				}
+			}
+			return;
+		}
+
+		//check for need to dock to WM Host
+		if (href.startsWith('http://www.facebook.com/') && !(href.contains("/plugins/serverfbml.php")) ) {
+			dock();
+			Sidekick.openChannel();//new WM 3 methods
+			return;
+		}
+
+		//if not on a dockable page, start searching for reward page types
+
+		else if (text.find("Error while loading page from")) {
+			sendMessage(-5);
+			//window.location.reload();
+			return;
+		}
+		
+		else if (href.startsWith(thisLoc+'/wishlist_give.php') ){
+			//send wish list item
+			if (text.find("Sorry, you can't give this user any more gifts") || text.find("Sorry, you can't send this gift")) {sendMessage(-1);return;}
+			if (selectSingleNode(".//span[contains(@class,'fb_protected_wrapper')]/input[contains(@class,'request_form_submit')]")) window.setTimeout(sendWishGift,1000); //buttons no longer here
+			return;
+		}
+
+		else if (href.startsWith(thisLoc+'/gifts_send.php')){
+			//comes after sending wish gift
+			//alert(href);
+			window.setTimeout(function(){sendMessage(1);},5000);
+			return;
+		}
+
+		else if (href.startsWith(thisLoc+'/reward_gift_send.php') ){
+			//try to send a gift with button
+			window.setTimeout(sendWishGift,1000);
+			//sendMessage(1); <---dont want to do that here
+			return;
+		}
+		
+		else if (href.startsWith(thisLoc+'/index.php') || href.startsWith(thisLoc+'/?' )){
+			//alert(href);
+			sendMessage(1);
+			return;
+		}
+
+		else if ( href.startsWith(thisLoc+'/gifts.php') && href.contains('giftRecipient=') ){
+			//taken to specific gift sending page
+			var node; 
+			
+			//color the panel so we know where the script is right now
+			//document.body.style.backgroundColor=["blue","red","white","green","pink","lime","orange"].pickRandom();
+
+			//check for limits
+			if (text.find("you can't give this user any more gifts")) {sendMessage(-1);}
+
+			//check for normal send buttons
+			else if (node=selectSingleNode(".//span[contains(@class,'fb_protected_wrapper')]/input[contains(@class,'request_form_submit')]")) window.setTimeout(sendWishGift,1000);
+
+			//check for radio button gift page
+			else if (node=selectSingleNode(".//li[contains(@class,'giftLi')]")) window.setTimeout(sendWishGift,1000);
+
+			//check for image button gift page
+			else if (node=selectSingleNode(".//iframe[contains(@src,'farmville.com/gifts.php')]")){
+				//break it out of iframes and add the gift names to the url
+				var itemID = location.search.getUrlParam('selectedGift'); //copy the gift names
+				location.href = node.src+"&selectedGift="+itemID; //redirect and append the gift names
+			}
+
+			//default fail
+			//else {sendMessage(-1);} 
+			//dont return from here due to new iframes
+			//instead just let the thing open iframes and if it dont work just let it time out
+
+			return;
+		}
+		
+		else if (href.contains('redirecting_zy_session_expired')){
+			//alert(href);
+			sendMessage(1); 
+			return;
+		}
+		
+		else if (href.startsWith(thisLoc+'/gifts.php') ){
+			//taken to generic gift sending page with no useful recipient or gift names
+			sendMessage(-1);
+			//OR write in code to select some random gift
+			return;
+		}
+
+		else if (href.startsWith(thisLoc+'/trading_post_order_place.php') ){
+			//taken to place order page
+			if (text.find("Congratulations! You've placed a")) sendMessage(1);
+			else if (text.find("You've reached your limit for ordering from this user")) sendMessage(-1);
+			else if (text.find("Sorry Farmer! You don't have an order pending with this friend")) sendMessage(-1);
+			return;
+		}
+
+		else if (href.startsWith(thisLoc+'/reward.php') 
+			&& (text.find("Would you like a ") || text.find("in your Dino Lab") || text.find("Would you like an ")) 
+			&& (text.find("Bushel") || text.find("Basket") || text.find("DNA"))){
+			//bushel acceptance stage 1
+			//or dino dnd stage 1
+			//alert('path set');
+			window.setTimeout(sendWishGift,1000);
+			return;
+		}
+		
+		/*else if ((href.startsWith(thisLoc+'/performfriendvote.php')||href.startsWith(thisLoc+'//performfriendvote.php')) && (text.match(
+				/(naughty or nice|night owl|early( bird)?|plans rigorously|lives spontaneously|lounging|exploring|fashion diva|functional dresser|casually late|stays in|ventures out)/gi
+			))){
+			window.setTimeout(sendWishGift,1000);
+			return;
+		}*/
+
+	//	else if ((href.startsWith(thisLoc+'/performfriendvote.php')||href.startsWith(thisLoc+'//performfriendvote.php')) && ($("vote1")||$("vote0"))){
+		else if (href.contains('performfriendvote.php') ){ //&& ($("vote1")||$("vote0"))
+			window.setTimeout(sendWishGift,1000);
+			return;
+		}
+		//else if (href.find('reward.php') ){
+		else if (href.startsWith(thisLoc+'/reward.php') || href.contains('reward.php')){
+			//document.body.style.backgroundColor=["red","green","blue"].pickRandom();
+		
+		//*************************************************************************************
+		//***** this section must be tailored to fit your specific needs                  *****
+		//***** below is a list of searches for text pertaining to various messages       *****
+		//***** the list below is not generic and targets Empires and Allies specifically *****
+		//***** you will need to find the specific texts for the game you selected        *****
+		//*************************************************************************************
+		//***** The WM script can recieve and act on the following statusCode values:     *****
+		/*
+			  1: Acceptance, no stipulations
+			  0: Unknown return, use this only if your script encounters unplanned results and can still communicate a result
+			 -1: Failure, generic
+			 -2: Failure, none left
+			 -3: Over Gift Limit failure
+			 -4: Over Gift Limit, still allows sending gift, marked as accepted
+			 -5: Identified server error
+			 -6: Already got, failure marked as accepted
+			 -7: Identified server down for repairs
+			 -8: Problem finding a required action link
+			 -9: reserved for WM functions
+			-10: reserved for WM functions
+			-11: Identified as expired
+			-12: Post source is not a neighbor and neighbor status is required. Future WM version will auto-add neighbor if possible.
+
+			//additional codes may now exist, please check the wiki support site for information
+		*/
+		//*************************************************************************************
+		
+			//all out
+			if (text.match(
+				/(enough (votes|help)|there aren't any more items|been (claimed|picked up)|given out all the free samples they had|are('nt)? (no|any) more|has already received|fresh out of|someone already|isn't yours|got here too late|folks have already|already has enough|already has all the)/gi
+			)) sendMessage(-2);
+
+			//over limit
+			else if (text.match(
+				/(you've already got|already have a stallion)/gi
+			)) sendMessage(-4);
+			
+			//expired
+			else if (text.match(
+				/((event|promotion) has (expired|ended)|no longer needs|missed your oppor|expired)/gi
+			)) sendMessage(-11);
+
+			//requirements not met
+			else if (text.match(
+				/(You must be level|switch farms and try|need to finish building|don't have a trough|before you can|not open to everyone|you can't send)/gi
+			)) sendMessage(-13);
+
+			//not a neighbor
+			else if (text.match(
+				/(only neighbors|only friends can|have to be a neigh|just for your friends)/gi
+			)) sendMessage(-12);
+			
+			//gift box full
+			else if (text.match(
+				/(already got all the (treats|builder)|you need to use|(gift box|storage) is full|at max cap|doesn't need another|is too full|any(place| room) to store)/gi
+			)) sendMessage(-3);
+
+			//already accepted
+			else if (text.match(
+				/(voters agree with you|whoa there|slow down there partner|can only help your friend once|already (clicked|claimed|collected|received|hatched|taken part|helping|voted)|you('ve| have)? already (helped|tried|accepted|clicked|voted|gave)|claim one (reward|item)|already on another job)/gi
+			)) sendMessage(-6);
+
+			//generic fail
+			else if (text.match(
+				/(is for your friend|not for you|(reward for|can't claim) your own|only your friends|can't claim the animal|out of luck|you can't (help|accept)|try again next time|sorry( (par(t|d)ner|farmer))?)/gi
+			)) sendMessage(-1);
+
+			//accepted
+			else if (what=text.match(
+				/(your vote|has been registered|congrat(ulations|s)|yee-haw|hooray|lucky you|you (accepted|helped|claimed|collected)|agreed to join|(you )?just (sent|unlocked|collected|gave you)|(thanks|thank you) for (helping|taking part|your interest|voting)|wants you to have|can find it in your|play farmville|can be found in your gift box)/gi
+			)) {sendMessage(1); /*alert(what);*/};
+		}
+
+		else if (!defaultTO) defaultTO=window.setTimeout(function(){
+			var html=document.documentElement.innerHTML;
+			if (html.find("app102452128776_giftsTab")) sendMessage(-15);
+		},5000);
+	};
+
+	//start the script
+	window.setTimeout(run,500);
+
+})(); // anonymous function wrapper end

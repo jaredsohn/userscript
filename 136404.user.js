@@ -1,0 +1,1121 @@
+// ==UserScript==
+// @name           kknTool
+// @namespace      kknTool
+// @description    kknTool
+// @include        http://*.sangokushi.in.th/*
+// ==/UserScript==
+
+//Sangokushi Tool
+//Develop By KKN
+//13/06/2555 Version 3.00
+//Update
+//13/06/2555 Version 3.11
+//18/06/2555 Version 3.21
+
+var LOCAL_STORAGE = 'kknTool';
+
+//CSS
+var PageHead = document.getElementsByTagName('head')[0];
+var CssStyle = document.createElement('style');
+var StyleStr;
+
+//Array
+var AreaClass = new Array();
+var AreaShow = new Array();
+
+//Toolbar หลัก
+var kknToolBar = document.createElement('div');
+var Credit = document.createElement('span');
+var ToolBar = document.createElement('div');
+var ToolBarUl = document.createElement('UL');
+
+//ระดับอาณาเขต
+var WarPowerLi = document.createElement('li');
+var WarPowerA = document.createElement('a');
+var WarPowerSpan = document.createElement('span');
+var WarPowerSubDiv = document.createElement('div');
+var WarPowerUL = document.createElement('ul');
+
+//คำนวนพลังโจมตี
+var CalPowerLi = document.createElement('li');
+var CalPowerA = document.createElement('a');
+var CalPowerSpan = document.createElement('span');
+var CalPowerSubDiv = document.createElement('div');
+var CalPowerUL = document.createElement('ul');
+
+InitGMWrapper();
+CreateCSS();
+CreateMainDiv();
+
+GenerateAreaClass();
+SetupAreaPowerMenu();
+ShowAreaPower(false);
+SetAreaPowerCheckBoxListener();
+SetAreaJapVesion();
+
+SetupCalPowerMenu();
+
+function CreateCSS() {
+    var PageHead = document.getElementsByTagName('head')[0];
+    var CssStyle = document.createElement('style');
+    var StyleStr;
+
+    CssStyle.type = 'text/css';
+    StyleStr = '.Container { z-index:1100; display:block; width:100%; height:20px; background-color:Black; font-family:Tahoma; font-size: 11px; position:fixed; bottom:0px; left:0; color:White; } .Container a { text-decoration:none; } .Container hr { display:block; } .Credit { float: right; margin: 3px 3px 0px 0px; } .MainNav { float: left; margin:0 0 0 5px; } .MainNav ul { float: left; margin: 0; list-style: none; } .MainNav .NavList { float:left; } .MainNav li a { display: block; line-height: 24px; overflow: hidden; float: left; color:White; padding: 0px 5px 0px 5px; } .MainNav li a:hover { background: -moz-linear-gradient(top, #999999, #000000); background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#999999), to(#000000)); } .MainNav li a:active { background: -moz-linear-gradient(top, #000000, #444444); background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#000000), to(#444444)); }.MainNav a .menu-mid { height: 18px; line-height: 21px; display: block; float: left; } .MainNav li .subList { display: none; position: fixed; bottom:20px; padding-top: 3px; border: 1px solid Black; -moz-border-radius: 7px 7px 0px 0px; -webkit-border-radius: 7px 7px 0px 0px; border-radius: 7px 7px 0px 0px;} .subList { z-index:1090; background: -moz-linear-gradient(top, #444444, #000000); background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#444444), to(#000000)); border: 1px solid white; -moz-border-radius: 7px 7px 0px 0px; -webkit-border-radius: 7px 7px 0px 0px; border-radius: 7px 7px 0px 0px; }  .MainNav li:hover .subList{ display:block; } .MainNav li ul { width: auto; height: auto; margin: 0; padding: 0 5px 0px; list-style: none; } .MainNav li ul li { width: auto; display:block; padding: 0px 10px 0px 0px; } .MainNav li .subList li a { display:block; width:100%; padding: 0px 5px 0px 5px; } .MainNav li .subList li a:hover { background: -moz-linear-gradient(top, #999999, #000000); background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#999999), to(#000000)); -moz-border-radius: 7px 7px 0px 0px; -webkit-border-radius: 7px 7px 0px 0px; border-radius: 7px 7px 7px 7px; } .MainNav li .subList li a:active { background: -moz-linear-gradient(top, #000000, #444444); background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#000000), to(#444444)); -moz-border-radius: 7px 7px 0px 0px; -webkit-border-radius: 7px 7px 0px 0px; border-radius: 7px 7px 7px 7px; } .UnitImg { width: 25px; height: 25px; float: left; } .divText { float: left; margin: 5px 5px 0px 5px; } .divLabel { float: left; text-align: left; width: 100px; padding: 0px 0px 0px 10px; } .divNumber { float: left; margin: 5px 5px 0px 0px; text-align: right; width: 75px; } .floatLeft { float: left; }';
+    CssStyle.appendChild(document.createTextNode(StyleStr));
+    PageHead.appendChild(CssStyle);
+}
+
+function CreateMainDiv() {
+    kknToolBar.id = 'kknToolBar';
+    kknToolBar.className = 'Container';
+
+    ToolBar.id = 'MainNav';
+    ToolBar.className = 'MainNav';
+
+    ToolBar.appendChild(ToolBarUl);
+    kknToolBar.appendChild(ToolBar);
+
+    //Credit
+    Credit.id = 'Credit';
+    Credit.className = 'Credit';
+    Credit.innerHTML = ' kknTool 3.21 | Develop By kkn ( XIV ) ';
+    kknToolBar.appendChild(Credit)
+
+    document.body.insertBefore(kknToolBar, document.body.firstChild);
+}
+
+function SetupCalPowerMenu() {
+    CalPowerLi.id = 'CalPowerLi';
+    CalPowerLi.className = 'NavList';
+    CalPowerUL.id = 'CalPowerUL';
+    CalPowerSubDiv.className = 'subList';
+    CalPowerSpan.className = 'menu-mid';
+    CalPowerSpan.innerHTML = ' คำนวนพลังโจมตี '
+    CalPowerA.href = '#';
+
+    CalPowerSubDiv.appendChild(CalPowerUL);
+    CalPowerA.appendChild(CalPowerSpan);
+    CalPowerLi.appendChild(CalPowerA);
+    CalPowerLi.appendChild(CalPowerSubDiv);
+
+    //****************************************
+
+    var liPeriod = document.createElement('li');
+    //var a = document.createElement('a');
+    var liPerioddiv = document.createElement('div');
+    liPerioddiv.className = 'divLabel';
+    liPerioddiv.innerHTML = 'ช่วงเวลา';
+    var PeriodSelect = document.createElement('select');
+    PeriodSelect.type = 'option';
+    PeriodSelect.id = 'PERIOD';
+    PeriodSelect.onchange = function () { setCalPowerMenuItem(document.getElementById('PERIOD').selectedIndex); }
+
+    for (i = 0; i <= 4; i++) {
+        var Option = document.createElement('option');
+        Option.value = i;
+
+        if (i < 3) {
+            Option.innerHTML = 'Phase ' + (i + 1);
+        }
+        else if (i == 3) {
+            Option.innerHTML = 'Stage 5';
+        }
+        else if (i == 4) {
+            Option.innerHTML = 'Stage 7';
+        }
+
+        PeriodSelect.appendChild(Option);
+    }
+
+    liPeriod.appendChild(liPerioddiv);
+    liPeriod.appendChild(PeriodSelect);
+    CalPowerUL.appendChild(liPeriod);
+
+    //****************************************
+
+    var liStar = document.createElement('li');
+    //var aStar = document.createElement('a');
+    var divStar = document.createElement('div');
+    divStar.className = 'divLabel';
+    divStar.innerHTML = 'ระดับอาณาเขต';
+    var StarSelect = document.createElement('select');
+    StarSelect.type = 'option';
+    StarSelect.id = 'STAR';
+    liStar.appendChild(divStar);
+    liStar.appendChild(StarSelect);
+    CalPowerUL.appendChild(liStar);
+
+    //****************************************
+
+    var liDistance = document.createElement('li');
+    var divDistance = document.createElement('div');
+    divDistance.className = 'divLabel';
+    divDistance.innerHTML = 'ระยะทาง (ช่อง)';
+    var inputDistance = document.createElement('input');
+    inputDistance.type = 'text';
+    inputDistance.id = 'KYORI';
+
+    liDistance.appendChild(divDistance);
+    liDistance.appendChild(inputDistance);
+    CalPowerUL.appendChild(liDistance);
+
+    //****************************************
+
+    var liDistance = document.createElement('li');
+    var divDistance = document.createElement('div');
+    divDistance.className = 'divLabel';
+    divDistance.innerHTML = '.';
+    var inputDistance = document.createElement('input');
+    inputDistance.type = 'button';
+    inputDistance.value = 'คำนวน';
+    inputDistance.addEventListener("click", function () { CalculateAtackPower() }, true);
+
+    liDistance.appendChild(divDistance);
+    liDistance.appendChild(inputDistance);
+    CalPowerUL.appendChild(liDistance);
+
+    //****************************************
+
+    var liUnitQty = document.createElement('li');
+    liUnitQty.innerHTML = '<hr style="display:block;">จำนวนทหาร';
+
+    CalPowerUL.appendChild(liUnitQty);
+
+    //****************************************
+
+    for (i = 1; i <= 7; i++) {
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+        var img = document.createElement('img');
+        var divTextMax = document.createElement('div');
+        var divTextMin = document.createElement('div');
+        var divNumberMax = document.createElement('div');
+        var divNumberMin = document.createElement('div');
+
+        a.href = '#';
+        img.className = 'UnitImg';
+
+        divTextMax.innerHTML = 'สูงสุด';
+        divTextMax.className = 'divText';
+        divTextMin.innerHTML = 'ต่ำสุด';
+        divTextMin.className = 'divText';
+        divNumberMax.innerHTML = '0';
+        divNumberMax.className = 'divNumber';
+        divNumberMin.innerHTML = '0';
+        divNumberMin.className = 'divNumber';
+
+        switch (i) {
+            case 1:
+                img.src = 'http://w1.sangokushi.in.th/extend_project/thai_w945/img/help/sldr_03_00.png';
+                divNumberMax.id = 'KENMAX';
+                divNumberMin.id = 'KENMIN';
+                break;
+            case 2:
+                img.src = 'http://w1.sangokushi.in.th/extend_project/thai_w945/img/help/sldr_04_00.png';
+                divNumberMax.id = 'YARIMAX';
+                divNumberMin.id = 'YARIMIN';
+                break;
+            case 3:
+                img.src = 'http://w1.sangokushi.in.th/extend_project/thai_w945/img/help/sldr_05_00.png';
+                divNumberMax.id = 'YUMIMAX';
+                divNumberMin.id = 'YUMIMIN';
+                break;
+            case 4:
+                img.src = 'http://w1.sangokushi.in.th/extend_project/thai_w945/img/help/sldr_06_00.png';
+                divNumberMax.id = 'KIMAX';
+                divNumberMin.id = 'KIMIN';
+                break;
+            case 5:
+                img.src = 'http://w1.sangokushi.in.th/extend_project/thai_w945/img/help/sldr_09_00.png';
+                divNumberMax.id = 'HOKOMAX';
+                divNumberMin.id = 'HOKOMIN';
+                break;
+            case 6:
+                img.src = 'http://w1.sangokushi.in.th/extend_project/thai_w945/img/help/sldr_10_00.png';
+                divNumberMax.id = 'DOMAX';
+                divNumberMin.id = 'DOMIN';
+                break;
+            case 7:
+                img.src = 'http://w1.sangokushi.in.th/extend_project/thai_w945/img/help/sldr_11_00.png';
+                divNumberMax.id = 'KONOEMAX';
+                divNumberMin.id = 'KONOEMIN';
+                break;
+        }
+
+        a.appendChild(img);
+        a.appendChild(divTextMax);
+        a.appendChild(divNumberMax);
+        a.appendChild(divTextMin);
+        a.appendChild(divNumberMin);
+        li.appendChild(a);
+        CalPowerUL.appendChild(li);
+    }
+
+    //****************************************
+
+    var liTotalPower = document.createElement('li');
+    liTotalPower.innerHTML = '<hr style="display:block;">พลังโจมตีรวม';
+
+    CalPowerUL.appendChild(liTotalPower);
+
+    //****************************************
+
+    for (i = 1; i <= 4; i++) {
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+        var img = document.createElement('img');
+        var divTextMax = document.createElement('div');
+        var divTextMin = document.createElement('div');
+        var divNumberMax = document.createElement('div');
+        var divNumberMin = document.createElement('div');
+
+        a.href = '#';
+        img.className = 'UnitImg';
+
+        divTextMax.innerHTML = 'สูงสุด';
+        divTextMax.className = 'divText';
+        divTextMin.innerHTML = 'ต่ำสุด';
+        divTextMin.className = 'divText';
+        divNumberMax.innerHTML = '0';
+        divNumberMax.className = 'divNumber';
+        divNumberMin.innerHTML = '0';
+        divNumberMin.className = 'divNumber';
+
+        switch (i) {
+            case 1:
+                img.src = 'http://w1.sangokushi.in.th/extend_project/thai_w945/img/help/sldr_03_00.png';
+                divNumberMax.id = 'KENGMAX';
+                divNumberMin.id = 'KENGMIN';
+                break;
+            case 2:
+                img.src = 'http://w1.sangokushi.in.th/extend_project/thai_w945/img/help/sldr_09_00.png';
+                divNumberMax.id = 'YARIGMAX';
+                divNumberMin.id = 'YARIGMIN';
+                break;
+            case 3:
+                img.src = 'http://w1.sangokushi.in.th/extend_project/thai_w945/img/help/sldr_10_00.png';
+                divNumberMax.id = 'YUMIGMAX';
+                divNumberMin.id = 'YUMIGMIN';
+                break;
+            case 4:
+                img.src = 'http://w1.sangokushi.in.th/extend_project/thai_w945/img/help/sldr_11_00.png';
+                divNumberMax.id = 'KIGMAX';
+                divNumberMin.id = 'KIGMIN';
+                break;
+        }
+
+        a.appendChild(img);
+        a.appendChild(divTextMax);
+        a.appendChild(divNumberMax);
+        a.appendChild(divTextMin);
+        a.appendChild(divNumberMin);
+        li.appendChild(a);
+        CalPowerUL.appendChild(li);
+    }
+
+    //****************************************
+
+    var liTotalPower = document.createElement('li');
+    liTotalPower.innerHTML = '<hr style="display:block;"><a href="http://sososoru.nusutto.jp/tekihei.html">Credit : sososoru.nusutto.jp</a>';
+
+    CalPowerUL.appendChild(liTotalPower);
+
+    //****************************************
+
+
+    //****************************************
+
+    ToolBarUl.appendChild(CalPowerLi);
+}
+
+function SetupAreaPowerMenu() {
+    if (location.pathname == '/map.php') {
+        //if (MenuConfig[AreaPower] = 'checked') {
+        WarPowerLi.id = 'WarPowerLi';
+        WarPowerLi.className = 'NavList';
+        WarPowerUL.id = 'WarPowerUL';
+        WarPowerSubDiv.className = 'subList';
+        WarPowerSpan.className = 'menu-mid';
+        WarPowerSpan.innerHTML = ' ระดับอาณาเขต '
+        WarPowerA.href = '#';
+
+        WarPowerSubDiv.appendChild(WarPowerUL);
+        WarPowerA.appendChild(WarPowerSpan);
+        WarPowerLi.appendChild(WarPowerA);
+        WarPowerLi.appendChild(WarPowerSubDiv);
+
+        for (i = 1; i <= 10; i++) {
+            var li = document.createElement('li');
+            var a = document.createElement('a');
+            var span = document.createElement('span');
+            var Input = document.createElement('input');
+            span.innerHTML = ' ระดับ ' + i;
+            Input.type = 'checkbox';
+            Input.id = 'Power' + i;
+
+            a.href = '#';
+            a.id = 'aPower' + i;
+            a.appendChild(Input);
+            a.appendChild(span);
+
+            li.appendChild(a);
+            WarPowerUL.appendChild(li);
+        }
+
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+        var span = document.createElement('span');
+        a.href = '#';
+        a.title = 'ซ่อน-แสดง ทั้งหมด'
+        a.id = 'aToggle'
+        a.innerHTML = ''
+        li.appendChild(a);
+
+        WarPowerUL.appendChild(li);
+        ToolBarUl.appendChild(WarPowerLi);
+        //}
+    }
+}
+
+function ShowAreaPower(Reload) {
+    if (location.pathname == '/map.php') {
+        var mapElem = document.evaluate('//*[@id="mapsAll"]', document, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0);
+        var AreasPos = document.evaluate('//*[@id="mapOverlayMap"]//area', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+        var Areas = document.evaluate('//*[@id="mapOverlayMap"]//area/@onmouseover', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+
+        SetAreaPowerCheckBox();
+
+        for (var i = 0; i < Areas.snapshotLength; i++) {
+            //<img src=\'/20110921-01/extend_project/thai/img/common/star_warpower_b.gif\' />            
+            try {
+                var AreaPower = Areas.snapshotItem(i).textContent.match(/star_warpower_b/gi).length;
+                if (AreaPower != 'undefined') {
+                    var addElemPow = document.createElement("img");
+
+                    addElemPow.id = 'AreaPower' + i;
+                    addElemPow.className = AreaClass[i] + ' power';
+
+                    if (Reload) {
+                        var oldImg = document.getElementById('AreaPower' + i);
+                        if (oldImg != null) {
+                            mapElem.removeChild(oldImg);
+                        }
+                    }
+
+                    if (AreaShow[AreaPower - 1] == 'checked') {
+                        switch (AreaPower) {
+                            case 1:
+                                addElemPow.src = 'data:image/gif;base64,' +
+                                            'R0lGODlhPAA8AKUwAAAAAAEBAQECAQIDAgIEAgMFAwMGAw0aDQ4bDhYqFhYrFhcsFxgvGBozGhw2' +
+                                            'HChOKCtTKy5YLi5ZLjBcMDFdMTJfMjRjND54PkqPSkuRS02VTVKeUlOgU1akVlmqWV2zXWS/ZGTA' +
+                                            'ZGXBZWXCZWfFZ23RbW7Ubnfld3vse3vte3zufHzvfH3xfX7yfoD2gIH3gf//////////////////' +
+                                            '/////////////////////////////////////////////yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5' +
+                                            'BAEKAD8ALAAAAAA8ADwAQAbMwJ9wSCwaj8ikcslsOp/QqHRKrVqfAIDpVfK8XqLsdUwECFTfBoDM' +
+                                            'brvf8Lh8Tq+Ts3ixHbv4sghre0oABy5fh4cTgYKMjY6PkJGSk5SVlkZZCBuGXwqLk3kAI18Vn5VZ' +
+                                            'GF8aeqAADxcXHF8nsA+mkKG5l7u8vb6/wMHCw8TFxsfIycpvobx4DiBfELe4ABIpiCsD1I9ZHxEB' +
+                                            'GV8ZrJR4AytfDNySABRfJOWnACFfFuyOeQlfLQbyuAVQIELUAd+eXAiXKVzIsKHDMUEAADs=';
+                                break;
+                            case 2:
+                                addElemPow.src = 'data:image/gif;base64,' +
+                                            'R0lGODlhPAA8AKU6AAAAAAEBAQIDAgIEAgMFAwUKBQcNBwkSCQoTCg0ZDREgEREhERQmFBQnFBgu' +
+                                            'GBs1Gx89HyNEIyVIJTBcMDJfMjhrODpwOjx0PD54PkF8QUF9QUWFRUyTTE2VTVCaUFakVlalVlmq' +
+                                            'WWK7YmXCZWfFZ2jIaGnJaWnKaW3SbW/Wb3DYcHHYcXHZcXLacnPdc3TedHfld3noeXrqenvte33w' +
+                                            'fX7yfn7zfn/0f4D2gIH3gf///////////////////////yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5' +
+                                            'BAEKAD8ALAAAAAA8ADwAQAbbwJ9wSCwaj8ikcslsOp/QqHRKrVqfgIarcgAgVLmwBHC9AgAUWzhU' +
+                                            'OJff8Lh8Tq/b73j8ec/PR88MMWEjA2R+SGckYYuMGW6HkJGSk5SVlpeYmZp/AB6MiyCPmHs/Zylh' +
+                                            'MASGowAOL2EsCqKVZxOLLBy5uRezlHy/pJvCw8TFxsfIycrLzM3Oz9DRlsDDZxAdKDUzJRYCq5cA' +
+                                            'Bjc5OC40jAzftADeex+LD+qstmEYvdMACy1hKwn3vgAiyAhjwp88gBoWbQjwi5WIT4xO/IMErOJB' +
+                                            'aRgzatzI8UoQADs=';
+                                break;
+                            case 3:
+                                addElemPow.src = 'data:image/gif;base64,' +
+                                            'R0lGODlhPAA8AMZBAAAAAAEBAQMFAwMGAwUKBQYLBgcNBwcOBwkSCQsVCwwXDA0ZDRQmFBUoFRUp' +
+                                            'FRcsFyA9ICJCIiNEIydLJy5ZLjFdMTRjNDZoNjdqNzhsODpvOjtyOzxzPDx0PD12PT95Pz96P0J+' +
+                                            'QkWERUeJR0mNSVGbUVKdUlOfU1OgU1WjVVakVl60Xl61XmfGZ2nJaWnKaW/Vb2/Wb3fkd3fld3jm' +
+                                            'eHnoeXrqenrrenvse3zufHzvfH7yfn7zfn/0f3/1f4D2gIH3gf//////////////////////////' +
+                                            '////////////////////////////////////////////////////////////////////////////' +
+                                            '////////////////////////////////////////////////////////////////////////////' +
+                                            '/////////////////////////////////////////////////////////////////////////yH+' +
+                                            'EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAH8ALAAAAAA8ADwAQAf5gH+Cg4SFhoeIiYqLjI2Oj5CR' +
+                                            'kpOUlZaPAAYcBwCdHkCgDACXl52mnRagQBOjpK6vsLGys7S1treyp7qduI0AATKqQDIVpr2JnQsi' +
+                                            'LTc+Ni4joq3H1NXW19jZ2tvc3d6SnSjCqim83boONKAi5tunBBEwoD8N09idJj8sHxkkM6oY2mnb' +
+                                            'ZeybwYMIEypcyLChw4cQI0qcSLEit10GTUkoAWNHjhcdBgjMBqCADxwnNISoMS+BvYG6QoDCIeDl' +
+                                            'PQAQLmgwoQOUipo2rwFA4GMcjw0jYZqioKrYRQcPTimIAcqGgaDUOq0YB6oHiKRCCRa0SLas2bNo' +
+                                            'ZwUCADs=';
+                                break;
+                            case 4:
+                                addElemPow.src = 'data:image/gif;base64,' +
+                                            'R0lGODlhPAA8AKU5AAAAAAEBAQECAQIEAgMGAwsWCwwXDA0ZDRAeEBEhERUpFRs0Gx47HiE/ISJB' +
+                                            'IiVIJSZJJidLJytSKzVlNTZoNjltOT12PT95Pz96P0SCREiKSEiLSEyTTE6XTk+YT1WjVVipWFmq' +
+                                            'WVuuW1yxXGC5YGK8YmO+Y2fFZ2jIaGrMam/Vb3Pcc3TedHXhdXfld3jmeHrqenvse33xfX7yfn7z' +
+                                            'fn/0f3/1f4D2gIH3gf///////////////////////////yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5' +
+                                            'BAEKAD8ALAAAAAA8ADwAQAbjwJ9wSCwaj8ikcslsOp/QqHRKrVqjAAEJB/vgcB0A4FoVp77oNE4l' +
+                                            'Jrvf8Lh8Tq/b73axXo9fAggnOC0HAA9fKG19TmIlNy4KY4qSk5SVlpeYmZqbnFZiDDRoMwSRmWIQ' +
+                                            'NzgaACxfC6WXAA5fFnogXxN8mHt6GF9hiZ0/vMLFxsfIycrLzM3Oz9DR0tPUdLywnGIUMF8xCdi7' +
+                                            'AAWtNofBpgAZXxIiuOCVYggvOCYDBl+j75NiHDg1DWIu/DoHD4AHNWpkBNDXR0yFDRAhjviyYkME' +
+                                            'guhCuDt2jWG1jyBDihwJJQgAOw==';
+                                break;
+                            case 5:
+                                addElemPow.src = 'data:image/gif;base64,' +
+                                            'R0lGODlhPAA8AKU+AAAAAAICAAUFAAYGAA0NABQUABUVABYWABsbAB0dACIiACUlACcnACsrADEx' +
+                                            'ADIyADY2ADc3ADg4ADw8AEBAAFJSAFNTAFRUAFdXAF5eAGBgAGdnAGhoAGxsAG5uAHFxAHZ2AHd3' +
+                                            'AHp6AICAAIGBAIWFAIaGAJaWAJeXAJycAKmpALW1ALa2ALi4AL29AMvLANDQANPTANbWAN/fAOXl' +
+                                            'AOjoAOrqAOzsAO7uAPHxAPX1APb2APz8AP//AP///////yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5' +
+                                            'BAEKAD8ALAAAAAA8ADwAQAbcwJ9wSCwaj8ikcslsOp/QqHRKrVqfAECtx8p6s9fw10vpmR+AsHrN' +
+                                            'brvf8Lh8/h7b03RltmXum2UDeHlHWQ0nMTo8Ni4eBGCDkJGSk5SVlpeYmZpTWSN+fhKClgAVZhsL' +
+                                            'CAFem3YKfSCik1kkPCwiHyg4ZjoOj5d3sZvCw8TFxsfIycrLzM3Oz9DRssDBlQAQO59mGtWSWSs9' +
+                                            'Nx3j4xm+owlmJWOsACafOSkH59YAERcXGCEzfRbdvwL6cPg3CEABBl8MwDDzgp43ACq09aAxweE0' +
+                                            'atIyatzIsWOcIAA7';
+                                break;
+                            case 6:
+                                addElemPow.src = 'data:image/gif;base64,' +
+                                            'R0lGODlhPAA8AMZGAAAAAAEBAAICAAMDAAQEAAgIAA0NAA8PABISACIiACMjACUlACkpACwsAC0t' +
+                                            'ADo6ADw8AD4+AD8/AEREAEhIAEpKAEtLAE1NAFxcAGFhAGJiAGNjAGhoAG9vAHR0AHt7AIGBAIKC' +
+                                            'AIaGAImJAIyMAJiYAJ6eAKioAKurAKysAK2tAK+vALi4ALq6AL6+AMXFAMbGAMfHAM3NANPTANXV' +
+                                            'ANbWANnZAN3dAOPjAOXlAObmAOzsAO3tAO7uAPDwAPT0APb2APn5APv7APz8AP39AP//AP//////' +
+                                            '////////////////////////////////////////////////////////////////////////////' +
+                                            '////////////////////////////////////////////////////////////////////////////' +
+                                            '/////////////////////////////////////////////////////////////////////////yH+' +
+                                            'EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAH8ALAAAAAA8ADwAQAf+gH+Cg4SFhoeIiYqLjI2Oj5CR' +
+                                            'kpOUlZaPAAMyRUUgAgCgoZeWoEGcCaEqnCKgo66vsLGys7S1tre0obqiuImgHpzBwiWtvb4AES0+' +
+                                            'QjopE8XG0dLT1NXW19jZ2tuToA42wpwr0NWgM5wMDxobDwHk5QA0nBahFZw679OgLJw4HyQ/OI3I' +
+                                            'Z20XQW4IEypcyLChw4cQI0qcSLGixYvUDAJACKoABxc8hviIgeFgNFALenCqIaJDCBclN14DlYHT' +
+                                            'CY3aADjgBCSHsBcITPYClYKTjAsGDqDgdEMoLlAqizQIVbMIDKe3QO3gRAEUBCJFhCiQOROAhCHh' +
+                                            'ipggQDabRqwJGOPKnUu3LqVAADs=';
+                                break;
+                            case 7:
+                                addElemPow.src = 'data:image/gif;base64,' +
+                                            'R0lGODlhPAA8AKUqAAAAAAMCAAQDAAYEAQ8JAhAKAxILAxkPBB8TBSEUBicYBzQgCTkjCj0lC1Qz' +
+                                            'D1g1EF45EWtBE29DFHRGFXhJFX9NF4lTGJZbG5hcG5teHLZuIbdvIc59JdJ/JtaBJuOJKeeMKe2P' +
+                                            'KvSTLPWULPiWLPqXLfuYLfyYLf2ZLf6aLv//////////////////////////////////////////' +
+                                            '/////////////////////////////////////////////yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5' +
+                                            'BAEKAD8ALAAAAAA8ADwAQAbFwJ9wSCwaj8ikcslsOp/QqHRKrVqhgKx2cUqlLtnrNdtAeTFhsXrN' +
+                                            'brvf8Lh8Dtfa72k6M6vxjhJ5ekgAFiUpH4AAgouMjY6PkJGSk5SVYw5emZopEIqWWROZD4GRWQUg' +
+                                            'Xh0CnpRZFaKkrXaWtLW2t7i5uru8vb6/wMHCw7J4s5MABiGbmhKskAAJEdPUHV4mB8+tARxeIASx' +
+                                            '0AAIIl4b4eIPmRToj1kZXigM7Y4AAx7e4NqSAAok5vTc4SFGsKDBgwjpBAEAOw==';
+                                break;
+                            case 8:
+                                addElemPow.src = 'data:image/gif;base64,' +
+                                            'R0lGODlhPAA8AMZNAAAAAAQDAAsHAg0IAg8JAhILAxUNAxYNBBgPBBoQBBsQBRwRBSQWBisaBzAd' +
+                                            'CDIeCTUgCTgiCj0lC0IoDEgsDUksDU4vDlo2EFw4EGc+EmpAE25DFHhJFXtKFn9NF4BNF4FOF4RQ' +
+                                            'F4VQGI1VGY9WGZNZGpRZGpVaG5ZbG5ldG6JiHaVkHaxoH65pH7BqH7VtILZuIbxyIr1yIsN2I8Z4' +
+                                            'I8p6JMt7JM18JdaBJuCHKOGIKOOJKeSKKeaLKeiMKumNKuqNKu+QK/CRK/GSK/KSK/WULPaVLPeV' +
+                                            'LPmWLfqXLfuYLfyYLf6aLv//////////////////////////////////////////////////////' +
+                                            '////////////////////////////////////////////////////////////////////////////' +
+                                            '/////////////////////////////////////////////////////////////////////////yH+' +
+                                            'EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAH8ALAAAAAA8ADwAQAf+gH+Cg4SFhoeIiYqLjI2Oj5CR' +
+                                            'kpOUlZaPABlMTDYBAAAYmzSfl5UAH5srn58mmyoApbGys7S1tre4ubq3q72ru42fD0Cbmy8GpMCJ' +
+                                            'nwcjOEVJPzIbAsnK19jZ2tvc3d7f4OGRnxA+xcVLFNbbnx2bM54WR0xBC+vZnxNDTEsoDiyblEC4' +
+                                            'h+1TiE1ISmwQoWOTjmrhfP0SR7GixYsYM2rcyLGjx48gQ4oc+U0iLHGfCniwQSSaCwkEtQEY0GPT' +
+                                            'DQ4ddmyCEbNgKyYhVoHYRKLnNQAKhGyq0WKTjwhGlX1iEOMcEyMXogIDkEBpkgqrZmw6oTXXpxWb' +
+                                            'UqwikGOThrIWZhHwsLopRwO4ukz2Ism3r9+/gG8FAgA7';
+                                break;
+                            case 9:
+                                addElemPow.src = 'data:image/gif;base64,' +
+                                            'R0lGODlhPAA8AMZKAAAAAAEAAAIAAAQAAAUAAAgAAAoAAA0AAA8AABEAABQAABgAACgAACkAADEA' +
+                                            'ADQAADUAADcAADkAAEMAAEwAAFEAAFsAAGYAAG4AAG8AAHMAAHYAAHoAAHwAAIQAAIcAAIoAAJEA' +
+                                            'AJIAAJUAAJcAAJgAAJkAAJwAAKEAAKcAAK0AALEAALIAALUAAL0AAMEAAMYAAMoAAMsAAMwAAM8A' +
+                                            'ANUAANgAAN4AAOAAAOEAAOYAAOcAAOgAAOoAAOwAAO4AAPAAAPIAAPQAAPkAAPoAAPsAAPwAAP0A' +
+                                            'AP4AAP8AAP//////////////////////////////////////////////////////////////////' +
+                                            '////////////////////////////////////////////////////////////////////////////' +
+                                            '/////////////////////////////////////////////////////////////////////////yH+' +
+                                            'EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAH8ALAAAAAA8ADwAQAf+gH+Cg4SFhoeIiYqLjI2Oj5CR' +
+                                            'kpOUlZaOAAAmSUkuA5kpnB8Al5eZp5kQSEk8BqSlsLGys7S1tre4ubWovK+6igAPnEkrGR82wxO+' +
+                                            'v4WZDio6R0I1IgynzNjZ2tvc3d7f4OHilJkPOsPDNATL3AARnEABp5tJIOzbmQonO0U+LSicXmTy' +
+                                            'lknCjRMaNqQYwonEwHC9Ho6bSLGixYsYM2rcyLGjx48gQ4r8FpFiJgQcYgQhgiNEAondMi3owWnG' +
+                                            'hhJHOFW4pw1AASGcIpz6wGkEz2wAKHD6ISBTABicMMDEF0AGOnRFDhxF2osFpwtTe/ZqkIOThbBc' +
+                                            'O1xNYsSDvK0N2CKiGkm3rt27eG8FAgA7';
+                                break;
+                            case 10:
+                                addElemPow.src = 'data:image/gif;base64,' +
+                                            'R0lGODlhPAA8AMZiAAAAAAEAAAIAAAMAAAQAAAUAAAYAAAcAAAkAAA4AABAAABQAABYAABoAABsA' +
+                                            'ABwAAB4AACUAACYAACwAAC0AAC4AADAAADEAADUAADgAADoAADwAAEQAAFEAAFMAAFQAAFYAAFsA' +
+                                            'AFwAAF8AAGAAAGEAAGMAAGYAAGcAAG8AAHAAAHMAAHUAAHYAAHoAAHwAAIMAAIgAAIkAAIwAAJEA' +
+                                            'AJQAAJYAAJcAAJkAAJoAAKMAAKQAAKYAAKoAALAAALIAALQAALkAAMIAAMUAAMYAAMcAAMgAAMkA' +
+                                            'AMwAAM0AANEAANcAANgAANkAANsAAN0AAOAAAOIAAOUAAOYAAOcAAO0AAPIAAPMAAPQAAPUAAPYA' +
+                                            'APcAAPkAAPoAAPsAAPwAAP4AAP8AAP//////////////////////////////////////////////' +
+                                            '/////////////////////////////////////////////////////////////////////////yH+' +
+                                            'EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAH8ALAAAAAA8ADwAQAf+gH+Cg4SFhoeIiYqLjI2Oj5CR' +
+                                            'kpOUlZZ/AABOYUw+YWFGmZgAJJ9PCZk0nz+il4mZAANanxiiABufV7AASp8nra7BwsPExcbHyMnK' +
+                                            'kLu7hM3Ny4MAFZ9cBQCjRZ8su0CfMMDEAA5gn+fnJLseQ1ZcUToWsNL09fb3+Pn6+/z9/pOZHuww' +
+                                            '94lCtlELkqD7BEWBuGLNjnwysUvDJywIYKn4JOShsUw1PuWwBeHcg2wAInwCw+DgRwAdXrzg8amK' +
+                                            'zA6ZBEz5lGTFDS+fPngcB83ZNGj/kipdyrSp06dQo0qdSrWq1atYmUYrVNTlMlgZiHwC4TLTgRTt' +
+                                            'ukTB0WDosEyFIrKg20LgIAABQj41cSGDy6cWboNlChJCgI1PNmwBWPJJXSYUn0J5fQmAwJZPF1AC' +
+                                            'iLFq14xPPQILy1TiExJbAi6H4bCLyieck19uC4PC1p9PXgJo/ERE9KVdEz51ObBLgslMIz5JyZgM' +
+                                            'gAEsC8+FzmQi+hcVvn93Nbo9dtbv4MOLH48sEAA7';
+                                break;
+                        }
+                        mapElem.appendChild(addElemPow);
+                    } else {
+
+                    }
+                }
+            }
+            catch (ex) {
+                //alert(ex.ToString);
+            }
+        }
+    }
+}
+
+function GenerateAreaClass() {
+    for (i = 0; i < 400; i++) {
+        AreaClass[i] = 'mapAll' + padZero(i + 1);
+    }
+
+    var TempAreaShow = GM_getValue('AreaShow');
+    if (TempAreaShow == undefined) {
+        AreaShow = new Array();
+        for (i = 0; i < 10; i++) {
+            AreaShow[i] = 'checked';
+        }
+        GM_setValue('AreaShow', AreaShow.toString());
+    } else {
+        AreaShow = TempAreaShow.split(",");
+    }
+}
+
+function SetAreaPowerCheckBox() {
+    var IsShow = false;
+
+    for (i = 0; i < 10; i++) {
+        var checkbox = document.getElementById('Power' + (i + 1));
+        checkbox.checked = AreaShow[i];
+        if (AreaShow[i] == 'checked') {
+            IsShow = true;
+        }
+    }
+
+    var aToggle = document.getElementById('aToggle');
+    if (IsShow) {
+        aToggle.innerHTML = 'ซ่อนทั้งหมดทุกระดับ';
+    } else {
+        aToggle.innerHTML = 'แสดงทั้งหมดทุกระดับ';
+    }
+}
+
+function SetAreaPowerCheckBoxListener() {
+    if (location.pathname == '/map.php') {
+        var a = document.getElementById('aPower1');
+        a.addEventListener("click", function () { AreaCheckBoxChange(1) }, true);
+        a = document.getElementById('aPower2');
+        a.addEventListener("click", function () { AreaCheckBoxChange(2) }, true);
+        a = document.getElementById('aPower3');
+        a.addEventListener("click", function () { AreaCheckBoxChange(3) }, true);
+        a = document.getElementById('aPower4');
+        a.addEventListener("click", function () { AreaCheckBoxChange(4) }, true);
+        a = document.getElementById('aPower5');
+        a.addEventListener("click", function () { AreaCheckBoxChange(5) }, true);
+        a = document.getElementById('aPower6');
+        a.addEventListener("click", function () { AreaCheckBoxChange(6) }, true);
+        a = document.getElementById('aPower7');
+        a.addEventListener("click", function () { AreaCheckBoxChange(7) }, true);
+        a = document.getElementById('aPower8');
+        a.addEventListener("click", function () { AreaCheckBoxChange(8) }, true);
+        a = document.getElementById('aPower9');
+        a.addEventListener("click", function () { AreaCheckBoxChange(9) }, true);
+        a = document.getElementById('aPower10');
+        a.addEventListener("click", function () { AreaCheckBoxChange(10) }, true);
+        a = document.getElementById('aToggle');
+        a.addEventListener("click", function () { ToggleShowArea() }, true);
+    }
+}
+
+function AreaCheckBoxChange(id) {
+    if (AreaShow[id - 1] == 'checked') {
+        AreaShow[id - 1] = '';
+    } else {
+        AreaShow[id - 1] = 'checked';
+    }
+    GM_setValue('AreaShow', AreaShow.toString());
+    ShowAreaPower(true);
+}
+
+function ToggleShowArea() {
+    var IsShow = false;
+
+    for (i = 0; i < 10; i++) {
+        if (AreaShow[i] == 'checked') {
+            IsShow = true;
+            break;
+        }
+    }
+
+    for (i = 0; i < 10; i++) {
+        if (IsShow) {
+            AreaShow[i] = '';
+        } else {
+            AreaShow[i] = 'checked';
+        }
+    }
+
+    var aToggle = document.getElementById('aToggle');
+    if (IsShow) {
+        aToggle.innerHTML = 'แสดงทั้งหมด';
+    } else {
+        aToggle.innerHTML = 'ซ่อนทั้งหมด';
+    }
+
+    GM_setValue('AreaShow', AreaShow.toString());
+    ShowAreaPower(true);
+}
+
+function SetAreaJapVesion() {
+    if (location.pathname == '/map.php') {
+        var Territory = document.evaluate('//*[@id="mapsAll"]', document, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0);
+
+        switch (getMapScale()) {
+            case 20:
+                document.getElementById('mapAll').setAttribute("style", "background-image: url(../img/common/mapall20_bg.gif)");
+                break;
+            case 15:
+                document.getElementById('mapAll').setAttribute("style", "background-image: url(../img/common/mapall15_bg.gif)");
+                break;
+            case 11:
+                document.getElementById('mapAll').setAttribute("style", "background-image: url(../img/common/mapall_bg.gif)");
+                break;
+        }
+
+        if (Territory.hasChildNodes()) {
+            var children = Territory.childNodes;
+            for (var i = 0; i < children.length; i++) {
+                if (children[i] != null) {
+                    if (children[i].tagName == 'IMG' && children[i].src.match(/territory/gi)) {
+                        var JapSrc = children[i].src.replace('/20120207-01/extend_project/thai_w945', '');
+                        children[i].src = JapSrc;
+                    }
+                }
+            }
+        }
+    }
+}
+
+function getMapScale() {
+    var sort15now = document.evaluate('//*[@id="change-map-scale"]/ul/li[@class="sort15 now"]', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+    if (sort15now.snapshotLength != 0) {
+        return 15;
+    }
+
+    var sort20now = document.evaluate('//*[@id="change-map-scale"]/ul/li[@class="sort20 now"]', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+    if (sort20now.snapshotLength != 0) {
+        return 20;
+    }
+
+    return 11;
+}
+
+function padZero(num) {
+    var result;
+    if (num < 10) {
+        result = "0" + num;
+    } else {
+        result = "" + num;
+    }
+    return result;
+}
+
+//---------- Required Script ----------
+//Google Chrome用GM_*系ラッパー関数
+function InitGMWrapper() {
+
+    // @copyright      2009, James Campos
+    // @license        cc-by-3.0; http://creativecommons.org/licenses/by/3.0/
+    if ((typeof GM_getValue == 'undefined') || (GM_getValue('a', 'b') == undefined)) {
+        GM_addStyle = function (css) {
+            var style = document.createElement('style');
+            style.textContent = css;
+            document.getElementsByTagName('head')[0].appendChild(style);
+        }
+
+        GM_deleteValue = function (name) {
+            localStorage.removeItem(LOCAL_STORAGE + "." + name);
+        }
+
+        GM_getValue = function (name, defaultValue) {
+            var value = localStorage.getItem(LOCAL_STORAGE + "." + name);
+            if (!value)
+                return defaultValue;
+            var type = value[0];
+            value = value.substring(1);
+            switch (type) {
+                case 'b':
+                    return value == 'true';
+                case 'n':
+                    return Number(value);
+                default:
+                    return value;
+            }
+        }
+
+        GM_log = function (message) {
+            console.log(message);
+        }
+
+        GM_registerMenuCommand = function (name, funk) {
+            //todo
+        }
+
+        GM_setValue = function (name, value) {
+            value = (typeof value)[0] + value;
+            try {
+                localStorage.setItem(LOCAL_STORAGE + "." + name, value);
+            } catch (e) {
+                alert("localStorage (" + e + ")");
+                throw e;
+            }
+        }
+
+        //by froo
+        GM_listValues = function () {
+            var res = new Array();
+            for (var i = 0; i < localStorage.length; i++) {
+                var key = localStorage.key(i);
+                if (key.indexOf(LOCAL_STORAGE + ".", 0) == 0) {
+                    res.push(key.replace(/^.*?\./, ""));
+                }
+            }
+            return res;
+        }
+    }
+}
+
+//คำนวนพลังโจมตี 
+//Credit : http://sososoru.nusutto.jp/tekihei.html 
+//"領地種類",剣兵,槍兵,弓兵,騎兵,矛槍兵,弩兵,近衛騎兵
+
+var menuItem = [
+				[
+//1期
+				["☆1", 5, 0, 0, 0, 0, 0, 0],
+				["☆2(3-0-0-0)", 0, 0.5, 4, 0.5, 0, 0, 0],
+				["☆2(0-3-0-0)", 0, 4, 0.5, 0.5, 0, 0, 0],
+				["☆2(0-0-3-0)", 0, 0.5, 0.5, 4, 0, 0, 0],
+				["☆3(1-1-1-0)", 0, 6, 6, 6, 0, 0, 0],
+			 	["☆3(0-0-0-4)", 0, 7.5, 7.5, 7.5, 0, 0, 0],
+			 	["☆4(2-2-2-0)", 0, 12.5, 12.5, 12.5, 0, 0, 0],
+				["☆4(0-0-0-8)", 0, 12.5, 12.5, 12.5, 0, 0, 0],
+				["☆4(2-2-2-2)", 0, 11, 11, 11, 0, 0, 0],
+				["☆5(6-0-0-0)", 0, 10, 40, 10, 0, 0, 0],
+				["☆5(0-6-0-0)", 0, 40, 10, 10, 0, 0, 0],
+				["☆5(0-0-6-0)", 0, 10, 10, 40, 0, 0, 0],
+				["☆6(10-0-0-0)", 0, 75, 15, 15, 0, 0, 0],
+				["☆6(0-10-0-0)", 0, 15, 75, 15, 0, 0, 0],
+				["☆6(0-0-10-0)", 0, 15, 15, 75, 0, 0, 0],
+				["☆7(3-3-3-0)", 0, 0, 0, 0, 50, 50, 50],
+				["☆8(4-4-4-4)", 0, 0, 0, 0, 100, 100, 100],
+				["☆9(0-0-0-18)", 0, 0, 0, 0, 150, 150, 150]
+				], [
+//2期
+				["☆1", 5, 0, 0, 0, 0, 0, 0],
+				["☆2(3-0-0-0)", 0, 0.5, 6, 0.5, 0, 0, 0],
+				["☆2(0-3-0-0)", 0, 6, 0.5, 0.5, 0, 0, 0],
+				["☆2(0-0-3-0)", 0, 0.5, 0.5, 6, 0, 0, 0],
+				["☆3(1-1-1-0)", 0, 7.5, 7.5, 7.5, 0, 0, 0],
+				["☆3(0-0-0-4)", 0, 17, 3, 3, 0, 0, 0],
+				["☆3(0-0-0-1)", 0, 3, 17, 3, 0, 0, 0],
+				["☆4(2-2-2-0) / 23", 0, 14, 14, 14, 0, 0, 0],
+				["☆4(2-2-2-0) / 20", 0, 5, 5, 35, 0, 0, 0],
+				["☆4(0-0-0-8)", 0, 15, 15, 15, 0, 0, 0],
+				["☆5(6-0-0-0)", 0, 12.5, 65, 12.5, 0, 0, 0],
+				["☆5(0-6-0-0)", 0, 65, 12.5, 12.5, 0, 0, 0],
+				["☆5(0-0-6-0)", 0, 12.5, 12.5, 65, 0, 0, 0],
+				["☆5(0-0-0-1)", 0, 30, 30, 30, 0, 0, 0],
+				["☆6(2-2-2-0)", 0, 0, 0, 0, 27.5, 27.5, 27.5],
+				["☆6(10-0-0-0)", 0, 0, 0, 0, 12.5, 60, 12.5],
+				["☆6(0-10-0-0)", 0, 0, 0, 0, 60, 12.5, 12.5],
+				["☆6(0-0-10-0)", 0, 0, 0, 0, 12.5, 12.5, 60],
+				["☆7(2-4-4-0)", 0, 0, 0, 0, 65, 22.5, 65],
+				["☆7(0-0-0-1)", 0, 0, 0, 0, 65, 65, 22.5],
+				["☆7(0-0-0-12)", 0, 0, 0, 0, 22.5, 65, 65],
+				["☆8(4-1-2-0)", 0, 0, 0, 0, 50, 250, 25],
+				["☆8(2-4-1-0)", 0, 0, 0, 0, 250, 50, 25],
+				["☆8(1-2-4-0)", 0, 0, 0, 0, 25, 50, 250],
+				["☆9(4-4-4-4)", 0, 0, 0, 0, 200, 200, 200],
+				["☆9(1-1-1-2)", 0, 0, 0, 0, 190, 190, 190],
+				["☆9(0-0-0-18)", 0, 0, 0, 0, 175, 175, 175]
+				], [
+//3期4期
+				["☆1", 5, 0, 0, 0, 0, 0, 0],
+				["☆2(3-0-0-0)", 0, 0.5, 10, 0.5, 0, 0, 0],
+				["☆2(0-3-0-0)", 0, 10, 0.5, 0.5, 0, 0, 0],
+				["☆2(0-0-3-0)", 0, 0.5, 0.5, 10, 0, 0, 0],
+				["☆3(1-1-1-0)", 0, 9, 9, 9, 0, 0, 0],
+				["☆3(0-0-0-4)", 0, 20, 6, 6, 0, 0, 0],
+				["☆3(0-0-0-1)", 0, 7, 22, 7, 0, 0, 0],
+				["☆4(2-2-2-0) / 23", 0, 16, 16, 16, 0, 0, 0],
+				["☆4(2-2-2-0) / 20", 0, 7.5, 7.5, 35, 0, 0, 0],
+				["☆4(0-0-0-8)", 0, 19, 19, 19, 0, 0, 0],
+				["☆5(6-0-0-0)", 0, 12.5, 75, 12.5, 0, 0, 0],
+				["☆5(0-6-0-0)", 0, 75, 12.5, 12.5, 0, 0, 0],
+				["☆5(0-0-6-0)", 0, 12.5, 12.5, 75, 0, 0, 0],
+				["☆5(0-0-0-1)", 0, 32.5, 32.5, 32.5, 0, 0, 0],
+				["☆5(2-2-1-0)", 0, 35, 35, 35, 0, 0, 0],
+				["☆5(1-1-2-0)", 0, 37.5, 37.5, 37.5, 0, 0, 0],
+				["☆6(10-0-0-0)", 0, 0, 0, 0, 20, 90, 20],
+				["☆6(0-10-0-0)", 0, 0, 0, 0, 90, 20, 20],
+				["☆6(0-0-10-0)", 0, 0, 0, 0, 20, 20, 90],
+				["☆6(2-2-2-0)", 0, 0, 0, 0, 40, 40, 40],
+				["☆7(2-4-4-0)", 0, 0, 0, 0, 110, 30, 30],
+				["☆7(0-0-0-1)", 0, 0, 0, 0, 110, 110, 30],
+				["☆7(0-0-0-12)", 0, 0, 0, 0, 30, 110, 30],
+				["☆8(14-0-0-0)", 0, 0, 0, 0, 250, 75, 75],
+				["☆8(0-14-0-0)", 0, 0, 0, 0, 75, 250, 75],
+				["☆8(0-0-14-0)", 0, 0, 0, 0, 75, 75, 250],
+				["☆8(4-1-2-0)", 0, 0, 0, 0, 50, 250, 25],
+				["☆8(2-4-1-0)", 0, 0, 0, 0, 250, 50, 25],
+				["☆8(1-2-4-0)", 0, 0, 0, 0, 25, 50, 250],
+				["☆9(1-0-0-0)", 0, 0, 0, 0, 150, 300, 150],
+				["☆9(0-1-0-0)", 0, 0, 0, 0, 300, 150, 150],
+				["☆9(0-0-1-0)", 0, 0, 0, 0, 150, 150, 300],
+				["☆9(4-4-4-4)", 0, 0, 0, 0, 300, 300, 300],
+				["☆9(1-1-1-2)", 0, 0, 0, 0, 250, 250, 250],
+				["☆9(0-0-0-18)", 0, 0, 0, 0, 200, 200, 200]
+				], [
+//5期
+				["☆1", 5, 0, 0, 0, 0, 0, 0],
+				["☆2(3-0-0-0)", 0, 1, 12.5, 1, 0, 0, 0],
+				["☆2(0-3-0-0)", 0, 12.5, 1, 1, 0, 0, 0],
+				["☆2(0-0-3-0)", 0, 1, 1, 12.5, 0, 0, 0],
+				["☆3(1-1-1-0)", 0, 15, 15, 15, 0, 0, 0],
+				["☆3(0-0-0-4)", 0, 25, 12, 12, 0, 0, 0],
+				["☆3(0-0-0-1)", 0, 13, 25, 13, 0, 0, 0],
+				["☆4(2-2-2-0) / 23", 0, 33, 33, 33, 0, 0, 0],
+				["☆4(2-2-2-0) / 20", 0, 30, 30, 45, 0, 0, 0],
+				["☆4(0-0-0-8)", 0, 36, 36, 36, 0, 0, 0],
+				["☆5(6-0-0-0)", 0, 33, 111, 33, 0, 0, 0],
+				["☆5(0-6-0-0)", 0, 111, 33, 33, 0, 0, 0],
+				["☆5(0-0-6-0)", 0, 33, 33, 111, 0, 0, 0],
+				["☆5(0-0-0-1)", 0, 55, 55, 55, 0, 0, 0],
+				["☆5(2-2-1-0)", 0, 60, 60, 60, 0, 0, 0],
+				["☆5(1-1-2-0)", 0, 70, 70, 70, 0, 0, 0],
+				["☆6(10-0-0-0)", 0, 0, 0, 0, 50, 180, 50],
+				["☆6(0-10-0-0)", 0, 0, 0, 0, 180, 50, 50],
+				["☆6(0-0-10-0)", 0, 0, 0, 0, 50, 50, 180],
+				["☆6(2-2-2-0)", 0, 0, 0, 0, 85, 85, 85],
+				["☆7(2-4-4-0)", 0, 0, 0, 0, 220, 110, 110],
+				["☆7(0-0-0-1)", 0, 0, 0, 0, 110, 110, 220],
+				["☆7(0-0-0-12)", 0, 0, 0, 0, 110, 220, 110],
+				["☆8(14-0-0-0)", 0, 0, 0, 0, 400, 175, 175],
+				["☆8(0-14-0-0)", 0, 0, 0, 0, 175, 400, 175],
+				["☆8(0-0-14-0)", 0, 0, 0, 0, 175, 175, 400],
+				["☆8(4-1-2-0)", 0, 0, 0, 0, 200, 350, 100],
+				["☆8(2-4-1-0)", 0, 0, 0, 0, 350, 200, 100],
+				["☆8(1-2-4-0)", 0, 0, 0, 0, 100, 200, 350],
+				["☆9(1-0-0-0)", 0, 0, 0, 0, 400, 600, 400],
+				["☆9(0-1-0-0)", 0, 0, 0, 0, 600, 400, 400],
+				["☆9(0-0-1-0)", 0, 0, 0, 0, 400, 400, 600],
+				["☆9(4-4-4-4)", 0, 0, 0, 0, 450, 450, 450],
+				["☆9(1-1-1-2)", 0, 0, 0, 0, 400, 400, 400],
+				["☆9(0-0-0-18)", 0, 0, 0, 0, 350, 350, 350],
+				], [
+//本鯖7期
+				["☆1", 5, 0, 0, 0, 0, 0, 0],
+				["☆2(3-0-0-0)", 0, 2.5, 15, 2.5, 0, 0, 0],
+				["☆2(0-3-0-0)", 0, 15, 2.5, 2.5, 0, 0, 0],
+				["☆2(0-0-3-0)", 0, 2.5, 2.5, 15, 0, 0, 0],
+				["☆3(1-1-1-0)", 0, 12.5, 12.5, 12.5, 0, 0, 0],
+				["☆3(0-0-0-4)", 0, 22.5, 7.5, 7.5, 0, 0, 0],
+				["☆3(0-0-0-1)", 0, 7.5, 22.5, 7.5, 0, 0, 0],
+				["☆4(2-2-2-0) / 23", 0, 0, 0, 0, 10, 10, 10],
+				["☆4(2-2-2-0) / 20", 0, 0, 0, 0, 5, 5, 20],
+				["☆4(0-0-0-8)", 0, 0, 0, 0, 15, 15, 15],
+				["☆5(6-0-0-0)", 0, 0, 0, 0, 20, 50, 20],
+				["☆5(0-6-0-0)", 0, 0, 0, 0, 50, 20, 20],
+				["☆5(0-0-6-0)", 0, 0, 0, 0, 20, 20, 50],
+				["☆5(0-0-0-1)", 0, 0, 0, 0, 30, 30, 30],
+				["☆5(2-2-1-0)", 0, 0, 0, 0, 20, 20, 20],
+				["☆5(1-1-2-0)", 0, 0, 0, 0, 25, 25, 25],
+				["☆6(10-0-0-0)", 0, 0, 0, 0, 75, 300, 75],
+				["☆6(0-10-0-0)", 0, 0, 0, 0, 300, 50, 50],
+				["☆6(0-0-10-0)", 0, 0, 0, 0, 50, 50, 300],
+				["☆6(2-2-2-0)", 0, 0, 0, 0, 150, 150, 150],
+				["☆7(2-4-4-0)", 0, 0, 0, 0, 400, 150, 150],
+				["☆7(0-0-0-1)", 0, 0, 0, 0, 150, 150, 400],
+				["☆7(0-0-0-12)", 0, 0, 0, 0, 150, 400, 150],
+				["☆8(14-0-0-0)", 0, 0, 0, 0, 500, 300, 300],
+				["☆8(0-14-0-0)", 0, 0, 0, 0, 300, 500, 300],
+				["☆8(0-0-14-0)", 0, 0, 0, 0, 300, 300, 500],
+				["☆8(4-1-2-0)", 0, 0, 0, 0, 300, 500, 200],
+				["☆8(2-4-1-0)", 0, 0, 0, 0, 500, 300, 200],
+				["☆8(1-2-4-0)", 0, 0, 0, 0, 200, 300, 500],
+				["☆9(1-0-0-0)", 0, 0, 0, 0, 500, 750, 500],
+				["☆9(0-1-0-0)", 0, 0, 0, 0, 750, 500, 500],
+				["☆9(0-0-1-0)", 0, 0, 0, 0, 500, 500, 750],
+				["☆9(4-4-4-4)", 0, 0, 0, 0, 550, 550, 550],
+				["☆9(1-1-1-2)", 0, 0, 0, 0, 500, 500, 500],
+				["☆9(0-0-0-18)", 0, 0, 0, 0, 450, 450, 450]
+				]
+				]
+
+initCalculateAtackPower();
+
+function clearOption(len) {
+    var i;
+    for (i = 0; i < len; i++) {
+        document.getElementById('STAR').options[i] = null;
+    }
+}
+
+//期の切り替え時の処理
+function setCalPowerMenuItem(n) {
+    optlen = document.getElementById('STAR').options.length;
+    while (optlen > 0) {
+        clearOption(optlen);
+        optlen = document.getElementById('STAR').options.length;
+    }
+    if (menuItem[n].length > 0) {
+        for (i = 0; i < menuItem[n].length; i++) {
+            document.getElementById('STAR').options[i] = new Option(menuItem[n][i][0], i + 1);
+        }
+    }
+}
+
+//フォームロード時の処理
+function initCalculateAtackPower() {
+    var n = document.getElementById('PERIOD').options.selectedIndex
+    optlen = document.getElementById('STAR').options.length;
+    while (optlen > 0) {
+        clearOption(optlen);
+        optlen = document.getElementById('STAR').options.length;
+    }
+    if (menuItem[n].length > 0) {
+        for (i = 0; i < menuItem[n].length; i++) {
+            document.getElementById('STAR').options[i] = new Option(menuItem[n][i][0], i + 1);
+        }
+    }
+}
+
+function CalculateAtackPower() {
+
+    //距離
+    var kyori = document.getElementById('KYORI').value;
+
+    //星の数と地形
+    var star = document.getElementById('STAR').value;
+
+    //期数
+    var period = document.getElementById('PERIOD').value;
+
+    //兵数計算
+    var eneken = menuItem[period][star - 1][1] * (1 + (kyori * 0.1));
+    var eneyari = menuItem[period][star - 1][2] * (1 + (kyori * 0.1));
+    var eneyumi = menuItem[period][star - 1][3] * (1 + (kyori * 0.1));
+    var eneki = menuItem[period][star - 1][4] * (1 + (kyori * 0.1));
+    var enehoko = menuItem[period][star - 1][5] * (1 + (kyori * 0.1));
+    var enedo = menuItem[period][star - 1][6] * (1 + (kyori * 0.1));
+    var enekonoe = menuItem[period][star - 1][7] * (1 + (kyori * 0.1));
+
+    //防御力[兵種][防御力]
+    var garde = [[15, 10, 10, 10], 	//剣兵
+		      [50, 40, 25, 55], //槍兵
+		      [52, 58, 42, 26], //弓兵
+		      [54, 28, 60, 44], //騎兵
+		      [200, 100, 63, 137], //矛槍兵
+		      [208, 145, 105, 65], //弩兵
+		      [216, 70, 150, 110]]; //近衛騎兵
+
+    //合計[対兵種][最大防御力,最小防御力]
+    var sum = [[0, 0], [0, 0], [0, 0], [0, 0]];
+
+    var i, j;
+
+    //最大防御力
+    for (j = 0; j < 4; j++) {
+        for (i = 0; i < 7; i++) {
+            if (i == 0) {
+                sum[j][0] = garde[i][j] * Math.floor(eneken * 3);
+            } else if (i == 1) {
+                sum[j][0] = sum[j][0] + garde[i][j] * Math.floor(eneyari * 3);
+            } else if (i == 2) {
+                sum[j][0] = sum[j][0] + garde[i][j] * Math.floor(eneyumi * 3);
+            } else if (i == 3) {
+                sum[j][0] = sum[j][0] + garde[i][j] * Math.floor(eneki * 3);
+            } else if (i == 4) {
+                sum[j][0] = sum[j][0] + garde[i][j] * Math.floor(enehoko * 3);
+            } else if (i == 5) {
+                sum[j][0] = sum[j][0] + garde[i][j] * Math.floor(enedo * 3);
+            } else {
+                sum[j][0] = sum[j][0] + garde[i][j] * Math.floor(enekonoe * 3);
+            }
+        }
+    }
+
+    //最小防御力
+    for (j = 0; j < 4; j++) {
+        for (i = 0; i < 7; i++) {
+            if (i == 0) {
+                sum[j][1] = garde[i][j] * Math.floor(eneken);
+            } else if (i == 1) {
+                sum[j][1] = sum[j][1] + garde[i][j] * Math.floor(eneyari);
+            } else if (i == 2) {
+                sum[j][1] = sum[j][1] + garde[i][j] * Math.floor(eneyumi);
+            } else if (i == 3) {
+                sum[j][1] = sum[j][1] + garde[i][j] * Math.floor(eneki);
+            } else if (i == 4) {
+                sum[j][1] = sum[j][1] + garde[i][j] * Math.floor(enehoko);
+            } else if (i == 5) {
+                sum[j][1] = sum[j][1] + garde[i][j] * Math.floor(enedo);
+            } else {
+                sum[j][1] = sum[j][1] + garde[i][j] * Math.floor(enekonoe);
+            }
+        }
+    }
+
+    //敵兵数
+    var max = Math.floor(eneken * 3)
+    document.getElementById('KENMAX').innerHTML = max.toFixed(0);
+    var min = Math.floor(eneken)
+    document.getElementById('KENMIN').innerHTML = min.toFixed(0);
+
+    var max = Math.floor(eneyari * 3)
+    document.getElementById('YARIMAX').innerHTML = max.toFixed(0);
+    var min = Math.floor(eneyari)
+    document.getElementById('YARIMIN').innerHTML = min.toFixed(0);
+
+    var max = Math.floor(eneyumi * 3)
+    document.getElementById('YUMIMAX').innerHTML = max.toFixed(0);
+    var min = Math.floor(eneyumi)
+    document.getElementById('YUMIMIN').innerHTML = min.toFixed(0);
+
+    var max = Math.floor(eneki * 3)
+    document.getElementById('KIMAX').innerHTML = max.toFixed(0);
+    var min = Math.floor(eneki)
+    document.getElementById('KIMIN').innerHTML = min.toFixed(0);
+
+    var max = Math.floor(enehoko * 3)
+    document.getElementById('HOKOMAX').innerHTML = max.toFixed(0);
+    var min = Math.floor(enehoko)
+    document.getElementById('HOKOMIN').innerHTML = min.toFixed(0);
+
+    var max = Math.floor(enedo * 3)
+    document.getElementById('DOMAX').innerHTML = max.toFixed(0);
+    var min = Math.floor(enedo)
+    document.getElementById('DOMIN').innerHTML = min.toFixed(0);
+
+    var max = Math.floor(enekonoe * 3)
+    document.getElementById('KONOEMAX').innerHTML = max.toFixed(0);
+    var min = Math.floor(enekonoe)
+    document.getElementById('KONOEMIN').innerHTML = min.toFixed(0);
+
+    //防御計算  
+    var max = sum[0][0]
+    document.getElementById('KENGMAX').innerHTML = max.toFixed(0);
+    var min = sum[0][1]
+    document.getElementById('KENGMIN').innerHTML = min.toFixed(0);
+
+    var max = sum[1][0]
+    document.getElementById('YARIGMAX').innerHTML = max.toFixed(0);
+    var min = sum[1][1]
+    document.getElementById('YARIGMIN').innerHTML = min.toFixed(0);
+
+    var max = sum[2][0]
+    document.getElementById('YUMIGMAX').innerHTML = max.toFixed(0);
+    var min = sum[2][1]
+    document.getElementById('YUMIGMIN').innerHTML = min.toFixed(0);
+
+    var max = sum[3][0]
+    document.getElementById('KIGMAX').innerHTML = max.toFixed(0);
+    var min = sum[3][1]
+    document.getElementById('KIGMIN').innerHTML = min.toFixed(0);
+}

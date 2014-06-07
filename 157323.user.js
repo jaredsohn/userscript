@@ -1,0 +1,16 @@
+// ==UserScript==
+// @name       LazyBaha
+// @namespace  http://lazybaha.tk
+// @version    1.2b
+// @description  Browsing Bahamut website in a more convenient way.
+// @match      http://forum.gamer.com.tw/B.php*
+// @match      http://forum.gamer.com.tw/C.php*
+// @match      http://forum.gamer.com.tw/Co.php*
+// @copyright  2013+, http://lazybaha.tk
+// @require http://pic.bahamut.com.tw/js/BAHA_EGG.js
+// @require http://pic.bahamut.com.tw/js/BH_topBar.js
+// @updateURL  http://userscripts.org/scripts/source/157323.meta.js
+// @downloadURL http://userscripts.org/scripts/source/157323.user.js
+// ==/UserScript==
+
+(function(s,t,undefined){var o=s.body,i=b("FM-blist3"),a=b("TOP-btn")[0],n=r("input"),f=r("textarea"),g=function(){},e={},u={enter:13,"0":48,"1":49,"2":50,"3":51,"4":52,"5":53,"6":54,"7":55,"8":56,"9":57,a:65,b:66,c:67,d:68,e:69,f:70,g:71,h:72,i:73,j:74,k:75,l:76,m:77,n:78,o:79,p:80,q:81,r:82,s:83,t:84,u:85,v:86,w:87,x:88,y:89,z:90,numPad:{"0":96,"1":97,"2":98,"3":99,"4":100,"5":101,"6":102,"7":103,"8":104,"9":105}};function h(c){return s.getElementById(c)}function b(c){return s.getElementsByClassName(c)}function r(c){return s.getElementsByTagName(c)}function q(c){window.location=c}function k(d){var c=window.location.href;return c.search(d)!==-1}function m(){for(var c=n.length-1;c>=0;c--){if(s.activeElement===n[c]){return true}}for(var c=f.length-1;c>=0;c--){if(s.activeElement===f[c]){return true}}return false}function p(d){var c=d.split("&"),v;if(c[0].search("bsn=")!==-1){return c[0].split("?")[1]}for(v=c.length-1;v>=0;v--){if(c[v].match(/^bsn=\d+/)!==null){return c[v].match(/^bsn=\d+/)}}return false}function l(){var c=window.location.href;c=c.replace("C.php","B.php");c=c.replace("Co.php","B.php");q(c.split("?")[0]+"?"+p(c))}g.prototype.init=function(){a.innerHTML='<span style="float:left; color:#FFF; background: #117e96; padding-top: 5px;" class="lazyBahaMono">( 0 )</span>'+a.innerHTML;if(k("B.php")){this.listInit()}o.onkeyup=function(c){if(m()){return false}e.shortcutHandler(c.keyCode);return true}};g.prototype.listInit=function(){for(var c=i.length-1;c>=0;c--){i[c].url=i[c].childNodes[0].getAttribute("href");i[c].getTitle=function(){return this.childNodes[0].firstChild}}for(var c=0;c<=3;c++){if(i[c]!==undefined){i[c].getTitle().nodeValue="( "+(c+6)+" )"+i[c].getTitle().nodeValue}}for(temp in u){if((u[temp]>=65)&&(i[u[temp]-u.a+4]!==undefined)){var d=i[u[temp]-u.a+4];d.getTitle().nodeValue="( "+temp.toUpperCase()+" )"+d.getTitle().nodeValue}}};g.prototype.shortcutHandler=function(c){function v(){if((c===u[0])||(c===u.numPad[0])){TOPBAR_show("light_0","topb1")}else{if(c===u.enter||c===u[5]||c===u.numPad[5]){var x=location.href.replace("B.php","post1.php").replace("C.php","post1.php"),y;y=x.split("?")[0]+"?"+p(x)+"&type=1";q(y)}}}function d(){if((c>=u.a)&&(c<=u.z)){q(i[c-61].url)}else{if((c>=u[6])&&(c<=u[9])){q(i[c-u[6]].url)}}}function w(){if(c===u.b){l()}else{if(c===u[4]||c===u.numPad[4]){q(b("FM-replyC")[0].childNodes[3].href)}}}v();if(k("B.php")){d()}else{if(k("C.php")||k("Co.php")){w()}}};e=new g();e.init()})(document,console);

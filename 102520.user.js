@@ -1,0 +1,28 @@
+// ==UserScript==
+// @name           What.CD: Colorize Freeleech, Neutral Leech, and Reported Items
+// @description    With this script, freeleech, neutral leech, reported items, etc., are colorized differently.
+// @version        1.9
+// @homepage       https://www.userscripts.org/scripts/show/102520
+// @updateURL      https://www.userscripts.org/scripts/source/102520.meta.js
+// @include        http*://*what.cd/torrents.php*
+// @match          *://*.what.cd/torrents.php*
+// @icon           data:image/png;base64,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
+// @namespace      hateradio)))
+// @updated        01 Nov 2011
+// @since          08 May 2011
+// ==/UserScript==
+
+var color = {
+	s:document.getElementsByTagName('strong'),
+	h:document.head||document.getElementsByTagName('head')[0],
+	c:'a:hover .gm_colorize{opacity:.9}.gm_colorize{font-weight:normal;padding: 0 2px;display:inline-block;margin: 0 0 1px;-webkit-border-radius: 2px !important;-moz-border-radius: 2px !important;border-radius: 2px !important}.gm_color_freeleech{background:#3BA53B !important;color:#D5FCB0 !important}.gm_color_neutralleech {background:#7ACE4A !important;color:#264C26 !important}.gm_color_reported{background:#CC2F24 !important;color:#EFDBDA !important}.gm_color_badtags{background:#F4D524 !important;color:#544A15 !important}.gm_color_badfolders{background:#F28E24 !important;color:#633914 !important}.gm_color_cassetteapproved{background:#0992B5 !important;color:#BAF1FF !important}.gm_color_lossymasterapproved{background:#6B6FBF !important;color:#BABDFF !important}.gm_color_badfilenames{background:#84795F !important;color:#2D2717 !important}.gm_color_personalfreeleech{background:pink!important;color:#444!important}',
+	r:/(?:\b(?:Freeleech|Neutral Leech|Reported|Bad Tags|Bad Folders|Cassette Approved|Lossy master Approved|Bad File Names)\b)/i,
+	ize:function(){
+		var i = this.s.length, j, s = document.createElement('style');
+		s.type = 'text/css';
+		s.textContent = this.c;
+		this.h.appendChild(s);
+		while(i--){ j=this.s[i]; if(j.textContent.match(this.r)){ j.className = 'gm_colorize gm_color_'+j.textContent.replace(/(?:\W|\s|\!)/g,'').toLowerCase(); } }
+	}
+};
+color.ize();

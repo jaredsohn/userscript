@@ -1,0 +1,13830 @@
+// ==UserScript==
+// @name           GoR BoTTols
+// @version        1.2
+// @namespace      ProgramAngel
+// @description    GoR BoTTols (Bot+Tools) for Glory Of Rome
+// @resource 	   URL_CASTLE_BUT 		http://i.imgur.com/MPlZr.png
+// @resource 	   URL_CASTLE_BUT_SEL 		http://i.imgur.com/XWR4B.png
+// @include        *gloryofrome*/*gameChrome_src.php*
+// @include		   *gloryofrome*/*iframeCanvas.php*
+// @include		   *gloryofrome*
+// @include 	   *facebook.com/4oh4.php
+// @include        *facebook.com/connect/uiserver.php*
+// @include        *facebook.com/dialog/feed*
+// @include 	   *facebook.com/dialog/stream.publish*
+// @include		   *facebook.com/dialog/apprequests*
+// @icon           http://www.kocbottols.tiestoale.com/Tools/Addon/Icon.jpg
+// @resource       smileys http://www.kocbottols.tiestoale.com/Tools/Addon/smileys.js
+// ==/UserScript==
+(function() {
+var Version = '1.2';
+var Autore = 'ProgramAngel';
+var ScriptName = 'GoR BoTTols';
+var miseajour=ScriptName+" "+Version +" - by "+Autore;
+var sitesupport="http://gpt.tiestoale.com";
+var pubblicity="<iframe src=http://coldlight.altervista.org/pubblicity.html width=320 marginwidth=0 marginheight=0 height=50 scrolling=no frameborder=0></iframe>";
+var pubblicityBIG="<iframe src=http://coldlight.altervista.org/pubblicity.html width=320 marginwidth=0 marginheight=0 height=50 scrolling=no frameborder=0></iframe>";
+var DISABLE_BULKADD_LIST = false;
+var DEBUG_TRACE = true;
+var SWF_PLAYER_URL = "http://ddflux.org/includes/miniplayer.swf";
+var URL_CASTLE_BUT = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAXCAMAAAGkBsQ5AAABa1BMVEX%2F%2F8X%2F98X%2F973%2F97X%2F77X%2F7633773%2F76X377X3763%2F5q3%2F5qX%2F5pz35q335qX%2F3pz%2F3pT33pz%2F1pT%2F1oz%2F1oT31pT31oz%2FzoT%2Fznv3zoT%2FxXv%2FxXP%2FxWv3xXv3xXP%2FvWv%2FvWP3vWv3vWP%2FtWP%2FtVr%2FtVLmvWv3tWP3tVr3tVL%2FrVL%2FrUrmtWP3rVL3rUrvrVL%2FpUrvrUr%2FpULmrVrmrVL3pUr3pULmpUL3nDrepULWpVLWpUrmnDrFpUK1pVrOnDqcnFKcnEqMnEp7lHN7lGtzlGNrlGtjjEpajFpShFJSe2NChEJKe1o6hDohjDFCc1oZjDEhhDEQjDEAlDEpezoZhDEhezoQhDEAjDEpczoZezoIhDEhc0IhczoAhDEZczoIezEhazoAezEhY0IAczEAcykIazEhWkIAazEAaykIYzEhUkIAYzEAWjEAUjEAUikASjEASikAQjEAQikAOjEAOikAMTEAMSkAKSlOGAcLAAAACXBIWXMAAAsSAAALEgHS3X78AAABVklEQVQYGQXBPW4TYRiF0ee%2B3x2DRSxRIFJTGIkVUFDQIbEDlkE5%2B8kWWEKKIBSB5AohXBGUSAaCIdgz3x%2FnaARztjS3RSPodPkmfuzReLbOh1fm72a4h3kxyWgE8NXPz8%2F%2FhC%2FzRXLM3cmeqvGDl7Mfa9ztT9pvp3%2FDOpjOr7Yft9PXjPHxE%2Bl6p4SJqSq5RsL4EAtZaUAjAABoBADAt%2Fty8ovVnhQ%2Bfx%2BbDTfXQ9Bz5H7IdWGV9k588NJWrQiXjMkdly6Fo9beRap29F4QJBxTE%2Bo9bF7XuUpJsp8BAGjcATSgADOQWRsfLu8WT0%2B33wcePknfJj%2B6j3Hb17m5HQsr1%2Fm4aGBEbtp8uXPWzcSBlhYYXKunObLoOyU1jFH02oVRZNFJQ2CCko26MIrC3MAEpRdcSVkYFYzBuaAuQFFAgzFBK0GVZhYoaUYYVm8b0IAGNDr8B8ZXpEbZNGQ6AAAAAElFTkSuQmCC"; var TESTBAO=-1;try{TESTBAO=GM_info.script.description,TESTBAO=TESTBAO.toString().indexOf("GoR BoTTols"),-1<TESTBAO&&(TESTBAO=GM_info.script.name,TESTBAO=TESTBAO.toString().indexOf("GoR BoTTols"))}catch(e$$10){}try{TESTBAO=GM_getMetadata("description"),TESTBAO=TESTBAO.toString().indexOf("GoR BoTTols"),-1<TESTBAO&&(TESTBAO=GM_getMetadata("name"),TESTBAO=TESTBAO.toString().indexOf("GoR BoTTols"))}catch(e$$11){}-1<TESTBAO&&(TESTBAO=sitesupport,TESTBAO=TESTBAO.toString().indexOf("gpt.tiestoale"));
+var URL_CASTLE_BUT_SEL = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAXAgMAAAHuttyYAAAACVBMVEX%2F%2F%2F8AOjEAKSnbo5E5AAAACXBIWXMAAAsSAAALEgHS3X78AAAAW0lEQVQI12NYwdAAhCsYOICwQQGEpiYwrGpgCHRgcIChUAeGqaERDBMZJRgmMCDwqlUrgHgBQ2hoAIMjiwAYOzBgxyA1ILVTQ4GggWEKK4MIK4JiYGAgiYKYAgBFlyWR9CCfyAAAAABJRU5ErkJggg%3D%3D";
+var butON='<img width="12px" height="12px" align=middle src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAACB0RVh0U29mdHdhcmUATWFjcm9tZWRpYSBGaXJld29ya3MgTVi7kSokAAAAFnRFWHRDcmVhdGlvbiBUaW1lADExLzA1LzA33bqJ2wAAAq1JREFUeJxlk09oVFcUxn/3vskkqZoJGRMXTgQpCga0qZkUChEtFjFg6giuVDAgbaQroV2WGgUXXQiudJlVyDJpKRVKwYR0YXVqtNrUP1SSOMYRJpjJjJn3Zubc08Uzk4n94HDh8N1zzvcdjlFV6rHn75P7oqbhkqc26WET4oTAlTOBq6QDV774oufmX/V8U1+ge/bUuGdsaiHI8kYKCAKAh2UzzcS1hYqrTix8cvPEhgLfZq41TRXuPctVlxNz5cVawVZvCwDLUqjl4rKFZolmtr9t23X78zHfAvy2cmes/nOq9RAAM12jzOwZBbeeW/IKFE0p8W9TdgyA5OyZ3v2zp5V0j5Lu0ZHcT6qqyvTHugZ+3quqqiPZH2u8rVMHte3WgV7ru/KVhSBb6zwYHwhnXaqsO1UNfRrc9gWpyAEAilGfipErttk0dr15p/Fs/BgAFx7+AMBceZG51VDWhRdXQ07HAJQcQUQwFe0yyUdnNO3/A4D2pEPzfvmU/CafWCwGr8vkq0Vi29tY7p4Mnf/1I4g3sDkXISJOeB8GAx945KUIbQDRMLeGkgNA1GGrTl56WAAmC3+GY3YeXyfbMNbkTebuvts/iJOX3qavdh4VdR8GVJgrLzIYH+Dotj7y/gqPK/M02UbOt5/kWuc3oZEz3zEvWaz1UHF/mN3p48mqyt3n5hUAFzu+ZLhz6H+yAIYfX+fSkxvQ3kAkr4iTXqOq7LjTP76Kn1rywm0ctN0Mdw5xaGtvbezhJ9eZyqWhJYLFoL5MuP4HJ4yqcnj6XNPTSOZZ0ZQSyw2rYbvAwYqEL0CjhRYPG4CuSkbnS7v066f+hmNq//2zcZymilGfICKo0ZphxgdbEAQ34fofbDymesSm+/YiellFk1p1CVGHIBkxLu2Mfu+O3H9Yz/8PLFlkbIqvT3MAAAAASUVORK5CYII%3D" alt="ON">';
+var butOFF='<img width="12px" height="12px" align=middle src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAACB0RVh0U29mdHdhcmUATWFjcm9tZWRpYSBGaXJld29ya3MgTVi7kSokAAAAFnRFWHRDcmVhdGlvbiBUaW1lADExLzA1LzA33bqJ2wAAAsFJREFUeJxlk09oVFcUxn/3zR9HaoJKgphMFGtCrH9alUTqRgWhJtDFjBRsNybURVWwFCqUUmgyghTcaKlLQXeiopOVIEhtNaDjaNVYiNXYjHGeDmhokpcw89677x4XL5lM7AeXezn3O98957scJSLU4unBzz+2PliSUdF4h0RjSaN9ghmnqGem75mZqb5PLuaGavmqVuD50a+yKhpPTT/K4dqjiO+FpGiMSMNKrJa1GLc8sPXC7fQCgUrhaeL1mRPPKoV/ks79wapgpG4pAIEzUY1ZLa2Y+uXFYMO2tu2Z3yoWgH2673xt8rLdKQA2Zh+wMfuAQOZj5uUIMl5Kcvf6eQD+/enrzuc/7JfcOiS3Dnlz5ayIiFxrQ+ZwZnV4ti+frfIGP2uXm7tbOy3tTByffpSrvtyQ7gVgxJ03yp21qWlvL/7OsBJrvIS45eNWpH75etceBaAh3QPAYOa7MNEu4BQLAIz9Esaa0j1MBGCVHbRlrbeMMc1zbs/1+eTSOVri8Hd6MwPdm1mk4E32HABr9qR4q0EZQ6B1c9Ron/ehlKIhAoEzSasACQBVvZ8Iwt34Gst4rq2iMQCm7v4BQPsXPfNfqcLVONuefSfkiFIY7dmRb9oau0TrtWZ6Etcu0JjuZdWuLqYmJzGjT7AWJVjx5UFW/XgKgN+/74XXL6iLxwkCk1NDB7o6As/Ne/kboZGH+/jwSP//2gLIn+wnfypDewL8+GK0DjqViPDXvu1Z89/blHk5AoC3ZSdrvu2n+dNd1bLzJ/t5dedPmmJQn4jjBjLQPeyllYjw8NdMwrt19ZmMl5KqNAaAY+CVD86sYXURaIqBisUpB1Icq5i2Q6O6smCYbnd/lDVGUtZ4CavsoIypGuZZMWZUBNF6oHvYWzhMtRjc0bLJoI4FYjq0MUnja/DdItq/h/Z/3jPsP67lvwOjGG1S8vVScQAAAABJRU5ErkJggg%3D%3D" alt="OFF">';
+var URL_ALERT="data:image/gif;base64,R0lGODlhJQAcAOUBASEhGBgYMSEhISkhISkpISkpKTExKSMjOTk5MXMICHsICEJCOTc3QkpKSlJKSkpCUlpaWmNaUlpaY2tjY3tza3RzdIwQEJUQEKUQEK0QELUQEM0YGNoYGOcYGOchIecpKec5Oe9CQu9KSu9SUu9aWu9jY+9ra+97e4GBgZSMhJeUlK2llKWlpbW1tfeEhPeMjPeUlPecnMa9rca9tfetrfe9vdbGvcDAwN7Oxvfn3ufn5//n5//37/7+/AAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQBAgA/ACwAAAAAJQAcAAUG/sCfcEgsGo/IJJIE4oRML6UUybkortiMaco1cTQWRXh8zXCVJg8nE8Ziw+az8RTybDBit9sSlw9JIV9WV2RtYh9+QiWAgoZ6bok/JDAkG2x5eoYWiHIkMTshd5qYhFh+JTQ7dniPpKadMTUeGnhkrW1+kzGrj22OCn4mJy6Nb72EficmJLOsx3p+LovFvs/RJCJfv6Wu16FgedvQci4h37aY1WHRISAb4K2t7O7gttWQ5CEfluJ7eez72KBz9eqMCxMiOmgYlKChgoYOISY4w2JFDhwyUkxwsACBAQMEBggYCaCkyQEVpKjA0aNHjhkaOSJAUCCkyJICAOTMOaABNZIWK3i07MHDhgoKERx4rGnz5k6cAwaoKCJDxtCWOmaoqCDhAQMGB8KKFRvgQAAGENJCQCEEACH5BAECAD8ALAAAAAAlABwABQb+wJ9wSCwaj8gkkgTihEwvpRTJuSiu2IxpyjVxNBZFeHzNcJUmDycTxmLD5rPxFPJsMGK32xKXD0khX1ZXZG1iH35CJYCChnpuiT8kMCQbbHl6hhaIciQxOyF3mpiEWH4lNDt2eI+kpp0xNR4aeGStbX6TMauPbY4KfiYnLo1vvYR+JyYks6zHen4ui8W+z9EkIl+/pa7XoWB529ByLiHftpjVYdEhIBvgra3s7uC21ZDkIR+W4nt57PvYoHP16owLEyI6aBiUoKGChg4hJjjDYkUOHDJSTHCwAIEBAwQGCBgJoKTJARWkqMDRo0eOGRo5IkBQIKTIkgIA5Mw5oAE1khYreLTswcOGCgoRHHisafPmTpwDBqgowkLG0JY6ZqioIOEBAwYHwooVG+BAAAYQ0kJAIQQAIfkEAQIAPwAsAAAAACUAHAAFBv7An3BILBqPyGTSdYIpn0rTKEStjqDYH80kHZW8I9L0mkXSXC5TqSRVe0khUtlIi7leJhI3zQWPyHNCMTEvfCYxMGhpX2IugVp1Ly+JMDR1hFxqVI8xNTSSgzQ5njQwhWqNczQ1PHUwMas5OTiehHxTqjk8g7A1urKjdYu4ZTE4OaWWxzzMPKOYUiFznTihNMvNyHZugFirNaE12M61w9Jllpe9ujuz5ZrnWemvr6vttMKLm+iwky6vx3BYQoTmDzF5g9Bw6XXpVJcQIFQhOsHnBa9ECv9Q+SARBhc2ezLlefiBIzpJfUaIVPnlD4gQHzyowvMwjEExUzZ+4KAqjXVLKhrHgABRkoPRnifgwIRJtKRTD0Y3bMjSosUOHThYqEDBtYLXr14lQJDg4IEDFU9Y4ODRY0fWrSjATpgroS4ECGUbPJiQhEUPtmxxtIA7ocIECYftPsBbdsECBAhYFGFhoxlbrFrjGq7LmfODzwwkeJ2L9gcAOw%3D%3D";
+var DEFAULT_ALERT_SOUND_URL = 'http://www.universal-soundbank.com/mp3/sounds/2935.mp3';
+var IsChrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1; if (TESTBAO==-1) return false;
+var Options = 
+{
+  HideTab:false,
+  Lingua:0,
+  ptWinIsOpen  : false,pbEveryEnable:false,pbEveryMins:60,
+  ptWinDrag    : true,
+  enableFoodWarnTchat: false,
+  pbGoldEnable : false,
+  ShowShrtKeys:false,
+  foodWarnHours : 2,
+  pbChatOnRight: false,
+  pbGoldHappy  : 75,
+  pbRessTime:   15,
+  EnableDelRep : false,
+  EnableMesRep : false,
+  DeleteRepEvr : 5,
+  pbRessEnable:false,
+  arPageFrom:1,
+  arPageTo:4,
+  srcMinLevel:1,
+  Smiley:true,
+  transportinterval:60,
+  minwagons:5000,
+  lasttransport:0,
+  ColorsLeader:true,
+  srcMaxLevel:10,
+  filPuissance:0,
+  filPuissanceMax:100000000,
+  filfiltreAlliance:'',
+   filfiltreJoueur:'',
+  ptWinPos     : {},
+  alertConfig  : {
+  	aChat:true,
+  	aChatScout:false,
+  	aPrefix:"*** I am under attack,please HELP ME!!! ***",
+  	MonQG:true,
+  	hq:"",
+  	mytroops:false,
+  },
+  alertSound : {
+    enabled:false,
+    soundUrl:DEFAULT_ALERT_SOUND_URL,
+    repeat:true,
+    repeatDelay:10,
+    playLength:20,
+    volume:100,
+    alarmActive:false,
+    expireTime:0,
+  },
+  towerMarches : {},
+  ChatLearder : true,
+  Chuchoenabled:true,
+  urlChucho:'http://www.universal-soundbank.com/mp3/sounds/735.mp3',
+  Attackenabled:true,
+  urlAttack:'http://www.universal-soundbank.com/mp3/sounds/217.mp3', 
+  Spyenabled:true,
+  urlSpy:'http://www.universal-soundbank.com/mp3/sounds/2376.mp3', 
+  HelpRequest: true,
+  DeleteRequest: false,
+  DeleteRules:false,
+  maxIdlePop:true,
+  AttackAutoTest:false,
+  Attacktimer:0,
+  AttackUnit1:0,
+  AttackUnit2:0,
+  AttackUnit6:0,
+  AttackUnit7:0,
+  AttackUnit4:0,
+  AttackUnit10:0,
+  AttackUnit9:0,
+  AttackUnit8:0,
+  AttackUnit5:0,
+  AttackUnit11:0,
+  AttackUnit12:0,
+  AttackUnit31:0,
+  AttackUnit32:0,
+  AttackInterval:20,
+  TimerAttack:0,
+  AdvAtk:{
+  	StopCicle:false,
+  	EnMaxAtk:false,
+  	MaxAtk:10,
+  	TimeAtk:0,
+  	TempoAtk:30,
+  	TempoMode:1,
+  },
+  
+  AttackTime:{},
+  AttackAuto: false,
+  AttackTimer: 8,
+  AttackTimer2: 1,
+  AttackTimer3: 1,
+  AttackCible1:false,
+  AttackCible2:false,
+  AttackCible3:false,
+  AttackGen:false,
+  AttackGenNiv:200,
+  AttackTroops:{1:{},2:{},3:{},4:{},5:{},6:{},7:{},8:{},9:{},10:{}},
+  AttackTroopsB:{1:{},2:{},3:{},4:{},5:{},6:{},7:{},8:{},9:{},10:{}},
+  AttackTroopsC:{},
+  
+  CoordsMode:{0:"1",1:"1",2:"1",3:"1",4:"1",5:"1",6:"1",7:"1",8:"1",},
+  SingleCoordX:{0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,},
+  SingleCoordY:{0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,},
+  MultiCoords:{0:"",1:"",2:"",3:"",4:"",5:"",6:"",7:"",8:"",},
+  MultiCoordsCheck:{0:[],1:[],2:[],3:[],4:[],5:[],6:[],7:[],8:[],},
+  Unity1:{0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,},
+  Unity2:{0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,},
+  Unity6:{0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,},
+  Unity7:{0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,},
+  Unity4:{0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,},
+  Unity10:{0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,},
+  Unity9:{0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,},
+  Unity8:{0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,},
+  Unity5:{0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,},
+  Unity11:{0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,},
+  Unity12:{0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,},
+  Unity31:{0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,},
+  Unity32:{0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,},
+  AttackCity:{0:false,1:false,2:false,3:false,4:false,5:false,6:false,7:false,8:false,},
+  spamconfig:{aspam:false,spamvert:"Type your spam here",spammins:"10",atime:10,spamstate:"a"},
+  
+  Crestinterval:5,
+  crestRunning:false,
+  CrestEnergy:0,
+  CrestSlot:1,
+  CrestMarch:{0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,},
+  CrestMarchEff:{0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,},
+  
+  GlobalChat:true,
+  AllianceChat:true,
+  
+  HeightTools:700,
+  WidthTools:760,
+};
+var GlobalOptions = {
+  autoPublishGamePopups : true,
+  autoPublishPrivacySetting : 80,
+  autoPublishKDO: false, 
+  autoPublishKDOWho: 0, 
+  BOAutomateKDO: false,
+  BOAutomateKDOsec: 10,
+  BOAutomateKDOChoice: 1005,
+  pbWatchdog:true,
+};
+var TrainOptions = {
+  Running   : false,
+  list:{},
+  listactif:{},
+  timelauch:60,
+  pourcpop:75,
+  pourctot:100,
+  unitemin:100,
+};
+var Colors = {
+	ChatLeaders	:	'#C8C8C8',
+	ChatVC		:	'#81EE81',
+	ChatChancy	:	'#F8A151',
+	ChatAtt		:	'#FF7D7D',
+	ChatEcl		:	'#FFDD7D',
+	ChatGlo		:	'#FF6600',
+	ChatAll		:	'#6699FF',
+};
+var CrestOptions = {
+  Running   	: 	false,
+  CrestCity 	: 	0,
+  RoundOne  	: 	false,
+  RoundTwo  	: 	true,
+  lastRoundTwo 	: 	0,
+  active		:	true,
+  X				:	0,
+  Y				:	0,
+  R1SOM			:	0,
+  R1REC			:	0,
+  R1CAL			:	0,
+  R1CAV			:	0,
+  R1LEG			:	0,
+  R1SCO			:	0,
+  R1CAR			:	0,
+  R1CAP			:	0,
+  R1CEN			:	0,
+  R1ARI			:	0,
+  R1BAL			:	0,
+  R1BER			:	0,
+  R1RAI			:	0,
+  
+  R2SOM			:	0,
+  R2REC			:	0,
+  R2CAL			:	0,
+  R2CAV			:	0,
+  R2LEG			:	0,
+  R2SCO			:	0,
+  R2CAR			:	0,
+  R2CAP			:	0,
+  R2CEN			:	0,
+  R2ARI			:	0,
+  R2BAL			:	0,
+  R2BER			:	0,
+  R2RAI			:	0,
+};
+var CrestData = new Array();
+	function CrestFunc (Arr) {
+	
+		if (Arr == undefined)
+			Arr = CrestOptions;
+		this.Running 		=  	true;
+  		this.CrestCity 		= 	Arr.CrestCity;
+		this.RoundOne 		= 	Arr.RoundOne;
+		this.RoundTwo 		= 	true;
+		this.lastRoundTwo 	= 	0;
+		this.active			=	true;
+		this.X 				= 	Arr.X;
+		this.Y 				= 	Arr.Y;
+		this.R1SOM 			= 	Arr.R1SOM;
+		this.R1REC 			= 	Arr.R1REC;
+		this.R1CAL 			= 	Arr.R1CAL;
+		this.R1CAV 			= 	Arr.R1CAV;
+		this.R1LEG 			= 	Arr.R1LEG;
+		this.R1SCO 			= 	Arr.R1SCO;
+		this.R1CAR 			= 	Arr.R1CAR;
+		this.R1CAP 			= 	Arr.R1CAP;
+		this.R1CEN 			= 	Arr.R1CEN;
+		this.R1ARI 			= 	Arr.R1ARI;
+		this.R1BAL 			= 	Arr.R1BAL;
+		this.R1BER 			= 	Arr.R1BER;
+		this.R1RAI			=	Arr.R1RAI;
+		
+		this.R2SOM 			= 	Arr.R2SOM;
+		this.R2REC 			= 	Arr.R2REC;
+		this.R2CAL 			= 	Arr.R2CAL;
+		this.R2CAV 			= 	Arr.R2CAV;
+		this.R2LEG 			= 	Arr.R2LEG;
+		this.R2SCO 			= 	Arr.R2SCO;
+		this.R2CAR 			= 	Arr.R2CAR;
+		this.R2CAP 			= 	Arr.R2CAP;
+		this.R2CEN 			= 	Arr.R2CEN;
+		this.R2ARI 			= 	Arr.R2ARI;
+		this.R2BAL 			= 	Arr.R2BAL;
+		this.R2BER 			= 	Arr.R2BER;
+		this.R2RAI			=	Arr.R2RAI;
+		
+	};
+var translateITAArray = {
+	//Tools
+		'Please support the GoR BoTTols by clicking the ads on the GoR BoTTols website from time to time':'Si prega di sostenere il GoR BoTTols cliccando gli annunci sul sito web GoR BoTTols di volta in volta',
+		'Version':'Versione',
+		'available':'disponibile',
+		'Install':'Installa',
+		'You must belong to an alliance in order to use this feature':'Devi appartenere a una alleanza per poter utilizzare questa funzione',
+		'Translated by':'Tradotto da',
+		'Reload':'Ricarica',
+		'Set your city bunker':'Imposta la tua citt bunker',
+		'Collect':'Raccolta',
+		'resources':'risorse',
+		'now':'adesso',
+	//Germania
+		'City for scout/attack':'Citt per perlustrazioni/attacchi',
+		'Wait':'Aspetta',
+		'UPDATE':'AGGIORNA',
+		'For':'Per',
+		'Force Quit':'Uscita forzata',
+		'FREE':'LIBERA',
+		'Close':'Chiudi',
+		'Errors':'Errori',
+		'Select all':'Seleziona tutto',
+		'I suggest you refresh the page. Some data may not be real':'Ti consiglio di riaggiornare la pagina. Alcuni dati potrebbero essere non reali',
+	//Time
+		'minutes':'minuti',
+		'seconds':'secondi',
+		'hours':'ore',
+	// Diplomacy
+		'None':'Nessuna',
+		'Neutral':'Neutrale',
+  		'Friendly':'Amichevole',
+  		'Hostile':'Ostile',
+  		'Unaligned':'Senza Ally',
+  		'Friendly To Them':'Amichevoli Verso Loro',
+  		'Friendly To You':'Amichevoli Verso Te',
+  	//Position
+ 		'Chancellor':'Cancelliere',
+  		'Vice Chancellor':'Vice Cancelliere',
+  		'Officer':'Ufficiale',
+	//Food Alert
+		'My city':'La mia citt',
+		'is running out of food':'ha bisogno di cibo',
+		'so please send some':'me ne invieresti un po\'',
+		'Current stock':'Ne possiedo ancora',
+	//Tower Alerts
+		'was explored':' stata esplorata',
+		'The exploration seems to come from':'L\'esplorazione sembra provenire da',
+		'Date':'Data',
+		'DEFENDS':'DIFENDO',
+   	  	'SANCTUARY':'SANTUARIO',
+   	  	'ARRIVAL':'ARRIVANO',
+   	  	'BUNKER':'BUNKER',
+   	  	'MY TROOPS':'MIE TRUPPE',
+   	//Overview
+   		'Joined on':'Giochi dal',
+   		'Glory':'Gloria',
+   		'Alliance':'Alleanza',
+   		'World':'Mondo',
+   		'TOTALS':'TOTALE',
+   		'Population':'Popolazione', 
+   	//Alliance Manager
+   		'Alliance Manager':'Gestione Alleanza',
+   		'Message Manager':'Gestione Messaggi',
+   		'ALLIANCE INFO':'INFO ALLEANZA',
+   		'MEMBERS INFO':'INFO MEMBRI',
+   		'Sort By':'Ordina per',
+   		'Members':'Membri',
+   		'Founder':'Fondatore',
+   		'Avatar':'Avatar',
+   		'Name':'Nome',
+   		'Position':'Posizione',
+   		'Might':'Potere',
+   		'Cities':'Citt',
+   		'Days in Position':'Giorni in posizione',
+   		'Joined Date':'Gioca dal',
+   		'Last Login':'Ultimo accesso',
+   		'Actions':'Azioni',
+   		'Get Info/Member':'Ottieni info/membri',
+   		'Enter a message':'Inserisci il messaggio',
+   		'Message by':'Messaggio da',
+   		'Message sent to all the alliance by':'Messaggio inviato a tutta l\'alleanza da',
+   		'Message sent to all officer by':'Messaggio inviato agli ufficiali da',
+   		'Read members page':'Lettura membri pagina',
+      	'Message send to':'Messaggio inviato a',
+      	'Processing':'Eseguo',
+      	'Remove Member':'Rimuovi Membro',
+      	'Sorry, but this feature is only for official':'Scusa, ma questa funzione  solo per ufficiali',
+      	'Do you really want to remove this user':'Vuoi davvero rimuovere questo utente',
+   	//Search
+   		'Type':'Tipo',	
+   		'Barbarian camps':'Accampamenti barbari',
+  	    'Cities':'Citt',
+  	    'City to start from':'Ricerca a partire da',
+  	    'Distance':'Distanza',
+  	    'from':'da',
+  	    'to':'a',
+  	    'Launch search':'Inizia la ricerca',
+  	    'Cancel the search':'Ferma la ricerca',
+  	    'SEARCH CANCELLED':'RICERCA CANCELLATA',
+  	    'SEARCH FINISHED':'RICERCA FINITA',
+  	    'Searching':'Ricerco',
+  	    'The minimum distance cannot be lower than 0':'La distanza minima non pu essere inferiore a 0',
+    	'The distance has to be higher than 1':'La distanza deve essere superiore a 1',
+    	'The maximum/minimum distance has been exceeded':'La massima/minima distanza  stata superata',
+     	'The distance cannot be higher than 375':'La distanza non pu essere superiore a 375',
+     	'NOTE : WARNING, there is no limitation to the search, but this can have consequences on the performance of your browser':'NOTA : ATTENZIONE, non vi  alcuna limitazione alla ricerca, ma questo pu avere conseguenze sulle prestazioni del browser',
+     	'Hide option window':'Nascondi le opzioni',
+     	'Research':'Ricerca',
+     	'results':'risultati',
+     	'Not found':'Non trovati',
+     	'More info':'Pi info',
+     	'Source':'Da',
+     	'Destination':'Destinazione',
+     	'Fields':'Campi',
+     	'Barbarian camp':'Campi barbari',
+     	'Woods':'Foresta',
+		'Grassland':'Prateria',
+		'River':'Fiume',
+		'Mountains':'Montagna',
+		'Plains':'Pianura',
+		'Hills':'Collina',
+		'Non-occupied only':'Solo non occupate',
+		'Sort by':'Ordina per',
+		'free':'libera',
+		'Filter':'Filtra',
+		'All cities':'Tutte le citt',
+		'Hostile cities only':'Solo citt ostili',
+		'Misty cities only':'Solo citt nascoste',
+		'Allied cities only':'Solo citt alleate',
+		'Friendly cities only':'Solo citt amiche',
+		'Neutral cities only':'Solo citt neutrali',
+		'Cities with no alliance only':'Solo citt senza ally',
+		'Minimum':'Minima',
+		'Maximum':'Massima',
+		'content':'contenente',
+	//Reassing
+		'Not possible to send to same city':'Impossibile inviare nella stessa citt',
+    	'Impossible to':'Impossibile',
+    	'with 0 troops':'con 0 truppe',
+    	'wake up':'svegliati',
+   		'more than':'oltre',
+   		'troops at a time':'truppe alla volta',
+   		'Succeeded':'Fatto',
+   	//Transport
+   		'Manual':'Manuale',
+   		'Automatic':'Automatico',
+   		'TRANSPORTING GOODS FROM CITY TO CITY':'TRASPORTO MERCI DA CITT A CITT',
+   		'Quantity':'Quantit',
+   		'Resource':'Risorsa',
+   		'type':'tipo',
+   		'Please put in the amount of troops you like to use':'Si prega di inserire la quantit di truppe che si desidera utilizzare',
+   		'Please check the resource you want to transport':'Si prega di controllare la risorsa che si desidera trasportare',
+   		'Send a transport every':'Invia un trasporto ogni',
+   		'Send transport with a minimum of':'Invia un trasporto con un minimo di',
+   		'ADD A TRANSPORT':'AGGIUNGI UN TRASPORTO',
+   		'Available':'Disponibile',
+   		'Estimate':'Stima',
+   		'necessary':'necessarie',
+   		'Keep':'Tieni',
+   		'Show routes':'Mostra rotte',
+   		'Add a route':'Aggiungi una rotta',
+   		'the route':'la rotta',
+   		'Edit':'Modifica',
+   	//Crest
+   		'Help':'Aiuto',
+   		'See target':'Mostra bersagli',
+   		'Add target':'Aggiungi bersaglio',
+   		'Remove':'Rimuovi',
+   		'Wave':'Onda',
+   		'From':'Da',
+   		'To':'Verso',
+   		'Do not use the general with the energy below':"Non usare i generali con l'energia al di sotto di",
+    //AutoAttack 2
+    	'AUTOMATED ATTACKS':'ATTACCHI AUTOMATICI',
+    	'ATTACK':'ATTACCA',
+    	'Do not use the general with a level greater than':'Non utilizzare i generali con un livello superiore a',
+    	'Record':'Registra',
+    	'Delete':'Cancella',
+    	'Last Attack':'Ultimo Attacco',
+    	'Success':'Inviati',
+    	'Select troops':'Seleziona truppe',
+    	'CITY SET PARAMETERS':'PARAMETRI DELLE CITT',
+    //Marches
+    	'INCOMING ATTACKS':'ATTACCHI IN ARRIVO',
+    	'Target Coordinates':'Coordinate Obiettivo',
+    	'Times':'Tempo',
+    	'Attacker':'Attaccante',
+    	'General':'Generale',
+    	'OUTGOING MARCHES':'MARCE IN USCITA',
+    	'Status':'Stato',
+    	'Coordinates':'Coordinate',
+    	'RECEIVED REINFORCEMENTS':'RINFORZI RICEVUTI',
+    	'City reinforcements':'Citt rinforzata',
+    //Reports
+    	'CHECK ALLIANCE REPORTS':"MOSTRA I REPORT DELL'ALLEANZA",
+    	'No reports found':'Nessun report trovato',
+    	'Pages':'Pagine',
+    	'pages':'pagine',
+    	'Page':'Pag',
+    	'of':'di',
+    	'All reports':'Tutti i rapporti',
+    	'Incoming attacks':'Attacchi in arrivo',
+    	'Outgoing attacks':'Attacchi in uscita',
+    	'Reinforcements':'Rinforzi',
+    	'All reports':'Tutti i rapporti',
+    	'My reports only':'Solo i miei rapporti',
+    	'Delete all reports':'Cancella tutti i rapporti',
+    	'Transport':'Trasporto',
+        'Scout':'Perlustra',
+        'Reinforce':'Rinforzo',
+        'Attack':'Attacco',
+		'unknown':'sconosciuto',
+		'Wild':'Terra',
+		'Target':'Bersaglio',
+		'Victory':'Vittoria',
+		'Defeat':'Disfatta',
+		'Defender':'Difensore',
+		'Number of tours':'Numero di turni',
+		'No troops defending':'Nessuna truppa in difesa',
+		'Killed':'Combattuto',
+		'Survived':'Sopravv.',
+		'Resources':'Risorse',
+		'Building':'Costruzioni',
+		'Technical':'Ricerche',
+		'level':'livello',
+		'Amount':'Quantit',
+		'Defending':'In difesa',
+		'Results found':'Risultati trovati',
+		'Objects found':'Oggetti trovati',
+	//Player
+		'Player':'Giocatore',
+		'Search':'Cerca',
+		'OR':'OPPURE',
+		'Minimum of 3 characters':'Minimo di 3 caratteri',
+		'Results for':'Risultati per',
+		'Rank':'Grado',
+		'See members':'Mostra membri',
+		'Diplomacy':'Diplomazia',
+		'Players found':'Giocatori trovati',
+		'Extra information':'Informazioni extra',
+		'Details':'Dettagli',
+		'Population':'Popolazione',
+		'Provinces':'Province',
+		'Profile':'Profilo',
+   	//AutoAttack
+   		'CONFIGURATION':'CONFIGURAZIONE',
+   		'STATISTICS':'STATISTICHE',
+   		'Time between attacks':'Tempo tra gli attacchi',
+   		'Attack Mode':'Modalit di attacco',
+   		'AutoAttack stops when coordinates will be finished':'Ferma l\'AutoAttack quando finiscono le coordinate',
+   		'Check Coordinates List':'Controllo Coordinate Inserite',
+   		'Stop after':'Ferma dopo',
+   		'attacks':'attacchi',
+   		'Resume the attacks after':'Riprendi gli attacchi dopo',
+   		'Next attack':'Prossimo attacco',
+   		'do not be resumed':'non verranno ripresi',
+   		'Check cities you want to attack from':'Seleziona le citt da cui vuoi far partire l\'attacco',	
+   		'TROOPS':'TRUPPE',
+   		'valid coordinates found':'coordinate convalidate',
+   		'No coordinated inserted':'Nessuna coordinata inserita',
+   		'Do you really want to enable this tab':'Vuoi davvero abilitare questa tab',
+   	//Info
+   		'TROOP INFO':'INFO TRUPPE',
+   		'Troops':'Truppe',
+   		'Glory':'Gloria',
+   		'Life':'Vita',
+   		'Attack':'Attacco',
+   		'Defense':'Difesa',
+   		'Speed':'Velocit',
+   		'Range':'Portata',
+   		'Load':'Carico',
+   		'Upkeep':'Manutenzione',
+   		'NEEDED MARKS TO GET NEW CITY':'SIGILLI NECESSARI PER LA COSTRUZIONE DI NUOVE CITTA\'',
+   		'Requirements':'Requisiti',
+   		'Level':'Livello',
+   		'Your level':'Tuo livello',
+   		'Cohorts':'Coorti',
+   	//Spam
+   		'GLOBAL chat':'Chat GLOBALE',
+   		'ALLIANCE chat':'Chat ALLEANZA',
+      	'OPTIONS':'OPZIONI',
+   		'Post automatically every':'Invia il messaggio ogni',
+		'Your spam message':'Il tuo messaggio',
+	//Generals
+		'Name':'Nome',
+		'Level':'Livello',
+		'Energy':'Energia',
+		'Actions':'Azioni',
+		'Request more energy':'Richiedi pi energia',
+		'Send offerings':'Invia offerte',
+		'Outside the city':'Fuori citt',
+        'No general present':'Nessun generale presente',
+	//Gifts
+		'Pick a free gift to send to all your friends':'Seleziona un regalo da inviare ai tuoi amici',
+		'SEND':'INVIA',
+		'USE':'USA',
+		'You have':'Ne hai',
+		'Send offerings':'Invia offerte',
+		'Accept all gifts':'Accetta tutti i regali',
+   	//AutoTrain
+   		'AUTO-BUILDING TROOPS':'AUTO-ADDESTRA TRUPPE', 
+   		'Active':'Attivo',
+   		'Deactive':'Disattivato',
+   		'City':'Citt',
+   		'Troop type':'Tipo di truppa',
+   		'Troops':'Truppe',
+   		'Actions':'Azioni',
+   		'seconds of training between the cities':'secondi di addestramento tra le citt',
+   		'Start at':'Inizia a',
+   		'of the population available':'della popolazione disponibile',
+   		'Use at':'Usa il',
+   		'IF YOU GET ANY ERRORS, CHECK IF YOUR CITY HAS ENOUGH FOOD AND RESOURCES':'SE OTTIENI QUALCHE ERRORE, CONTROLLA SE LE TUE CITT HANNO ABBASTANZA CIBO E/O RISORSE',
+   		'Initiating training':'Avvio addestramento',
+   		'Conditions not met':'Condizioni non soddisfatte',
+   	//Train
+   		'Max':'Max',
+   		'Number of troops per slot':'Numero di truppe per slot',
+   		'Number of slots':'Numero di slot',
+   		'Queue':'Coda',
+   		'barracks':'caserme',
+   		'Cancel training':'Cancella addestramento',
+   		'Number of troops per slot must be greater than':'Numero di truppe per slot deve essere maggiore di',
+      	'Cannot train that many troops':'Non  possibile addestrare altre truppe',
+      	'max is':'max ',
+      	'total':'totale',
+     	'Invalid number of slots':'Numero di slot invalido',
+     	'Training succesful':'Addestramento completato',
+     	'Formation':'Addestro',
+	//Options
+		'Options':'Opzioni',
+		'Configuration of the':'Configurazione del',
+		'Language':'Lingua',
+		'Allow the toolbox window to be moved freely':'Abilita il movimento del tools con il mouse',
+		'Dimensions Tools':'Dimensioni Tools',
+		'Width':'Larghezza',
+		'Height':'Altezza',
+		'Refresh GoR every':'Ricarica GoR ogni',
+		'Organize a Tax event (if happiness':'Organizza il Giorno delle Tasse (se la felicit ',
+		'Auto-collect resources every':'Raccogli le risorse ogni',
+		'Allow to publish your helpings automatically to Facebook':'Abilita la pubblicazione su facebook in automatico',
+		'Everyone':'Tutti',
+		'Friends of friends':'Amici di amici',
+		'Friends only':'Solo amici',
+		'Me only':'Solo io',
+		'Show shortcut keys':'Mostra i tasti scorciatoia',
+		'Hide useless keys of the game (Fan page, Discussions ..)':'Nascondi tasti inutili del gioco (Fan page, Discussioni ..)',
+		'Configuration of chat':'Configurazioni della chat',
+		'Move the chat window to the right of the game':'Muovi la chat nella parte della destra del gioco',
+        'Allow to publish an alert in chat when your food level is low':'Abilita l\'auto post in chat in caso di mancanza di cibo',
+        'Auto-click help requests, such as building help':'Auto-Clicca le richieste di aiuto, come le costruzioni',
+        'Hide all help requests in chat':'Nascondi le richieste di aiuto in chat',
+        'Hide the rules of the chat':'Nascondi le regole della chat',
+        'Show smileys':'Mostra nella chat le faccine',
+        'Open':'Apri',
+		'Warning sound when receiving a whisper':'Avvisa con un suono quando ricevi un bisbiglio',
+		'Enable audio in case of ATTACK (Alliance)':'Avvisa con un suono se un alleato viene attaccato',
+		'Enable audio in case of SCOUT (Alliance)':'Avvisa con un suono se un alleato viene esplorato',
+		'Table of colors':'Tavola dei colori',
+		'Background of the global chat':'Colore della chat globale',
+		'Background of the alliance chat':'Colore della chat alleanza',
+		'Enable color for the leader':'Abilita colore per i leader',
+		'Configuration of Reports':'Configurazione dei Report',
+		'Enable the deletion of the reports of the':'Abilita la cancellazione dei report del',
+		'Delete reports every':'Cancella i report ogni',
+		'Enable the deletion of the message of the Kabam':'Abilita la cancellazione dei messaggi della Kabam',
+		'Enable red background color in case of ATTACK (Alliance)':'Abilita lo sfondo rosso del msg se un alleato viene attaccato',
+		'Sound file (URL MP3)':'File audio (URL MP3)',
+        'Configuration of the Tower alert':'Configurazione della Torre di Allerta',
+        'Allow to post scout alerts in chat':'Posta in chat alleanza gli avvisi di esplorazione',
+        'Allow to post attack alerts in chat':'Posta in chat alleanza gli avvisi di attacco',
+        'Allow to sound an alarm when under attack (handy when you are away from keyboard)':'Abilita un suono di allarme quando sei sotto attacco (utile quando si  lontani dalla tastiera)',
+        'Message':'Messaggio',
+        'Show the bunker':'Mostra il bunker',
+        'Show my troops':'Mostra le mie truppe',
+        'Loading the SWF player':'Caricamento del SWF player',
+        'LOAD':'CARICA',
+        'DEFAULT':'PREDEFINITO',
+        'Repeat every':'Ripeti ogni',
+        'Length of sounding alarm':'Lunghezza del file audio',
+        'Tester':'Prova',
+        'Stop Sound Alert':'Ferma Audio',
+        'Error':'Errore',
+        'Loaded':'Caricato',
+		'':''
+};
+var translateNLArray = {
+//Tools
+'Please support the GoR BoTTols by clicking the ads on the GoR BoTTols website from time to time':'Support alsjeblieft GoR BoTTols door af en toe op de advertenties op de GoR BoTTols website te klikken',
+'Version':'Versie',
+'available':'Beschikbaar',
+'Install':'Installeer',
+'You must belong to an alliance in order to use this feature':'Je moet deel van een alliantie zijn om van deze functie gebruik te kunnen maken',
+'Translated by':'Vertaald door',
+'Reload':'Herladen',
+'Set your city bunker':'Zet je stads bunker',
+//Time
+'minutes':'minuten',
+'seconds':'seconden',
+'hours':'uren',
+// Diplomacy
+'None':'Geen',
+'Neutral':'Neutraal',
+'Friendly':'Vriendelijk',
+'Hostile':'Vijandig',
+'Unaligned':'Zonder alliantie',
+'Friendly To Them':'Vriendelijk naar hun',
+'Friendly To You':'Vriendelijk naar jou',
+//Position
+'Chancellor':'Kanselier',
+'Vice Chancellor':'Vice Kanselier',
+'Officer':'Officier',
+//Food Alert
+'My city':'Mijn stad',
+'is running out of food':'heeft een tekort aan voedsel',
+'so please send some':'dus stuur me asjeblieft wat',
+'Current stock':'Huidige voorraad',
+//Tower Alerts
+'was explored':'was verkend',
+'The exploration seems to come from':'De verkenning lijkt te komen van',
+'Date':'Data',
+'DEFENDS':'VERDEDIGD',
+'SANCTUARY':'VERDEDIGD NIET',
+'ARRIVAL':'AANKOMST',
+'BUNKER':'BUNKER',
+'MY TROOPS':'MIJN TROEPEN',     
+//Overview
+'Joined on':'Aangemeld op',
+'Glory':'Glorie',
+'Alliance':'Alliantie',
+'World':'Wereld',
+'TOTALS':'TOTALEN',
+'Population':'Populatie',
+//Alliance Manager
+ 'Alliance Manager':'Alliantie Manager',
+'Message Manager':'Berichten Manager',
+'ALLIANCE INFO':'ALLIANTIE INFO',
+'MEMBERS INFO':'LEDEN INFO',
+'Sort By':'Sorteer op',
+'Members':'Leden',
+'Founder':'Stichter',
+'Avatar':'Avatar',
+'Name':'Naam',
+'Position':'Positie',
+'Might':'Glorie',
+'Cities':'Steden',
+'Days in Position':'Dagen in positie',
+'Joined Date':'Datum Aangemeld',
+'Last Login':'Laatste Inlog',
+'Actions':'Acties',
+'Get Info/Member':'Info leden verkrijgen',
+'Enter a message':'Voer een bericht in',
+'Message by':'Bericht van',
+'Message sent to all the alliance by':'Bericht naar alle allianties gestuurd door',
+'Message sent to all officer by':'Bericht naar alle officiers gestuurd door',
+'Read members page':'Lees de leden pagina',
+'Message send to':'Bericht gestuurd naar',
+'Processing':'Processing',
+'Remove Member':'Verwijder Lid',
+'Sorry, but this feature is only for official':'Sorry, maar deze functie is alleen voor officieel gebruik',
+'Do you really want to remove this user':'Wil je echt deze gebruiker verwijderen', //Search
+ 'Type':'Typ',   
+ 'Barbarian camps':'Barbaarse kampen',
+'Cities':'Steden',
+'City to start from':'Begin vanaf stad',
+'Distance':'Afstand',
+'from':'van',
+'to':'naar',
+'Launch search':'Zoektocht beginnen',
+'Cancel the search':'Zoektocht annuleren',
+'SEARCH CANCELLED':'ZOEKTOCHT GEANNULEERD',
+'SEARCH FINISHED':'ZOEKTOCHT AFGELOPEN',
+'Searching':'Zoeken',
+'The minimum distance cannot be lower than 0':'De minimale afstand kan niet lager zijn dan 0',
+'The distance has to be higher than 1':'De afstand moet groter zijn dan 1',
+'The maximum/minimum distance has been exceeded':'De maximum/minimum afstand is overschreden',
+'The distance cannot be higher than 375':'De afstand kan niet hoger zijn dan 375',
+'NOTE : WARNING, there is no limitation to the search, but this can have consequences on the performance of your browser':'NOOT : ATTENTIE, er is geen limiet aan de zoektocht,maar het kan gevonden hebben voor de prestatie van je browser', 'Hide option window':'Optie window verschuilen',
+'Research':'Onderzoeken',
+'results':'resultaten',
+'Not found':'Niet gevonden',
+'More info':'Meer info',
+'Source':'Bron',
+'Destination':'Bestemming',
+'Fields':'Velden',
+'Barbarian camp':'Barbaarse kampen',
+'Woods':'Wouden',
+'Grassland':'Grasland',
+'River':'Rivier',
+'Mountains':'Bergen',
+'Plains':'Vlakte',
+'Hills':'Heuvels',
+'Non-occupied only':'Alleen niet-bezette',
+'Sort by':'Sorteer per',
+'free':'Vrij',
+'Filter':'Filter',
+'All cities':'Alle steden',
+'Hostile cities only':'Alleen vijandelijke steden',
+'Misty cities only':'Alleen nevel steden',
+'Allied cities only':'Alleen geallieerde steden',
+'Friendly cities only':'Alleen vriendschappelijke steden',
+'Neutral cities only':'Alleen neutrale steden',
+'Cities with no alliance only':'Alleen niet geallieerde steden',
+'Minimum':'Minimum',
+'Maximum':'Maximum',
+'content':'inhoud',
+//Reassing
+'Not possible to send to same city':'Niet mogelijk om naar de zelfde stad te sturen',
+'Impossible to':'Niet mogelijk om',
+'with 0 troops':'met 0 troepen',
+'wake up':'wakker worden',
+'more than':'meer dan',
+'troops at a time':'troepen in een keer',
+'Succeeded':'Succesvol',  
+//Transport
+ 'Manual':'Handmatig',
+'Automatic':'Automatisch',
+'TRANSPORTING GOODS FROM CITY TO CITY':'GOEDEREN VERPLAATSEN VAN STAD NAAR STAD',
+'Quantity':'Hoeveelheid',
+'Resource':'Grondstof',
+'type':'typ',
+'Please put in the amount of troops you like to use':'Vul in hoeveel troepen je wilt gebruiken',
+'Please check the resource you want to transport':'Controleer de grondstof die je wilt vervoeren',
+'Send a transport every':'Stuur een transport iedere',
+'Send transport with a minimum of':'Stuur een transport met een minimum van',
+'ADD A TRANSPORT':'VOEG EEN TRANSPORT TOE',
+'Available':'Beschikbaar',
+'Estimate':'Inschatten',
+'necessary':'noodzakelijk',
+'Keep':'Houd',
+'Show routes':'Vertoon routes',
+'Add a route':'Voeg een route toe',
+'the route':'de route',
+'Edit':'Modificeer',
+//AutoAttack 2
+'AUTOMATED ATTACKS':'AUTOMATISCH AANVALLEN',
+'ATTACK':'AANVALLEN',
+'Do not use the general with a level greater than':'Geen generaal gebruiken met een hoger niveau dan',
+'Record':'Aantekening',
+'Delete':'Wissen',
+'Last Attack':'Laatste aanval',
+'Success':'Succes',
+'Select troops':'Selecteer troepen',
+'CITY SET PARAMETERS':'VASTE STAD PARAMETERS', 
+//Marches
+'INCOMING ATTACKS':'INKOMENDE AANVALLEN',
+'Target Coordinates':'Doelwit coordinaten',
+'Times':'Maal',
+'Attacker':'Aanvaller',
+'General':'Generaal',
+'OUTGOING MARCHES':'UITGAANDE MARSEN',
+'Status':'Status',
+'Coordinates':'Coordinaten',
+'RECEIVED REINFORCEMENTS':'VERSTERKINGEN ONTVANGEN',
+'City reinforcements':'Stads versterkingen',
+//Reports
+'CHECK ALLIANCE REPORTS':"BEKIJK ALLIANTIE RAPPORTEN",
+'No reports found':'Geen rapporten gevonden',
+'Pages':'Paginas',
+'pages':'paginas',
+'Page':'Pagina',
+'of':'van',
+'All reports':'Alle rapporten',
+'Incoming attacks':'Inkomende aanvallen',
+'Outgoing attacks':'Uitgaande aanvallen',
+'Reinforcements':'Versterkingen',
+'All reports':'Alle rapporten',
+'My reports only':'Alleen mijn rapporten',
+'Delete all reports':'Alle rapporten wissen',
+'Transport':'Transporten',
+'Scout':'Verkenningen',
+'Reinforce':'Versterken',
+'Attack':'Aanvallen',
+'unknown':'onbekend',
+'Wild':'Woeste grond',
+'Target':'Doelwit',
+'Victory':'Victorie',
+'Defeat':'Nederlaag',
+'Defender':'Verdediger',
+'Number of tours':'Aantal toertochten',
+'No troops defending':'Geen troepen verdedigd',
+'Killed':'Gedood',
+'Survived':'Overleefd',
+'Resources':'Grondstoffen',
+'Building':'Gebouwen',
+'Technical':'Onderzoek',
+'level':'niveau',
+'Amount':'Hoeveelheid',
+'Defending':'Verdedigen',
+'Results found':'Gevonden resultaten',
+'Objects found':'Voorwerpen gevonden',
+//Player
+'Player':'Speler',
+'Search':'Zoeken',
+'OR':'OF',
+'Minimum of 3 characters':'Minimum van 3 tekens',
+'Results for':'Resultaten voor',
+'Rank':'Rang',
+'See members':'Zie leden',
+'Diplomacy':'Diplomatie',
+'Players found':'Spelers gevonden',
+'Extra information':'Extra informatie',
+'Details':'Details',
+'Population':'Populatie',
+'Provinces':'Provincies',
+'Profile':'Profiel',
+//AutoAttack
+ 'CONFIGURATION':'CONFIGURATIE',
+'STATISTICS':'STATISTIEKEN',
+'Time between attacks':'Tijd tussen aanvallen',
+'Attack Mode':'Aanvals Modus',
+'AutoAttack stops when coordinates will be finished':'AutoAttack stopt wanneer de coordinaten zijn afgewerkt',
+'Check Coordinates List':'Controlleer Coordinaten Lijst',
+'Stop after':'Stop na',
+'attacks':'aanvallen',
+'Resume the attacks after':'Hervat de aanvallen na',
+'Next attack':'Volgende aanval',
+'do not be resumed':'niet worden hervat',
+'Check cities you want to attack from':'Controlleer steden van waaruit je aan wilt vallen',   
+ 'TROOPS':'TROEPEN',
+'valid coordinates found':'geldige coordinaten gevonden',
+'No coordinated inserted':'Geen coordinaten ingevoerd',
+'Do you really want to enable this tab':'Wil je echt deze tab aanzetten',   
+//Info
+'TROOP INFO':'TROEPEN INFO',
+'Troops':'Troepen',
+'Glory':'Glorie',
+'Life':'Leven',
+'Attack':'Aanval',
+'Defense':'Verdediging',
+'Speed':'Snelheid',
+'Range':'Afstand',
+'Load':'Lading',
+'Upkeep':'Onderhoud',
+'NEEDED MARKS TO GET NEW CITY':'BENODIGDE ZEGELS VOOR EEN NIEUWE STAD',
+'Requirements':'Benodigheden',
+'Level':'Niveau',
+'Your level':'Jouw niveau',
+'Cohorts':'Cohorten',
+//Spam
+ 'GLOBAL chat':'GLOBALE chat',
+'ALLIANCE chat':'ALLIANTIE chat',
+'OPTIONS':'OPTIES',
+'Post automatically every':'Post automatisch iedere',
+'Your spam message':'Jouw spam bericht',
+//Generals
+'Name':'Naam',
+'Level':'Niveau',
+'Energy':'Energie',
+'Actions':'Acties',
+'Request more energy':'Verzoek meer energie',
+'Send offerings':'Stuur offeringen',
+'Outside the city':'Buiten de stad',
+'No general present':'Geen generaal aanwezig',
+//Gifts
+'Pick a free gift to send to all your friends':'Selecteer een gratis geschenk om naar je vrienden te sturen',
+'SEND':'STUUR',
+'USE':'GEBRUIK',
+'You have':'Je hebt',
+'Send offerings':'Stuur offeringen',
+'Accept all gifts':'Alle geschenken accepteren',   
+//AutoTrain
+ 'AUTO-BUILDING TROOPS':'AUTO-BOUWEN TROEPEN',
+'Active':'Actief',
+'City':'Stad',
+'Troop type':'Troepen type',
+'Troops':'Troepen',
+'Actions':'Acties',
+'seconds of training between the cities':'seconden van de trainingstijd tussen de steden',
+'Start at':'Begin vanaf',
+'of the population available':'van de beschikbare populatie',
+'Use at':'Gebruik op',
+'IF YOU GET ANY ERRORS, CHECK IF YOUR CITY HAS ENOUGH FOOD AND RESOURCES':'CONTROLEER OF JE STAD GENOEG VOEDSEL EN GRONDSTOFFEN HEEFT IN HET GEVAL VAN EEN FOUTMELDING',
+'Initiating training':'Begin training',
+'Conditions not met':'Voorwaarden niet voldaan',
+//Train
+'Max':'Max',
+'Number of troops per slot':'Hoeveelheid troepen per slot',
+'Number of slots':'Hoeveelheid slots',
+'Queue':'Wachtrij',
+'barracks':'barrakken',
+'Cancel training':'Training annuleren',
+'Number of troops per slot must be greater than':'De hoeveelheid troepen in een slot  moet groter zijn dan',
+'Cannot train that many troops':'Niet mogelijk die hoeveelheid troepen te trainen',
+'max is':'max is',
+'total':'totaal',
+'Invalid number of slots':'Ongeldige hoeveelheid slots',
+'Training succesful':'Training succesvol',
+'Formation':'Formatie',
+//Options
+'Options':'Opties',
+'Configuration of the':'Configuratie van de',
+'Language':'Taal',
+'Allow the toolbox window to be moved freely':'Sta de toolbox toe om vrijelijk beweegd te worden',
+'Dimensions Tools':'Grootte Tools',
+'Width':'Breed',
+'Height':'Hoogte',
+'Refresh GoR every':'Ververs GoR elke',
+'Organize a Tax event (if happiness':'Organiseer een belastingdag (wanneer geluk',
+'Auto-collect resources every':'Auto-verzamel grondstoffen elke',
+'Allow to publish your helpings automatically to Facebook':'Sta toe om automatisch je hulp op Facebook te publiceren',
+'Everyone':'Iedereen',
+'Friends of friends':'Vrienden van vrienden',
+'Friends only':'Alleen vrienden',
+'Me only':'Alleen ik',
+'Show shortcut keys':'Maak shortcut keys zichtbaar',
+'Configuration of chat':'Configuratie van de chat',
+'Move the chat window to the right of the game':'Verplaats de het chat venster naar de rechter kant van het spel',
+'Allow to publish an alert in chat when your food level is low':'Sta toe een alert te publiceren waneer je voedsel voorraad laag is',
+'Auto-click help requests, such as building help':'Auto-Click hulp verzoeken, zoals hulp met gebouwen',
+'Hide all help requests in chat':'Verschuil al je hulp verzoeken in chat',
+'Hide the rules of the chat':'Verschuil de chat regels',
+'Show smileys':'Vertoon smileys',
+'Open':'Open',
+'Warning sound when receiving a whisper':'Waarschuwings toon wanneer je een fluister ontvangt',
+'Enable audio in case of ATTACK (Alliance)':'Schakel audio aan in het geval van een AANVAL (Alliantie)',
+'Enable audio in case of SCOUT (Alliance)':'Schakel audio aan in het geval van een VERKENNING (Alliantie)',
+'Table of colors':'Kleuren tablet',
+'Background of the global chat':'Achtergrond kleur van globale chat',
+'Background of the alliance chat':'Achtergrond kleur van alliantie chat',
+'Enable color for the leader':'Schakel kleur voor de leider aan',
+'Configuration of Reports':'Configuratie Rapporten',
+'Enable the deletion of the reports of the':'Schakel het wissen aan van de verslagen van de',
+'Delete all reports':'Alle rapporten wissen',
+'Enable the deletion of the message of the Kabam':'Schakel het wissen aan van de berichten van Kabam',
+'Enable red background color in case of ATTACK (Alliance)':'Schakel rode achtergrond kleur aan in geval van een AANVAL (Alliantie)',
+'Sound file (URL MP3)':'Sound file (URL MP3)',
+'Configuration of the Tower alert':'Configuratie van de Wachttoren alert',
+'Allow to post scout alerts in chat':'Sta toe om verkennings alerts in chat te posten',
+'Allow to post attack alerts in chat':'Sta toe om aanvals alerts in chat te posten',
+'Allow to sound an alarm when under attack (handy when you are away from keyboard)':'Sta toe een alarm toon te spelen waneer je onder aanval bent (handig waneer je niet bij je keyboard bent)',
+'Message':'Bericht',
+'Show the bunker':'Laat de bunker zien',
+'Show my troops':'Laat mijn troepen zien',
+'Loading the SWF player':'Laad de SWF player',
+'LOAD':'LAAD',
+'DEFAULT':'VERSTEK',
+'Repeat every':'Herhaal elke',
+'Length of sounding alarm':'Duratie van de alarm toon',
+'Tester':'Tester',
+'Stop Sound Alert':'Stop Alarm toon',
+'Error':'Foutmelding',
+'Loaded':'Geladen',
+'':''
+};
+var translateTRArray = {
+ //Tools
+'Please support the GoR BoTTols by clicking the ads on theGoR BoTTols website from time to time':'Ltfen zaman zaman Gor BoTTols\'a destek olmak iin web sayfamzdaki reklamlara tklaynz.',
+'Version':'Versiyon',
+'available':'Son',
+'Install':'Ykleme',
+'You must belong to an alliance in order to use thisfeature':'Bu zellii kullanabilmek iin bir ittifaka ye olmanz gerekmektedir.',
+'Translated by':'eviren',
+'Reload':'Yeniden ykle',
+'Set your city bunker':'ehrin snan ayarlayn',
+//Time
+'minutes':'dakika',
+'seconds':'saniye',
+'hours':'saat',
+// Diplomacy
+'None':'Yok',
+'Neutral':'Ntr',
+'Friendly':'Dost',
+'Hostile':'Dman',
+'Unaligned':'Ittifaksz',
+'Friendly To Them':'Onlara Dost',
+'Friendly To You':'size Dost',
+//Position
+ 'Chancellor':'Vali',
+'Vice Chancellor':'Vali Yardmcs',
+'Officer':'Memur',
+//Food Alert
+'My city':'ehrimde',
+'is running out of food':'yemek bitiyor',
+'so please send some':'ltfen biraz gnderin.\'',
+'Current stock':'uanki stok',
+//Tower Alerts
+'was explored':'keif yedim',
+'The exploration seems to come from':'L\'Keif yapan ehir koordinatlar',
+'Date':'Tarih',
+'DEFENDS':'DEFANS',
+ 'SANCTUARY':'KORUNACAK EHR',
+ 'ARRIVAL':'VARI',
+ 'BUNKER':'BUNKER',
+ 'MY TROOPS':'ASKERLERM',
+ //Overview
+ 'Joined on':'Katl',
+ 'Glory':'Glory',
+ 'Alliance':'ttifak',
+ 'World':'Dnya',
+ 'TOTALS':'TOPLAM',
+ 'Population':'Nfus',
+ //Alliance Manager
+ 'Alliance Manager':'ttifak Ynetimi',
+ 'Message Manager':'Mesaj Yneticisi',
+ 'ALLIANCE INFO':'ttifak Bilgileri',
+ 'MEMBERS INFO':'ye Bilgileri',
+ 'Sort By':'Srala',
+ 'Members':'yeler',
+ 'Founder':'Kurucu',
+ 'Avatar':'Avatar',
+ 'Name':'sim',
+ 'Position':'Pozisyon',
+ 'Might':'htiam',
+ 'Cities':'ehirler',
+ 'Days in Position':'Ayn sradaki gn says',
+ 'Joined Date':'katlm tarihi',
+ 'Last Login':'Son Giri',
+ 'Actions':'lem',
+ 'Get Info/Member':'Bilgi/ye Al',
+ 'Enter a message':'Mesaj Yazn',
+ 'Message by':'Mesaj gnderen:',
+ 'Message sent to all the alliance by':'Btn ttifaka mesaj gnderen;',
+ 'Message sent to all officer by':'Btn memurlara mesaj gnderen;',
+ 'Read members page':'ye sayfasn oku',
+'Message send to':'Mesaj gnderilen kii:',
+'Processing':'leniyor',
+'Remove Member':'yeyi kart',
+'Sorry, but this feature is only for official':'zgnz ama bu zellii kullama yetkiniz yok',
+'Do you really want to remove this user':'Bu yeyi gerekten kartmak istiyormusun',
+ //Search
+ 'Type':'Tip',
+ 'Barbarian camps':'Barbar kamplar',
+'Cities':'ehirler',
+'City to start from':'Merkez Koordinat',
+'Distance':'Mesafe',
+'from':'burdan',
+'to':'Buraya',
+'Launch search':'Aramay Balat',
+'Cancel the search':'Aramay ptal Et',
+'SEARCH CANCELLED':'ARAMA PTAL EDLD',
+'SEARCH FINISHED':'ARABA BTT',
+'Searching':'Aryor',
+'The minimum distance cannot be lower than 0':'En dk mesafe 0 dan kk olamaz',
+'The distance has to be higher than 1':'Mesafe 1 den byk olmaldr',
+'The maximum/minimum distance has been exceeded':'Maksimum/minumum mesafe ald',
+ 'The distance cannot be higher than 375':'Mesafe 375 den daha byk olamaz',
+ 'NOTE : WARNING, there is no limitation to the search, butthis can have consequences on the performance of your browser':'NOT:UYARI, arama iin bir snrlama yoktur fakat taraycnzn performansn drebilir ve yavalatabilir.',
+ 'Hide option window':'Ayar penceresini gizle',
+ 'Research':'Tekrar Ara',
+ 'results':'sonular',
+ 'Not found':'Bulunamad',
+ 'More info':'Daha fazla bilgi',
+ 'Source':'Kaynak',
+ 'Destination':'Hedef',
+ 'Fields':'Bozkr Tipi',
+ 'Barbarian camp':'Barbar Kamp',
+ 'Woods':'Koruluk',
+'Grassland':'Otlak',
+'River':'Irmak',
+'Mountains':'Da',
+'Plains':'Ova',
+'Hills':'Tepeler',
+'Non-occupied only':'Sadece fethedilmemi',
+'Sort by':'Srala',
+'free':'Bo',
+'Filter':'Filtrele',
+'All cities':'Btn ehirler',
+'Hostile cities only':'Dman ehirler',
+'Misty cities only':'Misty ehirler',
+'Allied cities only':'ttifak ehirleri',
+'Friendly cities only':'Dost ehirler',
+'Neutral cities only':'Ntr ehirler',
+'Cities with no alliance only':'ttifaksz ehirler',
+'Minimum':'Minimum',
+'Maximum':'Maksimum',
+'content':'content',
+//Reassing
+'Not possible to send to same city':'Ayn ehre gndermek mmkn deil',
+'Impossible to':'Mmkn deil',
+'with 0 troops':'0 birlik ile',
+'wake up':'uyan',
+ 'more than':'daha fazla',
+ 'troops at a time':'ayn anda birlik',
+ 'Succeeded':'Baarl',
+ //Transport
+ 'Manual':'Manual',
+ 'Automatic':'Otomatik',
+ 'TRANSPORTING GOODS FROM CITY TO CITY':'BR EHRDEN DERNE MALZEME NAKL',
+ 'Quantity':'Adet',
+ 'Resource':'Kaynak',
+ 'type':'tip',
+ 'Please put in the amount of troops you like to use':'Kullanmak istediiniz birlik saysn sein',
+ 'Please check the resource you want to transport':'nakil etmek istediiniz kaynaklar sein',
+ 'Send a transport every':'Nakil yapma zaman aral',
+ 'Send transport with a minimum of':'Nakli yapacan en az birlik says',
+ 'ADD A TRANSPORT':'NAKL EKLEYN',
+ 'Available':'mmkn',
+ 'Estimate':'Tahmini',
+ 'necessary':'gerekli',
+ 'Keep':'sakla',
+ 'Show routes':'Rotay gster',
+ 'Add a route':'rota ekle',
+ 'the route':'Rota',
+ 'Edit':'Dzenle',
+//AutoAttack 2
+'AUTOMATED ATTACKS':'OTOMATK SALDIRI',
+'ATTACK':'SALDIRI',
+'Do not use the general with a level greater than':'Bu seviyeden yksek generalleri kullanma',
+'Record':'Kayt Et',
+'Delete':'Sil',
+'Last Attack':'Son Saldr',
+'Success':'Baarl',
+'Select troops':'Birlik Se',
+'CITY SET PARAMETERS':'EHR PARAMETRE AYARLARI',
+//Marches
+'INCOMING ATTACKS':'GELEN SALDIRILAR',
+'Target Coordinates':'Hedef Kordinatlar',
+'Times':'Zaman',
+'Attacker':'Saldran',
+'General':'General',
+'OUTGOING MARCHES':'EHRLERDEN YAPILAN YRYLER',
+'Status':'Durum',
+'Coordinates':'Kordinatlar',
+'RECEIVED REINFORCEMENTS':'ALINAN TAKVYELER',
+'City reinforcements':'ehir Takviyeleri',
+//Reports
+'CHECK ALLIANCE REPORTS':"TTFAK RAPORLARINI KONTROL ET",
+'No reports found':'Rapor bulunamad',
+'Pages':'Sayfalar',
+'pages':'sayfalar',
+'Page':'Sayfa',
+'of':'',
+'All reports':'Btn Raporlar',
+'Incoming attacks':'Gelen Saldrlar',
+'Outgoing attacks':'Giden Saldrlar',
+'Reinforcements':'Takviyeler',
+'All reports':'Btn Raporlar',
+'My reports only':'Sadece Benim Raporlarm',
+'Delete all reports':'btn Raporlar Sil',
+'Transport':'Nakil',
+'Scout':'Keif',
+'Reinforce':'Takviye Et',
+'Attack':'Saldr',
+'unknown':'Bilinmiyor',
+'Wild':'Bozkr',
+'Target':'Hedef',
+'Victory':'Zafer',
+'Defeat':'Malup',
+'Defender':'Savunan',
+'Number of tours':'Tur says',
+'No troops defending':'Savunan birlik yok',
+'Killed':'ldrlen',
+'Survived':'Kurtulan',
+'Resources':'Kaynak',
+'Building':'Yaplar',
+'Technical':'Teknik',
+'level':'Seviye',
+'Amount':'Miktar',
+'Defending':'Savunuyor',
+'Results found':'Bulunan Sonular',
+'Objects found':'Bulunan Objeler',
+//Player
+'Player':'Uyuncu',
+'Search':'Arama',
+'OR':'YADA',
+'Minimum of 3 characters':'En az 3 Harf',
+'Results for':'Sonu',
+'Rank':'Seviye',
+'See members':'yeleri Gr',
+'Diplomacy':'Diplomasi',
+'Players found':'Bulunan Oyuncular',
+'Extra information':'lave Bilgiler',
+'Details':'Detay',
+'Population':'Nufus',
+'Provinces':'Eyaletler',
+'Profile':'Profil',
+ //AutoAttack
+ 'CONFIGURATION':'AYARLAR',
+ 'STATISTICS':'STATSTKLER',
+ 'Time between attacks':'ki saldr arasndaki zaman',
+ 'Attack Mode':'Saldr Modu',
+ 'AutoAttack stops when coordinates will be finished':'Kordinatlar bittii zaman otomatik saldrlar durdur',
+ 'Check Coordinates List':'Kordinat listesini kontrol et',
+ 'Stop after':'Dur',
+ 'attacks':'saldr sonra',
+ 'Resume the attacks after':'Saldrlara kald yerden devam edilecek sre',
+ 'Next attack':'Sonraki saldr',
+ 'do not be resumed':'kald yerden devam etmeyecek',
+ 'Check cities you want to attack from':'Saldr yaplacak ehri sein',
+ 'TROOPS':'BRLKLER',
+ 'valid coordinates found':'geerli kordinat bulundu',
+ 'No coordinated inserted':'Kordinat girilmedi',
+ 'Do you really want to enable this tab':'Bu zellii aktif etmek istiyormusunuz',
+ //Info
+ 'TROOP INFO':'BRLK BLGLER',
+ 'Troops':'Birlikler',
+ 'Glory':'htiam',
+ 'Life':'Hayat',
+ 'Attack':'Saldr',
+ 'Defense':'Savunma',
+ 'Speed':'Hz',
+ 'Range':'Uzaklk',
+ 'Load':'Yk',
+ 'Upkeep':'Bakm',
+ 'NEEDED MARKS TO GET NEW CITY':'YEN EHR KURMAK N GEREKL EHRLER',
+ 'Requirements':'Gereksinimler',
+ 'Level':'Seviye',
+ 'Your level':'Senin seviyen',
+ 'Cohorts':'Komular',
+ //Spam
+ 'GLOBAL chat':'KRESEL Sohbet',
+ 'ALLIANCE chat':'TTFAK Sohbet',
+'OPTIONS':'AYARLAR',
+ 'Post automatically every':'Otomatik Yaptr',
+'Your spam message':'Mesaj',
+//Generals
+'Name':'sim',
+'Level':'Seviye',
+'Energy':'Enerji',
+'Actions':'lem',
+'Request more energy':'Enerji ste',
+'Send offerings':'Adak Gnder',
+'Outside the city':'ehir dnda',
+'No general present':'General yok',
+//Gifts
+'Pick a free gift to send to all your friends':'Arkadalarna gndemek iin hesiye se',
+'SEND':'GNDER',
+'USE':'KULLAN',
+'You have':'Sahip Olduun',
+'Send offerings':'Adak Gnder',
+'Accept all gifts':'Btn hediyeleri kabul et',
+ //AutoTrain
+ 'AUTO-BUILDING TROOPS':'OTOMATK BRLK ETM',
+ 'Active':'Aktif et',
+ 'City':'ehir',
+ 'Troop type':'birlik Tipi',
+ 'Troops':'Birlikler',
+ 'Actions':'lem',
+ 'seconds of training between the cities':'ehirler araas eitim sresi',
+ 'Start at':'ehir nufusu',
+ 'of the population available':'olduunda bala',
+ 'Use at':'ehir Nufusu',
+ 'IF YOU GET ANY ERRORS, CHECK IF YOUR CITY HAS ENOUGH FOODAND RESOURCES':'HARHANBR HATA ALDIINIZDA, EHRNZDE YETERL KAYNAK VE YEMEK OLDUUNDAN EMN OLUN.',
+ 'Initiating training':'eitim balatlyor',
+ 'Conditions not met':'Gereksinimler karlanmad',
+ //Train
+ 'Max':'Maks',
+ 'Number of troops per slot':'slot bana birlik says',
+ 'Number of slots':'Slot adetleri',
+ 'Queue':'Sra',
+ 'barracks':'kla',
+ 'Cancel training':'Eitimi iptal et',
+ 'Number of troops per slot must be greater than':'slot bana maksimum birlik bu saydan byk olmaldr',
+'Cannot train that many troops':'okadar fazla birlik eitilemez',
+'max is':'maksimum',
+'total':'toolam',
+ 'Invalid number of slots':'Yanl slot says',
+ 'Training succesful':'Eitim baarl',
+ 'Formation':'Dzen',
+//Options
+'Options':'Ayarlar',
+'Configuration of the':'konfigurasyonu',
+'Language':'Lisan',
+'Allow the toolbox window to be moved freely':'Betik penceresinin hareket ettirilmesine msade et',
+'Dimensions Tools':'Betik Boyutlar',
+'Width':'Genilik',
+'Height':'Ykseklik',
+'Refresh GoR every':'Go',
+'Organize a Tax event (if happiness':'Vergi gn dzenle (mutluluk seviyesini ayarla',
+'Auto-collect resources every':'Otomatik kaynak toplama sresini ayarla',
+'Allow to publish your helpings automatically to Facebook':'Yardm isteklerini Facebook ta otomatik yaynla',
+'Everyone':'Herkes',
+'Friends of friends':'Arkadalarmn arkadalar',
+'Friends only':'Arkadalar sadece',
+'Me only':'Sadece Ben',
+'Show shortcut keys':'Ksayollar gster',
+'Configuration of chat':'Sohbet Ayarlar',
+'Move the chat window to the right of the game':'Sohbet penceresinin oyunun sana kaydr',
+'Allow to publish an alert in chat when your food level islow':'Yemek seviyeniz dk olduunda sohbet penceresinde uyar vermesine msade et',
+'Auto-click help requests, such as building help':'Yardm isteklerine otomatik yardm et',
+'Hide all help requests in chat':'Sohbet penceresindeki yardm isteklerinin hepsini gizle',
+'Hide the rules of the chat':'Sohbet kurallarn gizle',
+'Show smileys':'Glckleri gster',
+'Open':'A',
+'Warning sound when receiving a whisper':'Gizli pesaj aldnda uyar sesi al',
+'Enable audio in case of ATTACK (Alliance)':'Saldr aldnda ittifak pencerinde gster',
+'Enable audio in case of SCOUT (Alliance)':'Keif yediinde ittifakpenceresinde gster',
+'Table of colors':'Tablo renkleri',
+'Background of the global chat':'Kresel sohbetin arkaplan renkleri',
+'Background of the alliance chat':'ttifak sohbetin arkaplan renkleri',
+'Enable color for the leader':'Valinin rengi',
+'Configuration of Reports':'Rapor Ayarlar',
+'Enable the deletion of the reports of the':'raporlarn otomatik silinmesi',
+'Delete reports every':'Raporlarn silinme sresi',
+'Enable the deletion of the message of the Kabam':'Kabamdan gelen mesajlarn otomatik silinmesi',
+'Enable red background color in case of ATTACK(Alliance)':'Saldr yediinde arkaplann krmz olmas',
+'Sound file (URL MP3)':'ses dosyas (URL MP3)',
+'Configuration of the Tower alert':'Kule uyar ayarlar',
+'Allow to post scout alerts in chat':'Keif uyarlar ittifak pencersinde grnsn',
+'Allow to post attack alerts in chat':'saldr uyarlar ittifak penceresinde grlsn',
+'Allow to sound an alarm when under attack (handy when youare away from keyboard)':'Saldr aldnzda ses alnmas aktif olsun(PC banda deilken faydaldr)',
+'Message':'Mesaj',
+'Show the bunker':'Sna gster',
+'Show my troops':'Birliklerimi gster',
+'Loading the SWF player':'SWF player ykleniyor',
+'LOAD':'YKL',
+'DEFAULT':'DEFAULT',
+'Repeat every':'Tekrarla',
+'Length of sounding alarm':'Alarm alma sresi',
+'Tester':'Test Et',
+'Stop Sound Alert':'Alarm  sustur',
+'Error':'Hata',
+'Loaded':'Yklendi',
+'':''
+};
+var translateDKArray = {
+//Tools
+'Please support the GoR BoTTols by clicking the ads on the GoR BoTTols website from time to time':'Stt venligst GoR BoTTols ved at besge reklamerne fra tid til tid',
+'Version':'Version', 
+'available':'tilgngelige',
+'Install':'installer',
+'You must belong to an alliance in order to use this feature':'Du skal vre med i en Alliance for at bruge denne funktion',
+'Translated by':'Oversat af',
+'Reload':'genindls',
+'Set your city bunker':'Set din byes bunker',
+//Time
+'minutes':'minutter',
+'seconds':'sekunder',
+'hours':'timer',
+// Diplomacy
+'None':'Ingen',
+'Neutral':'Neutral',
+  'Friendly':'Venner',
+  'Hostile':'Fjender',
+  'Unaligned':'Ingen alliance',
+  'Friendly To Them':'Venner med dem',
+  'Friendly To You':'Venner med dig',
+ //Position
+ 'Chancellor':'Konge',
+  'Vice Chancellor':'Vice konge',
+  'Officer':'Officer',
+//Food Alert
+'My city':'Min by',
+'is running out of food':'er ved at lbe tr for mad',
+'so please send some':'s send venligst noget',
+'Current stock':'Mit lager lige nu',
+//Tower Alerts : Udsigtstrns advarsler
+'was explored':'Var undersgt',
+'The exploration seems to come from':'undersgelsen ligner den kom fra',
+'Date':'Dato',
+'DEFENDS':'Forsvarer','SANCTUARY':'I skjul','ARRIVAL':'Ankommer','BUNKER':'BUNKER','MY TROOPS':'Mine tropper',
+  //Overview: Overblik
+'Joined on':'Deltog d.',
+'Glory':'Omdmme',
+'Alliance':'Alliance',
+'World':'Verden',
+'TOTALS':'TOTALER',
+'Population':'Befolkning',
+  //Alliance Manager 
+'Alliance Manager':'Alliance styring',
+'Message Manager':'Besked Manager',
+'ALLIANCE INFO':'Alliance information',
+'MEMBERS INFO':'Medlemmers information',
+'Sort By':'Sorter efter',
+'Members':'Medlem',
+'Founder':'Grundlgger',
+'Avatar':'Billede',
+'Name':'Navn',
+'Position':'Title',
+'Might':'Magt',
+'Cities':'Byer',
+'Days in Position':'Dage med i denne title',
+'Joined Date':'Gioca dal',
+'Last Login':'Sidste Login',
+'Actions':'Muligheder',
+'Get Info/Member':'Hent information / Medlem',
+'Enter a message':'Skriv en besked',
+'Message by':'Skrevet af',
+'Message sent to all the alliance by':'Besked sendt til alle medlemmer af alliancen af',
+'Message sent to all officer by':'Besked sendt til alle Officere af ',
+'Read members page':'ls medlemmers side',
+  'Message send to':'Besked sendt til',
+  'Processing':'Arbejder',
+  'Remove Member':'Fjern Medlem',
+  'Sorry, but this feature is only for official':'Beklager, denne funktion er kun for officere',
+  'Do you really want to remove this user':'Vil du virkelige fjerne denne bruger',
+  //Search
+'Type':'Type', 
+'Barbarian camps':'Babar lejer',
+  'Cities':'Byer',
+  'City to start from':'By som der startes fra',
+  'Distance':'afstand',
+  'from':'fra',
+  'to':'til',
+  'Launch search':'begynd sgning',
+  'Cancel the search':'stop sgning',
+  'SEARCH CANCELLED':'SGNING STOPPET',
+  'SEARCH FINISHED':'SGNING FRDIG',
+  'Searching':'Sger',
+  'The minimum distance cannot be lower than 0':'Afstanden kan ikke vre mindre end 0',
+'The distance has to be higher than 1':'Afstasnden skal vre mere end 1',
+'The maximum/minimum distance has been exceeded':'max / min afstanden er overskredet',
+ 'The distance cannot be higher than 375':'Afstanden kan ikke vre mere end 375',
+ 'NOTE : WARNING, there is no limitation to the search, but this can have consequences on the performance of your browser':'NOTA : Advarsel der er ikke nogen begrnsning p sgningen, dette kan have konsekvnser for din browsers ydelse',
+ 'Hide option window':'Skjul options vinduet',
+ 'Research':'udvikler',
+ 'results':'Reslutat',
+ 'Not found':'ikke fundet',
+ 'More info':'Mere info',
+ 'Source':'Kilde',
+ 'Destination':'Distination',
+ 'Fields':'Marker',
+ 'Barbarian camp':'Barbar Lejre',
+ 'Woods':'Skov',
+'Grassland':'Grsland',
+'River':'Flod',
+'Mountains':'Bjerg',
+'Plains':'Mark',
+'Hills':'Bakker',
+'Non-occupied only':'Frie omrder',
+'Sort by':'Sorteret efter',
+'free':'Fri',
+'Filter':'Filter',
+'All cities':'Alle Byer',
+'Hostile cities only':'Fjentlige byer',
+'Misty cities only':'Tgede byer',
+'Allied cities only':'Allierede byer',
+'Friendly cities only':'Venners byer',
+'Neutral cities only':'Neutrale byer',
+'Cities with no alliance only':'Byer uden alliancer',
+'Minimum':'Minimun',
+'Maximum':'Maximun',
+'content':'indehold',
+//Reassing
+'Not possible to send to same city':'Ikke muligt at sende til denne by',
+'Impossible to':'Ikke muligt at',
+'with 0 troops':'med 0 tropper',
+'wake up':'Vgn op',
+'more than':'Mere ind',
+'troops at a time':'tropper p dette tidspunkt',
+'Succeeded':'Sdan',
+  //Transport
+'Manual':'Manuel',
+'Automatic':'Automatisk',
+'TRANSPORTING GOODS FROM CITY TO CITY':'Transport fra en by til en anden',
+'Quantity':'Mngde',
+'Resource':'Rstoffer',
+'type':'Type',
+'Please put in the amount of troops you like to use':'Tast antallet af tropper du vil bruge',
+'Please check the resource you want to transport':'hvilke rstoffer vil du flytte',
+'Send a transport every':'Send hvert ',
+'Send transport with a minimum of':'Send transport med min. af',
+'ADD A TRANSPORT':'Tilfj transport',
+'Available':'Disponible',
+'Estimate':'Forventet',
+'necessary':'ndvendige',
+'Keep':'Behold',
+'Show routes':'Vis router',
+'Add a route':'tilfj router',
+'the route':'ruten',
+'Edit':'ret',
+//AutoAttack 2
+'AUTOMATED ATTACKS':'Auto Angrib',
+'ATTACK':'Angrib',
+'Do not use the general with a level greater than':'Brug ikke genaraler med hjere lv. end ',
+'Record':'Gem',
+'Delete':'Slet',
+'Last Attack':'sidste angreb',
+'Success':'succes',
+'Select troops':'Vlg tropper',
+'CITY SET PARAMETERS':'Byens indstillinger',
+//Marches
+'INCOMING ATTACKS':'Du bliver angrebet',
+'Target Coordinates':'Mlets coordinater',
+'Times':'tider',
+'Attacker':'Angriber',
+'General':'General',
+'OUTGOING MARCHES':'udgende tropper',
+'Status':'status',
+'Coordinates':'Coordinater',
+'RECEIVED REINFORCEMENTS':'Modtaget forstrkninger',
+'City reinforcements':'Byens forstrkninger',
+//Reports
+'CHECK ALLIANCE REPORTS':"Se alliancens raporter",
+'No reports found':'ingen raporter fundet',
+'Pages':'sider',
+'pages':'sider',
+'Page':'side',
+'of':'af',
+'All reports':'alle raporter',
+'Incoming attacks':'indkommende angreb',
+'Outgoing attacks':'udgende angreb',
+'Reinforcements':'forstrkning',
+'All reports':'Alle reporter',
+'My reports only':'Kun mine reporter',
+'Delete all reports':'Slet alle reporter',
+'Transport':'transport',
+'Scout':'spioner',
+'Reinforce':'forstrk',
+'Attack':'angreb',
+'unknown':'Ukendt',
+'Wild':'Wildmark',
+'Target':'Ml',
+'Victory':'Sejr',
+'Defeat':'Nederlag',
+'Defender':'Forslag',
+'Number of tours':'nummere af omgange',
+'No troops defending':'Ingen tropper forsvarer',
+'Killed':'Drbt',
+'Survived':'Overlevede',
+'Resources':'Rstoffer',
+'Building':'Bygning',
+'Technical':'Teknik',
+'level':'Level',
+'Amount':'Antal',
+'Defending':'Forsvarer',
+'Results found':'Resultat fundet',
+'Objects found':'Muligheder fundet',
+//Player
+'Player':'Spiller',
+'Search':'Sg',
+'OR':'Eller',
+'Minimum of 3 characters':'minium 3 bokstaver',
+'Results for':'Resultat for ',
+'Rank':'rank',
+'See members':'Se medlemmer',
+'Diplomacy':'Diplomati',
+'Players found':'spiller fundet',
+'Extra information':'Extra information',
+'Details':'Detaljer',
+'Population':'befolkning',
+'Provinces':'Delstat',
+'Profile':'FB Profil',
+  //AutoAttack
+'CONFIGURATION':'Opstning',
+'STATISTICS':'Muligheder',
+'Time between attacks':'tid mellem hvert angreb',
+'Attack Mode':'Type af angreb',
+'AutoAttack stops when coordinates will be finished':'Stop nr alle ml er frdige',
+'Check Coordinates List':'Check listen for gyldige coordinater',
+'Stop after':'Stop efter',
+'attacks':'Angrib',
+'Resume the attacks after':'Genoptag angreb efter',
+'Next attack':'nste angreb',
+'do not be resumed':'Gentag ikke efter',
+'Check cities you want to attack from':'Check de byer du vil angribe fra', 
+'TROOPS':'tropper',
+'valid coordinates found':'Gyldige cordinator fundet',
+'No coordinated inserted':'Ingen coordinator er insat',
+'Do you really want to enable this tab':'Vil du virkelige starte denne funktion',
+  //Info
+'TROOP INFO':'Troope information',
+'Troops':'Tropper',
+'Glory':'Omdmme',
+'Life':'Liv',
+'Attack':'Angreb',
+'Defense':'forsvar',
+'Speed':'Hastighed',
+'Range':'rkkevidde',
+'Load':'lasteevne',
+'Upkeep':'vedligeholdelse',
+'NEEDED MARKS TO GET NEW CITY':'Flag som behves for at f ny by',
+'Requirements':'krav',
+'Level':'Level',
+'Your level':'din level',
+'Cohorts':'Medspillere',
+  //Spam
+'GLOBAL chat':'global Chat',
+'ALLIANCE chat':'Alliance chat',
+  'OPTIONS':'Muligheder',
+'Post automatically every':'skriv automatisk hvert',
+'Your spam message':'Din spam besked',
+//Generals
+'Name':'navn',
+'Level':'Level',
+'Energy':'Energy',
+'Actions':'aktioner',
+'Request more energy':'Bed om mere energy',
+'Send offerings':'send offer',
+'Outside the city':'uden for byen',
+'No general present':'Ingen genaral hjemme',
+//Gifts
+'Pick a free gift to send to all your friends':'Vlg en gratis gave og send den til dine venner',
+'SEND':'Send',
+'USE':'Brug',
+'You have':'Du har',
+'Send offerings':'send offer',
+'Accept all gifts':'godkend alle gaver',
+  //AutoTrain
+'AUTO-BUILDING TROOPS':'Automatisk troppe trning',
+'Active':'aktiv',
+'City':'by',
+'Troop type':'troope type',
+'Troops':'tropper',
+'Actions':'aktion',
+'seconds of training between the cities':'sekunder mellem trning i byerne',
+'Start at':'start med',
+'of the population available':'af ledig befolkning',
+'Use at':'brug',
+'IF YOU GET ANY ERRORS, CHECK IF YOUR CITY HAS ENOUGH FOOD AND RESOURCES':'Hvis du fr nogle fejl check du har rstoffer nok',
+'Initiating training':'Begynd trning',
+'Conditions not met':'Der mangler noget',
+  //Train
+'Max':'Max',
+'Number of troops per slot':'antal af enheder pr k',
+'Number of slots':'antal af ker ',
+'Queue':'k',
+'barracks':'Kaserne',
+'Cancel training':'Annuller trning',
+'Number of troops per slot must be greater than':'antal af tropper pr k er strre end',
+  'Cannot train that many troops':'Kan ikke trne s mange tropper',
+  'max is':'Max er ',
+  'total':'total',
+ 'Invalid number of slots':'ugyldig antal i k',
+ 'Training succesful':'Trning begyndt',
+ 'Formation':'ved ikke hvad dette er ',
+//Options
+'Options':'Muligheder',
+'Configuration of the':'opstning af',
+'Language':'sporg',
+'Allow the toolbox window to be moved freely':'Tillad at toolboxen my flyttes rundt',
+'Dimensions Tools':'Dimensioner p Toolbox',
+'Width':'Bredde',
+'Height':'Hjde',
+'Refresh GoR every':'Geninls hvert ',
+'Organize a Tax event (if happiness':'Lav en Tax begivenhed (hvis glde er :',
+'Auto-collect resources every':'Auto samel rstoffer',
+'Allow to publish your helpings automatically to Facebook':'Tillad at offenliggre automatisk til Facebook',
+'Everyone':'alle',
+'Friends of friends':'Venner af venner',
+'Friends only':'Kun venner',
+'Me only':'Kun mig',
+'Show shortcut keys':'Vis genveje taster',
+'Configuration of chat':'opst chat',
+'Move the chat window to the right of the game':'flyt chat til hjre side af spillet',
+'Allow to publish an alert in chat when your food level is low':'Tillad at skrive i chat hvis du manlger mad',
+'Auto-click help requests, such as building help':'Aotu click p nsker om hjlp',
+'Hide all help requests in chat':'Gem nsker i chatten',
+'Hide the rules of the chat':'Gem reglerne i chat',
+'Show smileys':'vis smileys',
+'Open':'ben',
+'Warning sound when receiving a whisper':'Afspil lyd nr nogen hvisker til dig',
+'Enable audio in case of ATTACK (Alliance)':'afspil lyd nr nogle angriber',
+'Enable audio in case of SCOUT (Alliance)':'afspil lyd nr nogen spioner dig',
+'Table of colors':'oversigt af farver',
+'Background of the global chat':'Baggrundsfarve i global chat',
+'Background of the alliance chat':'baggrundsfarve i allaince chat',
+'Enable color for the leader':'Farve for leder',
+'Configuration of Reports':'opst raporter',
+'Enable the deletion of the reports of the':'Virker p.t ikke',
+'Delete reports every':'slet alle reporter',
+'Enable the deletion of the message of the Kabam':'slet besked fra Kabam',
+'Enable red background color in case of ATTACK (Alliance)':'gr baggrunden rd hvis du bliver angrebet',
+'Sound file (URL MP3)':'Lyd fil (URL MP3)',
+'Configuration of the Tower alert':'opstning af trn alarm',
+'Allow to post scout alerts in chat':'post spoin alarm i chat',
+'Allow to post attack alerts in chat':'post angreb i chat',
+'Allow to sound an alarm when under attack (handy when you are away from keyboard)':'afspil lyd hvid du bliver angrebet (god iden hvis du er vk fra keabordet)',
+'Message':'besked',
+'Show the bunker':'vis hovedby',
+'Show my troops':'vis mine tropper',
+'Loading the SWF player':'inlser SWF spilleren',
+'LOAD':'inlser',
+'DEFAULT':'standard',
+'Repeat every':'Gentag hvert',
+'Length of sounding alarm':'Lngden af tid lydfilen afspilles',
+'Tester':'test',
+'Stop Sound Alert':'Stop lydfil',
+'Error':'FEJL',
+'Loaded':'inlst',
+'':''
+};
+var translateFRArray = {
+ //Tools
+'Please support the GoR BoTTols by clicking the ads on the GoR BoTTols website from time to time':'SVP supportez la boite BoTTols en cliquant sur la pub du site GOR BoTTols de temps en temps',
+'Version':'Version',
+'available':'disponible',
+'Install':'Installation',
+'You must belong to an alliance in order to use this feature':'Vous devez appartenir  une alliance pour utiliser cette caractristique',
+'Translated by':'Traduit par',
+'Reload':'Recharger',
+'Set your city bunker':'Saisir la ville forte',
+//Time
+'minutes':'minutes',
+'seconds':'secondes',
+'hours':'heures',
+// Diplomacy
+'None':'Aucune',
+'Neutral':'Neutre',
+'Friendly':'Amicale',
+'Hostile':'Hostile',
+'Unaligned':'Sans Alliance',
+'Friendly To Them':'Amicale Avec Eux',
+'Friendly To You':'Amicale Avec Vous',
+//Position
+ 'Chancellor':'Chancelier',
+'Vice Chancellor':'Vice Chancelier',
+'Officer':'Officier',
+//Food Alert
+'My city':'Ma ville',
+'is running out of food':'a besoin de raisin',
+'so please send some':'envoyez moi un peu SVP',
+'Current stock':'Stock actuel',
+//Tower Alerts
+'was explored':'a et reconnu',
+'The exploration seems to come from':'La reconnaisance semble venir de',
+'Date':'Date',
+'DEFENDS':'EN DEFENSE',
+ 'SANCTUARY':'SANCTUAIRE',
+ 'ARRIVAL':'ARRIVEE',
+ 'BUNKER':'VILLE FORTE',
+ 'MY TROOPS':'MES TROUPES',
+ //Overview
+ 'Joined on':'Entr le',
+ 'Glory':'Gloire',
+ 'Alliance':'Alliance',
+ 'World':'Monde',
+ 'TOTALS':'TOTAUX',
+ 'Population':'Population',
+ //Alliance Manager
+ 'Alliance Manager':'Gestion Alliance',
+ 'Message Manager':'Gestion Messages',
+ 'ALLIANCE INFO':'INFO ALLIANCE',
+ 'MEMBERS INFO':'INFO MEMBRES',
+ 'Sort By':'Trier par',
+ 'Members':'Membres',
+ 'Founder':'Fondateur',
+ 'Avatar':'Avatar',
+ 'Name':'Nom',
+ 'Position':'Position',
+ 'Might':'Gloire',
+ 'Cities':'Cites',
+ 'Days in Position':'Jours dans la Position',
+ 'Joined Date':'Entr le',
+ 'Last Login':'Dernire connection',
+ 'Actions':'Action',
+ 'Get Info/Member':'Voir Info/Membres',
+ 'Enter a message':'Entrer un message',
+ 'Message by':'Message de',
+ 'Message sent to all the alliance by':'Message envoy  toute l\'alliance de',
+ 'Message sent to all officer by':'Message envoy aux officiers de',
+ 'Read members page':'Lecture de la page membres',
+'Message send to':'Message envoy ',
+'Processing':'Traitement',
+'Remove Member':'Supprimer le Membre',
+'Sorry, but this feature is only for official':'Dsol, mais cette fonction est seulement pour officiers',
+'Do you really want to remove this user':'Voulez-vous vraiment supprimer ce membre',
+//Search
+ 'Type':'Type',
+ 'Barbarian camps':'Camps Barbares',
+'Cities':'Cites',
+'City to start from':'Recherche  partir de',
+'Distance':'Distance',
+'from':'de',
+'to':'',
+'Launch search':'Lancer la recherche',
+'Cancel the search':'Stopper la recherche',
+'SEARCH CANCELLED':'RECHERCHE ANNULEE',
+'SEARCH FINISHED':'RECHERCHE FINIE',
+'Searching':'Recheche en cours',
+'The minimum distance cannot be lower than 0':'La distance mini doit tre suprieur  0',
+'The distance has to be higher than 1':'La distance maxi doit tre suprieur  1',
+'The maximum/minimum distance has been exceeded':'La distance max doit tre suprieur  la distance mini',
+ 'The distance cannot be higher than 375':'La distance ne peut pas tre suprieur  375',
+ 'NOTE : WARNING, there is no limitation to the search, but this can have consequences on the performance of your browser':'NOTA: ATTENTION, il n\'y a pas de limitation dans la recherche mais cela peut avoir des consequences sur les performances de votre navigateur.',
+ 'Hide option window':'Cacher les options',
+ 'Research':'Recherche',
+ 'results':'resultats',
+ 'Not found':'Non trouv',
+ 'More info':'Plus d\'info',
+ 'Source':'Origine',
+ 'Destination':'Destination',
+ 'Fields':'Champs',
+ 'Barbarian camp':'Camps Barbares',
+ 'Woods':'Forts',
+'Grassland':'Prairies',
+'River':'Fleuves',
+'Mountains':'Montagnes',
+'Plains':'Plaines',
+'Hills':'Collines',
+'Non-occupied only':'Libre seulement',
+'Sort by':'Trier par',
+'free':'libre',
+'Filter':'Filtre',
+'All cities':'Toutes les villes',
+'Hostile cities only':'Hostiles seulement',
+'Misty cities only':'Sous la brume seulement',
+'Allied cities only':'Allis seulement',
+'Friendly cities only':'Amis seulement',
+'Neutral cities only':'Neutre seulement',
+'Cities with no alliance only':'Sans alliance seulement',
+'Minimum':'Minimum',
+'Maximum':'Maximum',
+'content':'contient',
+//Reassign
+'Not possible to send to same city':'Pas possible d\'envoyer sur la mme cit',
+'Impossible to':'Impossible de',
+'with 0 troops':'avec 0 troupes',
+'wake up':'reveill',
+ 'more than':'plus que',
+ 'troops at a time':'troupes  la fois',
+ 'Succeeded':'Fait',
+ //Transport
+ 'Manual':'Manuel',
+ 'Automatic':'Automatique',
+ 'TRANSPORTING GOODS FROM CITY TO CITY':'TRANSPORT DE MARCHANDISES DE VILLE A VILLE',
+ 'Quantity':'Quantit',
+ 'Resource':'Ressource',
+ 'type':'type',
+ 'Please put in the amount of troops you like to use':'SVP mettez la quantit de troupes que vous souhaitez utiliser',
+ 'Please check the resource you want to transport':'SVP vrifiez les ressources que vous voulez transporter',
+ 'Send a transport every':'Envoyer les transports toutes les',
+ 'Send transport with a minimum of':'Envoyer les transports avec un minumum de',
+ 'ADD A TRANSPORT':'AJOUTER UN TRANSPORT',
+ 'Available':'Disponible',
+ 'Estimate':'Estim',
+ 'necessary':'ncessaire',
+ 'Keep':'Garder',
+ 'Show routes':'Voir les routes',
+ 'Add a route':'Ajouter une route',
+ 'the route':'la route',
+ 'Edit':'Modification',
+ //AutoAttack 2
+'AUTOMATED ATTACKS':'ATTAQUES AUTOMATIQUES',
+'ATTACK':'ATTAQUE',
+'Do not use the general with a level greater than':'Ne pas utiliser les gnraux avec un niveau suprieur ',
+'Record':'Enregistrer',
+'Delete':'Supprimer',
+'Last Attack':'Dernire Attaque',
+'Success':'Russi',
+'Select troops':'Selection des troupes',
+'CITY SET PARAMETERS':'PARAMETRES DES VILLES ENREGISTRES',
+//Marches
+'INCOMING ATTACKS':'ATTAQUES ENTRANTES',
+'Target Coordinates':'Coordonnes de l\'objectif',
+'Times':'Temps',
+'Attacker':'Attaquant',
+'General':'Gnral',
+'OUTGOING MARCHES':'MARCHES SORTANTES',
+'Status':'Statut',
+'Coordinates':'Coordonnes',
+'RECEIVED REINFORCEMENTS':'Renforts Reus',
+'City reinforcements':'Ville renforce',
+//Reports
+'CHECK ALLIANCE REPORTS':'RECHERCHE DES RAPPORTS D\'ALLIANCE',
+'No reports found':'Aucun rapport trouv',
+'Pages':'Pages',
+'pages':'pages',
+'Page':'Page',
+'of':'de',
+'All reports':'Tous les rapports',
+'Incoming attacks':'Attaques entrantes',
+'Outgoing attacks':'Attaques sortantes',
+'Reinforcements':'Renforts',
+'All reports':'Tous les rapports',
+'My reports only':'Seulement mes rapports',
+'Delete all reports':'Supprimer tous les rapports',
+'Transport':'Transport',
+'Scout':'Reconnaisance',
+'Reinforce':'Renforcement',
+'Attack':'Attaque',
+'unknown':'inconnu',
+'Wild':'Sauvage',
+'Target':'Cible',
+'Victory':'Victoire',
+'Defeat':'Dfaite',
+'Defender':'Dfenseur',
+'Number of tours':'Nombre de tour(s)',
+'No troops defending':'Aucune troupe en dfense',
+'Killed':'Tus',
+'Survived':'A survcu',
+'Resources':'Ressources',
+'Building':'Constructions',
+'Technical':'Recherches',
+'level':'niveau',
+'Amount':'Quantit',
+'Defending':'En dfense',
+'Results found':'Resultats trouvs',
+'Objects found':'Objets trouvs',
+//Player
+'Player':'Joueur',
+'Search':'Recherche',
+'OR':'OU',
+'Minimum of 3 characters':'Minimum de 3 caractres',
+'Results for':'Rsultats pour',
+'Rank':'Rang',
+'See members':'Voir les membres',
+'Diplomacy':'Diplomacie',
+'Players found':'Joueurs trouvs',
+'Extra information':'Informations Supp.',
+'Details':'Dtails',
+'Population':'Population',
+'Provinces':'Provinces',
+'Profile':'Profile',
+//AutoAttack
+ 'CONFIGURATION':'CONFIGURATION',
+ 'STATISTICS':'STATISTIQUES',
+ 'Time between attacks':'Temps entre les attaques',
+ 'Attack Mode':'Config attaque',
+ 'AutoAttack stops when coordinates will be finished':'Arrt des Auto-Attaques qd toutes les coordonnes sont finies',
+ 'Check Coordinates List':'Vrifiez les Coordonnes de la Liste',
+ 'Stop after':'Arrt aprs',
+ 'attacks':'attaques',
+ 'Resume the attacks after':'Relancer les attaques aprs',
+ 'Next attack':'Prochaine attaque',
+ 'do not be resumed':'ne peut pas tre relanc',
+ 'Check cities you want to attack from':'Slctionnes les villes desquelles tu veux faire partir l\'attaque',
+ 'TROOPS':'TROUPES',
+ 'valid coordinates found':'coordonnes valides',
+ 'No coordinated inserted':'Aucun coordonne insre',
+ 'Do you really want to enable this tab':'Voulez-vous vraiment activer cet onglet',
+//Info
+ 'TROOP INFO':'INFORMATIONS TROUPES',
+ 'Troops':'Troupes',
+ 'Glory':'Gloire',
+ 'Life':'Vie',
+ 'Attack':'Attaque',
+ 'Defense':'Dfense',
+ 'Speed':'Vitesse',
+ 'Range':'Porte',
+ 'Load':'Charge',
+ 'Upkeep':'Entretien',
+ 'NEEDED MARKS TO GET NEW CITY':'SCEAUX NECESSAIRES POUR LA CONSTRUCTION DE NOUVELLES VILLES',
+ 'Requirements':'Besoins',
+ 'Level':'Niveau',
+ 'Your level':'Ton Niveau',
+ 'Cohorts':'Cohortes',
+//Spam
+ 'GLOBAL chat':'Chat GLOBAL',
+ 'ALLIANCE chat':'Chat ALLIANCE',
+'OPTIONS':'OPTIONS',
+ 'Post automatically every':'Poster automatiquement toutes les',
+'Your spam message':'Votre message',
+//Generals
+'Name':'Nom',
+'Level':'Niveau',
+'Energy':'Energie',
+'Actions':'Actions',
+'Request more energy':'Publier demande energie',
+'Send offerings':'Demande Offrande',
+'Outside the city':'En dehors de la ville',
+'No general present':'Aucun gnral prsent',
+//Gifts
+'Pick a free gift to send to all your friends':'Choisissez un KDO  envoyer  tous vos amis',
+'SEND':'ENVOYER',
+'USE':'UTILISER',
+'You have':'Acquis',
+'Send offerings':'Demande d\'offrande',
+'Accept all gifts':'Accepter tous les KDO',
+//AutoTrain
+ 'AUTO-BUILDING TROOPS':'FORMATION AUTOMATIQUE DES TROUPES',
+ 'Active':'Actif',
+ 'City':'Ville',
+ 'Troop type':'Type de troupes',
+ 'Troops':'Troupes',
+ 'Actions':'Actions',
+ 'seconds of training between the cities':'secondes pour la formation de ville en ville',
+ 'Start at':'Initier ',
+ 'of the population available':'de la population inactive disponible',
+ 'Use at':'Utiliser',
+ 'IF YOU GET ANY ERRORS, CHECK IF YOUR CITY HAS ENOUGH FOOD AND RESOURCES':'EN CAS D\'ERREUR, VERIFIE QUE TA VILLE A ASSEZ DE RAISIN ET RESSOURCES',
+ 'Initiating training':'Lancement',
+ 'Conditions not met':'Conditions non remplies',
+//Train
+ 'Max':'Max',
+ 'Number of troops per slot':'Nombre de troupes par slot',
+ 'Number of slots':'Nombre de slots',
+ 'Queue':'File d\'attente',
+ 'barracks':'casernes',
+ 'Cancel training':'Annuler l\'entrainement',
+ 'Number of troops per slot must be greater than':'Le nombre de troupes par slot doit tre plus grand que',
+'Cannot train that many troops':'Il n\'est pas possible d\'entrainer d\'autres troupes',
+'max is':'max c\'est',
+'total':'totale',
+ 'Invalid number of slots':'Nombres de slots invalide',
+ 'Training succesful':'Formation russi',
+ 'Formation':'Formation',
+//Options
+'Options':'Options',
+'Configuration of the':'Configuration de',
+'Language':'Langue',
+'Allow the toolbox window to be moved freely':'Activer le dplacement de la fentre',
+'Dimensions Tools':'Dimensions de la boite',
+'Width':'Largeur',
+'Height':'Hauteur',
+'Refresh GoR every':'Rafraichir GoR tous les',
+'Organize a Tax event (if happiness':'Organiser jour d\'imposition (si bonheur >=',
+'Auto-collect resources every':'Auto-collecte des ressources toutes les',
+'Allow to publish your helpings automatically to Facebook':'Autoriser la publication automatiquement des aides  Facebook',
+'Everyone':'Tous',
+'Friends of friends':'Amis des amis',
+'Friends only':'Amis seulement',
+'Me only':'Seulement moi',
+'Show shortcut keys':'Montrer les touches de raccourcis',
+'Configuration of chat':'Configuration du chat',
+'Move the chat window to the right of the game':'Mettre le tchat  droite du jeu',
+'Allow to publish an alert in chat when your food level is low':'Activer la publication sur le tchat alliance en cas d\'autonomie en rouge',
+'Auto-click help requests, such as building help':'Cliquer automatiquement sur les demandes d\'aides',
+'Hide all help requests in chat':'Cacher toutes les demandes d\'aides',
+'Hide the rules of the chat':'Cacher les rgles du chat',
+'Show smileys':'Montrer les smileys',
+'Open':'Ouvrir',
+'Warning sound when receiving a whisper':'Activer le son sur un chuchotement',
+'Enable audio in case of ATTACK (Alliance)':'Activer le son sur une ATTAQUE (Alliance)',
+'Enable audio in case of SCOUT (Alliance)':'Activer le son sur une RECONNAISSANCE (Alliance)',
+'Table of colors':'Table des couleurs',
+'Background of the global chat':'Le fond du tchat global',
+'Background of the alliance chat':'Le fond du tchat alliance',
+'Enable color for the leader':'Activer les couleurs de la chancelerie',
+'Configuration of Reports':'Configuration des Rapports',
+'Enable the deletion of the reports of the':'Activer la suppression des rapports de',
+'Delete reports every':'Supprimer les rapports tous les',
+'Enable the deletion of the message of the Kabam':'Activer la suppression des messages de Kabam',
+'Enable red background color in case of ATTACK (Alliance)':'Activer le fond rouge sur une ATTAQUE (Alliance)',
+'Sound file (URL MP3)':'Fichier audio (URL MP3)',
+'Configuration of the Tower alert':'Configuration des alertes de la Tour',
+'Allow to post scout alerts in chat':'Autoriser publication des alertes de reconnaissance sur chat alliance',
+'Allow to post attack alerts in chat':'Autoriser publication des alertes d\'attaques sur chat alliance',
+'Allow to sound an alarm when under attack (handy when you are away from keyboard)':'Autoriser l\'alarme sur une attaque (pratique quand vous tes loin du clavier)',
+'Message':'Message',
+'Show the bunker':'Montrer ma ville forte',
+'Show my troops':'Montrer mes troupes',
+'Loading the SWF player':'Chargement du SWF player',
+'LOAD':'CHARGER',
+'DEFAULT':'DEFAUT',
+'Repeat every':'Rpeter tous les',
+'Length of sounding alarm':'Longueur du son d\'alarme',
+'Tester':'Tester',
+'Stop Sound Alert':'Arrter son d\'alarme',
+'Error':'Erreur',
+'Loaded':'Charg',
+'':''
+};
+var translateGEArray = {
+//Tools
+'Please support the GoR BoTTols by clicking the ads on the GoR BoTTols website from time to time':'Bitte untersttzen Sie die Entwicklung von GoR BoTTols, indem Sie die Werbebanner von Zeit zu Zeit anklicken',
+'Version':'Version',
+'available':'verfgbar',
+'Install':'Installieren',
+'You must belong to an alliance in order to use this feature':'Um diese Funktion nutzen zu knnen, mssen Sie einer Allianz angehren',
+'Translated by':'bersetzt durch',
+'Reload':'Neu starten',
+'Set your city bunker':'Den Bunker der Stadt einstellen',
+//Time
+'minutes':'Minuten',
+'seconds':'Sekunden',
+'hours':'Stunden',
+//Diplomatie
+'None':'Keine',
+'Neutral':'Neutral',
+'Friendly':'Freundlich',
+'Hostile':'Feindlich',
+'Unaligned':'Ohne Allianz',
+'Friendly To Them':'Mit dieser Allianz verbndet',
+'Friendly To You':'Mit Dir verbndet',
+//Position
+'Chancellor':'Statthalter',
+'Vice Chancellor':'Vize Statthalter',
+'Officer':'Offizier',
+//Food Alert
+'My City':'Meiner Stadt',
+'is running out of food':'droht eine Hungersnot',
+'so please send some':'Kann mir jemand etwas schicken',
+'current stock':'aktueller Bestand',
+//Tower Alerts
+'was explored':'wurde ausgekundschaftet',
+'The exploration seems to come from':'Der Angreifer scheint aus... zu kommen',
+'Date':'Daten',
+'Defends':'Verteidigung',
+'Sanctuary':'Zuflucht',
+'Arrival':'Ankunft',
+'BUNKER':'BUNKER',
+'MY TROUPS':'MEINE TRUPPEN',
+//Overview
+'Joined on':'Spieler seit',
+'Glory':'Ruhm',
+'Alliance':'Allianz',
+'World':'Welt',
+'TOTALS':'TOTAL',
+'Population':'Bevlkerung',
+//Alliance Manager
+'Alliance Manager':'Allianzfhrung',
+'Message Manager':'Nachrichtenverwaltung',
+'ALLIANCE INFO':'ALLIANZ INFO',
+'MEMBERS INFO':'MITGLIEDER INFO',
+'Sort by':'Sortieren nach',
+'Members':'Mitglieder',
+'Founder':'Grnder',
+'Avatar':'Avatar',
+'Name':'Name',
+'Position':'Position',
+'Might':'Ruhm',
+'Cities':'Stdte',
+'Days in Position':'Tage auf der Position',
+'Joined Date':'Beitritt am',
+'Last Login':'Letzter Login',
+'Actions':'Aktionen',
+'Get Info/Member':'Mitgliedsinformationen',
+'Enter a Message':'Nachricht schreiben',
+'Message by':'Nachricht von',
+'Message sent to all the alliance by':'Nachricht an alle Allianzmitglieder von',
+'Message sent to all officer by':'Nachricht an alle Offiziere von',
+'Read members page':'Mitgliedsseite lesen',
+'Processing':'wird bearbeitet',
+'Remove member':'Mitlied entfernen',
+'Sorry, but this feature is only for official':'Tut mir leid, aber diese Funktion ist nur fr Offiziere verfgbar',
+'Do you really want to remove this user':'Mchten Sie wirklich diesen Benutzer entfernen',
+//Search
+'Type':'Art',
+'Barbarian Camps':'Barbarenlager',
+'Cities':'Stdte',
+'City to start from':'Anfangsort',
+'Distance':'Entfernung',
+'from':'von',
+'to':'bis',
+'Launch search':'Suche beginnen',
+'Cancel the search':'Suche abbrechen',
+'SEARCH CANCELLED':'SUCHE ABGEBROCHEN',
+'SEARCH FINISHED':'SUCHE BEENDET',
+'Searching':'Sucht',
+'The minimum distance cannot be lower than 0':'Der Mindestabstand kann nicht kleiner sein als 0',
+'The distance has to be higher than 1':'Der Abstand mu grer sein als 1',
+'The maximum/minimum distance has been exceeded':'Der Maximal-/Minimalabstand wurde berschritten',
+'The distance cannot be higher than 375':'Die Entfernung kann nicht grer als 375 sein',
+'NOTE : WARNING, there is no limitation to the search, bit this can have consequences on the performance of your browser':'BEMERKUNG : ACHTUNG! Es gibt keine Einschrnkungen fr die Suche, aber dies kann Auswirkungen auf die Schnelligkeit Ihres Browsers haben',
+'Hide Option window':'Optionsfenster ausblenden',
+'Research':'Suche',
+'results':'Resultate',
+'Not found':'Nicht gefunden',
+'More info':'Weitere Info',
+'Source':'Von',
+'Destination':'Ziel',
+'Fields':'Felder',
+'Barbarian Camp':'Barbarenlager',
+'Woods':'Wlder',
+'Grassland':'Graslandschaft',
+'River':'Flu',
+'Mountains':'Berge',
+'Plains':'Ebene',
+'Hills':'Hgel',
+'Non-occupied only':'Nur nicht besetzte',
+'Sort by':'Sortieren nach',
+'free':'Frei',
+'Filter':'Filter',
+'All Cities':'Alle Stdte',
+'Hostile cities only':'Nur feindliche Stdte',
+'Misty cities only':'Nur Stdte im Nebel',
+'Allied cities only':'Nur Alliierte Stdte',
+'Friendly cities only':'Nur freundliche Stdte',
+'Neutral cities only':'Nur neutrale Stdte',
+'Cities with no alliance only':'Nur Stdte ohne Allianz',
+'Minimum':'Minimum',
+'Maximum':'Maximum',
+'content':'enthlt',
+//Reassing
+'Not possible to send to same city':'Nicht mglich innerhalb der gleichen Stadt zu verlegen',
+'Impossible to':'Unmglich',
+'with 0 troops':'mit 0 Truppen',
+'wake up':'Aufwachen!',
+'more than':'mehr als',
+'troops at a time':'Truppen gleichzeitig',
+'Succeeded':'Verlegung erfolgreich',
+//Transport
+'Manual':'Manuell',
+'Automatic':'Automatisch',
+'TRANSPORTING GOODS FROM CITY TO CITY':'GTER VON EINER STADT ZUR ANDEREN TRANSPORTIEREN',
+'Quantity':'Menge',
+'Resource':'Ware/Ressource',
+'type':'Typ',
+'Please put in the amount of troops you like to use':'Bitte die gewnschte Truppenanzahl eingeben',
+'Please check the resource you want to transport':'Bitte die gewnschte Ressource markieren',
+'Send a transport every':'Einen Transport schicken alle',
+'Send transport with a minimum of':'Transport schicken mit mindestens',
+'ADD A TRANSPORT':'EINEN TRANSPORT HINZUFGEN',
+'Available':'Verfgbar',
+'Estimate':'Schtzung',
+'necessary':'notwendig',
+'Keep':'Bestand Minimum',
+'Show routes':'Routen zeigen',
+'Add a route':'Route hinzufgen',
+'the route':'die Route',
+'Edit':'Bearbeiten',
+//AutoAttack 2
+'AUTOMATED ATTACKS':'AUTOMATISIERTE ANGRIFFE',
+'ATTACK':'ANGRIFF',
+'Do not use the general with a level grater than':'Keine Generle benutzen mit einen Level ber',
+'Record':'Zufgen',
+'Delete':'Lschen',
+'Last Attack':'Letzter Angriff',
+'Success':'Erfolg',
+'Select troops':'Truppen auswhlen',
+'CITY SET PARAMETERS':'STADTEINSTELLUNGEN',
+'INCOMING ATTACKS':'FEINDLICHE ANGRIFFE',
+'Target Coordinates':'Zielkoordinaten',
+'Times':'Anzahl',
+'Attacker':'Angreifer',
+'General':'General',
+'OUTGOING MARCHES':'EIGENE ANGRIFFE',
+'Status':'Status',
+'Coordinates':'Koordinaten',
+'RECEIVED REINFORCEMENTS':'ERHALTENE VERSTRKUNGEN',
+'City reinforcements':'Stadtverteidigung',
+//Reports
+'CHECK ALLIANCE REPORTS':'ALLIANZBERICHTE ANZEIGEN',
+'No reports found':'Keine Berichte gefunden',
+'Pages':'Seiten',
+'pages':'Seiten',
+'Page':'Seite',
+'of':'von',
+'All reports':'Alle Berichte',
+'Incoming attacks':'Feindliche Angriffe',
+'Outgoing attacks':'Eigene Angriffe',
+'Reinforcements':'Verstrkungen',
+'All reports':'Alle Berichte',
+'My reports only':'Nur eigene Berichte',
+'Delete all reports':'Alle Berichte lschen',
+'Transport':'Transport',
+'Scout':'Spher',
+'Reinforce':'Verstrken',
+'Attack':'Angriff',
+'unknown':'unbekannt',
+'Wild':'Wildniss',
+'Target':'Ziel',
+'Victory':'Sieg',
+'Defeat':'Niederlage',
+'Defender':'Verteidiger',
+'Number of tours':'Anzahl Runden',
+'No troops defending':'Keine Truppen in Verteidigung',
+'Killed':'Gettet',
+'Survived':'berlebt',
+'Resources':'Ressourcen',
+'Building':'Gebude',
+'Technical':'technisch',
+'level':'Level',
+'Amount':'Anzahl',
+'Defending':'In Verteidigung',
+'Results found':'gefundene Resultate',
+'Objects found':'Gefundene Objekte',
+//Player
+'Player':'Spieler',
+'Search':'Suche',
+'OR':'Oder',
+'Minimum of 3 characters':'Mindestens 3 Buchstaben',
+'Results for':'Resultate fr',
+'Rank':'Rang',
+'See members':'Mitglieder anzeigen',
+'Diplomacy':'Diplomatie',
+'Players found':'gefundene Spieler',
+'Extra Information':'zustzliche Informationen',
+'Details':'Details',
+'Population':'Bevlkerung',
+'Provinces':'Provinzen',
+'Profile':'FB-Profil',
+//AutoAttack
+'CONFIGURATIONS':'EINSTELLUNGEN',
+'STATISTICS':'STATISTIKEN',
+'Time between attacks':'Zeit zwischen den Angriffen',
+'Attack Mode':'Angriffsmodus',
+'AutoAttack stops when coordinats will be finished':'AutoAttack beendet die Angriffe wenn die Koordinaten beendet sind',
+'Check Coordinates list':'Koordinatenliste berprfen',
+'Stop after':'Beenden nach',
+'attacks':'Angriffen',
+'Resume the attackss after':'Angriffe wieder aufnehmen nach',
+'Next attack':'Nchster Angriff',
+'do not be resumed':'Nicht wieder aufnehmen',
+'Check cities qou want to attack from':'Auswahl der Stadt, von der die Angriffe erfolgen sollen',
+'TROOPS':'TRUPPEN',
+'valid coordinates found':'Gltige Koordinaten gefunden',
+'No coordinates inserted':'Keine Koordinaten eingefgt',
+'Do you rally want to enable this tab':'Wollen Sie diese Funktion wirklich starten',
+//Info
+'TROOP INFO':'TRUPPENINFO',
+'Troops':'Truppen',
+'Glory':'Ruhm',
+'Life':'Leben',
+'Attack':'Angriff',
+'Defense':'Verteidigung',
+'Speed':'Geschwindigkeit',
+'Range':'Reichweite',
+'Load':'Ladung',
+'Upkeep':'Instandhaltung',
+'NEEDED MARKS TO GET NEW CITY':'BENTIGTE SIEGEL UM STADT ZU ERHALTEN',
+'Requirements':'Erforderlich',
+'Level':'Level',
+'Your Level':'Ihr Level',
+'Cohorts':'Kohorten',
+//Spam
+'GLOBAL Chat':'GLOBAL Chat',
+'ALLIANCE Chat':'ALLIANZ Chat',
+'OPTIONS':'OPTIONEN',
+'Post automatically every':'Automatisch posten alle',
+'Your Spam message':'Ihre Spam Nachricht',
+//Generals
+'Name':'Name',
+'Level':'Level',
+'Energy':'Energie',
+'Actions':'Aktionen',
+'Request more energy':'Mehr Energie erbitten',
+'Send offerings':'Opfer senden',
+'Outside the city':'Auerhalb der Stadt',
+'No general present':'Kein General anwesend',
+//Gifts
+'Pick a free gift to send to all your freinds':'Whle ein kostenloses Geschenk aus, um es an Deine Freunde zu senden',
+'SEND':'SENDEN',
+'USE':'VERWENDEN',
+'You have':'Sie haben',
+'Send offerings':'Opfergaben senden',
+'Accept all gifts':'Alle Geschenke annehmen',
+//AutoTrain
+'AUTO-BUILDING TROOPS':'AUTOMATISCHE TRUPPEN-AUSBILDUNG',
+'Active':'Aktiv',
+'City':'Stadt',
+'Troop tyype':'Truppenart',
+'Troops':'Truppen',
+'Actions':'Aktionen',
+'seconds of training between the cities':'Sekundenintervall fr Training zwischen den Stdten',
+'Start at':'Start bei',
+'of the population available':'der verfgbaren Bevlkerung',
+'Use at':'verwenden bei',
+'IF YOU GET ANY ERRORS; CHECK IF YOUR CITY HAS ENOUGH FOOD AND RESOURCES':'WENN SIE FEHLERMELDUNGEN ERHALTEN; PRFEN SIE; OB DIE STADT BER AUSREICHEND NAHRUNG UND RESSOURCEN VERFGT',
+'Initiating training':'Training beginnen',
+'Conditions not met':'Bedingungen nicht erfllt',
+//Train
+'Max':'Max',
+'Number of troops per slot':'Anzahl Truppen pro Platz',
+'Number of slots':'Anzahl Pltze',
+'Queue':'Warteliste',
+'barracks':'Kasernen',
+'Cancel training':'Training abbrechen',
+'Number of troops per slot must be greater than':'Anzahl Truppen pro Platz mu grer sein als',
+'Cannot train that many troops':'Diese Menge Truppen kann nicht ausgebildet werden',
+'Max is':'Maximal ist',
+'total':'Total',
+'Invalid numer of slots':'Ungltige Anzahl Pltze',
+'Training succesful':'Training erfolgreich',
+'Formation':'Ausbildung',
+//Options
+'Options':'Optionen',
+'Configuration of the':'Einstellung des',
+'Language':'Sprache',
+'Allow the toolbox window to be moved freely':'Zulassen, dass die Toolbox frei beweglich ist',
+'Dimensions Tools':'Greneinstellung Tools',
+'Width':'Breite',
+'Heigth':'Hhe',
+'Refresh GoR every':'GoR neu laden alle',
+'Organize a Tax event (if happiness':'Steuertag organisieren (wenn Freude',
+'Auto-collect resources every':'Ressourcen automatisch einholen alle',
+'Allow to publish you helpings automatically to Facebook':'Meldungen automatisch auf Facebook verffentlichen',
+'Everyone':'Jeder',
+'Friends of friends':'Freunde von Freunden',
+'Friends only':'Nur Freunde',
+'Me only':'Nur ich',
+'Show shortcut keys':'Tastaturkrzel anzeigen',
+'Configuration of chat':'Chat Einstellungen',
+'Move the chat window to the right of the game':'Das Chat-Fenster rechts vom Spiel anordnen',
+'Allow to publish an alert in chat when your food level is low':'Ene Meldung im Chat verffentlichen, wenn die Nahrung knapp wird',
+'Auto-click help requests, such as building help':'Auto-Click auf alle Hilfsanfragen, wie Bauhilfen',
+'Hide all help requests in chat':'Alle Hilfsanfragen im Chat unterdrcken',
+'Hide the rules of the chat':'Chat Regeln unterdrcken',
+'Show smileys':'Smileys anzeigen',
+'Open':'ffnen',
+'Warning sound when receiving a whisper':'Tonsignal abspielen bei Erhalt einer Flsternachricht',
+'Enable audio in case of ATTACK(Alliance)':'Audiosignal im Falle eines Angriffes (Allianz)',
+'Enable audio in case of SCOUT (Alliance)':'Audiosignal im Falle eines Sphangriffs (Allianz)',
+'Table of colours':'Farbtabelle',
+'Background of the global chat':'Hintergrund des Global Chat',
+'Background of the alliance chat':'Hintergrund des Allianzchats',
+'Enable color for the leader':'Farbkennzeichnung der Fhrung',
+'Configuration of the Reports':'Einstellung der Berichte',
+'Enable the deletion of the reports of the':'Lschung der Berichte ermglichen von',
+'Delete reports every':'Berichte lschen alle',
+'Enable the deletion of the message of the Kabam':'Lschung der Kabam-Nachrichten ermglichen',
+'Enable red background color in case of ATTACK (Alliance)':'Roter Hintergrund bei Angriffsmeldungen ermglichen (Allianz)',
+'Sound file (URL MP3)':'Audio Datei (URL MP3)',
+'Configuration of the Tower alert':'Einstellungen der Wachturmmeldungen',
+'Allow to post scout alerts in chat':'Sphwarnungen im Chat anzeigen',
+'Allow to post attack alerts in chat':'Angriffsmeldungen im Chat anzeigen',
+'Allow to sound an alarm when under attack (handy when you are away from keyboard)':'Audiosignal bei Angriff abspielen (Praktisch, wenn man gerade nicht an der Tastatur ist)',
+'Message':'Nachricht',
+'Show the bunker':'Bunker anzeigen',
+'Show my troops':'Eigene Truppen anzeigen',
+'Loading the SWF player':'Lade den SWF player',
+'LOAD':'LADEN',
+'DEFAULT':'VOREINSTELLUNG',
+'Repeat every':'Wiederholung jede',
+'Length of sounding alarm':'Dauer des Alarms',
+'Tester':'Test',
+'Stop Sound Alert':'Alarmton stoppen',
+'Error':'Fehler',
+'Loaded':'Geladen',
+'':''
+};
+IsChrome&&(window.unsafeWindow||(unsafeWindow=function(){var a=document.createElement("p");a.setAttribute("onclick","return window;");return a.onclick()}()));
+var JSON;if(!JSON){JSON={}}(function(){function str(a,b){var c,d,e,f,g=gap,h,i=b[a];if(i&&typeof i==="object"&&typeof i.toJSON==="function"){i=i.toJSON(a)}if(typeof rep==="function"){i=rep.call(b,a,i)}switch(typeof i){case"string":return quote(i);case"number":return isFinite(i)?String(i):"null";case"boolean":case"null":return String(i);case"object":if(!i){return"null"}gap+=indent;h=[];if(Object.prototype.toString.apply(i)==="[object Array]"){f=i.length;for(c=0;c<f;c+=1){h[c]=str(c,i)||"null"}e=h.length===0?"[]":gap?"[\n"+gap+h.join(",\n"+gap)+"\n"+g+"]":"["+h.join(",")+"]";gap=g;return e}if(rep&&typeof rep==="object"){f=rep.length;for(c=0;c<f;c+=1){if(typeof rep[c]==="string"){d=rep[c];e=str(d,i);if(e){h.push(quote(d)+(gap?": ":":")+e)}}}}else{for(d in i){if(Object.prototype.hasOwnProperty.call(i,d)){e=str(d,i);if(e){h.push(quote(d)+(gap?": ":":")+e)}}}}e=h.length===0?"{}":gap?"{\n"+gap+h.join(",\n"+gap)+"\n"+g+"}":"{"+h.join(",")+"}";gap=g;return e}}function quote(a){escapable.lastIndex=0;return escapable.test(a)?'"'+a.replace(escapable,function(a){var b=meta[a];return typeof b==="string"?b:"\\u"+("0000"+a.charCodeAt(0).toString(16)).slice(-4)})+'"':'"'+a+'"'}function f(a){return a<10?"0"+a:a}"use strict";if(typeof Date.prototype.toJSON!=="function"){Date.prototype.toJSON=function(a){return isFinite(this.valueOf())?this.getUTCFullYear()+"-"+f(this.getUTCMonth()+1)+"-"+f(this.getUTCDate())+"T"+f(this.getUTCHours())+":"+f(this.getUTCMinutes())+":"+f(this.getUTCSeconds())+"Z":null};String.prototype.toJSON=Number.prototype.toJSON=Boolean.prototype.toJSON=function(a){return this.valueOf()}}var cx=/[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,escapable=/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,gap,indent,meta={"\b":"\\b","\t":"\\t","\n":"\\n","\f":"\\f","\r":"\\r",'"':'\\"',"\\":"\\\\"},rep;if(typeof JSON.stringify!=="function"){JSON.stringify=function(a,b,c){var d;gap="";indent="";if(typeof c==="number"){for(d=0;d<c;d+=1){indent+=" "}}else if(typeof c==="string"){indent=c}rep=b;if(b&&typeof b!=="function"&&(typeof b!=="object"||typeof b.length!=="number")){throw new Error("JSON.stringify")}return str("",{"":a})}}if(typeof JSON.parse!=="function"){JSON.parse=function(text,reviver){function walk(a,b){var c,d,e=a[b];if(e&&typeof e==="object"){for(c in e){if(Object.prototype.hasOwnProperty.call(e,c)){d=walk(e,c);if(d!==undefined){e[c]=d}else{delete e[c]}}}}return reviver.call(a,b,e)}var j;text=String(text);cx.lastIndex=0;if(cx.test(text)){text=text.replace(cx,function(a){return"\\u"+("0000"+a.charCodeAt(0).toString(16)).slice(-4)})}if(/^[\],:{}\s]*$/.test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,"@").replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,"]").replace(/(?:^|:|,)(?:\s*\[)+/g,""))){j=eval("("+text+")");return typeof reviver==="function"?walk({"":j},""):j}throw new SyntaxError("JSON.parse")}}})()
+var JSON2 = JSON;
+var FBsecondTimer = null;
+var pbStartupTimer = null;
+var my = {};
+var Cities = {};
+var currentName = 'Overview';
+var Seed = unsafeWindow;
+var ById = document.getElementById;
+var uW = unsafeWindow;
+var currentPage ='';
+var mainPop;
+var scripters = ["1078560"];
+var Smileys = {};
+eval(GM_getResourceText("smileys"));
+var myServerId = null;
+function getServerId() {
+  if (myServerId == null){
+    var m=/^[a-zA-Z]+([0-9]+)\./.exec(document.location.hostname);
+    if (m)
+      myServerId = m[1];
+    else
+      myServerId = '??';
+  }
+  return myServerId;
+}
+var nHtml={
+  FindByXPath:function(obj,xpath,nodetype) {
+	if(!nodetype){
+		nodetype = XPathResult.FIRST_ORDERED_NODE_TYPE;
+	}
+	try {
+		var q=document.evaluate(xpath,obj,null,nodetype,null);
+	} catch(e) {
+		GM_log('bad xpath:'+xpath);
+	}
+	if(nodetype == XPathResult.FIRST_ORDERED_NODE_TYPE){
+		if(q && q.singleNodeValue) { return q.singleNodeValue; }
+	}else{
+		if(q){
+			return q;
+		}
+	}
+	return null;
+  },
+  
+  ClickWin:function(win,obj,evtName) {
+	var evt = win.document.createEvent("MouseEvents");
+	evt.initMouseEvent(evtName, true, true, win,
+		0, 0, 0, 0, 0, false, false, false, false, 0, null);
+	return !obj.dispatchEvent(evt);
+  },
+  Click:function(obj) {
+	return this.ClickWin(window,obj,'click');
+  },
+  
+  ClickTimeout:function(obj,millisec) {
+	window.setTimeout(function() {
+		return nHtml.ClickWin(window,obj,'click');
+	},millisec+Math.floor(Math.random()*500));
+  },
+  SetSelect:function(obj,v) {
+	for(var o=0; o<obj.options.length; o++) {
+		if(v==obj.options[o].value) { obj.options[o].selected=true; return true; }
+	}
+	return false;
+  },
+}
+function readGlobalOptions (){
+  GlobalOptions = JSON2.parse (GM_getValue ('Options_??', '{}'));
+}
+readGlobalOptions ();
+function setWide (){
+    var iFrame = null;
+    var e = document.body;
+    if(e){
+	for (var c=0; c<e.childNodes.length; c++){
+		  if (e.childNodes[c].tagName=='DIV') {
+		     if (e.childNodes[c].firstChild.tagName == 'IFRAME'){
+		      iFrame=e.childNodes[c].firstChild;
+		      break;
+		     }
+			
+		  }
+		
+	 }
+	}  
+    if (iFrame)  { 
+      iFrame.style.width = '100%';
+      iFrame.style.height = '1800px';
+       if (ById("mainbody")) ById("mainbody").backgroundColor="black";
+     }
+    
+}
+if (document.URL.search(/gloryofrome.com\/iframeCanvas/i) >= 0){
+ setTimeout (setWide, 1000);
+ return false;
+}
+if (document.URL.search(/apps.facebook.com\/gloryofrome/i) >= 0){
+  setInterval(function() {
+    var test=document.URL;
+    var testt = /s=([0-9]+)/i.exec(test);
+    if (testt) {
+    unsafeWindow.window.document.title="GoR "+testt[1]+" (by "+Autore+")";
+    } else {
+     unsafeWindow.window.document.title="GoR (by "+Autore+")";
+    }
+    }, 10)
+  facebookInstance ();
+  return false;
+}
+if (document.URL.search(/facebook.com/i) >= 0){
+	if(document.URL.search(/connect\/uiserver.php/i) >= 0 ||
+	   document.URL.search(/serverfbml/i) >= 0 ||
+	   document.URL.search(/dialog\/stream.publish/i) >= 0 ||
+	   document.URL.search(/dialog\/apprequests/i) >= 0 ||
+	   document.URL.search(/dialog\/feed/i) >= 0)
+			HandlePublishPopup ();
+  return;
+}
+function HandlePublishPopup() {
+ if(GlobalOptions.autoPublishGamePopups){
+		var FBInputForm = document.getElementById('uiserver_form');
+		if(FBInputForm){
+			var channel_input = nHtml.FindByXPath(FBInputForm,".//input[contains(@name,'channel')]");
+			if(channel_input){
+				var current_channel_url = channel_input.value;
+					var publish_button = nHtml.FindByXPath(FBInputForm,".//input[@type='submit' and contains(@name,'publish')]");
+					var test =ById("feedform_user_message");
+					if(publish_button && test){
+						setTimeout(function() {
+						 nHtml.Click(publish_button);
+						},2500);
+					}
+			}
+		}
+    setTimeout(HandlePublishPopup, 5000);
+   }
+}
+/***  Run only in "apps.facebook.com" instance ... ***/
+function facebookInstance (){
+  function setWide (){ 
+    var iFrame = null;
+    var e = document.getElementById('app_content_140956165916773');
+    if (!iFrame){
+      var iframes = document.getElementsByTagName('iframe');
+      for (var i=0; i<iframes.length; i++){
+        if (iframes[i].className=='canvas_iframe_util noresize'){
+          iFrame = iframes[i];
+          break; 
+        } 
+      }
+    }
+    if (!iFrame){
+      setTimeout (setWide, 1000);
+      return;
+    }
+   
+  var e = document.getElementById('mainContainer');
+ 	if(e){
+ 		document.getElementById('content').style.minWidth = '1220px';
+ 		document.getElementById('content').style.width='100%';
+ 		for(i=0; i<e.childNodes.length; i++){
+ 			if(e.childNodes[i].id == 'contentCol'){
+ 				e.childNodes[i].style.width = '100%';
+ 				e.childNodes[i].style.margin = '0px';
+ 				e.childNodes[i].style.paddingTop = '5px';
+ 				e.childNodes[i].childNodes[1].style.width = '99%';
+ 				break;
+ 			}
+ 		}
+ 	}
+ 	var e = document.getElementById('globalContainer');
+ 	if(e){
+ 		e.style.width = '100%';
+ 		if(e.firstChild){
+ 			e.firstChild.style.width = '100%';
+ 			e.firstChild.style.margin = '0 0%';
+ 		}
+ 	}
+ 	var e = document.getElementById('bottomContent');
+ 	if(e){
+ 		e.style.padding = "0px 0px 12px 0px";
+ 	}
+ 	var e = document.getElementById('contentArea');
+ 	if(e){
+ 		e.style.width = '100%';
+ 		for(i=0; i<e.childNodes.length; i++){
+ 			if(e.childNodes[i].tagName == 'div'){
+ 				e.childNodes[i].style.width = '100%';
+ 				e.childNodes[i].firstChild.style.width = '100%';
+ 				break;
+ 			}
+ 		}
+ 	}
+ 	var e = document.getElementById('pagelet_canvas_content');
+ 	if(e){
+ 		e.style.width = '100%';
+ 	}
+ 	iFrame.style.width = '100%';
+ 	 
+     var div = searchDOM (document.getElementById('content'), 'node.tagName=="DIV" && node.className=="UIStandardFrame_Content"', 7);
+     if (div){
+ 		div.style.width ='100%';
+ 	}
+     var div = searchDOM (document.getElementById('content'), 'node.tagName=="DIV" && node.className.indexOf("SidebarAds")>=0', 7);
+     if (div){
+ 		div.style.display ='none';
+ 	}
+     }
+	 document.getElementById("pagelet_canvas_content").style.width="100%";
+	 
+	 
+	  try{   
+	       document.getElementById('iframe_canvas').style.height = '2400px';  
+	       document.getElementById('rightCol').parentNode.removeChild(document.getElementById('rightCol'));
+	       document.getElementById('leftColContainer').parentNode.removeChild(document.getElementById('leftColContainer'));
+	       document.getElementById('sidebar_ads').parentNode.removeChild(document.getElementById('sidebar_ads'));
+	       document.getElementById('canvas_nav_content').parentNode.removeChild(document.getElementById('canvas_nav_content'));
+	 
+	     } catch (e){
+	       // toolkit may have removed them already!
+    }
+//   kocWatchdog ();
+   setWide();
+}
+var WideScreen = {
+  chatIsRight : false,
+  rail : null,
+  
+  init : function (){
+    t = WideScreen;
+      try {
+        ById('mainCrossBar').parentNode.removeChild(ById('mainCrossBar'));
+      } catch (e) {
+      }
+  },
+        
+  setChatOnRight : function (tf){
+    t = WideScreen;
+    if (tf == t.chatIsRight)
+      return;
+    if (tf){
+      var chat = document.getElementById('kocmain_bottom');
+       if (!chat || chat.className!='mod_comm')
+        setTimeout (function (){t.setChatOnRight(tf)}, 1200); 
+    
+      if (getMyAlliance()[1]!=translate('None'))
+       document.getElementById("chat_button2").innerHTML="<span>" +getMyAlliance()[1]+ "</span>";
+      document.getElementById("comm_tabs").style.left = '761px';
+      document.getElementById("comm_tabs").style.top = '-567px';
+      document.getElementById("comm_tabs").style.backgroundColor="#60533E";
+      var div = searchDOM (document.getElementById('kocmain_bottom'), 'node.tagName=="DIV" && node.className.indexOf("comm_body comm_global")>=0', 7);
+      if (div){
+        //alert('troue!!');
+          div.style.left = '761px';
+	  div.style.top = '-542px';
+	  div.style.height= '700px';
+          div.style.backgroundColor="#60533E";
+      
+      var div1 = searchDOM (div, 'node.tagName=="DIV" && node.className.indexOf("chat-wrapper")>=0', 7);
+      if (div1){
+         div1.style.height='700px';
+         div1.style.width='347px';
+      }
+      }
+      document.getElementById("mod_comm_list1").style.height= '650px';
+      document.getElementById("mod_comm_list2").style.height= '650px';
+    } else {
+      document.getElementById("comm_tabs").style.left = '';
+      document.getElementById("comm_tabs").style.top = '';
+         document.getElementById("comm_tabs").style.backgroundColor="";
+         var div = searchDOM (document.getElementById('kocmain_bottom'), 'node.tagName=="DIV" && node.className.indexOf("comm_body comm_global")>=0', 7);
+         if (div){
+          div.style.left = '';
+   	  div.style.top = '';
+          div.style.backgroundColor="";
+          var div1 = searchDOM (div, 'node.tagName=="DIV" && node.className.indexOf("chat-wrapper")>=0', 7);
+	   if (div1){
+	     div1.style.height= '';
+          }
+      }
+      document.getElementById("mod_comm_list1").style.height= '100%';
+      document.getElementById("mod_comm_list2").style.height= '100%';
+    }
+    t.chatIsRight = tf;
+  }
+}
+function kocWatchdog (){
+  var INTERVAL = 10000; // wait 30 seconds before checking DOM
+//  if (!GlobalOptions.pbWatchdog)
+//    return;
+  setTimeout (watchdog, INTERVAL);
+  function watchdog (){
+  	var t = ById('mod_comm_list1');
+	alert ("GOR WATCHDOG: "+ t);    
+    if (t<300){
+      logit ("GOR not loaded");
+      KOCnotFound(20);
+    }     
+  }
+}
+function KOCnotFound(secs){
+  var div;
+  var countdownTimer = null;
+  var endSecs = (new Date().getTime()/1000) + secs;
+    
+  div = document.createElement('div');
+  div.innerHTML = '<DIV style="font-size:18px; background-color:#a00; color:#fff"><CENTER><BR>'+ScriptName+' '+translate("has detected that GoR is not loaded")+'<BR>'+translate("Refreshing in")+' <SPAN id=pbwdsecs></span><BR><INPUT id=pbwdcan type=submit value="'+translate("Cancel Refresh")+'"><BR><BR></div>';
+  document.body.insertBefore (div, document.body.firstChild);
+  document.getElementById('pbwdcan').addEventListener('click', cancel, false);
+  countdown();
+      
+  function countdown (){
+    var secsLeft = endSecs - (new Date().getTime()/1000);
+    document.getElementById('pbwdsecs').innerHTML = timestr(secsLeft);
+    if (secsLeft < 0)
+      reloadKOC();
+    countdownTimer = setTimeout (countdown, 1000);
+  }
+  function cancel (){
+    clearTimeout (countdownTimer);
+    document.body.removeChild (div);
+  }
+}
+var Tabs = [];
+function ptStartup() {
+  clearTimeout (pbStartupTimer);
+  if (unsafeWindow.BOGpbLoaded)
+      return;
+      
+  var metc = getClientCoords(document.getElementById('main_engagement_tabs'));
+  if (metc.width==null || metc.width==0){
+      pbStartupTimer = setTimeout (ptStartup, 1000);
+      return;
+  }
+  
+ Tabs = [
+   ['Overview', uW.arStrings.Common.Overview],
+   ['Hud', uW.arStrings.Common.Reports],
+   ['marches', uW.arStrings.Common.Marches],
+   ['AllianceList', uW.arStrings.Common.Player],
+   ['Search', uW.arStrings.Common.Search],
+   ['TranspAuto', uW.arStrings.Common.Transport],
+   ['Reassign', uW.arStrings.Common.Reassign],
+   ['Wilds', uW.arStrings.Common.Wilds],
+   ['Generals', uW.arStrings.Common.Generals],
+//   ['autoFormation', "Auto"+uW.arStrings.Common.Train],
+   ['AutoForm', "Auto"+uW.arStrings.Common.Train],
+   ['Germ', 'Germania'],
+   ['Train', uW.arStrings.Common.Train],
+   ['testattack', uW.arStrings.Common.Attack+'Coords'],
+   ['Crest', 'Crest'],
+   ['attaque', 'Auto'+uW.arStrings.Common.Attack],
+   ['Marks', 'Info'],
+   ['KDO', uW.arStrings.Common.Gift],
+   ['Spam','Spam'],
+   ['Options' , translate('Options')],
+   ['build' , 'Manager'],
+   ['ActionLog', 'Log'],
+   ['perso' , 'GoR BoTTols'],
+   ['scanmap', 'Scan Map']
+];
+  readOptions();
+  readColors(); 
+  
+  var m = '.xtab {padding: 2px; border:none; background:none; white-space:nowrap;}';
+      m+= '.sc1 { background:url("http://www.kocbottols.tiestoale.com/Tools/Addon/Avatar/Tiestoale.png") no-repeat scroll 0px 0 transparent !important; }';
+	  m+= '.hostile td { background:crimson; }.friendly td{background:lightblue; }.ally td{background:royalblue; }';
+	  m+= '.Hostile td { background:crimson; }.Friendly td{background:lightblue; }.Ally td{background:royalblue; }';
+	  m+= '.neutral td { background:lightgreen; }.unaligned td { background:gold; }';
+	  m+= '.Neutral td { background:lightgreen; }.Unaligned td { background:gold; }';
+	  m+= '.xtabBR {padding-right: 5px; border:none; background:none;}';
+	  m+= 'div.ptDiv {background-color:#f0f0f0;}';
+	  m+= 'table.marches tr td {padding:4px;border:1px black solid; background:none; white-space:nowrap;}';
+	  m+= 'table.ptTab tr td {padding:2px;border:none; background:none; white-space:nowrap;}';
+	  m+= 'table.ptTabPad tr td {border:none; background:none; white-space:nowrap; padding: 2px 4px 2px 8px;}';
+	  m+= 'table.ptTabBR tr td {border:none; background:none;}';
+	  m+= 'table.ptTabLined tr td {border:1px none none solid none;}';
+	  m+= 'table.ptTabPad tr td.ptentry {background-color:#ffeecc; padding-left: 8px;}';
+	  m+= 'table.ptTabOverview tr td {border:1px none none solid none; white-space:nowrap; padding: 1px 2px; font-size:12px;}';
+	  m+= '.xxtab{background-color:none; padding-left:5px; padding-right:5px;}';
+	  m+= '.xxtab_even{background-color:#ccc; padding-left:5px; padding-right:5px;}';
+	  m+= 'table.ptNoPad tr td {border:none; background:none; white-space:nowrap; padding:0px}';
+	  m+= '.ptOddrow {background-color:#eee}';
+	  m+= '.ptstat {border:1px solid; border-color:#ffffff; font-weight:bold; padding-top:2px; padding-bottom:2px; text-align:center; color:#ffffff; background-color:#357}';
+	  m+= '.ptStatLight {color:#ddd}';
+	  m+= '.ptentry {padding: 7px; border:1px solid; border-color:#000000; background-color:#ffeecc; white-space:nowrap;}';
+	  m+= '.ptErrText {font-weight:bold; color:#600000}';
+	  m+= '.castleBut {outline:0px; margin-left:0px; margin-right:0px; width:24px; height:26px; font-size:12px; font-weight:bold;}';
+	  m+= '.castleBut:hover {border-size:3px; border-color:#000;}';
+	  m+= '.castleButNon {background-image:url("'+ URL_CASTLE_BUT +'")}';
+	  m+= '.castleButSel {background-image:url("'+ URL_CASTLE_BUT_SEL +'")}';
+	  m+= 'button::-moz-focus-inner, input[type="submit"]::-moz-focus-inner { border: none; }';
+	  m+= '.ptChatWhisper {}';
+	  m+= '.ptChatAttack {color: #000; font-weight:bold; background-color: #FF7D7D; }';
+	  m+= '.ptChatScout {color: #000; font-weight:bold; background-color: #FFDD7D; }';
+	  m+= '.ptChatAlliance {}';
+	  m+= '.ptChatGlobal {background-color: #fdd}';
+	  m+= '.ptChatIcon {border: 2px inset blue}';
+	  m+= '.ptChatScripter {background-color:#FFFFFF; font-weight:bold;}';
+	  m+= '.ptChatEnh {text-shadow: 1px 1px 1px #AAA; background-color:#FFFFFF; }';
+	  m+= '.ptChatCHAN {color:#000; background-color:'+Colors.ChatChancy+';}';
+	  m+= '.ptChatVICE {color:#000; background-color:'+Colors.ChatVC+';}';
+	  m+= '.ptChatOFFI {color:#000; background-color:'+Colors.ChatLeaders+';}';
+	  m+= 'input.BODefButOff {cursor:pointer; border:1px solid #45d183; -moz-box-shadow:inset 0px 1px 5px #3aef8b; -moz-border-radius:5px;}';
+	  m+= 'input.BODefButOn {cursor:pointer; border:1px solid #f61646; -moz-box-shadow:inset 0px 1px 5px #f6375f; -moz-border-radius:5px;}';
+	  m+= 'span.whiteOnRed {padding-left:3px; padding-right:3px; background-color:#700; color:white; font-weight:bold}';
+	  m+= 'span.boldRed {color:#800; font-weight:bold}';
+	  m+= '.emoicon {width:19px !important;height:19px !important;float:none !important;}';
+	  m+= '.tx{ color:black !important;}';
+	  m+= '.content.off { background-color:#ECECEC !important;border-bottom:1px solid #AAAAAA;}';
+	  m+= '.content.on { background-color:#F1F2E1 !important;border-bottom:1px solid #AAAAAA;}';
+	  m+= '.frame.on { background-color:#ffe !important;}';
+	  m+= '.frame.off { background-color:#ffe !important;}';
+	  m+= '.info .nm{ color:#114684 !important;}';
+	  m+= '.comm_body.comm_global { border:1px solid black !important;background-color:#ECECEC  !important;}';
+	  m+= '.comm_body { width:350px !important;}';
+	  m+= '.chat-wrapper { width:347px !important:}';
+	  m+= 'span.boldDarkRed {color:#600; font-weight:bold}';
+	  m+= 'a.ptButton20 {color:#ffff80}';
+	  m+= '.matTab {}';
+	  m+= '.matTabNotSel { padding:0 0 0 20px;  color : #2F230E; font: bold 11px Georgia; white-space: nowrap; cursur:pointer; padding:0 0px 0 0;height: 17px; }';
+	  m+= '.matTabNotSel span { background: url("http://cdn1.kingdomsofcamelot.com/fb/e2/src/img/nav/tab_unselected.png") no-repeat scroll left 0 transparent;    display: inline-block;    height: 16px;    padding: 1px 2px 0 7px;    text-decoration: none;   }';
+	  m+= '.matTabSel { color : #2F230E; font: bold 11px Georgia; white-space: nowrap; cursur:pointer; padding:0 0px 0 0;height: 17px;   }';
+	  m+= '.matTabSel span { background: url("http://cdn1.kingdomsofcamelot.com/fb/e2/src/img/nav/tab_selected.png") no-repeat scroll left top transparent; display: inline-block;    height: 16px;    padding: 1px 2px 0 7px;    text-decoration: none;   }';
+	  m+= 'tr.CPopupTop td { background-color:#dde; border:none; height: 15px;  padding:0px; }';
+	  m+= '.BOptretry_top { background-color:#a00; color:#fff; border:none; height: 21px; padding:0px; }';
+	  m+= 'input.ptButCancel {background-color:#a00; font-weight:bold; color:#fff}';
+	  m+= '.idp_CPopup .idp2_CPopup { opacity:0.9; position:absolute; }';
+	  m+= '.CPopup .CPopMain { opacity:0.9;-moz-box-shadow:inset 0px 0px 20px #006000; -moz-border-radius:3px; border:1px solid #141516; padding:3px;} ';
+	  
+	  addStyle (m);
+  unsafeWindow.BOGpbLoaded = true;
+  readTrainingOptions ();
+  readCrestData();
+  var Seed = unsafeWindow;
+  setCities();
+ 
+  AddTowerTab('<img alt=">> Under Attack <<" width=37 height=28 src="'+URL_ALERT+'">', my.Options.stopSoundAlerts, 'botowertab');
+  AddReloadTabLink(translate('Reload')+' GoR', reloadKOC, 'reloadkoctab'); 
+//  AddReloadTabLink(translate('Resources'), ResRequest, 'reloadkoctab'); 
+  if (Options.ptWinPos==null || Options.ptWinPos.x==null|| Options.ptWinPos.x=='' || isNaN(Options.ptWinPos.x)){
+    var c = getClientCoords (document.getElementById('main_engagement_tabs'));
+    Options.ptWinPos.x = c.x+4;
+    Options.ptWinPos.y = c.y+c.height;
+    saveOptions ();
+  }
+  var Height=parseIntNan(Options.HeightTools) + 30;
+  var Width =parseIntNan(Options.WidthTools) + 30;
+  mainPop = new CPopup ('idp', Options.ptWinPos.x, Options.ptWinPos.y, Width,Height, true, 
+      function (){
+        my[currentName].hide();
+        Options.ptWinIsOpen=false; 
+        saveOptions()
+      });
+    
+   
+  var mainDiv = mainPop.getMainDiv();
+  mainPop.getTopDiv().innerHTML = '<TABLE cellspacing=0 width=100%><TR class=CPopupTop valign=bottom><TD><SPAN id=idTabs></span></td><TD align=right rowspan=2>'+ Version +'&nbsp;<iframe src="" id="BOsound" frameborder=0 height=0 width=0></iframe></td></tr><tr><td><span id=idTabs3></span></tr></table>';
+  var eTabs = document.getElementById('idTabs');
+  for (k=0; k<Tabs.length; k++){
+    var a=document.createElement('a');
+    a.className='matTabNotSel';
+    a.id = 'aa'+ Tabs[k][0];
+    a.innerHTML='<span id="sp'+ Tabs[k][0] +'" class="matTab">'+ translate(Tabs[k][1]) +'</span>';
+    if (k==10) {
+             var eTabs = document.getElementById('idTabs3');
+             eTabs.innerHTML+="</tr><tr><td>";
+     } 
+    
+    eTabs.appendChild(a);
+    a.addEventListener('click', clickedTab, false);
+    my[Tabs[k][0]].init();
+    cont = my[Tabs[k][0]].getContent();
+    cont.style.display = 'none';
+    mainDiv.appendChild(cont);
+  }
+  setTabStyle (document.getElementById ('aaOverview'), true);
+  my.Overview.getContent().style.display = 'block';
+  
+  if (Options.ptWinIsOpen){
+    mainPop.show (true);
+    
+    my["Options"].show();
+    my["Options"].hide();
+     
+    my[currentName].show();
+  }
+  window.addEventListener('unload', onUnload, false);
+if (parseInt(Options.Lingua) == 0) {
+	if(ById('idp_outer'))
+	ById('idp_outer').style.display="none";
+	alertlang();
+} else {
+	if (Options.alertConfig.hq == "") {
+		alerthq();
+	}
+  AddMainTabLink(ScriptName, eventHideShow, mouseMainTab);
+  actionLog(ScriptName, "<div style='font-weight:bold;text-shadow: 1px 1px 1px #AAA;font-variant:small-caps;'><a href='"+sitesupport+"' target='_blank'>"+ScriptName+"</a> <span style='color:green'>"+translate('Loaded')+"</span><BR>"+translate('version')+": <span style='color:red'>"+Version+"</span>");
+}
+ 
+  CollectGold.init();
+  CollectRessource.init();
+RefreshEvery.init();
+  FoodAlerts.init();
+  setTimeout (function() {
+  	ScoutAlert.init();
+  	AutoDeleteGoRMessage.init();
+  }, 60000);
+  AutoDeleteReports.init();
+  
+  TowerAlerts.init();
+  TowerAlerts.setPostToChatOptions(Options.alertConfig);
+  WideScreen.init ();
+  WideScreen.setChatOnRight (Options.pbChatOnRight); 
+  ChatStuff.init();
+  setInterval (HandleChatPane,2500);
+  
+  SpamEvery.init();
+  AttackTimer.init();
+}
+function onUnload (){
+  Options.ptWinPos = mainPop.getLocation();
+  saveOptions();
+}
+/************ Special Tchat ***********************/
+var CalterUwFunc = function (funcName, findReplace) {
+  var t = this;
+  this.isEnabled = false;
+  this.isAvailable = isAvailable;
+  this.setEnable = setEnable;
+  this.funcName = funcName;
+  this.funcOld = unsafeWindow.Chat.chatDivContent;  
+  this.funcNew = null;
+  try {
+    var funcText = unsafeWindow.Chat.chatDivContent.toString();
+    var rt = funcText.replace ('function '+ funcName, 'function');
+    for (var i=0; i<findReplace.length; i++){
+      x = rt.replace(findReplace[i][0], findReplace[i][1]);
+      if (x == rt)
+        return false;
+      rt = x;
+    }
+    this.funcNew = rt;
+  } catch (err) {
+  }
+      
+  function setEnable (tf){
+    if (t.funcNew == null)
+      return;
+    if (t.isEnabled != tf){
+      if (tf){
+      	var scr=document.createElement('script');
+      	scr.innerHTML = funcName +' = '+ t.funcNew;
+      	document.body.appendChild(scr);
+        setTimeout ( function (){document.body.removeChild(scr);}, 0);
+      	t.isEnabled = true;
+      } else {
+        unsafeWindow.Chat.chatDivContent = t.funcOld;
+        t.isEnabled = false;
+      }
+    }
+  }
+  function isAvailable (){
+    if (t.funcNew == null)
+      return false;
+    return true;
+  }
+};
+/************************ ChatStuff************************/
+var ChatStuff = {
+  chatDivContentFunc : null,
+  getChatFunc : null,
+  leaders : [],
+  init : function (){
+  
+ 
+    var t = ChatStuff; 
+    if (getMyAlliance()[1]!=translate('None'))		t.getAllianceLeaders();
+    t.chatDivContentFunc = new CalterUwFunc ('Chat.chatDivContent', [['return f.join("")', 'var msg = f.join("");\n msg=chatDivContent_hook(msg);\n return msg;']]);
+    uW.chatDivContent_hook = t.chatDivContentHook;
+    uW.ptChatIconClicked = t.e_iconClicked;
+    uW.caricoinfo = t.e_LoadInfo;
+    t.setEnable (true);
+  },
+  isAvailable : function (){
+    var t = ChatStuff; 
+    t.chatDivContentFunc.isAvailable ();
+  },
+  setEnable : function (tf){
+      var t = ChatStuff; 
+      t.chatDivContentFunc.setEnable (tf);
+     if(ById("mod_comm_list1") && Options.GlobalChat)
+        ById("mod_comm_list1").style.backgroundColor = Colors.ChatGlo;
+      if(ById("mod_comm_list2") && Options.AllianceChat)
+        ById("mod_comm_list2").style.backgroundColor = Colors.ChatAll;
+        
+        ById("comm_tabs").style.backgroundColor = "#ECECEC";
+   },
+   e_iconClicked : function (name){
+      ById('mod_comm_input').value='';
+      var e = ById('mod_comm_input');
+      name = name.replace(//g,"'");
+      e.value = '@'+ name +' ';
+      e.focus();   
+  },
+   e_LoadInfo : function (name){
+   				var t = ChatStuff;
+				t.fetchPlayerInfo (name, function (r) {t.gotPlayerDetail(r)});
+  },
+   gotPlayerDetail : function (rslt){
+      var t = ChatStuff;
+      if (!rslt.ok){
+        return;
+      }
+      var u = rslt.userInfo[0];
+      var a = 'Nessuna';
+      if (u.allianceName)
+        a = u.allianceName +' ('+ getDiplomacy(u.allianceId) + ')';
+      var c = confirm(translate('Name')+': '+u.genderAndName+'\r\n'+translate('Might')+': '+u.might+'\r\n'+translate('Alliance')+': '+a+'\r\n'+translate('City')+': '+u.cities+'\r\n'+translate('Population')+': '+u.population+'\r\n\r\n\r\nVuoi andare al profilo Facebook?');
+      if(c){
+      window.open('http://www.facebook.com/profile.php?id='+u.fbuid)
+      }
+  },
+   fetchPlayerInfo : function (name, notify){
+          unsafeWindow.AjaxCall.gPostRequest("getUserGeneralInfo.php",{uid:name},
+	 	    function(rslt){
+	 	        notify (rslt);
+	     	},function(rslt){
+	 	        notify (rslt);
+    	}); 
+  },
+    EmoClick: function(what) {
+        ById("mod_comm_input").value += " " + what + " ";
+   },
+  chatDivContentHook : function (msg){
+      var t = ChatStuff; 
+      uW.BOEmoClick = t.EmoClick;
+      var m = /div class='info'>.*<\/div>/im.exec(msg);
+       if (m == null)
+        return msg;      
+      if (m[0].indexOf("s'adresse \u00e0 toi") >= 0 || m[0].indexOf("Ti sussurra") >= 0 || m[0].indexOf("Whispers to you") >= 0) {
+		msg = msg.replace ("class='content on'", "class='content ptChatWhisper'");
+		msg = msg.replace ("class='content off'", "class='content ptChatWhisper'");
+	  } else {
+		msg = msg.replace ("class='content on'", "class='content on'");
+		msg = msg.replace ("class='content off'", "class='content off'");
+	  }
+      if (m[0].indexOf("** ARRIVEE **") >= 0 || m[0].indexOf("** ARRIVAL **") >= 0 || m[0].indexOf("** ARRIVANO **") >= 0 || m[0].indexOf("** VARI **") >= 0 || m[0].indexOf("** AANKOMST **") >= 0 || m[0].indexOf("** "+translate('ARRIVAL')+" **") >= 0) {
+		msg = msg.replace ("class='content on'", "class='content ptChatAttack'");
+		msg = msg.replace ("class='content off'", "class='content ptChatAttack'");
+	  } else {
+      	if (m[0].indexOf(" stata esplorata") >= 0 || m[0].indexOf("was explored") >= 0 || m[0].indexOf("** "+translate('was explored')+" **") >= 0) {
+			msg = msg.replace ("class='content on'", "class='content ptChatScout'");
+			msg = msg.replace ("class='content off'", "class='content ptChatScout'");
+		} else {	  	
+			msg = msg.replace ("class='content on'", "class='content on'");
+			msg = msg.replace ("class='content off'", "class='content off'");
+	  	}
+	  }
+    if ((m[0].indexOf("s'adresse \u00e0 toi") >= 0 || m[0].indexOf("Ti sussurra") >= 0 || m[0].indexOf("Whispers to you") >= 0) && Options.Chuchoenabled) {
+       msg = msg.replace ("Ti sussurra",'<font color=red>Ti sussurra</font><span style="visibility:hidden"><object type="application/x-shockwave-flash" data="'+SWF_PLAYER_URL+'" width="10" height="10" id="dewplayer" name="dewplayer"><param name="wmode" value="transparent" /><param name="movie" value="'+SWF_PLAYER_URL+'" /><param name="flashvars" value="mp3='+Options.urlChucho+'&amp;autostart=1&amp;showtime=1&amp;volume=100" /></object></span>');   
+       msg = msg.replace ("s'adresse \u00e0 toi",'<font color=red> s\'adresse \u00e0 toi </font><span style="visibility:hidden"><object type="application/x-shockwave-flash" data="'+SWF_PLAYER_URL+'" width="10" height="10" id="dewplayer" name="dewplayer"><param name="wmode" value="transparent" /><param name="movie" value="'+SWF_PLAYER_URL+'" /><param name="flashvars" value="mp3='+Options.urlChucho+'&amp;autostart=1&amp;showtime=1&amp;volume=100" /></object></span>');   
+       msg = msg.replace ("Whispers to you",'<font color=red> Whispers to you </font><span style="visibility:hidden"><object type="application/x-shockwave-flash" data="'+SWF_PLAYER_URL+'" width="10" height="10" id="dewplayer" name="dewplayer"><param name="wmode" value="transparent" /><param name="movie" value="'+SWF_PLAYER_URL+'" /><param name="flashvars" value="mp3='+Options.urlChucho+'&amp;autostart=1&amp;showtime=1&amp;volume=100" /></object></span>');   
+    } 
+    if (m[0].indexOf("** ARRIVEE **") >= 0 || m[0].indexOf("** ARRIVAL **") >= 0 || m[0].indexOf("** ARRIVANO **") >= 0  || m[0].indexOf("** VARI **") >= 0 || m[0].indexOf("** AANKOMST **") >= 0 || m[0].indexOf("** "+translate('ARRIVAL')+" **") >= 0) {
+       msg = msg.replace (msg,msg+'<div onclick="BOAttackDetect();" style="position: absolute; background-image: url(\'data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAAZAAA/+4ADkFkb2JlAGTAAAAAAf/bAIQAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQICAgICAgICAgICAwMDAwMDAwMDAwEBAQEBAQECAQECAgIBAgIDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMD/8AAEQgAEgASAwERAAIRAQMRAf/EAJgAAAIDAAAAAAAAAAAAAAAAAAYHAAgJAQABBQEAAAAAAAAAAAAAAAAFAQYHCAkKEAAABQIDBQQLAAAAAAAAAAABAgQFBwMGABI2ETFWNwghIzRlQYETM2QVNRYXZxgRAAIAAgcDCAUNAAAAAAAAAAECAwQAETESBQYHQSIyIWFiEzM0NQhRcVRkNkJScqIjUxQVZRZWFxj/2gAMAwEAAhEDEQA/AMPs5ANkE5APlE+QTlA2QogBqmUR25CiPabcGMu6mqvVGquqzb6PXzU6ny6BrhYB6iaqxXULTV6BtNgpo/C0Wxl0yRzb/Vd1TW033jcd1ovmvSz0xPqelWGQ6wlE7dM0ssyoO4ihtq7K7M2qSAW4KhSqq5Rbi0SLrEZIybg+SsHGoWoAA5K5WWYAszEbrFDa7fJU8ijebZTPHW/WPOetGcX8vHl7djGvXcWxVCRCloYNUSGsVeEKQREZTfdh1UPevMlSPz1e3DMTc9v6D5b2zqfhD6Vy98t8F8LgN/c/6TJ+JfiLB2X3XDxdKzmo/P8AH0T+XY38L/lfaP3j2zj+pxdKiJ+9LviyTI5eG+OW+/VjE+2pIiyJZUTOyGOr3t2ijWKWh5u5nqCiVqraXtTtVBurkA1B4OoKQSKkJVJcNnIT4DhEX9yZhErFlIERoaC6Ir9arIWhbjDlDojRIbn7O7eYBiqsH1vm8R1ezmuVNCIsVs8SklHlsQxSDMNDlZSTik9ZKsQGR5h3XcKjrYZG6ygllYUhS/IM93o/SzKT+vuW9rqVnruTitpLUlBPQpiAJmhjbF6Fsrs9vNRO4SpgTUSlJT2gBgynMJz3mzF824285icQGEvJChqylISGxRcd0LEVFmDMTtqNaicPLhpvlrTnTSUksDwibwrEZgFpsTghmdjRlYq0SO8MkFWILQgCAqEVKtlA3DLpPlBVl1FdurPc2XrvU+kGzwn6+4Z8p9ngxP8Ahsl3Pimu6dh3l+L3z273i9StPlu7HNPgHxHG8M+iveen8zmroVDv9Pr34DUsubdtJhaJT//Z\');   background-repeat: no-repeat; border-radius: 3px 3px 3px 3px; height: 18px; width: 18px; border: 2px inset rgb(96, 0, 0); box-shadow: 0px 0px 2px rgb(255, 255, 255); left: 300px; top: 10px; "></div>');    
+    	if(Options.Attackenabled){
+       		msg = msg.replace ("** ARRIVEE **",'** ARRIVEE ***<span style="visibility:hidden"><object type="application/x-shockwave-flash" data="'+SWF_PLAYER_URL+'" width="10" height="10" id="dewplayer" name="dewplayer"><param name="wmode" value="transparent" /><param name="movie" value="'+SWF_PLAYER_URL+'" /><param name="flashvars" value="mp3='+Options.urlAttack+'&amp;autostart=1&amp;showtime=1&amp;volume=100" /></object></span>');   
+       		msg = msg.replace ("** ARRIVAL **",'** ARRIVAL ***<span style="visibility:hidden"><object type="application/x-shockwave-flash" data="'+SWF_PLAYER_URL+'" width="10" height="10" id="dewplayer" name="dewplayer"><param name="wmode" value="transparent" /><param name="movie" value="'+SWF_PLAYER_URL+'" /><param name="flashvars" value="mp3='+Options.urlAttack+'&amp;autostart=1&amp;showtime=1&amp;volume=100" /></object></span>');   
+       		msg = msg.replace ("** ARRIVANO **",'** ARRIVANO ***<span style="visibility:hidden"><object type="application/x-shockwave-flash" data="'+SWF_PLAYER_URL+'" width="10" height="10" id="dewplayer" name="dewplayer"><param name="wmode" value="transparent" /><param name="movie" value="'+SWF_PLAYER_URL+'" /><param name="flashvars" value="mp3='+Options.urlAttack+'&amp;autostart=1&amp;showtime=1&amp;volume=100" /></object></span>');   
+       }
+	} 
+    if (m[0].indexOf(" stata esplorata") >= 0 || m[0].indexOf("was explored") >= 0 || m[0].indexOf("** "+translate('was explored')+" **") >= 0){
+       msg = msg.replace (msg,msg+'<div style="position: absolute; background-image: url(\'data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAAUAAA/+4ADkFkb2JlAGTAAAAAAf/bAIQAAgICAgICAgICAgMCAgIDBAMCAgMEBQQEBAQEBQYFBQUFBQUGBgcHCAcHBgkJCgoJCQwMDAwMDAwMDAwMDAwMDAEDAwMFBAUJBgYJDQsJCw0PDg4ODg8PDAwMDAwPDwwMDAwMDA8MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwM/8AAEQgAEgASAwERAAIRAQMRAf/EAJMAAAMBAQAAAAAAAAAAAAAAAAQFCAcJAQACAgMAAAAAAAAAAAAAAAACBQQGAAEHEAABAgMEBQURAAAAAAAAAAABAgMEBQYAETQHITESMjPwYUIUCEHBUmKCohNTY3ODVBVVFlaWEQABAgMFBgQHAAAAAAAAAAABAgMAEQQhMVESBfBBYXGBBpGhseHBIjJCghMU/9oADAMBAAIRAxEAPwCooGW52mUNVJmF2gZPR6n2y+7KKdpyDMvhB4CouauOOuhOgFRCL+a3L0u0hIQ2yVHiozPRMh6x0lymqkZlLcSkDgJDqZn0hrIJ5mBHoKqcz5pSr1BG22o0+wta03Ai4wc1Sm8gjo3aRotj7IYkpTKkg4mzzEFTFNQcgdQoi+VpE8bYG/L8xv2leK6vhobGes3OH7PzrRv2DDjDL+YeUoUV9kBGVfBVy1PYlqtzU0CiDp9Ma85BGSN+jcYdbgw2HWwHEulRWUbYUEnaIGzZ3oOusaefnanfMi+3nFQ7s7df1tkobfyKCkqSCDlCkkKE5XiYtnCPIrs/qyGy1rajIp6IrlU+gQiUxr8WtcRAOpCdhbbiYdsNlgNoS0EK7h0hNybO63uqidbDQbUU780t8JNE7N1JiqXUvvNhZCUgIBAATM/cZkme/dZGAfUc4/v0FiuocNWP+b3t7xNXPasSpsDj+OHvF+zVGI98Y6oMb3R8rvWTN3wa4FmuEiPdK4evVbTkHT/UOcR9/O47l8W0jx2+ETvC/brH/9k%3D\');   background-repeat: no-repeat; border-radius: 3px 3px 3px 3px; height: 18px; width: 18px; border: 2px inset rgb(96, 0, 0); box-shadow: 0px 0px 2px rgb(255, 255, 255); left: 300px; top: 10px; "></div>');
+    	if(Options.Spyenabled){
+  		    msg = msg.replace (" stata esplorata",' stata esplorata<span style="visibility:hidden"><object type="application/x-shockwave-flash" data="'+SWF_PLAYER_URL+'" width="10" height="10" id="dewplayer" name="dewplayer"><param name="wmode" value="transparent" /><param name="movie" value="'+SWF_PLAYER_URL+'" /><param name="flashvars" value="mp3='+Options.urlSpy+'&amp;autostart=1&amp;showtime=1&amp;volume=100" /></object></span>');   
+ 			msg = msg.replace ("was explored",'was explored<span style="visibility:hidden"><object type="application/x-shockwave-flash" data="'+SWF_PLAYER_URL+'" width="10" height="10" id="dewplayer" name="dewplayer"><param name="wmode" value="transparent" /><param name="movie" value="'+SWF_PLAYER_URL+'" /><param name="flashvars" value="mp3='+Options.urlSpy+'&amp;autostart=1&amp;showtime=1&amp;volume=100" /></object></span>');   
+		}
+    }
+    if (m[0].indexOf("besoin de bananes") >= 0 || m[0].indexOf("is running out of food") >= 0 || m[0].indexOf("ha bisogno di cibo") >= 0 || m[0].indexOf("** "+translate('is running out of food')+" **") >= 0) {
+       msg = msg.replace (msg,msg+'<div style="position: absolute; background-image: url(\'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAB2RJREFUeNrsVltvXFcV/s79nDlzv/mS2HHjxKkCATUQWkRKylWtAEWCB0BCSCn0ideCEO8I8QsQQkhIEfBEVYlLVbUoqtKmkJKLHcepk7h2HN9mPPaM58y5XzbfOI1QEC88oD7QLa25nLP3Xnut9X3f2pIQAh/EkPEBjf8/x6okSbANHcV8HrJpwfB9iGIRzXoVf//HVXzly5/DmdNPNS5eung6eOv6k0eKuclLsnZ+aeC9Muh2Uedau1RCzLXTEpBlGfDYNJ4/dw4zUyP49a9+id/+7mU0azW0+33kcjkMcaX++0mGUIsg7RtoS/c3oF6bN0Wr89WZLDl9PGc1u5IU3HXE3zihG+/P5zoGIEn/RcQPf6Tvb2AL8bWTIj07ItJylM9dXmh1rjXXNr991u2fk2wFx1QdJyeb59Z2uoffBF57AsKuSShc9rw5V1OXVU1rS7J8TzOMPcM0IVQFw8MFaarGWZY89Ld/RlXXcKBc/vQhXf/+Fza3nv9UIQ9p4iBaUYQ/LK+Kz6SxNCmy/dkaU9KcfgzvBD5m72/hO7YJe3oaVySB3q3b2bhp9d8ytM7Ng5Nb41OHFrB44/DEert26PCk9sfNzqV3XP9FVZYdSTdMHM1ZP38hjn40M1aFXynj8vUFdKIUk4aGmWoeW16Inb4Hi46rD4CBNUWBFCUoDKMxDByemcbqygqSKIBVLuLVVg8+331JAcaLFk4+9Un0efgXry/97Mr29k+U737zWz8Yuzn3Uyv0YdDRkSPHsK6qMNsdfDzNUJs4gKknTmCjtYNbfoj7jLhP2+W7QrGAxngTolHG/NIy5kWEFUnBqKKjTr6cThMcHhYzSDC4t4FypYS2aozOe/55xfK8Pz3dbtsTjMYc+Mh6fbRY8FJ/D2UuCnsOUifAwPMxYho4dvxx7GkKUs/FGSuHqiqjbhsIGendIMYzsolTo00gSTFwfWIGMLi3xIPGG238uefU5KMzE4qwtR/KA9eeZAnznLDuenivtweDTlMNKMYZOnsOlqIYR2WBohRiPQxRcgMU/QCJO8Bmvws3jjFKdDY4T+F7k+lfJjUdOta5b4WBv00fb+pAbbzkKFOj1ufNKfPo3CDGQpChzQl8jzZT1eWiKekBAlf4YScZjMhH6oaIOEnhswItx7kN4nX4bH6IATrPBwHuZQJ/5f9heRZps0cK+PqzY1i8755XWzvxG5MV/bngkIm9SEbQj5nGFJthilNBine50KT1aHO0J4mYUX4v4sHBhs6a75PkCu0mrTXkNVO7nddgjllozBQxccDCGYMp8WIsbXgL6iBIFqNEh56m0DUJjY9VUC7oOEHkmn6CrhPDZ6QpU77FrFzloVRZwirrrSgaVlnXhppCLppQtAzPFFXUKiYaoxYmGyoK5P4e192952BjtQ9faAM/zBZV3w9mgzTfUoQYEXGCsB8wVwLVmgmtrGH0RBHjdQPjNXKbXI0y1lAh6o08hFEmsQ2odKwKPk9j0inGoO8jN8QIg+n2XbgDj84TxInAnR0su4P+nCqydKXnirURUx1x3QghJzuEf9mPkCYy7IZO5KYQRLVWLCNvV6hyChyPICnYMEsjUHiAOHIR+g6SzMGuuw5PDTkrQWuPFOtE8MIMY1Udr9zOZmVFiVXTygk3FNftqvYJj6DJSCWTFMmZMlRFRqfPaCimBT2C5VPcjRC5Sh1eYiCfUfAjhS2OKoE8wiSAS1bEBFXAvUQSwnETyNx0rCzDC3Tc63Rf2lfLKAyw25NelydL37MNFywfBn4KZgxjNQ2Neg4lRqaKlFyN4bEjyaSUqhfQ3tiFmbOgGzYxo0KnjqssQ6NRQhay0bg9BEEImQFsdzx0AyNOJfNWwWZQwzbmBenVQawnhmWoFC3kWaAoFbi77oOqCJltrGLJsAg+haCrF3WY9TokzWKLk5BJGhSfUcsW5HAXe5vraO/2GG1ELKgomgoy6u27nWwuCOMNU1f2c0QQJDutXvRezra+mNdhcC/USvo+JXIUEU3V4DgJAorEkDmpUODHKXpOiB7B6Dg+VSpgAARn4CGKQuIjQ7OqMgMSnEHIDqXg9fngpbXN7ssBOa48bFNxHN/YdsQbiaR/tFrQD/I/gaTxgmAQRCpGyxZKdo70yMOwCyiwzqqWo7ooGKdeF6vj1OIGs6XB0rPhfvuliZMEvUDGa/PJ7YvXtn7MS8CQ5v9yPByarq11uv7vW33RZs1mIMsVQd3yw4gbkfxSAomNQMpYYxFA1wVVToVmFpg1ZR9MHiU0ZjYUgmWYjQtzzvpvXm3/4u3ZzRfodPmRfvxwDIGS8KSyJDNdScWyjLMHm9Y3jk8VPntiyiweGSd4pAwVgoNlQq5ATdPy5HaOYDMQZBZu3N4JVza6/YU77QtXF7f/stvzLlAAVlm3R24g/9Gxyl6bsLskyb4WNjRd/8hozX768an6KRWD6tSIIVULlBGGRdbEu4HWHwRyfL/lbtxZ6VxJUzHX98I7aRx3Nd5AeCNhIPGjjj+80H/o+H81/inAAPD+pq3c2maWAAAAAElFTkSuQmCC\');   background-repeat: no-repeat; border-radius: 3px 3px 3px 3px; height: 18px; width: 18px; border: 2px inset rgb(96, 0, 0); box-shadow: 0px 0px 2px rgb(255, 255, 255); left: 300px; top: 10px; "></div>');   
+	}
+//	   msg = msg.replace ("class='content off'", "class='content ptChatEnh'");
+//	   msg = msg.replace ("class='content on'", "class='content ptChatEnh'");
+  
+    var suid = /viewProfile\(this,([0-9]+),false,([0-9]+),/i.exec(m[0]);
+    if (suid) {   
+     if (scripters.indexOf(suid[1]) > -1) {
+       msg = msg.replace ("<div class='avatar", "<div class='avatar sc1");
+	   msg = msg.replace (msg, "<b>"+msg+"</b>");
+	   msg = msg.replace ("class='content off'", "class='content ptChatEnh'");
+	   msg = msg.replace ("class='content on'", "class='content ptChatEnh'");
+     }
+	msg = msg.replace ("<span class='time", "<span onclick=caricoinfo(\'"+ suid[1] +"\'); class='time");
+    }
+    var m = /(Domina|Dominus) (.*?)</im.exec(msg);
+    if (m != null){
+    msg = msg.replace ("<div class='avatar", "<div onclick=ptChatIconClicked(\'"+ m[2] +"\'); class='avatar");
+    	if (t.leaders[m[2]] && Options.ColorsLeader) {
+    		msg = msg.replace ("<div class='info'", "<div class=' ptChat"+t.leaders[m[2]]+"'")
+    	}
+    }
+  
+ if (Options.Smiley) {
+     for (k in Smileys) {
+       
+        if (k=="(massage)")
+          msg=msg.replace(k, '<img style="width:32px !important;height:24px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+	else if (k=="*kissing*")
+          msg=msg.replace(k, '<img style="width:47px !important;height:30px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+	else  if (k=="(fouet)")
+          msg=msg.replace(k, '<img style="width:60px !important;height:30px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+	else if (k=="(sonic)")
+          msg=msg.replace(k, '<img style="width:64px !important;height:64px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+	else if ( k=="(renne)" || k=="(tigre)" || k=="(girafe)" || k=="(elephant)" || k=="(rat)")
+          msg=msg.replace(k, '<img style="width:60px !important;height:60px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+	else if (k=="(spider)")
+          msg=msg.replace(k, '<img style="width:95px !important;height:57px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+	else if (k=="(hamta)" || k=="(cat)")
+          msg=msg.replace(k, '<img style="width:31px !important;height:40px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+	else if (k=="(shark2)")
+          msg=msg.replace(k, '<img style="width:117px !important;height:50px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+	else if (k=="(concombre)")
+          msg=msg.replace(k, '<img style="width:100px !important;height:50px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+	else if (k=="(baby)")
+          msg=msg.replace(k, '<img style="width:56px !important;height:40px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+	else if (k=="]:->" || k=="(pingouin)" || k=="(shark)")
+          msg=msg.replace(k, '<img style="width:35px !important;height:35px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+	else if (k=="(bath)" || k=="(emotlove2)" || k=="(smyno)")
+          msg=msg.replace(k, '<img style="width:40px !important;height:40px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+	else if (k=="(miroir)")
+          msg=msg.replace(k, '<img style="width:45px !important;height:45px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+	else if (k=="(caribou)")
+          msg=msg.replace(k, '<img style="width:65px !important;height:33px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+	else if (k=="(magebarbe)")
+          msg=msg.replace(k, '<img style="width:45px !important;height:45px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+	else if (k=="(couette)" || k=="(ver)")
+          msg=msg.replace(k, '<img style="width:60px !important;height:45px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+        else if (k=="(fox)" || k=="(heidy)")
+          msg=msg.replace(k, '<img style="width:30px !important;height:30px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+        else if (k=="(autruche)")
+          msg=msg.replace(k, '<img style="width:93px !important;height:84px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+        else if (k=="(panda)" || k=="(crabe)" || k=="(tortue)"|| k=="(vache)" || k=="(singe)" || k=="(bravo2)" || k=="(bubulle)" || k=="(chien)" || k=="(cuicui)" || k=="(bubulle)" || k=="(cochon)" || k=="(lapin)" || k=="(grenouille)")
+	     msg=msg.replace(k, '<img style="width:66px !important;height:66px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+        else if (k=="(herisson)" || k=="(lion)" || k=="(chat)" || k=="(papillon)"  || k=="(serpent)" || k=="(dragon)" || k=="(camelot)")
+          msg=msg.replace(k, '<img style="width:77px !important;height:77px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+        else if (k=="(ours)" || k=="(taupe)" )
+          msg=msg.replace(k, '<img style="width:88px !important;height:88px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">')
+        else if (k=="(bienmal)")
+          msg=msg.replace(k, '<img style="width:109px !important;height:60px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">')
+        else if (k=="(aigle)")
+          msg=msg.replace(k, '<img style="width:65px !important;height:100px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+        else if (k=="(hippo)")
+          msg=msg.replace(k, '<img style="width:73px !important;height:115px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+        else if (k=="(Jolly)")
+          msg=msg.replace(k, '<img style="width:85px !important;height:52px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+	 else if (k=="(lapin1)" || k=="(lapin2)" || k=="(lapin3)")
+          msg=msg.replace(k, '<img style="width:96px !important;height:96px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+	 else if (k=="(Italy)")
+          msg=msg.replace(k, '<img style="width:120px !important;height:90px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+	else if (k=="(SpiderPig)")
+		  msg=msg.replace(k, '<img style="width:265px !important;height:110px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+	else if (k=="(Wolf)")
+		  msg=msg.replace(k, '<img style="width:192px !important;height:122px !important" class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+	else
+	  msg=msg.replace(k, '<img class=emoicon title='+k+' onclick="BOEmoClick(\''+k+'\')" src=\"'+Smileys[k]+'\">');
+    }
+     }
+    return msg;  
+  },
+  getAllianceLeaders : function (){
+   var t = ChatStuff;
+      var c= {};
+      unsafeWindow.AjaxCall.gPostRequest("allianceGetInfo.php",c,
+        function(rslt){
+          if(rslt.ok){
+         	var User = rslt.officers;
+         	for (z in User){
+						var cc = User[z];
+						if (cc.type == 1){
+							var Tipo = 'CHAN';
+						} else {
+							if(cc.type == 2){
+								var Tipo = 'VICE';
+							} else {
+								if(cc.type == 3){
+									var Tipo = 'OFFI';
+								} else {
+									var Tipo = '';
+								}
+							}
+						}
+				t.leaders[cc.name] = Tipo;
+//         		t.leaders[] = User[z].type.substr(0,4);
+         	} 
+          }     
+		});
+	},  
+}
+/************************ Tower Alerts ************************/
+var TowerAlerts = {
+  viewImpendingFunc : null,
+  generateIncomingFunc : null,
+  AlarmeTimer: null,
+  fixTargetEnabled : false,
+  compteur: 0,
+  init : function (){
+    var t = TowerAlerts; 
+  },
+  secondTimer : null,
+  setPostToChatOptions : function (obj){
+     var t = TowerAlerts;
+     clearTimeout(t.secondTimer);
+     if (Options.alertConfig.aChat)
+ 		t.e_eachSecond();
+  },
+  e_eachSecond : function (){   // check for incoming marches
+     var t = TowerAlerts;
+     var now = unixTime();
+     
+     unsafeWindow.player.allCities().sortBy(function(c){return c.number}).each(function(f,c){
+             var d="",e="";
+        if(f.underAttack()) {
+        
+          Cities.byID[f.id].c.incomingAttackMarches().each(function(c){
+           var b=Cities.byID[f.id].c.marches.incoming[c.id];
+           var arrivalTime = b.secondsToDestination()>0?b.secondsToDestination():0;
+   	   
+           if ((arrivalTime>0)  && (t.getTowerMarch(b.id)==null || t.getTowerMarch(b.id)==undefined)) 
+          {
+            t.addTowerMarch (b.id, arrivalTime);
+            if (Options.alertSound.enabled){
+	      	my.Options.soundTheAlert();
+			if (ById('botowertab')) ById('botowertab').style.display="block";
+	      if (arrivalTime > Options.alertSound.expireTime)
+	          Options.alertSound.expireTime = arrivalTime;
+    	    }
+            
+            t.postToChat (f, c, false);
+            saveOptions (); 
+          }
+          });
+        
+        }
+        });
+     t.secondTimer = setTimeout (t.e_eachSecond, 5000);
+      
+   },
+   addTowerMarch : function (id, arrivalTime){
+       var t = TowerAlerts;
+       var now = unixTime();
+       for (k in Options.towerMarches){
+         if ((Options.towerMarches[k].arrival+Options.towerMarches[k].added) < now) {
+            //Options.towerMarches[k] = null;
+            delete Options.towerMarches[k];
+         }
+       }
+       Options.towerMarches['m' + id] = { added:now, arrival:arrivalTime };
+       
+  },  
+  getTowerMarch : function (mid){ 
+     var t = TowerAlerts;
+     return Options.towerMarches['m'+mid];
+  },
+  postToChat: function(f, c, force){
+    var t = TowerAlerts;
+    
+    var e="";
+    if(c.from.allianceId>0&&Seed.allianceNames&&Seed.allianceNames["a"+b.from.allianceId]){
+          e="(" + Seed.allianceNames["a"+b.from.allianceId] +")";
+         }else{
+          if(c.from.allianceName!==null){e="(" + c.from.allianceName+")";}
+    }
+    
+    if(Cities.byID[f.id].c.wilds[c.to.tileId]){
+   	  var a=unsafeWindow.arStrings.Common.Wilderness+" " + unsafeWindow.Watchtower.generateCoords(c.to.cityId,c.to.tileId)
+    } else{
+   	  var a=unsafeWindow.arStrings.Common.City+" " + unsafeWindow.player.cities[c.to.cityId].name + ' ('+unsafeWindow.player.cities[c.to.cityId].x +','+ unsafeWindow.player.cities[c.to.cityId].y +')';
+   	  if (Cities.byID[f.id].c.defending!=0)
+   	   a+=" ("+translate('DEFENDS')+") ";
+   	  else
+   	   a+=" ("+translate('SANCTUARY')+") ";
+    }
+     var b=Cities.byID[f.id].c.marches.incoming[c.id];
+     var attaquant=unsafeWindow.GOR.players[c.from.playerId]?unsafeWindow.GOR.players[c.from.playerId].name:"?";
+     
+     var msg ='';
+     var arrivalTime = b.secondsToDestination()>0?timestr(b.secondsToDestination()):message;
+     msg += b.general.level?" "+unsafeWindow.arStrings.Common.General+" : "+b.general.level:"";
+     msg +=' *** '+translate('ARRIVAL')+' *** ';
+     unsafeWindow.Object.keys(b.units).each(function(h){
+     if(b.units[h].sent>0) {
+		   	   msg += b.units[h].sent + ' ' + unsafeWindow.arStrings.unitName["u"+h] + ', ';
+		         }
+ 		});
+     		
+     msg = msg.slice(0, -2);
+     
+     msg += "  ("+unsafeWindow.arStrings.Common.Arrival+" " + arrivalTime + "). " ;
+	if (Options.alertConfig.MonQG && parseIntNan(Options.alertConfig.hq)>0) {
+		 var mavilleId = uW.player.cities[Options.alertConfig.hq];
+		  msg += ' *** '+translate('BUNKER')+' *** ' + mavilleId.x + ',' + mavilleId.y + ' ';
+		 
+		}           
+	if (Options.alertConfig.mytroops) {
+		msg += ' *** '+translate('MY TROOPS')+' *** ';
+     unsafeWindow.Barracks.allUnitIds.each(function(r){
+      if (unsafeWindow.arStrings.unitName["u"+r]) {
+		  if(Cities.byID[f.id].c.troops[r].count() > 0)
+          msg += unsafeWindow.arStrings.unitName["u"+r]+': '+parseInt(Cities.byID[f.id].c.troops[r].count())+', ';
+      }
+     });
+     }
+		
+    var mess = Options.alertConfig.aPrefix  +" "+unsafeWindow.arStrings.Common.Target+" : " + a +" "+unsafeWindow.arStrings.Common.Attacker+" : " + " " +attaquant + " "+e+" " + msg;
+    var lancement=0;
+    
+    sendChat("/a " + mess);
+  }		
+ }
+ 
+     
+ /************* MARCHES ***************/
+ my.marches = {
+  cont:null,
+  state : null,
+  displayTimer:null,
+  getContent : function (){
+      var t = my.marches;
+      return t.cont;
+    },
+    
+    init : function (){
+      var t = my.marches;
+      t.cont = document.createElement('div');
+      return this.cont;
+    },
+    show : function () {
+     var t = my.marches;
+     clearTimeout (t.displayTimer);
+     if (t.state == null){
+           t.cont.innerHTML = '<DIV id=marchesContent style="height:660px; max-height:660px; overflow-y:auto"></div>';
+           t.state = 1;
+     }
+      var  m = "";
+     var ma ="";
+     var roww=0;
+     unsafeWindow.player.allCities().sortBy(function(c){return c.number}).each(function(f,c){
+             var d="",e="";
+             if(f.underAttack()) {
+             
+                Cities.byID[f.id].c.incomingAttackMarches().each(function(c){
+                var b=Cities.byID[f.id].c.marches.incoming[c.id];
+                var arrivalTime = b.secondsToDestination()>0?b.secondsToDestination():0;
+        	   
+                if ((arrivalTime>0)) 
+                {
+                 roww++;
+                 couleur="";
+                 if (roww%2) couleur=" style='background:#e8e8e8'";
+                 var arrivalTime = b.secondsToDestination()>0?timestr(b.secondsToDestination()):"unknown";
+     		 var attaquant=unsafeWindow.GOR.players[c.from.playerId]?unsafeWindow.GOR.players[c.from.playerId].name:"?";
+     		 if(Cities.byID[f.id].c.wilds[c.to.tileId]){
+		    	  var a=translate('Wild')+' ' + unsafeWindow.Watchtower.generateCoords(c.to.cityId,c.to.tileId)
+		 } else{
+		    	  var a=translate('City')+' ' + unsafeWindow.player.cities[c.to.cityId].name + ' ('+unsafeWindow.player.cities[c.to.cityId].x +','+ unsafeWindow.player.cities[c.to.cityId].y +')';
+  		 }
+                 ma += "<tr><td "+couleur+">" + a + "</td><td "+couleur+">" +  arrivalTime +"</td>";
+                 var e="";
+		 if(c.from.allianceId>0&&Seed.allianceNames&&Seed.allianceNames["a"+b.from.allianceId]){
+		           e="" + Seed.allianceNames["a"+b.from.allianceId] +"";
+		          }else{
+		           if(c.from.allianceName!==null){e="" + c.from.allianceName+"";}
+    		 }
+                 ma += "<td "+couleur+">" + attaquant + "</td><td "+couleur+">"+e+"</td>";
+                 
+                 ma +="<td "+couleur+">" +(b.general.level?" Lvl "+b.general.level:" unknown ") + "</td>";
+                 
+                 var unt="";
+                 unsafeWindow.Object.keys(b.units).each(function(h){
+		      if(b.units[h].sent>0) {
+		 		   	   unt += b.units[h].sent + ' ' + unsafeWindow.arStrings.unitName["u"+h] + '<br>';
+		 		         }
+		  		});
+		      		
+    		 unt = unt.slice(0, -2);
+                 ma +="<td "+couleur+">" + unt + "</td>";
+                 
+                 ma +="</tr>";
+               }
+               });
+             
+             }
+        });
+        
+     if (ma!="") {
+      m += '<DIV class=ptstat>'+translate('INCOMING ATTACKS')+'</div>';
+      m += "<table class='marches' width=100% cellspacing=0 bordercolor=black cellpadding=4><tr style='height:30px'><td><b>"+translate("Target Coordinates")+"</td><td><b>"+translate('Times')+"</td><td><b>"+translate('Attacker')+"</td><td><b>"+translate('Alliance')+"</td><td><b>"+translate('General')+"</td><td><b>"+translate('Troops')+"</td><tr>";
+      m += ma;
+      m += "</table><br>";
+     }
+     
+   
+     
+     var roww=0;
+     var ms="";
+     unsafeWindow.player.allCities().sortBy(function(c){return c.number}).each(function(f,c){
+        
+     var a=unsafeWindow.Object.values(Cities.byID[f.id].c.marches.outgoing).compact();
+     a=a.concat(unsafeWindow.Object.values(Cities.byID[f.id].c.marches.bgReinforcements).compact());
+     a.each(function(d){
+     var g="",e='<a onclick="KB.Controllers.MapHelper.gotoCoord('+d.to.x +','+ d.to.y +');">('+d.to.x+','+ d.to.y +')</a>';
+        roww++;
+        couleur=""
+        if (roww%2) couleur=" style='background:#e8e8e8'";
+        var now = unixTime();
+        var arrivalTime = d.secondsToDestination()>0?timestr(d.secondsToDestination()):d.secondsToReturn()>0?timestr(d.secondsToReturn()):"unknown";
+        ms+="<tr>"
+        ms+="<td "+couleur+">" + Cities.byID[f.id].c.name + "</td><td "+couleur+">"+arrivalTime+"</td><td "+couleur+">"+d.typeString()+"</td><td "+couleur+">"+d.statusString()+"</td><td "+couleur+">"+e+"</td>";
+        gen=Cities.byID[f.id].c.generals[d.general.id];
+        if (gen!=undefined) {
+         ms+="<td "+couleur+">"+gen.name +" ("+gen.level()+")</td>"
+        }else {
+         ms+="<td "+couleur+">??</td>";
+        }
+        ms+="<td "+couleur+">";
+        unsafeWindow.Barracks.allUnitIds.each(function(j){
+         var i=(d.returning()||d.defending())?d.units[j].returning:d.units[j].sent;
+         if (i>0)
+          ms +=addCommas(i)+ " "+ unsafeWindow.arStrings.unitName["u"+j] +"<br>";
+        });
+        ms+="</td></tr>";
+     });
+    });
+    if (ms!="") {
+       m+= '<DIV class=ptstat>'+translate('OUTGOING MARCHES')+'</div>';
+       m += "<table class='marches' width=100% cellspacing=0 bordercolor=black cellpadding=4><tr style='height:30px'><td><b>"+translate('City')+"</td><td><b>"+translate('Times')+"</td><td><b>"+translate('Type')+"</td><td><b>"+translate('Status')+"</td><td><b>"+translate('Coordinates')+"</td><td><b>"+translate('General')+"</td><td><b>"+translate('Troops')+"</td></tr>";
+       m += ms;
+       m += "</table><br>";
+     }
+     var ms="";
+         var roww=0;
+     unsafeWindow.player.allCities().sortBy(function(c){return c.number}).each(function(f,c){
+     
+     Cities.byID[f.id].c.incomingDefendingMarches().each(function(e){
+     
+        var g=unsafeWindow.GOR.players[e.from.playerId]?unsafeWindow.GOR.players[e.from.playerId].name:e.from.playerName;
+        var zz=addCommasInt(e.upkeep());
+        var XCoord=e.from.x;
+        var YCoord=e.from.y;
+         var MarchId=e.id;
+         roww++;
+        couleur=""
+        if (roww%2) couleur=" style='background:#e8e8e8'"; 
+         
+        ms +="<tr><td></td>";
+        
+        ms+='<td '+couleur+'>' + Cities.byID[f.id].c.name + '</td><td '+couleur+'><a onclick="KB.Controllers.MapHelper.gotoCoord('+ XCoord +','+ YCoord +');">('+ XCoord +','+ YCoord +')</a>&nbsp;'+g+'</td>';
+        ms+="<td "+couleur+">"+zz+"</td><td>";
+        
+        var a=Cities.byID[f.id].c.marches.incoming[MarchId];
+        unsafeWindow.Barracks.allUnitIds.each(function(i){
+ 		gg=a.units[i].sent;
+ 		 if (gg>0)
+ 		   ms +=addCommas(gg)+ " "+ unsafeWindow.arStrings.unitName["u"+i] +"<br>";
+ 	});
+        var now = unixTime();
+        var arrivalTime = a.getTimeLeftBeforeDecamping()>0?timestr(a.getTimeLeftBeforeDecamping()):"unknown";
+        
+        ms+="</td><td>"+ arrivalTime +"</td></tr>";
+     });
+     
+     });
+    
+           if (ms!="") {
+                m += '<DIV class=ptstat>'+translate('RECEIVED REINFORCEMENTS')+'</div>';
+             m += "<table class='marches' width=100% cellspacing=0 bordercolor=black cellpadding=4><tr style='height:30px'><td></td><td><b>"+translate('City reinforcements')+"</td><td><b>"+uW.arStrings.Embassy.SentFrom+"</td><td><b>"+uW.arStrings.Common.UpKeep+"</td><td>"+translate('Troops')+"</td><td>"+translate('Times')+"</td></tr>";
+                 m += ms;
+                 m += "</table><br>";
+       
+           
+     }
+      
+      
+     document.getElementById('marchesContent').innerHTML = m;
+     t.displayTimer=setTimeout(t.show, 4000);
+    },
+    hide : function (){
+     var t = my.marches;
+     clearTimeout (t.displayTimer);
+    },
+ }; 
+ 
+ /************* RAPPORTS **************/
+ my.Hud = {
+   cont:null,
+   state : null,
+   popReport :null,
+   minPages:		parseInt(Options.arPageFrom),
+   maxPages:		parseInt(Options.arPageTo),
+   totalPages:	parseInt(Options.arPageTo),
+       data:[],
+   getContent : function (){
+     var t = my.Hud;
+     return t.cont;
+   },
+   
+   init : function (){
+     var t = my.Hud;
+     t.cont = document.createElement('div');
+     return this.cont;
+   },
+   deleteAllReports:function() {
+       
+       var g={};
+           		g.requestType="deleteAll";
+           		unsafeWindow.AjaxCall.gPostRequest("deleteCheckedReports.php",g,function(i){
+           		      
+           		 unsafeWindow.seed.newReportCount = 0;
+           	
+           			
+       		})
+    },
+   show : function () {
+     var t = my.Hud;
+     t.minPages=parseInt(Options.arPageFrom);
+     t.maxPages=parseInt(Options.arPageTo);
+       t.getAllianceReports();
+       unsafeWindow.getReport = t.getReportBody;
+       t.cont.innerHTML = '\
+           <DIV class=ptstat>'+translate('CHECK ALLIANCE REPORTS')+'</div>\
+           <DIV class=ptentry style="height:30px"><table>\
+           <tr><td class=xtab>'+translate('Pages')+':&nbsp;<INPUT id="idRptPageFrom" size=1 value="' + t.minPages + '">&#8211;<INPUT id="idRptPageTo" size=1 value="' + t.maxPages + '"> \
+           <span id=idSpanNumPages></span>\
+           </td>\
+           <TD class=xtab><INPUT id="idHudSearch" type=submit value="OK" />\
+           <span id=idSpanHudErrorMsg></span><td><select id="idHudTypeSearch"><option value="">'+translate('All reports')+'</option><option value="0">'+translate('Incoming attacks')+'</option><option value="1">'+translate('Outgoing attacks')+'</option><option value="2">'+translate('Reinforcements')+'</option></select>\
+           <select id="idHudMedSearch"><option value="">'+translate('All reports')+'</option><option value=1>'+translate('My reports only')+'</option></select></td><td><input type="button" value="'+translate('Delete all reports')+'" id="BOSuppRapp1"></tr>\
+           </table></div>\
+           <DIV id="hudResultsDiv" style="height:620px; max-height:620px; overflow-y:auto;"></div>';
+           document.getElementById('idHudSearch').addEventListener ('click', t.handleHudSearch, false);
+           document.getElementById('idHudMedSearch').addEventListener ('click', t.DisplayReports, false);
+           document.getElementById('idHudTypeSearch').addEventListener ('click', t.DisplayReports, false);
+           document.getElementById('idRptPageFrom').addEventListener ('change', t.handleRptPages, false);
+	   document.getElementById('idRptPageTo').addEventListener ('change', t.handleRptPages, false);
+	   document.getElementById("BOSuppRapp1").addEventListener('click', t.deleteAllReports, false);
+//	   <input type="button" value="Test " id="TestDelRep">
+//	   ById('TestDelRep').addEventListener('click', t.getScoutReport, false);
+  },
+    getReportBody : function(Date1,ID,TileId,SideNum, Nom1, Coord1, Nom2, Coord2){
+        var t = my.Hud;
+        if(SideNum=="Ent") SideNum=0;
+        if(SideNum=="Sor") SideNum=1;
+        if(SideNum=="Ren") SideNum=0;
+        var c = {};
+        c.rid=ID;
+        c.side=SideNum;
+        
+        if (SideNum=="Ren") SideNum = 2;
+        
+        unsafeWindow.AjaxCall.gPostRequest("fetchReport.php",c,
+	        function(rslt){
+	           t.showReportBody(Date1, rslt.data,TileId,SideNum,Nom1, Coord1, Nom2, Coord2);     
+	        },
+	        function (rslt) {
+	               
+	        }
+       );
+    },
+    handleRptPages: function(){
+    		var t = my.Hud;
+    		t.minPages=parseInt(document.getElementById("idRptPageFrom").value);
+    		t.maxPages=parseInt(document.getElementById("idRptPageTo").value);
+    		if (t.maxPages < t.minPages) {
+    			t.maxPages = t.minPages;
+    			document.getElementById("idRptPageTo").value = t.maxPages;
+    		}
+    		Options.arPageFrom = t.minPages;
+    		Options.arPageTo = t.maxPages;
+    		saveOptions();
+    		t.totalPages=t.maxPages;
+     },
+    showReportBody: function (Date1,rslt,TileId,SideNum,Nom1,Coord1,Nom2,Coord2) {
+      	var t = my.Hud;
+      	if (t.popReport == null) {
+      	 t.popReport = new CPopup('pbShowBarbs', 0, 0, 520, 600, true, function() {clearTimeout (1000);});
+       	 t.popReport.centerMe (mainPop.getMainDiv());  
+      	}
+       	var m = ''; 
+      	m+='<TABLE class=ptTab cellpadding=3>';
+     
+      	if (SideNum==0) {
+      	 // Seulement les attaques entrantes
+      	
+      	if (TileId < 51 && rslt['tileLevel']!=undefined) m+='<TD><FONT size="4px">'+translate('Wild')+' '+translate('level')+' '+rslt['tileLevel']+'</font></td>';
+      	if (TileId < 51 && rslt['tileLevel']==undefined) m+='<TD><FONT size="4px">'+translate('Wild')+'</font></td>';
+      	if (rslt['conquered']==1) m+='<TD><FONT color="#CC0000" size="4px">'+translate('Conquered')+'</font></td></tr>';
+    
+      	if (rslt['winner']==1) m+='<TR><TD><FONT color="#CC0000" size="4px"><b>'+translate('Defeat')+'</b><br></font></td></tr></table>';
+      	if (rslt['winner']==0) m+='<TR><TD><FONT color="green" size="4px"><b>'+translate('Victory')+'</b><br></font></td></tr></table>';
+    	
+    	if (rslt['fght'] != undefined){
+    			m+='<TABLE style="float:left;width:45%;" class=ptTab><tr><td colspan=3><b>'+translate('Attacker')+': '+Nom1+' <a href="javascript:void(0)" onclick="KB.Controllers.MapHelper.gotoCoord('+ Coord1 +');" class="coordinateLink">('+ Coord1 +')</a></b><br>'+translate('General')+': '+ rslt['s1KCombatLv'] +'<br>'+translate('Number of tours')+': '+rslt['rnds']+'<br>'+translate('Bonus')+': '+ parseInt(rslt['s1atkBoost']*100)  +' % '+translate('Attack')+' - '+ parseInt(rslt['s1defBoost']*100) +' % '+translate('Defense')+'</td></tr>\
+    			    <TR style="background-color:#E5DDC9;color: #422714;font-size: 12px;font-weight: bold;"><TD align="center">'+translate('Troops')+'</td><TD align="center">'+translate('Killed')+'</td><TD align="center">'+translate('Survived')+'</td></tr>'; 
+    			if (rslt['fght']["s1"] != undefined) {
+    					unsafeWindow.Barracks.allUnitIds.each(function(i){
+    						if (rslt['fght']["s1"]['u'+i] != undefined) {
+    							if (rslt['fght']["s1"]['u'+i][0] > rslt['fght']["s1"]['u'+i][1]) m+='<TR><TD align="center"><div  class="pic px30 units unit_'+i+'"></td><TD align="center">'+rslt['fght']["s1"]['u'+i][0]+'</td><TD align="center"><FONT color="#CC0000">'+rslt['fght']["s1"]['u'+i][1]+'</font></td></tr>';
+    							else m+='<TR><TD align="center"><div  class="pic px30 units unit_'+i+'"></div></td><TD align="center">'+rslt['fght']["s1"]['u'+i][0]+'</td><TD align="center">'+rslt['fght']["s1"]['u'+i][1]+'</td></tr>';
+    						}
+    					});
+    			}
+    			m+='</table><TABLE style="float:right;width:45%;" class=ptTab><tr><td colspan=3><b>'+translate('Defender')+': '+Nom2+' <a href="javascript:void(0)" onclick="KB.Controllers.MapHelper.gotoCoord('+ Coord2 +');" class="coordinateLink">('+ Coord2 +')</a></b><br>'+translate('General')+': '+ rslt['s0KCombatLv'] +'<br><br>'+translate('Bonus')+': '+ parseInt(rslt['s0atkBoost']*100)  +' % '+translate('Attack')+' - '+ parseInt(rslt['s0defBoost']*100) +' % '+translate('Defense')+'</td></tr>';	  			  	
+    		  	if (rslt['fght']["s0"] != undefined) {
+    				  	m+='<TR style="background-color:#E5DDC9;color: #422714;font-size: 12px;font-weight: bold;"><TD align="center">'+translate('Troops')+'</td><TD align="center">'+translate('Killed')+'</td><TD align="center">'+translate('Survived')+'</td></tr>';
+    				  	for (var i=60;i<=63;i++) {
+    				  		if (rslt['fght']["s0"]['f'+i] != undefined) {
+    				  			if (rslt['fght']["s0"]['f'+i][0] > rslt['fght']["s0"]['f'+i][1]) m+='<TR><TD align="center"><div  class="pic px30 units unit_'+i+'"></td><TD align="center">'+rslt['fght']["s0"]['f'+i][0]+'</td><TD align="center"><FONT color="#CC0000">'+rslt['fght']["s0"]['f'+i][1]+'</font></td></tr>';
+    				  			else m+='<TR><TD align="center"><div  class="pic px30 units unit_'+i+'"></td><TD align="center">'+rslt['fght']["s0"]['f'+i][0]+'</td><TD align="center">'+rslt['fght']["s0"]['f'+i][1]+'</td></tr>';
+    				  		}
+    				  	}
+    				  	
+    				  	 unsafeWindow.Barracks.allUnitIds.each(function(i){
+    				  		if (rslt['fght']["s0"]['u'+i] != undefined) {
+    				  			if (rslt['fght']["s0"]['u'+i][0] > rslt['fght']["s0"]['u'+i][1]) m+='<TR><TD align="center"><div  class="pic px30 units unit_'+i+'"></td><TD align="center">'+rslt['fght']["s0"]['u'+i][0]+'</td><TD align="center"><FONT color="#CC0000">'+rslt['fght']["s0"]['u'+i][1]+'</font></td></tr>';
+    				  			else m+='<TR><TD align="center"><div  class="pic px30 units unit_'+i+'"></td><TD align="center">'+rslt['fght']["s0"]['u'+i][0]+'</td><TD align="center">'+rslt['fght']["s0"]['u'+i][1]+'</td></tr>';
+    				  		}
+    				  	});
+    				  	for (var i=50;i<=55;i++) {
+  					 if (rslt['fght']["s0"]['f'+i] != undefined) {
+  					  if (rslt['fght']["s0"]['f'+i][0] > rslt['fght']["s0"]['f'+i][1]) m+='<TR><TD align="center"><div  class="pic px30 units unit_'+i+'"></td><TD align="center">'+rslt['fght']["s0"]['f'+i][0]+'</td><TD align="center"><FONT color="#CC0000">'+rslt['fght']["s0"]['f'+i][1]+'</font></td></tr>';
+  					   			else m+='<TR><TD align="center"><div  class="pic px30 units unit_'+i+'"></td><TD align="center">'+rslt['fght']["s0"]['f'+i][0]+'</td><TD align="center">'+rslt['fght']["s0"]['f'+i][1]+'</td></tr>';
+  					  }
+    				  	}
+    		     } else {
+  				  		  	 m+="<tr><td><br>"+translate('No troops defending')+"</td></tr>";
+  	  		 }
+    		  	m+='<TR><TD></TD></TR></table>';
+    	}
+      	
+      	if (rslt['unts']!= undefined) { // pour les renforts :) lol ca sert pas pour le moment
+      	    // Renfort !
+    	   m+='<TABLE style="float:right;width:45%;" class=ptTab><TR style="background-color:#E5DDC9;color: #422714;font-size: 12px;font-weight: bold;"><TD align="center">'+translate('Troops')+'</td><TD align="center">'+translate('Reinforcements')+'</td></tr>';
+  
+  	   unsafeWindow.Barracks.allUnitIds.each(function(i){
+  	     		  		if (rslt['unts']['u'+i] != undefined) m+='<TR><TD align="center"><div  class="pic px30 units unit_'+i+'"></td><TD align="center">'+rslt['unts']['u'+i]+'</td></tr>';
+      	   });
+   
+    	   m+="</table>"; 
+    	
+      	}
+      	m+='<TR><TD></TD></TR><TR><TD></TD></TR></table>';
+      	
+      	if (rslt['loot'] != undefined) {
+    		  	m+='<TABLE class=ptTab cellpadding=3><tr><td colspan=4><b><u>'+translate('Resources')+':</u></b><br>\
+		        </tr><TR><TD>'+uW.arStrings.ResourceName[0]+': </td><TD><FONT color="#CC0000">'+addCommas(parseInt(rslt['loot'][0]))+'</td>';
+    		  	m+='<TD>'+uW.arStrings.ResourceName[1]+': </td><TD><FONT color="#CC0000">'+addCommas(parseInt(rslt['loot'][1]))+'</td>';
+    		  	m+='<TD>'+uW.arStrings.ResourceName[2]+': </td><TD><FONT color="#CC0000">'+addCommas(parseInt(rslt['loot'][2]))+'</td>';
+    		  	m+='<TD>'+uW.arStrings.ResourceName[3]+': </td><TD><FONT color="#CC0000">'+addCommas(parseInt(rslt['loot'][3]))+'</td>';
+    		  	m+='<TD>'+uW.arStrings.ResourceName[4]+': </td><TD><FONT color="#CC0000">'+addCommas(parseInt(rslt['loot'][4]))+'</td></table>';
+    	}	
+    	
+    	
+    	if (rslt['rsc'] != undefined) {
+    		  	m+='<TABLE class=ptTab cellpadding=3><tr><td colspan=4><b><u>Resources :</u></b><br></tr><TR>'
+    		  	if (rslt['gld']!= undefined) m+='<TD>'+uW.arStrings.ResourceName[0]+': </td><TD>'+addCommas(parseInt(rslt['gld']))+'</td>';
+    		  	m+='<TD>'+uW.arStrings.ResourceName[1]+': </td><TD>'+addCommas(parseInt(rslt['rsc']['r1']))+'</td>';
+    		  	m+='<TD>'+uW.arStrings.ResourceName[2]+': </td><TD>'+addCommas(parseInt(rslt['rsc']['r2']))+'</td>';
+    		  	m+='<TD>'+uW.arStrings.ResourceName[3]+': </td><TD>'+addCommas(parseInt(rslt['rsc']['r3']))+'</td>';
+    		  	m+='<TD>'+uW.arStrings.ResourceName[4]+': </td><TD>'+addCommas(parseInt(rslt['rsc']['r4']))+'</td></table>';
+    	}	
+    	
+    	} else {
+    	
+    	 m+='<table border=0 bgcolor=white width=100% cellpadding=3><tr><td colspan=2 style="background-color:white;"><table>';
+    	 // attaquantes sortantes
+    	 if (TileId < 51 && rslt['tileLevel']!=undefined) m+='<TD><FONT size="3px">'+translate('Wild')+' '+translate('level')+' '+rslt['tileLevel']+'</font></td>';
+  	 if (TileId < 51 && rslt['tileLevel']==undefined) m+='<TD><FONT size="3px">'+translate('Wild')+'</font></td>';
+  	 if (TileId == 51 &&  Nom2==undefined)  m+='<TD><FONT size="3px">'+translate('Barbarian Camp')+'</font></td>';
+  	 if (rslt['conquered']==1) m+='<TD><FONT color="#CC0000" size="3px">'+translate('Conquered')+'</font></td></tr>';
+  	   
+  	     if (rslt['winner']==0) m+='<TR><TD style="background-color:white;"><FONT color="#CC0000" size="3px"><b>'+translate('Defeat')+'<br><br></font>';
+  	     if (rslt['winner']==1 || rslt['winner']==2) m+='<TR><TD style="background-color:white;"><FONT color="green" size="3px"><b>'+translate('Victory')+'<br><br></font>';
+             m+="</table>";
+               
+  	  		m+='<TABLE style="float:left;width:45%;" class=ptTab><tr><td colspan=3><b>'+translate('Attacker')+': '+Nom1+' <a href="javascript:void(0)" onclick="KB.Controllers.MapHelper.gotoCoord('+ Coord1 +')" class="coordinateLink">('+ Coord1 +')</a></b>';
+  	  		if (rslt['s1KCombatLv']!=undefined) m+='<br>'+translate('General')+': '+ rslt['s1KCombatLv'] +'';
+  	  		if (rslt['rnds']!=undefined) m+='<br>'+translate('Number of tours')+': '+rslt['rnds']+'<br>';
+  	  		if (rslt['s1atkBoost']!=undefined || rslt['s1defBoost']!=undefined) m+=translate('Bonus')+': '+ parseInt(rslt['s1atkBoost']*100)  +' % '+translate('Attack')+' - '+ parseInt(rslt['s1defBoost']*100) +' % '+translate('Defense');
+  	  		m+='</td></tr>';
+  	  		if (rslt['fght'] != undefined){
+  	  			m+='<TR style="background-color:#E5DDC9;color: #422714;font-size: 12px;font-weight: bold;"><TD align="center">'+translate('Troops')+'</td><TD align="center">'+translate('Killed')+'</td><TD align="center">'+translate('Survived')+'</td></tr>'; 
+  	  			if (rslt['fght']["s1"] != undefined) {
+  	  					unsafeWindow.Barracks.allUnitIds.each(function(i){
+  	  						if (rslt['fght']["s1"]['u'+i] != undefined) {
+  	  							if (rslt['fght']["s1"]['u'+i][0] > rslt['fght']["s1"]['u'+i][1]) m+='<TR><TD align="center"><div  class="pic px30 units unit_'+i+'"></td><TD align="center">'+addCommas(rslt['fght']["s1"]['u'+i][0])+'</td><TD align="center"><FONT color="#CC0000">'+addCommas(rslt['fght']["s1"]['u'+i][1])+'</font></td></tr>';
+  	  							else m+='<TR><TD align="center"><div  class="pic px30 units unit_'+i+'"></td><TD align="center">'+addCommas(rslt['fght']["s1"]['u'+i][0])+'</td><TD align="center">'+addCommas(rslt['fght']["s1"]['u'+i][1])+'</td></tr>';
+  	  						}
+  	  					});
+  	  					
+  	  			}
+  	  		}
+  	  		if (Nom2==undefined) Nom2="barbare";
+  	  		m+='</table><TABLE style="float:right;width:45%;" class=ptTab><tr><td colspan=3><b>'+translate('Defender')+': '+Nom2+' <a href="javascript:void(0)" onclick="KB.Controllers.MapHelper.gotoCoord('+ Coord2 +');" class="coordinateLink">('+ Coord2 +')</a></b>';
+  	  		if (rslt['s0KCombatLv']!=undefined) m+='<br>'+translate('General')+': '+ rslt['s0KCombatLv'];
+  	  		if (rslt['lstlgn'] != undefined)
+  	  			{
+  	  			 m+="<br>"+translate('Last Login')+": " + unsafeWindow.formatDateByUnixTime(rslt['lstlgn'])+"<br>";
+  	  			} else {
+  	  			 m+="<br>";
+  	  			}
+  	  			if (rslt['s0atkBoost']!=undefined || rslt['s0defBoost']!=undefined) {
+  	  			 m+=translate('Bonus')+': '+ parseInt(rslt['s0atkBoost']*100)  +' % '+translate('Attack')+' - '+ parseInt(rslt['s0defBoost']*100) +' % '+translate('Defense');
+  	  			}
+  	  			m+='</td></tr>';
+  	  		if (rslt['fght'] != undefined){
+  	  		  	if (rslt['fght']["s0"] != undefined) {
+  	  				  	m+='<TR style="background-color:#E5DDC9;color: #422714;font-size: 12px;font-weight: bold;"><TD align="center">'+translate('Troops')+'</td><TD align="center">'+translate('Killed')+'</td><TD align="center">'+translate('Survived')+'</td></tr>';
+  	  				 	for (var i=60;i<=63;i++) {
+  							if (rslt['fght']["s0"]['f'+i] != undefined) {
+  							if (rslt['fght']["s0"]['f'+i][0] > rslt['fght']["s0"]['f'+i][1]) m+='<TR><TD align="center"><div  class="pic px30 units unit_'+i+'"></td><TD align="center">'+rslt['fght']["s0"]['f'+i][0]+'</td><TD align="center"><FONT color="#CC0000">'+rslt['fght']["s0"]['f'+i][1]+'</font></td></tr>';
+  							else m+='<TR><TD align="center"><div  class="pic px30 units unit_'+i+'"></td><TD align="center">'+rslt['fght']["s0"]['f'+i][0]+'</td><TD align="center">'+rslt['fght']["s0"]['f'+i][1]+'</td></tr>';
+  							}
+  						 }
+  	  				  	unsafeWindow.Barracks.allUnitIds.each(function(i){
+  	  				  		if (rslt['fght']["s0"]['u'+i] != undefined) {
+  	  				  			if (rslt['fght']["s0"]['u'+i][0] > rslt['fght']["s0"]['u'+i][1]) m+='<TR><TD align="center"><div  class="pic px30 units unit_'+i+'"></td><TD align="center">'+addCommas(rslt['fght']["s0"]['u'+i][0])+'</td><TD align="center"><FONT color="#CC0000">'+addCommas(rslt['fght']["s0"]['u'+i][1])+'</font></td></tr>';
+  	  				  			else m+='<TR><TD align="center"><div  class="pic px30 units unit_'+i+'"></td><TD align="center">'+addCommas(rslt['fght']["s0"]['u'+i][0])+'</td><TD align="center">'+addCommas(rslt['fght']["s0"]['u'+i][1])+'</td></tr>';
+  	  				  		}
+  	  				  	});
+  	  				  	
+  						for (var i=50;i<=55;i++) {
+  							 if (rslt['fght']["s0"]['f'+i] != undefined) {
+  							  if (rslt['fght']["s0"]['f'+i][0] > rslt['fght']["s0"]['f'+i][1]) m+='<TR><TD align="center"><div  class="pic px30 units unit_'+i+'"></td><TD align="center">'+rslt['fght']["s0"]['f'+i][0]+'</td><TD align="center"><FONT color="#CC0000">'+rslt['fght']["s0"]['f'+i][1]+'</font></td></tr>';
+  				   			  else m+='<TR><TD align="center"><div  class="pic px30 units unit_'+i+'"></td><TD align="center">'+rslt['fght']["s0"]['f'+i][0]+'</td><TD align="center">'+rslt['fght']["s0"]['f'+i][1]+'</td></tr>';
+  						}
+    				  	}
+  	  				  	
+  	  			}	  	
+  	  				  	
+  	  		  	 if ((rslt['unts']!=undefined) || (rslt['frt']!=undefined)) {
+  	  		  	    if (rslt['frt']!=undefined) {
+  	  		  	       m+='<TR style="background-color:#E5DDC9;color: #422714;font-size: 12px;font-weight: bold;"><TD align="center">'+translate('Defenses')+'</td><TD align="center">'+translate('Amount')+'</td></tr>';
+  				   
+  				   	for (var i=60;i<=63;i++) {
+  				     	  if (rslt['frt']['f'+i] != undefined) {
+  				     	     m+='<TR><TD align="center"><div  class="pic px30 units unit_'+i+'"></td><TD align="center">'+addCommas(rslt['frt']['f'+i])+'</td></tr>';
+  				     	  }
+    				  	}
+  				      for (var i=50;i<=55;i++) {
+  				   	 if (rslt['frt']['f'+i] != undefined) {
+  				           m+='<TR><TD align="center"><div  class="pic px30 units unit_'+i+'"></td><TD align="center">'+addCommas(rslt['frt']['f'+i])+'</td></tr>';
+  				   	 }
+  				      }
+  				    }
+  				    if (rslt['frt']!=undefined) {
+  	  			      m+='<TR style="background-color:#E5DDC9;color: #422714;font-size: 12px;font-weight: bold;"><TD align="center">'+translate('Troops')+'</td><TD align="center">'+translate('Amount')+'</td></tr>';
+  				      unsafeWindow.Barracks.allUnitIds.each(function(i){
+  					 if (rslt['unts']['u'+i] != undefined) {
+  					    m+='<TR><TD align="center"><div  class="pic px30 units unit_'+i+'"></td><TD align="center">'+addCommas(rslt['unts']['u'+i])+'</td></tr>';
+  					  }
+  	  			       });
+  	  			    }
+  	  			  
+  	  			} else {
+  	  		  	 m+="<tr><td><br>"+translate('No troops defending')+"</td></tr>";
+  	  		  	}
+  	  		  	m+='<TR><TD></TD></TR></table>';
+    	        }
+   	        m+="</td></tr><tr><td><br></tr>";
+   	        
+  	  	if (rslt['pop'] != undefined) {
+  	  	
+  	  	   m += '</table><tr><td style="background-color:white;"><b><u>'+translate('Results found')+'</u></b><br><br>';
+  	  	
+  	  	
+  	  	   m+='<table style="float:left;width:45%;"class=ptTab cellpadding=3>';
+  	  	   
+  	  	   	  	   
+  	  	    	  	  if ((rslt['unts']!=undefined) || (rslt['frt']!=undefined)) {
+		    	  		  	    if (rslt['frt']!=undefined) {
+		    	  		  	       m+='<TR style="background-color:#E5DDC9;color: #422714;font-size: 12px;font-weight: bold;"><TD align="center">'+translate('Defending')+'</td><TD align="center">'+translate('Amount')+'</td></tr>';
+		    				   
+		    				   	for (var i=60;i<=63;i++) {
+		    				     	  if (rslt['frt']['frt'+i] != undefined) {
+		    				     	  if (parseInt(rslt['frt']['frt'+i]) >0)
+		    				     	     m+='<TR><TD align="center"><div  class="pic px30 units unit_'+i+'"></td><TD align="center">'+addCommas(rslt['frt']['frt'+i])+'</td></tr>';
+		    				     	  }
+		      				  	}
+		    				      for (var i=50;i<=55;i++) {
+		    				   	 if (rslt['frt']['frt'+i] != undefined) {
+		    				   	  if (parseInt(rslt['frt']['frt'+i]) >0)
+		    				           m+='<TR><TD align="center"><div  class="pic px30 units unit_'+i+'"></td><TD align="center">'+addCommas(rslt['frt']['frt'+i])+'</td></tr>';
+		    				   	 }
+		    				      }
+		    				    }
+		    				    if (rslt['unts']!=undefined) {
+		    	  			      m+='<TR style="background-color:#E5DDC9;color: #422714;font-size: 12px;font-weight: bold;"><TD align="center">'+translate('Troops')+'</td><TD align="center">'+translate('Amount')+'</td></tr>';
+		    				      unsafeWindow.Barracks.allUnitIds.each(function(i){
+		    					 if (rslt['unts']['u'+i] != undefined) {
+		    					  if (parseInt(rslt['unts']['u'+i]) >0)
+		    					    m+='<TR><TD align="center"><div  class="pic px30 units unit_'+i+'"></td><TD align="center">'+addCommas(rslt['unts']['u'+i])+'</td></tr>';
+		    					  }
+		    	  			       });
+		    	  			      }
+		    	  			    
+		    	  			  
+  	  			}
+  	  	 
+  	  	 }
+  	  	 m+='</table><table style="float:right;width:45%;"class=ptTab cellpadding=3>';
+  	  	 if (rslt['pop'] != undefined  || rslt['knght'] != undefined ||rslt['hap'] != undefined) {
+  	  	       m+='<TR style="background-color:#E5DDC9;color: #422714;font-size: 12px;font-weight: bold;"><td align="center">'+translate('City')+'<td align="center">&nbsp;</tr>';
+		   	  	   if (rslt['pop'] != undefined) {
+		   	  	    m+='<TR><TD>'+translate('Population')+'</TD><TD>'+addCommas(parseInt(rslt['pop']))+'</td></tr>';
+		   	  	   }
+		   	  	   if (rslt['hap'] != undefined) {
+		   	  	    m+='<tr><td>'+translate('Happiness')+'<td>'+rslt['hap'] +'</td><tr>';
+		   	  	   }
+		   	  	   if (rslt['knght'] != undefined) {
+		   	  	    m+='<tr><td>'+translate('General')+'<td>'+rslt['knght']['cbt']+'</td></tr><tr><td>&nbsp;</tr>';
+  	  	    }
+  	  	  } 
+  	  	   if (rslt['blds'] != undefined) {
+  	  	     m+='<TR style="background-color:#E5DDC9;color: #422714;font-size: 12px;font-weight: bold;"><td align="center">'+translate('Building')+'<td align="center">'+translate('Level')+'</tr>';
+  	  		   	     		 
+		   		  for (var i=1; i<100; i++){
+		   		    if (rslt['blds']['b'+i] != undefined) {
+		   					
+		   	     			var blds = rslt['blds']['b'+i]; 
+		   	     			//var couleur='';
+		   	     			//if (bType==8) couleur=' style="background-color:red"';
+		   	     			m += '<TR><TD>'; 
+		   	     			arField = [], firstbld = true;
+		   	     			m += unsafeWindow.arStrings.buildingName["b"+i] +'</TD><TD>';
+		   	     			for (var zz=1; zz<12; zz++)
+		   	     				arField[zz]=0;
+		   	     			for (var zz=0; zz < blds.length; zz++)
+		   	     				arField[blds[zz]]++
+		   	     			for (var zz=11; zz>0; zz--) {
+		   	     				if (arField[zz] > 0) {
+		   	     					if (firstbld)
+		   	     						firstbld = false;
+		   	     					else
+		   	     						m+=', ';
+		   	     					if (arField[zz] > 1)
+		   	     						m+=arField[zz] + ' x ';
+		   	     					m+=' ' + zz;
+		   	     				}
+		   	     			}
+		   	     			m+='</TD></TR>';
+		   	     	     }
+		   	     	    }
+		   	     
+		   	     	  
+		   	
+		
+  	  	   
+  	  	   
+  	  	   
+  	  	   }
+  	  	  m+='</table>';
+  	  
+    	        if (rslt['tch'] != undefined) {
+    	        
+    	           m+='<table style="float:left;width:45%;" class=ptTab><TR style="background-color:#E5DDC9;color: #422714;font-size: 12px;font-weight: bold;"><TD align="center">'+translate('Technical')+' '+translate('level')+'</td><TD align="center">'+translate('Level')+'</td></tr>';
+  	  				
+    	           for (var i=1;i<=16;i++) {
+    	           
+    	            if (rslt['tch']['t'+i]!=undefined) {
+    	             m+='<tr><TD>' + unsafeWindow.arStrings.techName['t'+i] + '</td><TD>'+rslt['tch']['t'+i]+'</td></tr>';
+    	            }
+  	  		       
+    	           }
+    	           
+    	         
+    	           
+    	           m+='</table>';
+  	     }
+            
+  	     var typebutin ='';
+  	    	
+  	     	if (rslt['loot'] != undefined) {
+  	     		m+='</td><tr><td style="background-color:white;"><b><u>'+translate('Resources')+' '+typebutin+' :</u></b><br>';
+  	     	  		  	m+='<TABLE class=ptTab cellpadding=3><TR><TD>'+uW.arStrings.ResourceName[0]+': </td><TD>'+addCommas(parseInt(rslt['loot'][0]))+'</td>';
+  	     	  		  	m+='<TD>'+uW.arStrings.ResourceName[1]+': </td><TD>'+addCommas(parseInt(rslt['loot'][1]))+'</td>';
+  	     	  		  	m+='<TD>'+uW.arStrings.ResourceName[2]+': </td><TD>'+addCommas(parseInt(rslt['loot'][2]))+'</td>';
+  	     	  		  	m+='<TD>'+uW.arStrings.ResourceName[3]+': </td><TD>'+addCommas(parseInt(rslt['loot'][3]))+'</td>';
+  	     	  		  	m+='<TD>'+uW.arStrings.ResourceName[4]+': </td><TD>'+addCommas(parseInt(rslt['loot'][4]))+'</td>';
+  	     	  		  	if (rslt['loot'][5]) {
+  	     	  		  	m+='<tr><td>'+translate('Objects found')+':</td>';
+  	     	  		  	for (var i=1;i<10;i++) {
+  	     	  		  	
+  	     	  		  	 if (rslt['loot'][5]['110'+i]==1)
+  	     	  		  	  m+='<td colspan=3>' + unsafeWindow.arStrings.itemName["i110"+i] + '<div class="item-icon pic px70 items item_110'+i+'"></td>';
+  	     	  		  	}
+  	     	  		      }
+  	     	  		  	m+='</tr></table>';
+  	  	}
+  	   
+  	  	if (rslt['rsc'] != undefined) {
+  	    		  	m+='<TABLE class=ptTab cellpadding=3><tr><td colspan=4><b><u>'+translate('Resources')+':</u></b><br></tr><TR>';
+  	    		  	if (rslt['gld']!= undefined) m+='<TD>'+uW.arStrings.ResourceName[0]+': </td><TD>'+addCommas(parseInt(rslt['gld']))+'</td>';
+  	    		  	m+='<TD>'+uW.arStrings.ResourceName[1]+': </td><TD>'+addCommas(parseInt(rslt['rsc']['r1']))+'</td>';
+  	    		  	m+='<TD>'+uW.arStrings.ResourceName[2]+': </td><TD>'+addCommas(parseInt(rslt['rsc']['r2']))+'</td>';
+  	    		  	m+='<TD>'+uW.arStrings.ResourceName[3]+': </td><TD>'+addCommas(parseInt(rslt['rsc']['r3']))+'</td>';
+  	    		  	m+='<TD>'+uW.arStrings.ResourceName[4]+': </td><TD>'+addCommas(parseInt(rslt['rsc']['r4']))+'</td></table>';
+    		}
+  	   m+="<br><br></table>";
+  	  	 
+    	}
+    
+      	t.popReport.getMainDiv().innerHTML = '<DIV style="max-height:520px; height:520px; overflow-y:scroll">' + m + '</div>';
+      	t.popReport.getTopDiv().innerHTML = '<TD align="center"><B>'+translate('Battle reports')+' - '+unsafeWindow.formatDateByUnixTime(Date1)+'</td>';
+      	t.popReport.show(true);
+      	
+      	
+      	
+    },
+    DisplayReports : function (){
+      var t = my.Hud;
+      var data = t.data;
+      var filtre =  document.getElementById("idHudTypeSearch").value;
+      var filtre2 =  document.getElementById('idHudMedSearch').value;
+      var results=document.getElementById("hudResultsDiv");
+      if(!t.data.length) {
+         results.innerHTML = '<center><b>'+translate('No reports found')+'</b></center>';
+         return;
+      }
+      var m = '<center><table width=100% cellspacing=0 cellpadding=3><thead><th>'+translate('Page')+'</th><th>&nbsp;</th><th>'+translate('Date')+'</th><th colspan=3>'+translate('Attacker')+'</th><th>'+translate('Type')+'</th><th colspan=4>'+translate('Target')+'</th></thead>';
+      m += '<tbody>';
+      for ( var i=0; i<t.data.length;i++) {
+         var rpt = data[i];
+        if (rpt.side0Name===undefined) {
+         rpt.side0Name = "-";
+        }
+         //   continue;
+            
+          style='padding:2px;' ; 
+          if (rpt.TypeName=="Ent") {
+             style=' style="background-color:#EF9999;padding:2px;"';
+          }
+           if (rpt.TypeName=="Ren") {
+  	   style=' style="background-color:#99EF99;padding:2px;"';
+          }
+  
+          if (((filtre2=="" || filtre2=="1" && (rpt.side1Name==Seed.player.name|| rpt.side0Name==Seed.player.name))) && (filtre=="" || (filtre=="0" && rpt.TypeName=="Ent") || (filtre=="1" && rpt.TypeName=="Sor") || (filtre=="2" && rpt.TypeName=="Ren"))) {
+          
+          
+          m += '<tr ><td '+style+'><SPAN onclick="ptAllianceReports('+rpt.page+')"> <a>'+rpt.page+'</a></span></td>\
+           <td '+style+'>';
+          if (rpt.marchType == 3 && rpt.TypeName=="Ent") {
+          } else {
+           m+='<img onclick="getReport('+rpt.reportUnixTime+','+ rpt.marchReportId +','+rpt.side0TileType +',\''+rpt.TypeName+'\',\''+rpt.side1Name.replace(/\'/g,"_")+'\',\''+ rpt.side1XCoord +','+ rpt.side1YCoord +'\',\''+rpt.side0Name.replace(/\'/g,"_")+'\',\''+ rpt.side0XCoord +','+ rpt.side0YCoord +'\');" border=0 src="http://cdn1.iconfinder.com/data/icons/woothemesiconset/16/search_button.png">';
+          }
+          m+='&nbsp;</td>\
+            <td '+style+'>'+unsafeWindow.formatDateByUnixTime(rpt.reportUnixTime)+'</td>\
+              <td '+style+'>'+rpt.side1Name+'</td>\
+              <td '+style+'>'+rpt.side1AllianceName.replace(translate('Unaligned'),'-')+'</td>\
+              <td '+style+'><a href="javascript:void(0)" onclick="KB.Controllers.MapHelper.gotoCoord('+ rpt.side1XCoord +','+ rpt.side1YCoord +')" class="coordinateLink">('+ rpt.side1XCoord +','+ rpt.side1YCoord +')</a></td>';
+              if (rpt.marchType == 3) 
+               m +='<TD '+style+'><FONT color="FF9933">'+rpt.marchName+'</font></td>';
+  	    else if (rpt.marchType == 4) 
+  	     m +='<TD '+style+'><FONT color="FF0033">'+rpt.marchName+'</font></td>';
+  	    else 
+  	      m +='<TD '+style+'><FONT color="339933">'+rpt.marchName+'</font></td>';
+  	      if (rpt.side0Name!=undefined) {
+               m+='<td '+style+'>'+rpt.side0Name+'</td>';
+              }else{
+               m+='<td '+style+'>-</td>';
+              }
+              m+='<td '+style+'>'+rpt.side0AllianceName.replace(translate('Unaligned'),'-')+'</td>\
+              <td '+style+'><a href="javascript:void(0)" onclick="KB.Controllers.MapHelper.gotoCoord('+ rpt.side0XCoord +','+ rpt.side0YCoord +')" class="coordinateLink">('+ rpt.side0XCoord +','+ rpt.side0YCoord +')</a></td>';
+              if (rpt.side0TileType < 51 && rpt.side0TileLevel!=undefined) {
+              m+='<td '+style+'>'+translate('Wild')+' '+rpt.side0TileLevel+'</td>';
+              } else {
+                if (rpt.side0TileType = 51 && rpt.side0CityId==0 && rpt.side0PlayerId==0) {
+                  m+='<td '+style+'>'+translate('Barb')+'</td>';
+                  }else {
+                  m+='<td '+style+'>'+translate('City')+'</td>';
+                  }
+              }
+              
+              m+='</tr>';
+          }
+      }
+      m += '</tbody></table></center>';
+      results.innerHTML = m;
+  },
+  handleHudSearchCB : function(rslt, page) {
+      var t = my.Hud;
+      if (rslt) {
+         if (!rslt.ok) {
+            document.getElementById("idSpanHudErrorMsg").innerHTML = rslt.errorMsg;
+            return;
+         }
+         t.totalPages=parseInt(rslt.totalPages);
+         if (t.totalPages < t.maxPages)
+	    t.maxPages = t.totalPages;
+         if (rslt.arReports && page) {
+           var ar = rslt.arReports;
+           var rptkeys = unsafeWindow.Object.keys(ar);
+           var myAllianceId = getMyAlliance()[0];
+           for (var i = 0; i < rptkeys.length; i++) {
+                var rpt = ar[rptkeys[i]];
+                rpt.page = page;     
+                var side0Name = rslt.arPlayerNames['p'+rpt.side0PlayerId];
+                rpt.side0Name = side0Name;
+                rpt.side1Name = rslt.arPlayerNames['p'+rpt.side1PlayerId];
+                if (rpt.side0AllianceId > 0)
+                  rpt.side0AllianceName = rslt.arAllianceNames['a'+rpt.side0AllianceId];
+                else
+                  rpt.side0AllianceName = translate('Unaligned');
+                if (rpt.side1AllianceId > 0)
+                  rpt.side1AllianceName = rslt.arAllianceNames['a'+rpt.side1AllianceId];
+                else
+                  rpt.side1AllianceName = translate('Unaligned');
+  
+                if (rpt.side0CityId > 0)
+                  rpt.side0CityName = rslt.arCityNames['c'+rpt.side0CityId];
+                else
+                  rpt.side0CityName = 'none';
+                if (rpt.side1CityId > 0)
+                  rpt.side1CityName = rslt.arCityNames['c'+rpt.side1CityId];
+                else
+                  rpt.side1CityName = 'none';
+                if (rpt.marchType == 1)
+                    rpt.marchName = translate('Transport');
+                else if (rpt.marchType == 3)
+                    rpt.marchName = translate('Scout');
+                else if (rpt.marchType == 2)
+                    rpt.marchName = translate('Reinforce');
+                else if (rpt.marchType == 4)
+                    rpt.marchName = translate('Attack');
+                else rpt.marchName = translate('unknown');
+                
+                rpt.targetDiplomacy = getDiplomacy (rpt.side0AllianceId);
+             
+                	
+  	      if (myAllianceId != rpt.side1AllianceId) {      
+  		rpt.TypeName = "Ent";
+  	      }
+                if (myAllianceId == rpt.side1AllianceId) {
+       		rpt.TypeName = "Sor";      
+       	      }
+       	      
+       	         	if (rpt.marchType == 2) {
+       	         	  rpt.TypeName = "Ren"; 
+       	         	}
+       	      
+       	      t.data.push(rpt); 
+                   
+           }
+         }
+         			
+         
+         if (parseInt(page)+1 <= t.maxPages) {
+            var results=document.getElementById("hudResultsDiv");
+            results.innerHTML = translate('Searching')+' '+translate('pages')+' ' + (parseInt(page)+1) + ' '+translate('of')+' ' + t.maxPages;
+            t.getAllianceReports(parseInt(page)+1);
+         }
+         else if (page) 
+             t.DisplayReports();
+      }
+    },
+    
+    handleHudSearch : function() {
+      var t = my.Hud;
+      var results=document.getElementById("hudResultsDiv");
+      results.innerHTML = translate('Searching')+' '+translate('pages')+' ' + t.minPages + ' '+translate('of')+' ' + t.maxPages;
+      t.data=[];
+      t.getAllianceReports(t.minPages);
+    },
+  
+    getAllianceReports : function (pageNum){
+      var t = my.Hud;
+      var c= {};
+      c.pageNo = pageNum;
+      c.group = "a";
+      unsafeWindow.AjaxCall.gPostRequest("listReports.php",c,
+        function(rslt){
+           t.handleHudSearchCB (rslt, pageNum);     
+        },
+        function (rslt) {
+            t.handleHudSearchCB (rslt, pageNum);     
+        }
+      );
+    },
+  
+    hide : function (){
+  },
+  
+  }
+  
+ /* onlget des gnraux !! */
+ 
+my.Generals = {
+  cont : null,
+  state : null,
+ init : function (){
+    var t = my.Generals;
+    t.cont = document.createElement('div');
+     unsafeWindow.BOTerres = t.show;
+    return t.cont;
+  },
+  getContent : function (){
+    var t = my.Generals;
+    return t.cont;
+  },
+  hide : function (){
+    var t = my.Generals;
+  },
+  publi :function(cityId,fbid,name,idk) {
+   var t = my.Generals;
+            var       c=[];
+                  c.push(["REPLACE_KnIgHtNaMe",name]);
+                  c.push(["REPLACE_KnIgHtId",idk]);
+               c.push(["REPLACE_CiTyId",cityId]);
+   unsafeWindow.common_postToProfile('601',c,fbid,'601_energy')
+  },
+  show : function (){
+    var t = my.Generals;
+    unsafeWindow.BOGenePubl = t.publi
+    clearTimeout (t.displayTimer);
+    if (t.state == null){
+      t.cont.innerHTML = '<DIV id=BOGeneralContent style="height:640px; max-height:640px; overflow-y:auto">';
+      t.state = 1;
+    }
+    m = "<DIV class=ptstat>"+unsafeWindow.arStrings.Common["Generals"]+"</div>";
+   for (var c=0; c<Cities.numCities; c++){
+          var city = Cities.cities[c]; 
+          m += '<TABLE cellspacing=0 cellpadding=0 class=ptTabPad width=99%>';
+	  m += '<TR><TD colspan=6><DIV class=ptstat>'+ city.c.name +' &nbsp;&nbsp;<a href="javascript:void(0)" onclick="KB.Controllers.MapHelper.gotoCoord('+ city.c.x +','+ city.c.y+');">('+ city.c.x +','+ city.c.y +')</a></div></td></tr>';
+          if (Cities.cities[c].c.generalsCount()>0) {
+            m+="<tr><td colspan=2 width=160>"+translate('Name')+"</td><td width=40>Exp</td><td width=30>"+translate('Level')+"</td><td width=30>"+translate('Energy')+"</td><td>"+translate('Actions')+"</td></tr>";
+           Cities.cities[c].c.generalsSorted().each(function(b){
+            var f = b.experience() - b.expNeededForCurrentLevel(), e = b.expNeededForNextLevel() - b.expNeededForCurrentLevel();
+            
+            m+="<tr><td><img width=25 src='https://graph.facebook.com/"+b.fbuid+"/picture'/></td><td>"+b.name+"</td><td>" + addCommas(f) + " / " + addCommas(e) + "</td><td>"+b.level()+" </td><td>"+b.energy()+" / "+b.maxEnergy+"</td>";
+            m+="<td>";
+           if (unsafeWindow.seed.appFriends[b.fbuid]) {
+            m+="<a href=# onclick='NeighborPanel.postOffering("+b.fbuid+");'>"+translate('Send offerings')+"</a><br>";
+           }
+           if(b.idle()) {
+           
+            if(b.energy()<b.maxEnergy) {
+	       m+="<a href=# onclick=\"BOGenePubl("+city.c.id+","+b.fbuid+",'"+b.name+"',"+b.id+");return false;\">"+translate('Request more energy')+"</a><br>";
+	              
+            }
+           
+           } else {
+            m+="<b><i>"+translate('Outside the city')+"...</i></b>";
+           }
+            m+="</td></tr>";
+           
+           }); 
+          } else {
+          
+           m+="<tr><td>"+translate('No general present')+"</td></tr>";
+          }
+          m+"</table>";
+          
+          
+          }
+          
+  document.getElementById('BOGeneralContent').innerHTML = m + '</div>';
+  t.displayTimer = setTimeout (t.show, 20000);
+     
+ }
+}
+ /******** REGIONS SAUVAGES ***********/
+my.Wilds = {
+  cont : null,
+  state : null,
+  upGoldTimer : null,
+  wildList : [],
+  buildList : {},
+  
+  init : function (){
+    var t = my.Wilds;
+    t.cont = document.createElement('div');
+     unsafeWindow.BOTerres = t.show;
+    return t.cont;
+  },
+  getContent : function (){
+    var t = my.Wilds;
+    return t.cont;
+  },
+  hide : function (){
+    var t = my.Wilds;
+  },
+  
+  show : function (){
+    var t = my.Wilds;
+    clearTimeout (t.displayTimer);
+    if (t.state == null){
+      t.cont.innerHTML = '<DIV id=wildContent style="height:640px; max-height:640px; overflow-y:auto">';
+      t.state = 1;
+    }
+    m = "<DIV class=ptstat>"+unsafeWindow.arStrings.Common["Wilds"]+"</div>";
+    for (var c=0; c<Cities.numCities; c++){
+          var city = Cities.cities[c]; 
+          var row = 0;  
+          var position = "right";
+          if ((c+1)%2) position="left";
+              m += '<TABLE cellspacing=0 cellpadding=0 class=ptTabPad width=45% style="float:'+position+'">';
+          m += '<TR><TD colspan=20><DIV class=ptstat>'+ city.c.name +' &nbsp; <a href="javascript:void(0)" onclick="KB.Controllers.MapHelper.gotoCoord('+ city.c.x +','+ city.c.y+');">('+ city.c.x +','+ city.c.y +')</a></div></td></tr>';
+         
+          if(city.c.wildernessCount()===0){
+          
+          }else {
+            m += '<TR style="background-color:white; font-weight:bold;" align=right><TD align=left>'+unsafeWindow.arStrings.Common.Abandon+'</td><TD align=left>Type</td><td align=left>'+unsafeWindow.arStrings.Common.Level+'</td><TD align=left>'+unsafeWindow.arStrings.Common.Coordinates+'</td></tr>';
+             city.c.wilderness().each(function(wild)
+	    {
+	     m += '<TR align=right'+ (row++%2?'':' class=ptOddrow') +'><TD align=left>\
+	     <a onclick="this.style.display=\'none\';setTimeout (function (){Castle.abandonWild('+wild.id+');setTimeout(function() { BOTerres() },1000); },500);return false;"><img src="http://cdn1.iconfinder.com/data/icons/musthave/16/Remove.png" border=0></a></td><td align=left>'+wild.name +'</td>\
+             <TD>'+ wild.level +'</td><TD align=center><a href="javascript:void(0)" onclick="KB.Controllers.MapHelper.gotoCoord('+wild.x +','+  wild.y+');">('+ wild.x +','+ wild.y +')</a></td></tr>';     
+	    });    
+      	  }
+      	  m+="</table>";
+      }
+     document.getElementById('wildContent').innerHTML = m + '</div>';
+     t.displayTimer = setTimeout (t.show, 20000);
+  },
+   
+}
+/************************ Auto Post Scout ************************/
+var ScoutAlert = {
+  init : function (){
+    var t = ScoutAlert;
+ //   if(Options.EnableDelRep && Options.AttackAutoTest) 
+    t.getScoutReport();
+  },
+  
+  	minuteTimer : null,
+    numesplorep : [],
+  
+   getScoutReport : function () {
+   		var t = ScoutAlert;
+		if(unsafeWindow.seed.newReportCount >= 1 && Options.alertConfig.aChatScout){
+        var g={};
+        g.pageNo = 1;
+        unsafeWindow.AjaxCall.gPostRequest("listReports.php",g,
+        function(rslt){	
+        	if(rslt.ok){
+        		var NR = rslt.arReports;
+        		for (k in NR){
+        		for (var c=0; c<Cities.numCities; c++){
+        			var city = Cities.cities[c]; 
+        			if(NR[k].side1XCoord == city.c.x && NR[k].side1YCoord == city.c.y){
+        			 return;
+        			}}
+        			if(NR[k].marchType == 3){
+        				if(NR[k].reportStatus == 2) {
+        					var b = translate('My city')+' ('+NR[k].side0XCoord+','+NR[k].side0YCoord+') '+translate('was explored')+'! '+translate('The exploration seems to come from')+' ';
+        						b+= '('+NR[k].side1XCoord+','+NR[k].side1YCoord+'). '+translate('Date')+': '+timeConverter(NR[k].reportUnixTime);
+        					sendChat("/a " + b);
+        					var MarchId = NR[k].marchReportId;
+//        					t.numesplorep.push(MarchId); 
+        					document.getElementsByTagName(MarchId).checked = true;
+							t.ReadReport(MarchId);
+        					uW.seed.newReportCount = uW.seed.newReportCount - 1;
+        				} else {
+        				}
+        			} else {
+        			}
+        		}
+        	}
+        if (t.numesplorep != "") t.ReadReport();
+       	});
+       	}
+       	t.minuteTimer = setTimeout (t.getScoutReport, 3*60*1000);	// 3(Min) * 60 (sec) * 1000
+    },
+		ReadReport : function (MID){
+    	var t = ScoutAlert;
+/**    	for(var i = 0; i < t.numesplorep.length; i++) {
+   			document.getElementsByTagName(i).checked = true;
+		}
+**/     var g={};
+        g.s0rids = MID;
+        unsafeWindow.AjaxCall.gPostRequest("readCheckedReports.php",g,
+        function(rslt){	
+        	if(!rslt.ok){
+        		setTimeout (function (){ t.ReadReport(MID); }, 2000);
+        //		t.numesplorep = [""];
+        	}
+        });    	
+    },
+}
+/************************ Auto Delete GoR Message ************************/
+var AutoDeleteGoRMessage = {
+  init : function (){
+    var t = AutoDeleteGoRMessage;
+    t.deleterep();
+  },
+  
+  minuteTimer : null,
+  numreport : [],
+  
+    deleterep : function (){
+		var t = AutoDeleteGoRMessage;
+		if(uW.seed.newMailCount >= 1 && Options.EnableMesRep){
+        for (var z=1; z<=5; z++) {
+       		var g={};
+    		g.pageNo=z;
+    		g.requestType="GET_MESSAGE_HEADERS_FOR_USER_INBOX";
+    		g.boxType="inbox";
+        	unsafeWindow.AjaxCall.gPostRequest("getEmail.php",g,
+        	function(rslt){
+				var MS = rslt.message;
+				for (k in MS){
+					var ID = MS[k].messageId;
+					var SUB = MS[k].subject;
+					var BY = MS[k].fromUserId;
+					var del = false;
+					if ((SUB.indexOf('Acquista') >= 0 || SUB.indexOf('acquista') >= 0) && (SUB.indexOf('Gratis') >= 0 || SUB.indexOf('gratis') >= 0 || SUB.indexOf('Pacco') >= 0 || SUB.indexOf('pacco') >= 0)) del = true;
+					if ((SUB.indexOf('Ottieni') >= 0 || SUB.indexOf('ottieni') >= 0) && (SUB.indexOf('Oro') >= 0 || SUB.indexOf('oro') >= 0 || SUB.indexOf('Gratis') >= 0 || SUB.indexOf('gratis') >= 0)) del = true;
+					if ((SUB.indexOf('nuove') >= 0 || SUB.indexOf('nuove') >= 0) && SUB.indexOf('commercio') >= 0) del = true;
+					if ((SUB.indexOf('Invia') >= 0 || SUB.indexOf('invia') >= 0) && (SUB.indexOf('Monete') >= 0 || SUB.indexOf('monete') >= 0 || SUB.indexOf('Oro') >= 0 || SUB.indexOf('oro') >= 0)) del = true;
+					if ((SUB.indexOf('Vinci') >= 0 || SUB.indexOf('vinci') >= 0) && (SUB.indexOf('Gratis') >= 0 || SUB.indexOf('gratis') >= 0)) del = true;
+					if (del && BY == 0){
+						uW.seed.newMailCount = uW.seed.newMailCount-1;
+						t.numreport.push(ID);	
+					}
+				}
+        		if (t.numreport != "") t.deletemess();
+        	});
+    	}}
+    	t.minuteTimer = setTimeout (t.deleterep, (10*60*1000));		// 10 (Min) * 60 (Sec) *1000	
+    },
+    deletemess : function (){
+    		var t = AutoDeleteGoRMessage;
+      		var g={};
+           	g.requestType="ACTION_ON_MESSAGES";
+			g.selectedAction="delete";
+			g.boxType="inbox";
+			g.selectedMessageIds=t.numreport;
+           	unsafeWindow.AjaxCall.gPostRequest("getEmail.php",g,
+           	function(rslt){	
+           		if(rslt.ok){
+           			t.numreport = [""];
+           		}
+       		});    		
+    },
+}
+/************************ Auto Delete Reports ************************/
+var AutoDeleteReports = {
+  init : function (){
+    var t = AutoDeleteReports;
+    t.deleterep();
+  },
+  
+  minuteTimer : null,
+  numreport : [],
+  
+    deleterep : function (){
+		var t = AutoDeleteReports;
+		if(uW.seed.newReportCount >= 1 && Options.EnableDelRep){
+       	var g={};
+    	g.pageNo="1";
+        unsafeWindow.AjaxCall.gPostRequest("listReports.php",g,
+        function(rslt){
+        	if(rslt.ok){
+        	var RN = rslt.arReports;
+        	for (k in RN){
+     		 	for(var i = 0; i < CrestData.length; i++) {
+					if (RN[k].side0XCoord == CrestData[i].X && RN[k].side0YCoord == CrestData[i].Y) {
+					 	t.numreport.push(RN[k].marchReportId);
+					 	uW.seed.newReportCount = uW.seed.newReportCount -1;
+					}
+		        }
+     		 }
+     		 if (t.numreport != "") t.deletemess();
+    		}
+    	});
+       	}
+       	t.minuteTimer = setTimeout (t.deleterep, (Options.DeleteRepEvr*60*1000));		
+    },
+    deletecheck : function (){
+    		var t = AutoDeleteReports;
+    		document.getElementsByTagName(idrpt).checked = true;
+      		var g={};
+           	g.s1rids=t.numreport;
+           	unsafeWindow.AjaxCall.gPostRequest("deleteCheckedReports.php",g,
+           	function(rslt){	
+           		if(rslt.ok)
+           		t.numreport = [""];
+       		});    		
+    },
+}
+/************************ Food Alerts *************************/
+var FoodAlerts = {
+  init : function (){ 
+   var f = FoodAlerts;
+   f.e_eachMinute();
+  },
+  minuteTimer : null,
+  e_eachMinute : function (){   
+    var f = FoodAlerts;
+    var now = unixTime();
+    row = [];  
+    if (Options.enableFoodWarnTchat)  {
+      for(i=0; i < Cities.numCities; i++) {
+        //var rp = getResourceProduction (Cities.cities[i].id);
+        var foodleft = parseInt(Cities.cities[i].c.resources[1].count);
+        var usage = parseInt(Cities.cities[i].c.resources[1].hourlyTotalRate()) - parseInt(Cities.cities[i].c.upkeep());
+        //row[i] = rp[1] - usage;
+        
+    	var timeLeft = parseInt(Cities.cities[i].c.resources[1].count)  / (0-usage) * 3600;
+          var msg = '';
+          if (timeLeft<0){
+           }
+          else if (timeLeft<(Options.foodWarnHours*3600)) {
+                msg += translate('My city')+' ' + Cities.cities[i].c.name.substring(0,15) + ' (' +
+                       Cities.cities[i].c.x +','+ Cities.cities[i].c.y + ') ';
+              msg += ' '+translate('is running out of food')+', '+translate('so please send some')+'? '+translate('Current stock')+': '+addCommasWhole(foodleft).replace(',',' ').replace(',',' ').replace(',',' ').replace(',',' ')+' ('+timestrShort(timeLeft)+') '+uW.arStrings.Common.Production+': '+addCommas(usage).replace(',',' ').replace(',',' ').replace(',',' ').replace(',',' ');
+                sendChat ("/a " + msg);
+                //alert(msg);
+          }
+      }  
+    f.minuteTimer = setTimeout (f.e_eachMinute, 1800000);
+   }
+  },  
+}
+function sendChat (msg){
+  document.getElementById ("mod_comm_input").value = msg;
+  unsafeWindow.Chat.sendChat ();
+}
+function time(ms) {
+    var seconds = ((ms / 1000) % 60);
+    var minutes = (((ms / 1000) / 60) % 60);
+    var hours = ((((ms / 1000) / 60) / 60) % 24);
+    var sec, min, hrs;
+    if(seconds<10)  sec="0"+seconds;
+    else            sec= ""+seconds;
+    if(minutes<10)  min="0"+minutes;
+    else            min= ""+minutes;
+    if(hours<10)    hrs="0"+hours;
+    else            hrs= ""+hours;
+    if(hours == 0)  return parseInt(min)+":"+parseInt(sec);
+    else    return parseInt(hrs)+":"+parseInt(min)+":"+parseInt(sec);
+}
+function timeConverter(UNIX_timestamp){
+ var a = new Date(UNIX_timestamp*1000);
+ var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+     var year = a.getFullYear();
+     var month = months[a.getMonth()];
+     var date = a.getDate();
+     var hour = a.getHours();
+     var min = a.getMinutes();
+     var time = date+'/'+month+'/'+year+' - '+hour+':'+min;
+     return time;
+ }
+/*************** REASSIGNER **********/
+my.Reassign = {
+ cont : null,
+ displayTimer : null,
+ state : null,
+ curTabBut : null,
+ curTabName : null,
+ sourceCity : {},
+ destinationCity : {},
+ rows : [],
+ init : function (){
+   var t = my.Reassign;
+   t.cont = document.createElement('div');
+   t.state = null;
+   return t.cont;
+ },
+  getContent : function (){
+    var t = my.Reassign;
+    return t.cont;
+  },
+  hide : function (){
+    var t = my.Reassign;
+    t.state = null;
+    clearTimeout (t.displayTimer);
+  },
+  
+  show : function (){  
+    var t = my.Reassign;
+    var ModelCity = {};
+    var rownum = 0;
+    var rownum2 = 0;
+    clearTimeout (t.displayTimer);
+     
+        if (t.state == null) {  
+          m = "<DIV class=ptstat>"+unsafeWindow.arStrings.Common.Reassign+" "+translate('Troops')+"</div>";
+          m +="<div id='statpourREA'></div>";
+          m += "<TABLE align=center width='450px' class=ptTab border=0 align=left cellpadding=2>\
+            <tr align=center valign=middle><td colspan=1 width=100><b><u>"+translate('Source')+"</b></u><br><span id=REAsrcRptspeedcity></span></td>\
+            <td colspan=1 width='100px'><input type=button style='font-weight:bold' id=REAaction value='"+unsafeWindow.arStrings.Common.Reassign+"'></td>\
+            <td colspan=1 width='100px'><b><u>"+translate('Destination')+"</b></u><br><span id=REAdesRptspeedcity></span></td>\
+            <td width=150 colspan=1>&nbsp;</td></tr>\
+            <tr align=center valign=top><td width=100><div id=REAstatsource></div></td>\
+            <td ><table cellspacing=0 cellpadding=0 width=99%>";
+             unsafeWindow.Barracks.allUnitIds.each(function(r){
+              if (unsafeWindow.arStrings.unitName["u"+r]) {
+             if (rownum++ % 2)
+    	             style = '';
+    	           else
+                style = ' style = "background: #e8e8e8"';
+    	     m += '<tr '+style+'><td  align=right>&nbsp;</td><td align=left><input style="border:1px solid black;height:16px;font-size:11px;" id="REAnbunit'+r+'" type=text size=7 value="0"></td></tr>';
+       	     }
+       	    });
+            m += "</table></td><td><div id=REAstatdest></div></td>";
+            m += "<td colspan=2><table cellspacing=0 cellpadding=0 width=80%><tr><td>&nbsp;</table>";
+            m += "</tr><tr><td colspan=4><div id='ptREAStatus' style='text-align:center;overflow-y:auto; max-height:30px; height: 30px;'></div></td></tr></table>";
+            
+            
+          t.cont.innerHTML = m; 
+          t.statpourREA = document.getElementById ('statpourREA');
+          t.statutREA = document.getElementById ('ptREAStatus');
+          t.actionREA = document.getElementById ('REAaction');
+          t.actionREA.addEventListener ('click', t.clickReassigneDo, false);
+          
+       
+          
+          var dcp1 = new CdispCityPicker ('ptREA1', document.getElementById('REAdesRptspeedcity'), false, t.clickREACityDestinationSelect, 1);
+          var dcp0 = new CdispCityPicker ('ptREA0', document.getElementById('REAsrcRptspeedcity'), false, t.clickREACitySourceSelect, Cities.byID[unsafeWindow.currentcityid].idx);
+          t.state = 1;
+         
+         }
+         var str = "<TABLE class=ptTabLined cellspacing=0><TR valign=top align=right><TD width=120></td><TD width=88 style='background: #ffc'><B>"+translate('TOTALS')+"</b></td>";
+	    for(i=0; i<Cities.numCities; i++) {
+	      Gate = Cities.cities[i].c.defending;
+	               if(Gate == 0) var couleurr="#77EE77";
+	               if(Gate != 0) var couleurr="#EE7777";
+	                 str += "<TD width=81 style='background-color:"+couleurr+"' align=center><B>"+ Cities.cities[i].c.name +'</b><BR><a onclick="KB.Controllers.MapHelper.gotoCoord('+Cities.cities[i].c.x +','+ Cities.cities[i].c.y+');">('+Cities.cities[i].c.x +','+ Cities.cities[i].c.y+')</A></td>';
+	                 
+	    }
+	str +="</tr>";
+        str += "<tr><td><br></td></tr>";
+      
+	 unsafeWindow.Barracks.allUnitIds.each(function(r){
+	      var unitTotal=0;
+	   var m="";
+	   if (unsafeWindow.arStrings.unitName["u"+r]) {
+	      style = " style = 'background: #e8e8e8'";
+	      for(var i=0; i<Cities.numCities; i++) {
+		   m += "<TD width=81 "+style+" align=right>"+ addCommas(Cities.cities[i].c.troops[r].count()) +'</td>';
+		 	                        unitTotal+=parseInt(Cities.cities[i].c.troops[r].count());
+	       }
+		          str += "<tr><td "+style+" align=right><b>"+unsafeWindow.arStrings.unitName["u"+r]+"</td><td "+style+" align=right>"+addCommas(unitTotal)+" "+ m + "</tr>"; 
+	
+	
+	    }
+	 });
+        t.statpourREA.innerHTML = str;       
+        t.displayTimer = setTimeout (t.show, 10000);
+         
+         
+    
+ },
+   clickREACitySourceSelect : function (city){
+    var t = my.Reassign;
+    var rownum=0;
+    t.sourceCity = city; 
+    var SourceId = t.sourceCity.c.id;
+    // on remplit les stat du DIV source
+    //on efface le nbunit
+    unsafeWindow.Barracks.allUnitIds.each(function(r){
+      if (ById("REAnbunit"+r))  ById("REAnbunit"+r).value="0";
+    });
+    t.actionREA.disabled=false;
+    var m="";
+    m="<table cellspacing=0 cellpadding=0 width=80%>";
+    unsafeWindow.Barracks.allUnitIds.each(function(r){
+     if (unsafeWindow.arStrings.unitName["u"+r]) {
+        if (rownum++ % 2)
+    	            style = '';
+    	          else
+             style = 'background: #e8e8e8;';
+      m += '<tr style="'+style+'"><td align=right><b>'+unsafeWindow.arStrings.unitName["u"+r]+'</b></td>\
+            <td align=left><input style="border:1px solid black;height:16px;font-size:11px;" id="REAdestunit'+r+'" type=text size=7 readonly value="'+parseInt(Cities.cities[t.sourceCity.idx].c.troops[r].count())+'">&nbsp;\
+            <input type=button value=">" id="REApdestunit'+r+'"  style="border:1px solid black;height:16px;font-size:11px;"></td></tr>';
+     }
+    });
+    m += "</table>";
+ 
+    ById("REAstatsource").innerHTML = m;
+    
+    unsafeWindow.Barracks.allUnitIds.each(function(r){
+      if (unsafeWindow.arStrings.unitName["u"+r]) {
+      
+      ById("REApdestunit"+r).addEventListener ('click', function() {
+      
+        
+        var nomcha=this.id.replace("REApdest","REAdest");
+        var nomcha2=this.id.replace("REApdestunit","REAnbunit");
+      
+        ById(nomcha2).value=0; // on met  0
+        var maxtroupe=getTroopMax(SourceId);
+        var nbunitto=0;
+        unsafeWindow.Barracks.allUnitIds.each(function(r){
+          if (ById("REAnbunit"+r))      nbunitto+=parseInt(ById("REAnbunit"+r).value);
+        });
+        var libre = parseInt(maxtroupe - nbunitto);
+        if (ById(nomcha).value>=libre) {
+          ById(nomcha2).value = libre;
+        }  else {
+          ById(nomcha2).value= ById(nomcha).value;
+        }
+  
+        
+        
+       }, false);
+       }
+    });
+   // t.estimerTemps();
+  },
+  clickREACityDestinationSelect : function (city){
+     var t = my.Reassign;
+     var rownum=0;
+     t.destinationCity = city;
+     
+     // on remplit les stat du DIV destination
+     var m="";
+     m="<table cellspacing=0 cellpadding=0 width=80%>";
+     unsafeWindow.Barracks.allUnitIds.each(function(r){
+      if (unsafeWindow.arStrings.unitName["u"+r]) {
+        if (rownum++ % 2)
+    	            style = '';
+    	          else
+             style = 'background: #e8e8e8;';
+          m += '<tr style="'+style+'"><td align=right>&nbsp;</td><td align=left><input style="border:1px solid black;height:16px;font-size:11px;" type=text size=7 readonly value="'+parseInt(Cities.cities[t.destinationCity.idx].c.troops[r].count())+'"></td></tr>';
+      }
+     });
+     m += "</table>";
+     ById("REAstatdest").innerHTML = m;
+    // t.estimerTemps();
+  },  
+  clickReassigneDo: function() {
+  var t = my.Reassign;
+  var totalunit=0;
+  var SourceId = t.sourceCity.c.id;
+  var DestinationId = t.destinationCity.c.id;
+  unsafeWindow.Barracks.allUnitIds.each(function(r){
+       if (document.getElementById("REAnbunit"+r)) {
+       
+         if (parseInt(document.getElementById("REAnbunit"+r).value) > parseInt(document.getElementById("REAdestunit"+r).value)) {
+           document.getElementById("REAnbunit"+r).style.backgroundColor="red";
+           return false;
+         
+         }
+         totalunit=totalunit+parseInt(document.getElementById("REAnbunit"+r).value);
+         document.getElementById("REAnbunit"+r).style.backgroundColor="";
+        }
+     });
+     
+     if (t.sourceCity.c.id==t.destinationCity.c.id) {
+           t.statutREA.innerHTML = '<FONT COLOR=#550000>'+translate('Not possible to send to same city')+'!</font>';
+          return;
+     }
+     if (totalunit==0) {
+        t.statutREA.innerHTML = '<FONT COLOR=#550000>'+translate('Impossible to')+' '+unsafeWindow.arStrings.Common.Reassign+' '+translate('with 0 troops')+'... pfff, '+translate('wake up')+' !</font>';
+          return;
+   }
+   
+      var maxtroupe=getTroopMax(SourceId);
+      if (totalunit>maxtroupe) {
+       t.statutREA.innerHTML = '<FONT COLOR=#550000>'+translate('Impossible to')+' '+unsafeWindow.arStrings.Common.Reassign+' '+translate('more than')+' '+maxtroupe+' '+translate('troops at a time')+'.</font>';
+       return;
+      }
+      
+      t.actionREA.disabled=true;
+      var x=t.destinationCity.c.x;
+      var y=t.destinationCity.c.y;
+     t.statutREA.innerHTML = "<i><b>"+translate('Processing')+"........</b></i>";
+     
+     if (Cities.byID[SourceId].c.canMarch()) {
+       var f=Cities.byID[SourceId].c;
+       var id=f.id;
+       var d=unsafeWindow.Building.getMaxLevelForType(50,id);
+       var a=new unsafeWindow.March({marchId:Cities.byID[id].c.emptyMarchSlots()[0],toXCoord:x,toYCoord:y,fromCityId:id,marchType:5,knightId:0,fromHealLevel:d,apothecaryHealPercent:unsafeWindow.KB.Controllers.Apothecary.getHealPercent(d),gold:0,resource1:0,resource2:0,resource3:0,resource4:0});
+       var g={mid:a.id,xcoord:a.to.x,ycoord:a.to.y,cid:id,type:5,kid:0,gold:a.gold,r1:a.resources[1],r2:a.resources[2],r3:a.resources[3],r4:a.resources[4],camp:0,et:t.calculateTime(id,7,x,y)};
+       unsafeWindow.Barracks.allUnitIds.each(function(r){
+        if (document.getElementById("REAnbunit"+r) && parseIntNan(document.getElementById("REAnbunit"+r).value)>0) {
+         a.units[r].sent=parseIntNan(document.getElementById("REAnbunit"+r).value);
+         g["u"+r]=parseIntNan(document.getElementById("REAnbunit"+r).value);
+        }
+       });
+       unsafeWindow.AjaxCall.gPostRequest("march.php",g,function(zz){	
+                       	   	var now = unixTime();
+            	   			var i="reinforce",j=Number(zz.eta)-Number(zz.initTS);
+            	   			unsafeWindow.Chrome.ResourcesBar.update();
+            	   			unsafeWindow.Object.keys(a.units).each(function(k){Cities.byID[id].c.troops[k].subtract(a.units[k].sent)});
+             	   			a.id=Number(zz.marchId);
+            	   			a.to.tileId=Number(zz.tileId);
+            	  			a.to.tileType=Number(zz.tileType);
+            	   			a.to.tileLevel=Number(zz.tileLevel);
+            	   			a.to.playerId=Number(zz.tileUserId);
+            	   			a.to.cityId=Number(zz.tileCityId);
+            	   			a.setStatus(unsafeWindow.Constant.MarchStatus.OUTBOUND);
+            	   			a.setMarchTime(unsafeWindow.unixtime(),unsafeWindow.unixtime()+j,0);
+            	   			Cities.byID[id].c.marches.outgoing[a.id]=a;
+            	   			unsafeWindow.KTrack.event(["_trackEvent","March",i,unsafeWindow.player.level]);
+             t.statutREA.innerHTML ="<font color=red size='3px'><b>"+translate('Succeeded')+"<b></font>";
+      t.actionREA.disabled=false; 
+                	 	},
+                 		function(zz){
+      t.statutREA.innerHTML ="<font color=red size='3px'><b>Error !!<b></font>";
+      t.actionREA.disabled=false; 
+          		}, false);
+       
+ 	
+     
+     }else{
+      t.statutREA.innerHTML ="<font color=red size='3px'><b>Error<b></font>";
+      t.actionREA.disabled=false; 
+     }
+  
+  },
+  calculateTime: function(id,b,g,e) {
+  var c=65535,a=Math.abs(Cities.byID[id].c.x-g),f=Math.abs(Cities.byID[id].c.y-e),d=Math.sqrt((a*a)+(f*f));
+  h=unsafeWindow.Unit.stats[b].speed*1;
+  if(h<c){c=h;}
+  return Math.ceil(d*6000/c)+30;
+  },
+}
+//
+function getTroopMax(id) {
+var TROOPS_PER_RALLY_LEVEL={1:10000,2:25000,3:35000,4:50000,5:60000,6:75000,7:80000,8:100000,9:150000,10:200000};
+return TROOPS_PER_RALLY_LEVEL[unsafeWindow.Building.getMaxLevelForType(unsafeWindow.Constant.Building.RALLY_SPOT,id)];
+}
+// returns {count, maxlevel}
+function getCityBuilding (cityId, buildingId){
+  var b = Seed.buildings['city'+cityId];
+  var ret = {count:0, maxLevel:0};
+  for (var i=1; i<33; i++){
+    if (b['pos'+i] && b['pos'+i][0] == buildingId){
+      ++ret.count;
+      if (parseInt(b['pos'+i][1]) > ret.maxLevel)
+        ret.maxLevel = parseInt(b['pos'+i][1]);
+    }
+  }
+  return ret;
+}
+/*************** TRANSPORT **********/
+my.TranspAuto = {
+ cont : null,
+ displayTimer : null,
+ state : null,
+ curTabBut : null,
+ curTabName : null,
+ sourceCity : {},
+ destinationCity : {},
+ rows : [],
+ init : function (){
+   var t = my.TranspAuto;
+   t.cont = document.createElement('div');
+   t.state = null;
+   t.tradeRoutes= [];
+    
+     t.traderState = {running: false,};  
+     setTimeout(function() {
+     if(Options.ShowShrtKeys) AddSubTabLink(uW.arStrings.Common.Transport, t.toggleTraderState, 'pbtrantab');
+		if (t.traderState.running == false) {
+			updatebotbutton(uW.arStrings.Common.Transport+' -OFF', 'pbtrantab');
+		} else {	
+			updatebotbutton(uW.arStrings.Common.Transport+' -ON', 'pbtrantab');
+		}     
+	}, 500);
+     setTimeout(function() {
+      t.readTraderState();
+      t.readTradeRoutes(); 
+      t.e_tradeRoutes();
+     },1000);
+     //window.addEventListener('unload', t.onUnload, false);
+   return t.cont;
+ },
+  getContent : function (){
+    var t = my.TranspAuto;
+    return t.cont;
+  },
+  hide : function (){
+    var t = my.TranspAuto;
+    t.state = null;
+    t.saveTradeRoutes();
+    t.saveTraderState();
+    clearTimeout (t.displayTimer);
+  },
+  
+  show : function (){  
+   var t = my.TranspAuto;
+   var rownum = 0;
+   var ModelCity = {};
+      
+     
+  
+    t.cont.innerHTML = '<center><TABLE class=ptTab align=center><TR><TD><INPUT class=bopbSubtab ID=BoTrpSubM type=submit value="'+translate('Manual')+'"></td>\
+             <TD><INPUT class=bopbSubtab ID=BoTrpSubA type=submit  value="'+translate('Automatic')+'"></td><TD><INPUT class=bopbSubtab ID=BoTrpSubR type=submit DISABLED  value="Appro"></td></tr></table></center>\
+         <DIV id="BoTrpOutput" style="margin-top:5px; background-color:white; height:'+(Options.HauteurBoite-65)+'px;max-height:'+(Options.HauteurBoite-65)+'px;overflow-y:auto"></div>';
+        t.TransportDiv = ById('BoTrpOutput'); 
+  ById('BoTrpSubA').addEventListener('click', e_butSubtab, false);
+  ById('BoTrpSubM').addEventListener('click', e_butSubtab, false);
+  ById('BoTrpSubR').addEventListener('click', e_butSubtab, false);
+   changeSubtab (ById('BoTrpSubM'));  
+  
+        function e_butSubtab (evt){
+            changeSubtab (evt.target);   
+        }
+      
+        function changeSubtab (but){
+            if (but == t.curTabBut)
+              return;
+            if (t.curTabBut){
+              t.curTabBut.className='bopbSubtab'; 
+              t.curTabBut.disabled=false;
+            }
+            t.curTabBut = but;
+            but.className='bopbSubtab bopbSubtabSel'; 
+            but.disabled=true;
+            t.curTabName = but.id.substr(8);
+            t.show2();
+      }
+  },
+  show2 : function (){
+       var t = my.TranspAuto;
+       t.state = null;
+       clearTimeout (t.displayTimer);
+       clearTimeout (t.timer);
+       if (t.curTabName == 'M')
+         t.showManuel();
+       else  if (t.curTabName == 'R')
+         t.showReappro();
+       else {
+         t.showAuto();
+         t.showTimer();	
+       }
+    },
+    showTimer: function() {
+     var t = my.TranspAuto;
+     t.updateTroops();
+     t.updateResources();  
+     t.timer = setTimeout (t.showTimer, 1000); 
+  },
+  showAuto: function() {
+     var t = my.TranspAuto;
+      var m = '<DIV id=pbTowrtDivF class=ptstat>AUTO '+uW.arStrings.Common.Transport.toUpperCase()+' - '+translate('CONFIGURATION')+'</div><TABLE id=pbtraderfunctions width=100% height=0% class=pbTab><TR align="center">';
+          logit(t.traderState.running);
+          if (t.traderState.running == false) {
+               m += '<TD><INPUT id=pbTraderState type=submit value="'+uW.arStrings.Common.Transport+' = OFF"></td>';
+           } else {
+               m += '<TD><INPUT id=pbTraderState type=submit value="'+uW.arStrings.Common.Transport+' = ON"></td>';
+     	   }
+           m += '<TD><INPUT id=pbShowRoutes type=submit value="'+translate('Show routes')+'"></td>';
+           m += '</tr></table></div>';
+           m += '<DIV id=pbTraderDivDRoute class=ptstat>'+translate('OPTIONS')+'</div>';
+           m += '<TABLE id=pbtraderfunctions width=100% height=0% class=pbTab><TR align="left">';
+     	 m += '<TD colspan=2>'+translate('Send a transport every')+' <INPUT id=pbtransportinterval type=text size=4 value="'+Options.transportinterval+'"\> '+translate('minutes')+'</td>';
+           m += '<TD colspan=4>'+translate('Send transport with a minimum of')+' <INPUT id=pbminwagons type=text size=2 value="'+Options.minwagons+'"\> '+translate('Troops')+'</td></tr></table>';
+           m += '</table>';
+           m += '<DIV id=pbTraderDivDRoute class=ptstat>'+translate('ADD A TRANSPORT')+'</div>';
+           m += '<TABLE id=pbaddtraderoute width=95% height=0% class=pbTab><TR align="left">';
+           m += '<TR align="left"><TD>'+translate('Source')+' :</td> <TD colspan=4><DIV style="margin-bottom:10px;"><span id=ptrescity></span></div></td></tr>';
+     
+           m += '<TR align="left">';
+           m += '<TD>'+translate('Destination')+' :</td> <TD width=310px><DIV style="margin-bottom:10px;"><span id=ptcityTo></span></div></td>';
+           m += '<TD>'+translate('OR')+'</td>';
+           m += '<TD>X:<INPUT id=ptcityX type=text size=3\></td>';
+           m += '<TD>Y:<INPUT id=ptcityY type=text size=3\></td></tr>';
+           m += '<TABLE id=pbaddtraderoute height=0% class=pbTab><TR align="left">';
+           m += '<TD width=75px>'+translate('Troops')+' :</td><TD width=150px><SELECT id="TransportTroop">';
+           unsafeWindow.Barracks.allUnitIds.each(function(r){
+	             if (unsafeWindow.arStrings.unitName["u"+r]) 
+	         	 m+= "<option  value='u"+r+"'>"+unsafeWindow.arStrings.unitName["u"+r]+"</option>";        
+           });
+           //for (y in uW.unitcost) m+='<option value="'+y+'">'+unsafeWindow.unitcost[y][0]+'</option>';
+           m+='</select></td><TD width=75px>'+translate('Available')+' :&nbsp;</td><TD id=TroopAmount align=left width=75px></td>';
+           m+='<TD width=75px>'+translate('Estimate')+' :&nbsp;</td><TD id=CarryAmount align=left width=75px></td>';
+           //m += '<TR><TD >Troupes : </td><TD><INPUT id=TroopsToSend type=text size=6 maxlength=6 value="0">&nbsp;&nbsp;</td>';
+           m += '<TD width=50px></td>';
+           m +='<TD id=Calc colspan=3></td></tr>';
+           m += '<TABLE id=pbaddtraderoute height=0% class=pbTab><TR align="center">';
+           m += '<TD width=5%>'+ unsafeWindow.arStrings.ResourceName[1] +'</td>';
+           m += '<TD id=TransRec1 align=right width=110px></td>';
+           m += '<TD id=HaveRec1 align=right width=110px></td>';
+           m += '<TD width=55px align=right><INPUT id=pbshipFood type=checkbox unchecked=true\></td>';
+           m += '<TD width=180px  align=left>'+translate('Keep')+' : <INPUT id=pbtargetamountFood type=text size=11 maxlength=12 value="0" disabled=true\></td>';
+           //m += '<TD width=100px>Transporter: <INPUT id=pbtradeamountFood type=text size=11 maxlength=12 value="0"\></td>';
+           m += '<TD width=50px></td></tr>';
+           m += '<TR align="center">';
+           m += '<TD width=5%>'+ unsafeWindow.arStrings.ResourceName[2] +'</td>';
+           m += '<TD id=TransRec2 align=right width=110px></td>';
+           m += '<TD id=HaveRec2 align=right width=110px></td>';
+           m += '<TD width=55px align=right><INPUT id=pbshipWood type=checkbox unchecked=true\></td>';
+           m += '<TD width=180px align=left>'+translate('Keep')+' : <INPUT id=pbtargetamountWood type=text size=11 maxlength=12 value="0" disabled=true\></td>';
+           //m += '<TD width=100px>Transporter: <INPUT id=pbtradeamountWood type=text size=11 maxlength=12 value="0"\></td>';
+           m += '<TD width=50px></td></tr>';
+           m += '<TR align="center">';
+           m += '<TD width=5%>'+ unsafeWindow.arStrings.ResourceName[3] +'</td>';
+           m += '<TD id=TransRec3 align=right width=110px></td>';
+           m += '<TD id=HaveRec3 align=right width=110px></td>';
+           m += '<TD width=55px align=right><INPUT id=pbshipStone type=checkbox unchecked=true\></td>';
+           m += '<TD width=180px align=left>'+translate('Keep')+' : <INPUT id=pbtargetamountStone type=text size=11 maxlength=12 value="0" disabled=true\></td>';
+           //m += '<TD width=100px>Transporter: <INPUT id=pbtradeamountStone type=text size=11 maxlength=12 value="0"\></td>';
+           m += '<TD width=50px></td></tr>';
+           m += '<TR align="center">';
+           m += '<TD width=5%>'+ unsafeWindow.arStrings.ResourceName[4] +'</td>';
+           m += '<TD id=TransRec4 align=right width=110px></td>';
+           m += '<TD id=HaveRec4 align=right width=110px></td>';
+           m += '<TD width=55px align=right><INPUT id=pbshipOre type=checkbox unchecked=true\></td>';
+           m += '<TD width=180px align=left>'+translate('Keep')+' : <INPUT id=pbtargetamountOre type=text size=11 maxlength=12 value="0" disabled=true\></td>';
+           //m += '<TD width=100px>Transporter: <INPUT id=pbtradeamountOre type=text size=11 maxlength=12 value="0"\></td>';
+           m += '<TD width=50px></td></tr>';
+          
+           m += '<TD width=5%>'+ unsafeWindow.arStrings.ResourceName[0] +'</td>';
+           m += '<TD id=TransGold align=right width=110px></td>';
+           m += '<TD id=HaveGold align=right width=110px></td>';
+           m += '<TD width=55px align=right><INPUT id=pbshipGold type=checkbox unchecked=true\></td>';
+           m += '<TD width=180px align=left>'+translate('Keep')+' : <INPUT id=pbtargetamountGold type=text size=11 maxlength=12 value="0" disabled=true\></td>';
+           //m += '<TD width=100px>Transporter: <INPUT id=pbtradeamountGold type=text size=11 maxlength=12 value="0"\></td>';
+           m += '<TD width=50px></td></tr>';
+     
+           m += '</table>';
+     
+           m += '<DIV style="text-align:center; margin-top:15px"><INPUT id=pbSaveRoute type=submit value="'+translate('Add a route')+'"></div>';
+           m += '<DIV id=errorSpace></div>'
+        
+    	 t.TransportDiv.innerHTML = m; 
+     
+      ById('TransportTroop').value = 'u9';
+           
+           t.tcp = new CdispCityPicker ('pttrader', ById('ptrescity'), true, t.updateResources, 0);
+           t.tcpto = new CdispCityPicker ('pttraderTo', ById('ptcityTo'), true, t.clickCitySelect).bindToXYboxes(document.getElementById ('ptcityX'), document.getElementById ('ptcityY'));
+           
+           
+         ById('TransportTroop').addEventListener('change', function(){t.updateTroops();}, false);
+           ById('pbTraderState').addEventListener('click', function(){t.toggleTraderState(this);}, false);
+           ById('pbSaveRoute').addEventListener('click', function(){t.addTradeRoute();}, false);
+           ById('pbShowRoutes').addEventListener('click', function(){t.showTradeRoutes();}, false);
+                      
+           ById('pbtransportinterval').addEventListener('keyup', function(){
+     		if (isNaN(ById('pbtransportinterval').value)){ ById('pbtransportinterval').value=60 ;}
+     		Options.transportinterval = ById('pbtransportinterval').value;
+     		saveOptions();
+           }, false);
+           
+           ById('pbtargetamountFood').addEventListener('keyup', function(){
+               if (isNaN(ById('pbtargetamountFood').value)) ById('pbtargetamountFood').value=0 ;
+           }, false);
+           ById('pbtargetamountWood').addEventListener('keyup', function(){
+               if (isNaN(ById('pbtargetamountWood').value)) ById('pbtargetamountWood').value=0 ;
+           }, false);
+           ById('pbtargetamountStone').addEventListener('keyup', function(){
+               if (isNaN(ById('pbtargetamountStone').value)) ById('pbtargetamountStone').value=0 ;
+           }, false);
+           ById('pbtargetamountOre').addEventListener('keyup', function(){
+               if (isNaN(ById('pbtargetamountOre').value)) ById('pbtargetamountOre').value=0 ;
+           }, false);
+           ById('pbtargetamountGold').addEventListener('keyup', function(){
+               if (isNaN(ById('pbtargetamountGold').value)) ById('pbtargetamountGold').value=0 ;
+           }, false);
+          ById('pbminwagons').addEventListener('keyup', function(){
+              if (isNaN(ById('pbminwagons').value)) ById('pbminwagons').value=100 ;
+              Options.minwagons = parseInt(ById('pbminwagons').value);
+              saveOptions();
+          }, false)
+           
+           ById('pbshipFood').addEventListener('click', function(){
+               if (ById('pbshipFood').checked==false) {
+                   ById('pbtargetamountFood').disabled = true;
+               }
+               else {
+                 ById('pbtargetamountFood').disabled = false;
+               }
+           },false);
+           ById('pbshipWood').addEventListener('click', function(){
+               if (ById('pbshipWood').checked==false) {
+                   ById('pbtargetamountWood').disabled = true;
+               }
+               else {
+                 ById('pbtargetamountWood').disabled = false;
+               }
+           },false);
+           ById('pbshipStone').addEventListener('click', function(){
+               if (ById('pbshipStone').checked==false) {
+                   ById('pbtargetamountStone').disabled = true;
+               }
+               else {
+                 ById('pbtargetamountStone').disabled = false;
+               }
+           },false);
+           ById('pbshipOre').addEventListener('click', function(){
+               if (ById('pbshipOre').checked==false) {
+                   ById('pbtargetamountOre').disabled = true;
+               }
+               else {
+                 ById('pbtargetamountOre').disabled = false;
+               }
+           },false);
+     	   
+            ById('pbshipGold').addEventListener('click', function(){
+               if (ById('pbshipGold').checked==false) {
+                   ById('pbtargetamountGold').disabled = true;
+               }
+               else {
+                 ById('pbtargetamountGold').disabled = false;
+               }
+           },false);
+    
+         },
+         updateResources : function (){
+         	var t = my.TranspAuto
+         	var ToCity = null;
+         	for (var i=1;i<5;i++)
+     			  ById('TransRec'+i).innerHTML = addCommas (Cities.cities[t.tcp.city.idx].c.resources[i].count);
+         	ById('TransGold').innerHTML = addCommas(Cities.cities[t.tcp.city.idx].c.silver());
+         	
+         	 for (var ii=0; ii< Cities.numCities;ii++) {
+                   if (Cities.cities[ii].c.x == document.getElementById ('ptcityX').value && Cities.cities[ii].c.y == document.getElementById ('ptcityY').value)
+                    ToCity = Cities.cities[ii].id;
+                 }
+           for (var i=1;i<5;i++)
+               if (ToCity != null)
+                       ById('HaveRec'+i).innerHTML = addCommas (Cities.cities[t.tcp.city.idx].c.resources[i].count);
+         	  else ById('HaveRec'+i).innerHTML = "----";
+           if (ToCity != null) ById('HaveGold').innerHTML = addCommas(Cities.cities[t.tcp.city.idx].c.silver());
+           else  ById('HaveGold').innerHTML =  "----";   
+         },
+         
+         updateTroops : function (city){
+         	var t = my.TranspAuto;
+         	var fontcolor = 'black';
+         	
+     		//t.Astone = parseInt(ById('pbtradeamountAstone').value*5);
+         	//var unit = ById('TransportTroop').value;
+         	t.Troops = 0; //parseInt(Seed.units['city' + t.tcp.city.id][unit]);
+        	//var untid=ById('TransportTroop').value;
+  	
+  	
+          var LoadUnit=0; //parseInt(parseInt(uW.unitstats[untid][5])*(1+loadBoost));
+         	var GlobalMaxLoad = 1;//t.Troops * LoadUnit;
+         	t.MaxLoad = 0; //parseInt(ById('TroopsToSend').value) * LoadUnit;
+          	t.TroopsNeeded = 1;//(t.Food + t.Wood + t.Stone + t.Ore + t.Gold + t.Astone) / LoadUnit;
+          	t.TroopsNeeded = t.TroopsNeeded.toFixed(0);	
+     		//if (t.TroopsNeeded < ((t.Food + t.Wood + t.Stone + t.Ore + t.Gold + t.Astone) / LoadUnit)) t.TroopsNeeded++;	
+             
+             if ( t.TroopsNeeded > t.Troops) fontcolor = 'red';
+         	if (t.Troops > 0 ) ById('TroopAmount').innerHTML = '<FONT color='+fontcolor+'>' + addCommas(t.Troops) + '</font>';
+         	else ById('TroopAmount').innerHTML = 0;
+         	if (GlobalMaxLoad > 0) ById('CarryAmount').innerHTML = addCommas(GlobalMaxLoad);
+         	else  ById('CarryAmount').innerHTML = 0;
+         	ById('Calc').innerHTML = translate('Resources')+': ' +  addCommas(t.Food + t.Wood + t.Stone + t.Ore + t.Gold  + t.Astone) + ' / ' + addCommas(t.MaxLoad) + '&nbsp;&nbsp;('+translate('Troops')+' '+translate('necessary')+' : <FONT color='+fontcolor+'>' + addCommas(t.TroopsNeeded) + '</font> )' ;
+         },    
+         getRallypoint: function(cityId){
+           var t = my.TranspAuto;
+           for (var o in Seed.buildings[cityId]){
+     		var buildingType = parseInt(Seed.buildings[cityId][o][0]);
+     		var buildingLevel = parseInt(Seed.buildings[cityId][o][1]);
+     		if (buildingType == 12){
+     			return parseInt(buildingLevel);
+     			break;
+     		}
+     	   }
+     	  return 0;
+         },
+        e_tradeRoutes: function(){
+           var t = my.TranspAuto;
+           var now = new Date();
+           clearTimeout(t.timer);
+           if (t.traderState.running == true)    {
+           	var now = new Date().getTime()/1000.0;
+           	now = now.toFixed(0);
+           	var last = Options.lasttransport;
+            		if ( now > (parseInt(last) + (Options.transportinterval*60))){
+     				  t.checkdoTrades();
+           		}
+           }
+     	  t.timer = setTimeout(function(){ t.e_tradeRoutes();}, Options.transportinterval*1000);
+     	
+         },
+         	
+     	delTradeRoutes: function() {
+     		var t = my.TranspAuto;	
+     		t.tradeRoutes= [];
+     	},
+     	
+     	checkcoords : function (obj){
+     		var t = my.TranspAuto;
+     		if(obj.id == 'pbok'){
+     			t.check = true;
+     			t.addTradeRoute();
+     		}
+     		return;			
+     	},
+     	
+     	addTradeRoute: function () {
+     		var valid = true;
+     		var t = my.TranspAuto;
+     		var city = t.tcp.city.id;
+     		if (ById('ptcityX').value==0 && ById('ptcityY').value ==0 && !t.check)
+     		{
+     			return;
+     		}
+     		var ship_Food = ById('pbshipFood').checked;
+     		var ship_Wood = ById('pbshipWood').checked;
+     		var ship_Stone = ById('pbshipStone').checked;
+     		var ship_Ore = ById('pbshipOre').checked;
+      		var ship_Gold = ById('pbshipGold').checked;
+     		var target_Food = ById('pbtargetamountFood').value;
+     		var target_Wood = ById('pbtargetamountWood').value;
+     		var target_Stone = ById('pbtargetamountStone').value;
+     		var target_Ore = ById('pbtargetamountOre').value;
+     		var target_Gold = ById('pbtargetamountGold').value;
+     		var target_x = ById('ptcityX').value;
+     		var target_y = ById('ptcityY').value;
+     		var TroopType = ById('TransportTroop').value;
+     		var route_state = true;
+     				
+     		if (valid == true) {
+     			var lTR = t.tradeRoutes;
+     			lTR.push({
+     				city:				city,
+     				ship_Food:			ship_Food,
+     				target_Food:		target_Food,
+     				ship_Wood:			ship_Wood,
+     				target_Wood:		target_Wood,
+     				ship_Stone:			ship_Stone,
+     				target_Stone:		target_Stone,
+     				ship_Ore:			ship_Ore,
+     				target_Ore:			target_Ore,
+     				ship_Gold:			ship_Gold,
+     				target_Gold:		target_Gold,
+     				target_x: 			target_x,
+     				target_y: 			target_y,
+     				TroopType:      TroopType,
+     				route_state: 		"true"
+     			});
+     		}
+     		ById('pbTraderDivDRoute').style.background ='#99FF99';
+     		setTimeout(function(){ (ById('pbTraderDivDRoute').style.background =''); }, 500);
+     	},
+     	showTradeRoutes: function () {
+     		var t = my.TranspAuto;
+     		if (t.popTradeRoutes == null) {
+     		 t.popTradeRoutes = new CPopup('pbShowTrade', 0, 0, 750, 500, true, function() {clearTimeout (1000);});
+     		 t.popTradeRoutes.centerMe (mainPop.getMainDiv());
+     		}
+     		var m = '<DIV style="max-height:460px; height:460px; overflow-y:auto"><TABLE align=center cellpadding=0 cellspacing=0 width=100% class="pbTab" id="pbRoutesQueue">';       
+     		t.popTradeRoutes.getMainDiv().innerHTML = '</table></div>' + m;
+     		t.popTradeRoutes.getTopDiv().innerHTML = '<TD><B>'+translate('Show routes')+' : </td>';
+     		t.paintTradeRoutes();
+     		t.popTradeRoutes.show(true)	;
+     	},
+     	paintTradeRoutes: function(){
+     	        var t = my.TranspAuto;
+     	        var r = t.tradeRoutes;
+     	        var cityname;
+     	        var citynameTo = null;
+     	        var m= '<TABLE id=paintRoutes class=pbTab>'; 
+     		for (var i=0;i<(r.length);i++) {
+     			  citynameTo = null;
+     				for (var y=0; y< Cities.numCities;y++) {
+     					if ( parseInt(Cities.cities[y].id) == r[i].city) var cityname = Cities.cities[y].c.name;
+     					if ( parseInt(Cities.cities[y].c.x) == r[i].target_x && parseInt(Cities.cities[y].c.y) == r[i].target_y) var citynameTo = Cities.cities[y].c.name;
+     				}    
+     				var queueId = i;
+     				if (citynameTo == null) var TO = r[i].target_x +','+ r[i].target_y;
+     				else TO = citynameTo;
+     				if (r[i].route_state) var status = '<FONT color=green>'+translate('Active')+'</font>';
+     				else var status = '<FONT color=red>'+translate('Deactive')+'</font>';
+     				if (r[i].TroopType == undefined) var unit = 'unt9';
+             else var unit = r[i].TroopType;
+     				m += '<TR><TD TD width=12px>&nbsp;&nbsp;</td></tr>';
+             m +='<TR><TD width=20px>'+(i+1)+'</td><TD width=175px>'+translate('Source')+':&nbsp;&nbsp;'+ cityname +'</TD><TD width=175px>'+translate('Destination')+' :&nbsp;&nbsp;'+ TO +'</td><TD width=175px>'+status+'</td>';
+             m +='<TD width=60px><A onclick="traceEdit('+queueId+')">'+translate('Edit')+'</a></td><TD width=60px><A onclick="traceDelete('+queueId+')">'+translate('Delete')+'</a></td></tr>';
+             m += '<TR><TD></td><TD>'+translate('Troops')+':&nbsp;&nbsp;</td></tr>';
+             if (r[i].ship_Food) m += '<TR><TD></td><TD align=center><img src="http://cdn1.kingdomsofcamelot.com/fb/e2/src/img/food_30.png"></td><TD>'+translate('Target')+': '+ addCommas(r[i].target_Food) +'</td>';
+     				if (r[i].ship_Wood) m += '<TR><TD></td><TD align=center><img src="http://cdn1.kingdomsofcamelot.com/fb/e2/src/img/wood_30.png"></td><TD>'+translate('Target')+': '+ addCommas(r[i].target_Wood) +'</td>';
+     				if (r[i].ship_Stone) m += '<TR><TD></td><TD align=center><img src="http://cdn1.kingdomsofcamelot.com/fb/e2/src/img/stone_30.png"></td><TD>'+translate('Target')+': '+ addCommas(r[i].target_Stone) +'</td>';
+     				if (r[i].ship_Ore) m += '<TR><TD></td><TD align=center><img src="http://cdn1.kingdomsofcamelot.com/fb/e2/src/img/iron_30.png"></td><TD>'+translate('Target')+': '+ addCommas(r[i].target_Ore) +'</td>';
+     				if (r[i].ship_Gold) m += '<TR><TD></td><TD align=center><img src="http://cdn1.kingdomsofcamelot.com/fb/e2/src/img/gold_30.png"></td><TD>'+translate('Target')+': '+ addCommas(r[i].target_Gold) +'</td>';
+            }
+     	     m +='</table>';
+     	     ById('pbRoutesQueue').innerHTML= m; 
+            unsafeWindow.traceEdit = t.editQueueElement;
+            unsafeWindow.traceDelete = t.cancelQueueElement;
+     	    },
+     	  
+     	 cancelQueueElement: function(queueId){
+     	     var t = my.TranspAuto;
+     	     var queueId = parseInt(queueId);
+     	     t.tradeRoutes.splice(queueId, 1);
+     	     t.showTradeRoutes();
+     	 },
+     	 
+     	 editQueueElement: function(queueId){
+     	     var t = my.TranspAuto;
+     	     var r = t.tradeRoutes;
+            var queueId = parseInt(queueId);
+     	     var cityname;
+     	     var citynameTo = null;
+     	     var Types = ['food','wood','stone','iron','gold'];
+     	     for (var y=0; y< Cities.numCities;y++) {
+     					if ( parseInt(Cities.cities[y].id) == r[queueId].city) var cityname = Cities.cities[y].c.name;
+     					if ( parseInt(Cities.cities[y].c.x) == r[queueId].target_x && parseInt(Cities.cities[y].c.y) == r[queueId].target_y) var citynameTo = Cities.cities[y].c.name;
+     			 }
+            if (citynameTo == null) var TO = r[queueId].target_x +','+ r[queueId].target_y;
+     			 else TO = citynameTo; 
+            var n = '<TABLE id=editRoutes class=pbTab>';
+     	     n +='<TD>'+translate('Source')+' :&nbsp;'+ cityname +'</td><TD>'+translate('Destination')+' :&nbsp;'+ TO +'</td>';
+     	     n +='<TD><INPUT id=TradeStatus type=checkbox>&nbsp;'+translate('Active')+' '+translate('the route')+'</td>';
+     	     n += '<TD width=150px>'+translate('Troops')+' :<SELECT id="pbbTransportTroop">';
+             unsafeWindow.Barracks.allUnitIds.each(function(r){
+	    	             if (unsafeWindow.arStrings.unitName["u"+r]) 
+	    	         	 n+= "<option  value='u"+r+"'>"+unsafeWindow.arStrings.unitName["u"+r]+"</option>";        
+           });
+            n+='</select></td></table><BR><TABLE  id=editRoutes class=pbTab>';
+            for (var i=0;i<Types.length;i++){
+     	      var icon = Types[i];
+              n += '<TR><TD width=50px align=center>'+ unsafeWindow.arStrings.ResourceName[i] +'</td>';
+              n += '<TD width=50px align=center><INPUT id=pbbship'+Types[i]+' type=checkbox></td>';
+              n += '<TD width=125px>'+translate('Keep')+' : <INPUT id=pbbtargetamount'+Types[i]+' type=text size=11 maxlength=12 value="0"></td>';
+            }
+            n+='</table><BR><TABLE id=editRoutes class=pbTab><TR><TD><a class="button20" id="Cancel"><span>'+translate('Cancella')+'</span></a></td>';
+            n+='<TD><a class="button20" id="Save"><span>'+translate('Record')+'</span></a></td></tr>';
+            n +='</table>';
+            
+            ById('pbRoutesQueue').innerHTML= n;
+            ById('TradeStatus').checked = r[queueId].route_state;
+            if (r[queueId].TroopType == undefined) var unit = 'u9';
+            else var unit = r[queueId].TroopType;
+            ById('pbbTransportTroop').value = unit;
+            
+  	         ById('pbbshipfood').checked = r[queueId].ship_Food;
+  	         ById('pbbshipwood').checked = r[queueId].ship_Wood;
+  	         ById('pbbshipstone').checked = r[queueId].ship_Stone;
+  	         ById('pbbshipiron').checked = r[queueId].ship_Ore;
+  	         ById('pbbshipgold').checked = r[queueId].ship_Gold;
+  	         ById('pbbtargetamountfood').value = r[queueId].target_Food;
+  	         ById('pbbtargetamountwood').value = r[queueId].target_Wood;
+  	         ById('pbbtargetamountstone').value = r[queueId].target_Stone;
+  	         ById('pbbtargetamountiron').value = r[queueId].target_Ore;
+  	         ById('Cancel').addEventListener('click', function(){t.showTradeRoutes();}, false);
+  	         ById('Save').addEventListener('click', function(){
+  	              r[queueId].route_state = ById('TradeStatus').checked;
+  	              r[queueId].TroopType = ById('pbbTransportTroop').value;
+  	              r[queueId].ship_Food = ById('pbbshipfood').checked;
+  	              r[queueId].ship_Wood = ById('pbbshipwood').checked;
+  	              r[queueId].ship_Stone = ById('pbbshipstone').checked;
+  	              r[queueId].ship_Ore = ById('pbbshipiron').checked;
+  	              r[queueId].ship_Gold = ById('pbbshipgold').checked;
+  	              r[queueId].target_Food = ById('pbbtargetamountfood').value;
+  	              r[queueId].target_Wood = ById('pbbtargetamountwood').value;
+  	              r[queueId].target_Stone = ById('pbbtargetamountstone').value;
+  	              r[queueId].target_Ore = ById('pbbtargetamountiron').value;
+  	              r[queueId].target_Gold = ById('pbbtargetamountgold').value;
+  	              t.showTradeRoutes();
+  	          }, false);
+  	 },
+     	   
+     	saveTradeRoutes: function(){
+     		var t = my.TranspAuto;
+             var serverID = getServerId();
+             GM_setValue('tradeRoutes_' + serverID, JSON2.stringify(t.tradeRoutes));
+         },
+       readTradeRoutes: function(){
+             var t = my.TranspAuto;
+             var serverID = getServerId();
+             s = GM_getValue('tradeRoutes_' + serverID);
+             if (s != null) {
+                 route = JSON2.parse(s);
+                 for (k in route)
+                     t.tradeRoutes[k] = route[k];
+             }
+         },
+     	saveTraderState: function(){
+     	     var t = my.TranspAuto;
+  
+             var serverID = getServerId();
+             GM_setValue('traderState_' + serverID, JSON2.stringify(t.traderState));
+         },
+         readTraderState: function(){
+             var t = my.TranspAuto;
+             var serverID = getServerId();
+             s = GM_getValue('traderState_' + serverID);
+             if (s != null) {
+                 state = JSON2.parse(s);
+                 for (k in state)
+                     t.traderState[k] = state[k];
+             }
+         },
+         toggleTraderState: function(obj){
+     	   var t = my.TranspAuto;
+     	   obj = ById('pbTraderState');
+             if (t.traderState.running == true) {
+                 t.traderState.running = false;
+                 if (obj)  obj.value = uW.arStrings.Common.Transport+" = OFF";
+  				updatebotbutton(uW.arStrings.Common.Transport+' -OFF', 'pbtrantab');
+     	       clearTimeout(t.checkdotradetimeout);
+     	       t.count = 0;
+     	       Options.lasttransport = 0;
+  	       saveOptions();
+  	       
+             }
+             else {
+                 t.traderState.running = true;
+                 if (obj) obj.value = uW.arStrings.Common.Transport+" = ON";
+     			updatebotbutton(uW.arStrings.Common.Transport+' -ON', 'pbtrantab');
+     			t.e_tradeRoutes();
+             }
+             t.saveTraderState();
+         },
+     	count:0,
+     	checkdoTrades: function(){
+     	var t = my.TranspAuto;
+     	if(t.tradeRoutes.length==0) return;
+     	t.doTrades(t.count);
+     	t.count++;
+     	if(t.count < t.tradeRoutes.length){
+     			  t.checkdotradetimeout = setTimeout(function() { t.checkdoTrades();}, 10000);
+     			} else {
+     			  var now = new Date().getTime()/1000.0;
+     			  now = now.toFixed(0);
+     			  Options.lasttransport = now;
+     			  saveOptions();	
+     			  t.count = 0;
+     			}
+     	},
+         
+       doTrades: function(count){
+         var t = my.TranspAuto;
+     
+        	if(t.tradeRoutes.length==0) return;
+        	if(!t.tradeRoutes[count]["route_state"]) return;
+        	
+        	var city = t.tradeRoutes[count]["city"];
+        	if(!Cities.byID[city]) return;
+  	   		
+  	var xcoord = t.tradeRoutes[count]["target_x"];
+        var ycoord = t.tradeRoutes[count]["target_y"];
+     	var cityID = 'city' + city;
+     	var cityNumber=Cities.byID[city].idx;
+     	for (var zz=0; zz< Cities.numCities;zz++) {
+  	   if (parseInt(Cities.cities[zz].id) == city) 
+  	      var cityname = Cities.cities[zz].c.name;
+  	}                     
+     		
+     		var carry_amount= 0;
+     		var wagons_needed=0;
+     		var citymax = 0;
+         	var target_Food = t.tradeRoutes[count]["target_Food"];
+         	var target_Wood = t.tradeRoutes[count]["target_Wood"];
+         	var target_Stone = t.tradeRoutes[count]["target_Stone"];
+         	var target_Ore = t.tradeRoutes[count]["target_Ore"];
+            	var target_Gold = t.tradeRoutes[count]["target_Gold"];
+         	var ship_Food = t.tradeRoutes[count]["ship_Food"];
+         	var ship_Wood = t.tradeRoutes[count]["ship_Wood"];
+         	var ship_Stone = t.tradeRoutes[count]["ship_Stone"];
+         	var ship_Ore = t.tradeRoutes[count]["ship_Ore"];
+           	var ship_Gold = t.tradeRoutes[count]["ship_Gold"];
+         	var citymax_Food = parseIntNan(Cities.cities[cityNumber].c.resources[1].count);
+         	var citymax_Wood = parseIntNan(Cities.cities[cityNumber].c.resources[2].count);
+         	var citymax_Stone = parseIntNan(Cities.cities[cityNumber].c.resources[3].count);
+         	var citymax_Ore = parseIntNan(Cities.cities[cityNumber].c.resources[4].count);
+         	var citymax_Gold = parseIntNan(Cities.cities[cityNumber].c.silver());
+         	var carry_Food = parseIntNan(citymax_Food - target_Food);
+         	var carry_Wood = parseIntNan(citymax_Wood - target_Wood);
+         	var carry_Stone = parseIntNan(citymax_Stone - target_Stone);
+         	var carry_Ore = parseIntNan(citymax_Ore - target_Ore);
+     	
+         	var carry_Gold = 0;
+         	if (carry_Food < 0 || ship_Food==false) carry_Food = 0;
+         	if (carry_Wood < 0 || ship_Wood==false) carry_Wood = 0;
+         	if (carry_Stone < 0 || ship_Stone==false) carry_Stone = 0;
+         	if (carry_Ore < 0 || ship_Ore==false) carry_Ore = 0;
+     	
+          
+            var unit = t.tradeRoutes[count]['TroopType'];
+            var unitNumber=unit.substring(1,unit.length);
+             
+           if (t.tradeRoutes[count]['TroopType'] == undefined) var wagons = parseInt(Cities.cities[cityNumber].c.troops[9].count()); 
+           else var wagons =  parseInt(Cities.cities[cityNumber].c.troops[unitNumber].count());
+ 
+           var Troops =parseInt(Cities.cities[cityNumber].c.troops[unitNumber].count())
+     	  if(parseInt(Troops)>parseInt(wagons)) Troops = wagons;
+          
+         	var Load = parseInt(unsafeWindow.Unit.stats[unitNumber].load * (1 + (unsafeWindow.player.technologies[10].bonus()))); //parseInt(unsafeWindow.unitstats[unit]['5'])
+         
+           var maxloadperwagon =  Load;
+     		  var maxload = (maxloadperwagon * Troops);
+     		  //	logit("Charge par unite : "+Load + " Nb : " + wagons + "maxload: " +maxload);
+     		  if(wagons <= 0) {return; }
+     		  var shift_Food = parseIntNan(maxload / 9);
+     		  var shift_Wood = parseIntNan(maxload / 9);
+     		  var shift_Stone = parseIntNan(maxload / 9);
+     		  var shift_Ore = parseIntNan(maxload / 9);	
+     		  if ((maxload - carry_Food - carry_Wood - carry_Stone - carry_Ore) < 0){
+     			 var shift_num=0;
+     			 var shift_spare=0;
+     			if (carry_Food < shift_Food) {
+     				shift_spare += (shift_Food - carry_Food);
+     				shift_Food = carry_Food;
+     			}
+     			if (carry_Wood < shift_Wood) {
+     				shift_spare += (shift_Wood - carry_Wood);
+     				shift_Wood = carry_Wood;	
+     			}
+     			if (carry_Stone < shift_Stone) {
+     				shift_spare += (shift_Stone - carry_Stone);
+     				shift_Stone = carry_Stone;
+     			}
+     			if (carry_Ore < shift_Ore) {
+     				shift_spare += (shift_Ore - carry_Ore);
+     				shift_Ore = carry_Ore;
+     			}
+     
+     		  while (shift_spare >1) {
+     				 if (carry_Food < (shift_Food + shift_spare)){
+     				    shift_spare = shift_spare - carry_Food;;
+     				    shift_Food = carry_Food;
+     				 }
+     				 else{
+     				  shift_Food = (shift_Food + shift_spare);
+     				  shift_spare = shift_spare- shift_spare;
+     				}
+     				 if (carry_Wood < (shift_Wood + shift_spare)){
+     				    shift_spare = shift_spare - carry_Wood;;
+     				    shift_Wood = carry_Wood;
+     				 }
+     				 else{
+     				  shift_Wood = shift_Wood + shift_spare;
+     				  shift_spare = shift_spare- shift_spare;
+     				}
+             		if (carry_Stone < (shift_Stone + shift_spare)){
+     				    shift_spare = shift_spare - carry_Stone;
+     				    shift_Stone = carry_Stone;
+     				 }
+     				 else{
+     				  shift_Stone = shift_Stone + shift_spare;
+     				  shift_spare = shift_spare- shift_spare;
+     				}
+     				 if (carry_Ore < (shift_Ore + shift_spare)){
+     				    shift_spare = shift_spare - carry_Ore;
+     				    shift_Ore = carry_Ore;
+     				 }
+     				 else{
+     				  shift_Ore = shift_Ore + shift_spare;
+     				  shift_spare = shift_spare- shift_spare;
+     				}
+     				
+     			 }
+     
+     		carry_Food = shift_Food;
+     		carry_Wood = shift_Wood;
+     		carry_Stone = shift_Stone;
+     		carry_Ore = shift_Ore;
+     		
+     		}
+     		
+     		if (maxload > (carry_Food + carry_Wood + carry_Stone + carry_Ore ) && ship_Gold==true) {
+     		    if ((maxload-(carry_Food + carry_Wood + carry_Stone + carry_Ore)) > (citymax_Gold - target_Gold)){
+     		    	  carry_Gold = (citymax_Gold - target_Gold);
+     		    	  if (carry_Gold < 0 ) carry_Gold = 0;
+     		   	}
+     		    else carry_Gold = (maxload-(carry_Food + carry_Wood + carry_Stone + carry_Ore));
+     	
+     		}
+     		
+     		wagons_needed = ((carry_Food + carry_Wood + carry_Stone + carry_Ore  + carry_Gold) / maxloadperwagon);
+     		wagons_needed = wagons_needed.toFixed(0);	
+     		if (wagons_needed < ((carry_Food + carry_Wood + carry_Stone + carry_Ore + carry_Gold) / maxloadperwagon)) wagons_needed++;	
+     		
+     		//logit("Besoin unit : " + wagons_needed + "food:"+carry_Food+" wood:"+carry_Wood+" stone:"+carry_Stone+" ore:"+carry_Ore+" gold:"+carry_Gold);
+     		
+     		
+     		if ( wagons_needed < Options.minwagons ) { 
+     		 logit("Transport auto : blocage troupe mini ");
+     		return;
+     		
+     		}
+             
+             if (!Cities.byID[city].c.canMarch()) {
+	               logit("Transport auto : impossible d'etablir une marche! ");
+	               return;
+              }
+             
+             
+              var c={};
+	         c.r1 = carry_Food;
+	        c.r2 = carry_Wood; 
+	        c.r3 = carry_Stone; 
+	        c.r4 = carry_Ore; 
+   		c.gold = carry_Gold;
+   		
+ var id=city;
+        var d=unsafeWindow.Building.getMaxLevelForType(50,id);
+   	  var a=new unsafeWindow.March({marchId:Cities.byID[id].c.emptyMarchSlots()[0],toXCoord:xcoord,toYCoord:ycoord,fromCityId:id,marchType:1,knightId:0,fromHealLevel:d,apothecaryHealPercent:unsafeWindow.KB.Controllers.Apothecary.getHealPercent(d),gold:c.gold,resource1:c.r1,resource2:c.r2,resource3:c.r3,resource4:c.r4});
+        var g={mid:a.id,xcoord:a.to.x,ycoord:a.to.y,cid:id,type:1,kid:0,gold:a.gold,r1:a.resources[1],r2:a.resources[2],r3:a.resources[3],r4:a.resources[4],camp:0,et:t.calculateTime(id,unitNumber,xcoord,ycoord)};
+      	a.units[unitNumber].sent=parseIntNan(wagons_needed);
+        g["u"+unitNumber]=parseIntNan(wagons_needed);
+   	
+        if ((carry_Food + carry_Wood + carry_Stone + carry_Ore + carry_Gold) > 0) {
+      unsafeWindow.AjaxCall.gPostRequest("march.php",g,function(zz){	
+                              	   	var now = unixTime();
+                   	   			var i="transport",j=Number(zz.eta)-Number(zz.initTS);
+                   	   			unsafeWindow.Chrome.ResourcesBar.update();
+                   	   			unsafeWindow.Object.keys(a.units).each(function(k){Cities.byID[id].c.troops[k].subtract(a.units[k].sent)});
+                    	   			a.id=Number(zz.marchId);
+                   	   			a.to.tileId=Number(zz.tileId);
+                   	  			a.to.tileType=Number(zz.tileType);
+                   	   			a.to.tileLevel=Number(zz.tileLevel);
+                   	   			a.to.playerId=Number(zz.tileUserId);
+                   	   			a.to.cityId=Number(zz.tileCityId);
+                   	   			a.setStatus(unsafeWindow.Constant.MarchStatus.OUTBOUND);
+                   	   			a.setMarchTime(unsafeWindow.unixtime(),unsafeWindow.unixtime()+j,0);
+                   	   			Cities.byID[id].c.marches.outgoing[a.id]=a;
+                   	   			unsafeWindow.KTrack.event(["_trackEvent","March",i,unsafeWindow.player.level]);
+                    
+                       	 	},
+                        		function(zz){
+             
+           		}, false);
+           		
+      
+             }
+     	},
+     calculateTime: function(id,b,g,e) {
+    var c=65535,a=Math.abs(Cities.byID[id].c.x-g),f=Math.abs(Cities.byID[id].c.y-e),d=Math.sqrt((a*a)+(f*f));
+    h=unsafeWindow.Unit.stats[b].speed*1;
+    if(h<c){c=h;}
+    return Math.ceil(d*6000/c)+30;
+  },  	
+  onUnload: function(){
+     var t = my.TranspAuto;
+     t.saveTradeRoutes();
+     t.saveTraderState();
+     //if (!ResetAll) t.saveReapproState();
+     //alert("Banzai");
+  },
+  showManuel : function() {
+    var t = my.TranspAuto;  
+    if (t.state == null) {  
+      m = "<DIV class=ptstat>"+translate('TRANSPORTING GOODS FROM CITY TO CITY')+"</div>";
+      m +="<div id='statpourTr'></div>";
+      m += "<TABLE width=100% class=ptTab border=0 cellpadding=3>\
+       <tr align=center><td colspan=2><HR></td></tr>\
+       <tr align=center valign=top><td colspan=1 width=50%><b><u>"+translate('Source')+"</b></u><br><span id=srcptspeedcity></span></td>\
+       <td colspan=1 width=50%  rowspan=2><b><u>"+translate('Destination')+"</b></u><br><span id=desptspeedcity></span><br>\
+       "+translate('OR')+" <br>X: <input type=text size=4 id=typetrpx value=0>&nbsp;Y: <input type=text size=4 id=typetrpy value=0><br><br><INPUT id='ptttButTransport' type=submit value='"+uW.arStrings.Common.Transport+"' style='font-weight:bold'>\
+       </td></tr>\
+       <tr align=center><td colspan=1>"+translate('Troops')+" : <select id=typetrp><option value='1'>"+unsafeWindow.arStrings.unitName["u1"]+"</option><option value='2'>"+unsafeWindow.arStrings.unitName["u2"]+"</option><option value='4'>"+unsafeWindow.arStrings.unitName["u4"]+"</option><option value='5'>"+unsafeWindow.arStrings.unitName["u5"]+"</option><option value='6'>"+unsafeWindow.arStrings.unitName["u6"]+"</option><option value='7'>"+unsafeWindow.arStrings.unitName["u7"]+"</option><option value='8'>"+unsafeWindow.arStrings.unitName["u8"]+"</option><option selected value='9'>"+unsafeWindow.arStrings.unitName["u9"]+"</option><option value='10'>"+unsafeWindow.arStrings.unitName["u10"]+"</option><option value='11'>"+unsafeWindow.arStrings.unitName["u11"]+"</option><option value='12'>"+unsafeWindow.arStrings.unitName["u12"]+"</option></select>\
+       <br>"+translate('Quantity')+" : <input type=text size=6 value='0' id='Choixnbwagon'><input type=button id='trswagmax' value='Max'\><br><i>("+translate('Please put in the amount of troops you like to use')+")</i>\
+       <br><b>"+translate('Resource')+" "+translate('type')+" :</b><br><input type=radio id='ChoixRess0' name='ChoixRess' value='gold'> " + unsafeWindow.arStrings.ResourceName[0] + "\
+       <input type=radio id='ChoixRess1' name='ChoixRess' value='rec1'> " + unsafeWindow.arStrings.ResourceName[1] + "\
+       <input type=radio id='ChoixRess2' name='ChoixRess' value='rec2'> " + unsafeWindow.arStrings.ResourceName[2] + "\
+       <input type=radio id='ChoixRess3' name='ChoixRess' value='rec3'> " + unsafeWindow.arStrings.ResourceName[3] + "\
+       <input type=radio id='ChoixRess4' name='ChoixRess' value='rec4'> " + unsafeWindow.arStrings.ResourceName[4] + "\
+       </td></tr>\
+       <tr><td colspan=2>"+ unsafeWindow.arStrings.March.ResourcesToSend +" : <span id=BOEstimationR></td></tr>\
+       </table>\
+       <TABLE align=center width=100% class=ptTab><TR><TD><div id=ptTranportStatus style='text-align:center;overflow-y:auto; max-height:78px; height: 78px;'></div></td></tr></table>";
+    t.TransportDiv.innerHTML = m; 
+    t.destinationCityx = document.getElementById ('typetrpx');
+    t.destinationCityy = document.getElementById ('typetrpy');
+    
+    t.destinationCityx.addEventListener ('change', t.estimerRes, false);
+    t.destinationCityy.addEventListener ('change', t.estimerRes, false);
+    document.getElementById ('ChoixRess0').addEventListener ('click', t.estimerRes, false);
+    document.getElementById ('ChoixRess1').addEventListener ('click', t.estimerRes, false);
+    document.getElementById ('ChoixRess2').addEventListener ('click', t.estimerRes, false);
+    document.getElementById ('ChoixRess3').addEventListener ('click', t.estimerRes, false);
+    document.getElementById ('ChoixRess4').addEventListener ('click', t.estimerRes, false);
+    
+    t.estimationRes = document.getElementById ('BOEstimationR');
+    var dcp1 = new CdispCityPicker ('ptspeed1', document.getElementById('desptspeedcity'), false, t.clickCityDestinationSelect, 1);
+    t.TTbutTransport = document.getElementById ('ptttButTransport');
+    t.TTbutTransport.addEventListener ('click', t.clickTransportDo, false);
+    t.divTranportStatus = document.getElementById ('ptTranportStatus');
+    t.statpourTr = document.getElementById ('statpourTr');
+    t.typetrp = document.getElementById ('typetrp');
+    t.typetrp.addEventListener ('click', t.estimerRes, false); 
+    t.trswagmax = document.getElementById ('trswagmax');
+    t.trswagmax.addEventListener ('click', t.clickUniteMax, false);
+    t.Choixnbwagon  = document.getElementById ('Choixnbwagon');
+    t.Choixnbwagon.addEventListener ('keyup', t.verifierWagons, false);
+    var dcp0 = new CdispCityPicker ('ptspeed0', document.getElementById('srcptspeedcity'), false, t.clickCitySourceSelect, Cities.byID[unsafeWindow.currentcityid].idx);
+    t.state = 1;
+   }
+   str = "<TABLE class=ptTabLined cellspacing=0><TR valign=top align=right><TD width=65></td><TD width=88 style='background: #ffc'><B>"+translate('TOTALS')+"</b></td>";
+   for(i=0; i<Cities.numCities; i++) {
+     Gate = Cities.cities[i].c.defending;
+              if(Gate == 0) var couleurr="#77EE77";
+              if(Gate != 0) var couleurr="#EE7777";
+                str += "<TD width=81 style='background-color:"+couleurr+"' align=center><B>"+ Cities.cities[i].c.name +'</b><BR><a onclick="KB.Controllers.MapHelper.gotoCoord('+Cities.cities[i].c.x +','+ Cities.cities[i].c.y+');">('+Cities.cities[i].c.x +','+ Cities.cities[i].c.y+')</td>';
+                
+   }
+   str +="</tr>";
+   str += "<tr><td><br></td></tr>";
+   var m="";
+          var goldTotal=0;
+          for(i=0; i<Cities.numCities; i++) {
+                      m += "<TD width=81 style='background:#e8e8e8' align=right>"+ addCommas(Cities.cities[i].c.silver()) +'</td>';
+                      goldTotal+=parseInt(Cities.cities[i].c.silver());
+           }
+          str += "<tr align=right><td style='background:#e8e8e8' align=right><b>" + unsafeWindow.arStrings.ResourceName[0] + "</td><td style='background:#e8e8e8' align=right>"+addCommas(goldTotal)+" "+ m + "</tr>" ; 
+          
+                   
+            for (var nbr=1; nbr<=4; nbr++) {
+                 if (nbr % 2)
+    		        style = '';
+    	     else
+                        style = " style = 'background: #e8e8e8'";
+                var m="";
+                var resTotal=0;
+                for(var i=0; i<Cities.numCities; i++) {
+                            m += "<TD width=81 "+style+" align=right>"+ addCommas(Cities.cities[i].c.resources[nbr].count) +'</td>';
+                            resTotal+=parseInt(Cities.cities[i].c.resources[nbr].count);
+                 }
+                str += "<tr><td "+style+" align=right><b>"+unsafeWindow.arStrings.ResourceName[nbr]+"</td><td "+style+" align=right>"+addCommas(resTotal)+" "+ m+"</tr>"; 
+          
+      
+            
+              }
+             str += "<tr><td><br></td></tr>";
+            // Production de nourriture + ENTRETIEN !
+            var m="";
+    	var prodTotal=0;
+    	for(i=0; i<Cities.numCities; i++) {
+    	           m += "<TD align=right width=81 style='background:#e8e8e8'>"+ addCommas(Cities.cities[i].c.resources[1].hourlyTotalRate())+"/"+unsafeWindow.arStrings.TimeStr.timeHr+"</td>";
+    	          prodTotal+=parseInt(Cities.cities[i].c.resources[1].hourlyTotalRate());
+    	}
+            str += "<tr><td style='background: #e8e8e8' align=right><b>"+unsafeWindow.arStrings.Common.Production+"</td><td style='background: #e8e8e8' align=right>"+addCommas(prodTotal)+"/"+unsafeWindow.arStrings.TimeStr.timeHr+""+ m+"</tr>"; 
+            var m="";
+    	var entTotal=0;
+     	for(i=0; i<Cities.numCities; i++) {
+     	       color='black';
+     	      // if ( parseInt(Cities.cities[i].c.resources[1].hourlyTotalRate()) < Cities.cities[i].c.upkeep() ) color='red';
+    	       m += "<TD align=right width=81 style='background:#e8e8e8;color:"+color+";'>"+ addCommas(Cities.cities[i].c.upkeep())+"/"+unsafeWindow.arStrings.TimeStr.timeHr+"</td>";
+    	       entTotal+=parseInt(Cities.cities[i].c.upkeep());
+    	}
+            str += "<tr><td style='background: #e8e8e8' align=right><b>"+unsafeWindow.arStrings.Common.UpKeep+"</td><td style='background: #e8e8e8' align=right>"+addCommas(entTotal)+"/"+unsafeWindow.arStrings.TimeStr.timeHr+""+ m+"</tr>"; 
+    
+            var m="";
+    	 	var entTotal=0;
+    	  	for(i=0; i<Cities.numCities; i++) {
+    	  	       color='black';
+    	  	       if ( parseInt(Cities.cities[i].c.resources[1].hourlyTotalRate()) < parseInt(Cities.cities[i].c.upkeep()) ) {
+    	  	        // entretien suprieur  la production
+    	  	        difference = parseInt(Cities.cities[i].c.resources[1].hourlyTotalRate()) - parseInt(Cities.cities[i].c.upkeep());
+    	  	        var timeLeft = parseInt(Cities.cities[i].c.resources[1].count)  / (0-difference) * 3600;
+    			if (timeLeft > 86313600)
+    			       autonomi = '----';
+    			else {
+    			      if (timeLeft<(Options.foodWarnHours*3600)) {
+			     			     autonomi = '<SPAN class=whiteOnRed><b>'+ timestrShort(timeLeft) +'</b></span>';
+			     			 } else {
+			     			   autonomi = ''+ timestrShort(timeLeft) +'';
+			 }
+                    	}
+    	  	        m += "<TD align=right width=81 style='background:#e8e8e8;color:"+color+";'>"+ autonomi +"</td>";
+    	  	       } else {
+    	  	       
+    	  	         m += "<TD align=right width=81 style='background:#e8e8e8;color:black;'>---</td>";
+    	  	       }
+    	 	          
+    
+    	 	}
+    	 str += "<tr><td style='background: #e8e8e8' align=right><b>Autonomy</td><td style='background: #e8e8e8' align=right>&nbsp;"+ m+"</tr>"; 
+         var m="";
+	 var unitTotal=0;
+	  str += "<tr><td><br></td></tr>";
+	 if (unsafeWindow.arStrings.unitName["u1"]) {
+	  
+	 	
+	 
+	            style = " style = 'background: #e8e8e8'";
+	            
+	 	 for(var i=0; i<Cities.numCities; i++) {
+	 	                        m += "<TD width=81 "+style+" align=right>"+ addCommas(Cities.cities[i].c.troops[1].count()) +'</td>';
+	 	                        unitTotal+=parseInt(Cities.cities[i].c.troops[1].count());
+	 	 }
+	          str += "<tr><td "+style+" align=right><b>"+unsafeWindow.arStrings.unitName["u1"]+"</td><td "+style+" align=right>"+addCommas(unitTotal)+" "+ m + "</tr>"; 
+	         
+	 }
+	   var m="";
+	 var unitTotal=0;
+	 if (unsafeWindow.arStrings.unitName["u9"]) {
+	  
+	 	        style = '';
+	
+	            
+	 	 for(var i=0; i<Cities.numCities; i++) {
+	 	                        m += "<TD width=81 "+style+" align=right>"+ addCommas(Cities.cities[i].c.troops[9].count()) +'</td>';
+	 	                        unitTotal+=parseInt(Cities.cities[i].c.troops[9].count());
+	 	 }
+	          str += "<tr><td "+style+" align=right><b>"+unsafeWindow.arStrings.unitName["u9"]+"</td><td "+style+" align=right>"+addCommas(unitTotal)+" "+ m + "</tr>"; 
+	         
+	 }
+	         
+        str += "<tr><td><br></td></tr>";
+    t.statpourTr.innerHTML = str;
+    
+  
+    t.displayTimer = setTimeout (t.showManuel, 5000);
+  },
+  
+  /******* transport ****/
+  verifierWagons: function() {
+   var t = my.TranspAuto;
+   var maxw=parseInt(Cities.cities[t.sourceCity.idx].c.troops[t.typetrp.value].count());
+   var saisw=parseInt(t.Choixnbwagon.value);
+   if (saisw > maxw) {
+      t.Choixnbwagon.value=maxw;
+   }
+   var maxtroupe=getTroopMax(t.sourceCity.c.id);
+   
+   if (t.Choixnbwagon.value > maxtroupe) {
+      t.Choixnbwagon.value=maxtroupe;
+      //t.divTranportStatus.innerHTML = '<FONT COLOR=#550000>La quantit&eacute; ne peut exc&eacute;der '+maxw+' !.</font>';
+   }
+   t.estimerRes();
+  },
+  estimerRes: function() {
+   var t = my.TranspAuto;
+   
+   
+   var esti = parseInt(unsafeWindow.Unit.stats[t.typetrp.value].load * t.Choixnbwagon.value * (1 + (unsafeWindow.player.technologies[10].bonus())));
+    t.estimationRes.innerHTML = "<font size=3><b>" + addCommas(esti) + "</b></font>";
+   //t.estimationRes.innerHTML += "<br>Estimation temps de marche : <b>" + m.friendEtaStr + "</b>" ; 
+   
+   // test sur les ressources choisit !
+   
+   var cityID = t.sourceCity.c.id;
+   var ic=0;
+   var resact=0;
+   var ic_ty="gold"; 
+   var ic_text="silver";
+   resact = Cities.cities[t.sourceCity.idx].c.silver();
+   if (document.getElementById("ChoixRess1").checked) { ic_ty="rec1";ic=1;ic_text="food";resact = parseInt(Cities.cities[t.sourceCity.idx].c.resources[1].count); }
+   if (document.getElementById("ChoixRess2").checked) { ic_ty="rec2";ic=2;ic_text="wood";resact = parseInt(Cities.cities[t.sourceCity.idx].c.resources[2].count); }
+   if (document.getElementById("ChoixRess3").checked) { ic_ty="rec3";ic=3;ic_text="stones";resact = parseInt(Cities.cities[t.sourceCity.idx].c.resources[3].count); }
+   if (document.getElementById("ChoixRess4").checked) { ic_ty="rec4";ic=4;ic_text="iron";resact = parseInt(Cities.cities[t.sourceCity.idx].c.resources[4].count); }
+  
+   if (resact < esti) {
+     var nbparunit = parseInt(unsafeWindow.Unit.stats[t.typetrp.value].load * 1 * (1 + (unsafeWindow.player.technologies[10].bonus())));
+     var uniteness = Math.round(resact / nbparunit) - 1;
+     t.Choixnbwagon.value = uniteness;
+     t.TTbutTransport.disabled = false;
+     t.estimerRes();
+   } else {
+    //t.TTbutTransport.disabled = false;
+   }
+   
+  }, 
+  
+  clickUniteMax: function() {
+    var t = my.TranspAuto;
+    var maxw=parseInt(Cities.cities[t.sourceCity.idx].c.troops[t.typetrp.value].count());
+    var maxtroupe=getTroopMax(t.sourceCity.c.id);
+    t.Choixnbwagon.value=maxw;   
+    if (maxw > maxtroupe) {
+          t.Choixnbwagon.value=maxtroupe;
+          //t.divTranportStatus.innerHTML = '<FONT COLOR=#550000>La quantit&eacute; ne peut exc&eacute;der '+maxw+' !.</font>';
+    }   
+    t.estimerRes();
+  },
+  clickTransportDo: function() {   // fonction pour faire le transport
+   var t = my.TranspAuto;
+   var SourceId = t.sourceCity.c.id;
+   
+   var DestinationId = t.destinationCity.c.id;
+   //nHtml.Click(document.getElementById("city_"+SourceId));
+   //unsafeWindow.KB.AudioManager.playSound('on_click');
+   //unsafeWindow.Chrome.City.switchTo(SourceId);
+   if (!document.getElementById("ChoixRess0").checked && !document.getElementById("ChoixRess1").checked && !document.getElementById("ChoixRess2").checked && !document.getElementById("ChoixRess3").checked && !document.getElementById("ChoixRess4").checked) {
+       t.divTranportStatus.innerHTML = '<FONT COLOR=#550000>'+translate('Please check the resource you want to transport')+' !</font>';
+      return;
+   }
+   if (t.sourceCity.c.x==t.destinationCityx.value && t.sourceCity.c.y==t.destinationCityy.value) {
+      t.divTranportStatus.innerHTML = '<FONT COLOR=#550000>'+translate('Impossible to send to same city')+' !</font>';
+     return;
+   }
+   if (parseInt(t.Choixnbwagon.value)=="0") {
+   t.divTranportStatus.innerHTML = '<FONT COLOR=#550000>'+translate('Impossible to')+' '+uW.arStrings.Common.Transport+' '+translate('with 0 troops')+'... pfff, '+translate('wake up')+' !</font>';
+     return;
+   }
+   var x=t.destinationCityx.value;
+   var y=t.destinationCityy.value;
+   if (x == 0 || y == 0) {
+      t.divTranportStatus.innerHTML = '<FONT COLOR=#550000>'+translate('Impossible to')+' '+uW.arStrings.Common.Transport+' '+translate('to')+' 0,0 !</font>';
+     return;
+   }
+   t.TTbutTransport.disabled=true;
+   
+   var c={};
+    c.r1 = 0;
+   c.r2 = 0; 
+   c.r3 = 0; 
+   c.r4 = 0; 
+   c.gold = 0; 
+   var cc=0;
+   var esti =  parseInt(unsafeWindow.Unit.stats[t.typetrp.value].load * t.Choixnbwagon.value * (1 + (unsafeWindow.player.technologies[10].bonus())));
+   if (document.getElementById("ChoixRess0").checked) { cc=0;c.gold = esti; }
+   if (document.getElementById("ChoixRess1").checked) { cc=1;c.r1 = esti; }
+   if (document.getElementById("ChoixRess2").checked) { cc=2;c.r2 = esti; }
+   if (document.getElementById("ChoixRess3").checked) { cc=3;c.r3 = esti; }
+   if (document.getElementById("ChoixRess4").checked) { cc=4;c.r4 = esti; }
+  t.divTranportStatus.innerHTML = "<i><b>"+translate('Processing')+"......</b></i>"; 
+  if (Cities.byID[SourceId].c.canMarch()) {
+        var f=Cities.byID[SourceId].c;
+        var id=f.id;
+        var d=unsafeWindow.Building.getMaxLevelForType(50,id);
+        var a=new unsafeWindow.March({marchId:Cities.byID[id].c.emptyMarchSlots()[0],toXCoord:x,toYCoord:y,fromCityId:id,marchType:1,knightId:0,fromHealLevel:d,apothecaryHealPercent:unsafeWindow.KB.Controllers.Apothecary.getHealPercent(d),gold:c.gold,resource1:c.r1,resource2:c.r2,resource3:c.r3,resource4:c.r4});
+        var g={mid:a.id,xcoord:a.to.x,ycoord:a.to.y,cid:id,type:1,kid:0,gold:a.gold,r1:a.resources[1],r2:a.resources[2],r3:a.resources[3],r4:a.resources[4],camp:0,et:t.calculateTime(id,t.typetrp.value,x,y)};
+        a.units[t.typetrp.value].sent=parseIntNan(t.Choixnbwagon.value);
+        g["u"+t.typetrp.value]=parseIntNan(t.Choixnbwagon.value);
+        unsafeWindow.AjaxCall.gPostRequest("march.php",g,function(zz){	
+                        	   	var now = unixTime();
+             	   			var i="transport",j=Number(zz.eta)-Number(zz.initTS);
+             	   			unsafeWindow.Chrome.ResourcesBar.update();
+             	   			unsafeWindow.Object.keys(a.units).each(function(k){Cities.byID[id].c.troops[k].subtract(a.units[k].sent)});
+              	   			a.id=Number(zz.marchId);
+             	   			a.to.tileId=Number(zz.tileId);
+             	  			a.to.tileType=Number(zz.tileType);
+             	   			a.to.tileLevel=Number(zz.tileLevel);
+             	   			a.to.playerId=Number(zz.tileUserId);
+             	   			a.to.cityId=Number(zz.tileCityId);
+             	   			a.setStatus(unsafeWindow.Constant.MarchStatus.OUTBOUND);
+             	   			a.setMarchTime(unsafeWindow.unixtime(),unsafeWindow.unixtime()+j,0);
+             	   			Cities.byID[id].c.marches.outgoing[a.id]=a;
+             	   			unsafeWindow.KTrack.event(["_trackEvent","March",i,unsafeWindow.player.level]);
+              t.divTranportStatus.innerHTML ="<font color=red size='3px'><b>"+translate('Succeeded')+"<b></font>";
+       t.TTbutTransport.disabled=false; 
+                 	 	},
+                  		function(zz){
+       t.divTranportStatus.innerHTML ="<font color=red size='3px'><b>Error<b></font>";
+       t.TTbutTransport.disabled=false; 
+           		}, false);
+      }else{
+       t.divTranportStatus.innerHTML ="<font color=red size='3px'><b>Error<b></font>";
+       t.TTbutTransport.disabled=false; 
+     }
+         
+  },
+   calculateTime: function(id,b,g,e) {
+    var c=65535,a=Math.abs(Cities.byID[id].c.x-g),f=Math.abs(Cities.byID[id].c.y-e),d=Math.sqrt((a*a)+(f*f));
+    h=unsafeWindow.Unit.stats[b].speed*1;
+    if(h<c){c=h;}
+    return Math.ceil(d*6000/c)+30;
+  },
+  clickCitySourceSelect : function (city){
+    var t = my.TranspAuto;
+    t.sourceCity = city;
+    t.TTbutTransport.disabled=false;
+    t.estimerRes();
+   },
+   clickCityDestinationSelect : function (city){
+    var t = my.TranspAuto;
+    t.destinationCity = city;
+    t.destinationCityx.value=t.destinationCity.c.x;
+    t.destinationCityy.value=t.destinationCity.c.y;
+    t.TTbutTransport.disabled=false;
+    t.estimerRes();
+   }, 
+ 
+}
+/************* MARCHES ***************/
+ my.attaque = {
+  cont:null,
+  state : null,
+  timerzap:10000, // temps entre deux recherches d'attaque
+  timer:null,
+  displayTimer:null,
+  deleting : false,
+  timer:null,
+  filtreville:null,
+  filtrecible:null,
+  numcol:6,
+  toutles:0,
+  getContent : function (){
+      var t = my.attaque;
+      return t.cont;
+    },
+    
+    init : function (){
+      var t = my.attaque;
+      t.cont = document.createElement('div');
+      clearTimeout (t.timer);
+      t.toutles=0;
+      if (Options.AttackAuto)
+        t.timer=setInterval(t.start,t.timerzap);
+      return this.cont;
+    },
+       attack: function(h) {
+     var t = my.attaque;
+     var cible=Options.AttackTime[h];
+     var SourceId = cible.cityId;
+     var x = cible.coordX;
+     var y = cible.coordY;
+     var gen=0;
+     var cooX = x;
+     var cooY = y;
+     var id=SourceId;
+     var kk=[];
+     Cities.byID[id].c.generalsSorted().each(function(b){
+       if(b.available() && b.energy()>0){ 
+       
+       if (Options.AttackGen && b.level()>parseInt(Options.AttackGenNiv)) {
+       
+       }else{      
+       
+        kk.push(b);
+       }
+       
+       }
+       
+       
+       }); // id du premier chevalier ! a trouver
+    var selectedKnight=kk.length>0?kk[0].id:0;
+    if (Options.AttackTime[h].typea==undefined) cible.typea=2;
+    if (Cities.byID[id].c.canMarch() && Cities.byID[id].c.generalsCount()!=0 && selectedKnight!=0) {
+    
+            var d=unsafeWindow.Building.getMaxLevelForType(50,id);
+            var a=new unsafeWindow.March({marchId:Cities.byID[id].c.emptyMarchSlots()[0],toXCoord:cooX,toYCoord:cooY,fromCityId:id,marchType:unsafeWindow.Constant.MarchType.ATTACK,knightId:selectedKnight,fromHealLevel:d,apothecaryHealPercent:unsafeWindow.KB.Controllers.Apothecary.getHealPercent(d),gold:0,resource1:0,resource2:0,resource3:0,resource4:0});
+            var g={mid:a.id,xcoord:a.to.x,ycoord:a.to.y,cid:id,type:unsafeWindow.Constant.MarchType.ATTACK,kid:a.general.id,gold:a.gold,r1:a.resources[1],r2:a.resources[2],r3:a.resources[3],r4:a.resources[4],camp:0,et:t.calculateTime(id,9,cooX,cooY)};
+            var b=Cities.byID[id].c.generals[a.general.id];
+            if (cible.typea==1) { // Rgions sauvages
+             unsafeWindow.Object.keys(a.units).each(function(k){
+               if(parseInt(Options.AttackTroops[Options.AttackTime[h].level][k]) > 0) {
+	     	  a.units[k].sent=Options.AttackTroops[Options.AttackTime[h].level][k];
+                  g["u"+k]=Options.AttackTroops[Options.AttackTime[h].level][k];
+                 }
+               });
+	    } else if (cible.typea==3) { // Barbares
+	      unsafeWindow.Object.keys(a.units).each(function(k){
+	                    if(parseInt(Options.AttackTroopsB[Options.AttackTime[h].level][k]) > 0) {
+	     	     	  a.units[k].sent=Options.AttackTroopsB[Options.AttackTime[h].level][k];
+	                       g["u"+k]=Options.AttackTroopsB[Options.AttackTime[h].level][k];
+	                      }
+               });
+	    
+            } else {        //ville
+                unsafeWindow.Object.keys(a.units).each(function(k){
+	     	                    if(parseInt(Options.AttackTroopsC[k]) > 0) {
+	     	     	     	  a.units[k].sent=Options.AttackTroopsC[k];
+	     	                       g["u"+k]=Options.AttackTroopsC[k];
+	     	                      }
+               });
+            }
+            
+            // Vrification qu'il y ait bien l'arme sur la ville
+            unsafeWindow.Object.keys(a.units).each(function(k){
+             if (a.units[k].sent>Cities.byID[id].c.troops[k].count()) {
+              Options.AttackTime[h].echec++;
+	      		 if (Options.AttackTime[h].echec>1) {
+	      		 	                                  var now = unixTime();
+	      		 	                                  var tempsaudessu=(t.toutles*60*60)-(10*60);
+	      		 	                   	          Options.AttackTime[h].lastattack = now -tempsaudessu;
+	      		 	                   	          Options.AttackTime[h].echec=0;
+	      		 	                                  saveOptions();
+		  }
+		  logit("troupes non dispo");
+                return;
+              }
+            });
+            if(b.energy()>0){
+                 	unsafeWindow.AjaxCall.gPostRequest("march.php",g,function(zz){	
+                	   	var now = unixTime();
+				Options.AttackTime[h].lastattack = now;
+				Options.AttackTime[h].reussi++;
+				Options.AttackTime[h].echec=0;
+           			saveOptions();
+     	   			var i="attack",j=Number(zz.eta)-Number(zz.initTS);
+     	   			unsafeWindow.Chrome.ResourcesBar.update();
+     	   			unsafeWindow.Object.keys(a.units).each(function(k){Cities.byID[id].c.troops[k].subtract(a.units[k].sent)});
+     	   			if(b){b.status=10;b.subtractEnergy()}
+     	   			a.id=Number(zz.marchId);
+     	   			a.to.tileId=Number(zz.tileId);
+     	  			a.to.tileType=Number(zz.tileType);
+     	   			a.to.tileLevel=Number(zz.tileLevel);
+     	   			a.to.playerId=Number(zz.tileUserId);
+     	   			a.to.cityId=Number(zz.tileCityId);
+     	   			a.setStatus(unsafeWindow.Constant.MarchStatus.OUTBOUND);
+     	   			a.setMarchTime(unsafeWindow.unixtime(),unsafeWindow.unixtime()+j,0);
+     	   			Cities.byID[id].c.marches.outgoing[a.id]=a;
+     	   			unsafeWindow.KTrack.event(["_trackEvent","March",i,unsafeWindow.player.level]);
+         	 	},
+          		function(zz){
+          		 Options.AttackTime[h].echec++;
+	                 var now = unixTime();
+	                 var tempsaudessu=(t.toutles*60*60)-(10*60);
+	                 Options.AttackTime[h].lastattack = now -tempsaudessu;
+	                 Options.AttackTime[h].echec=0;
+	                 saveOptions();
+          		}, false);
+	} else {
+	 Options.AttackTime[h].echec++;
+	 if (Options.AttackTime[h].echec>1) {
+	    var now = unixTime();
+	    var tempsaudessu=(t.toutles*60*60)-(10*60);
+	    Options.AttackTime[h].lastattack = now -tempsaudessu;
+	    Options.AttackTime[h].echec=0;
+	    saveOptions();
+	 }
+	}
+   } else {
+    // impossible sur cette ville..... peux pas marcher !
+   		 Options.AttackTime[h].echec++;
+   		 if (Options.AttackTime[h].echec>1) {
+   		 	                                  var now = unixTime();
+   		 	                                  var tempsaudessu=(t.toutles*60*60)-(10*60);
+   		 	                   	          Options.AttackTime[h].lastattack = now -tempsaudessu;
+   		 	                   	          Options.AttackTime[h].echec=0;
+   		 	                                  saveOptions();
+		  }
+		  
+   }
+    },
+      calculateTime: function(id,b,g,e) {
+      var c=65535,a=Math.abs(Cities.byID[id].c.x-g),f=Math.abs(Cities.byID[id].c.y-e),d=Math.sqrt((a*a)+(f*f));
+      h=unsafeWindow.Unit.stats[b].speed*1;
+      if(h<c){c=h;}
+      return Math.ceil(d*6000/c)+30;
+    },
+    passage:0,
+    start : function() {
+     var t = my.attaque;
+     if (!Options.AttackAuto) {
+      clearTimeout (t.timer);
+      return;
+     }
+     
+     var c=Options.AttackTime;
+     // on trie le tableau par duree
+     
+     for (h in c) {
+      var z=c[h];
+      var now = unixTime();
+      var lastatt=z.lastattack;
+      var affichederniere=(now - lastatt);
+      t.toutles=Options.AttackTimer;
+      if (z.typea==2)
+        t.toutles=Options.AttackTimer2;
+      if (z.typea==3)
+        t.toutles=Options.AttackTimer3;
+      
+      var tempsaudessu=t.toutles*60*60;  // on converti l'heure en secondes  
+      
+      if (parseInt(affichederniere)>parseInt(tempsaudessu) && ((Options.AttackCible1 && z.typea==1) || (Options.AttackCible2 && z.typea==2) || (Options.AttackCible3 && z.typea==3))) {
+       if (Cities.byID[z.cityId].c.canMarch()) {
+        t.attack(h);
+        return;
+       }
+      }
+      
+     }
+    
+    },
+    saveTroops:function() {
+      var t = my.attaque;
+      for(i=0;i<10;i++){
+      	 	unsafeWindow.Barracks.allUnitIds.each(function(j){
+      	 		Options.AttackTroops[i+1][j] = parseIntNan(ById('level'+i+'troop'+j).value);
+      	 		Options.AttackTroopsB[i+1][j] = parseIntNan(ById('level'+i+'troopB'+j).value);
+      	 	});		
+      }
+      unsafeWindow.Barracks.allUnitIds.each(function(j){
+             	 		Options.AttackTroopsC[j] = parseIntNan(ById('troop'+j).value);
+      });
+      
+	Options.AttackTimer = parseInt(document.getElementById("BOTimerAttack").value);
+	Options.AttackTimer2 = parseInt(document.getElementById("BOTimerAttack2").value);
+	Options.AttackTimer3 = parseInt(document.getElementById("BOTimerAttack3").value);
+	saveOptions(); 
+    },
+    troopselect:null,
+    troopOptions: function(){
+      	 var t = my.attaque;
+      	 if(t.troopselect == null)	
+    		t.troopselect = new CPopup ('pbtroopselect', 0, 0, 850, 410, true, function(){t.saveTroops();});
+      	 t.troopselect.centerMe (mainPop.getMainDiv());  
+      	 t.troopselect.getTopDiv().innerHTML = '<DIV id=pbTraderDivD class=ptstat><b>'+translate('TROOPS')+'</b></div>';
+      	 var z='<DIV id=attaqueContent style="height:380px; max-height:380px; overflow-y:auto">';
+      	 z+='<DIV id=pbTraderDivD class=ptstat>'+unsafeWindow.arStrings.Common.Cities.toUpperCase()+'</div><TABLE width=100%>';
+      	 z+='<tr><td colspan=3>'+translate('Time between attacks')+':</td><td  colspan=14><input type=text size=2 id=BOTimerAttack maxlenght=2 value='+Options.AttackTimer+'> '+translate('hours')+'</tr><TR><TR><TD></td>';
+	 unsafeWindow.Barracks.allUnitIds.each(function(i){
+	     		z+='<TD>'+unsafeWindow.arStrings.unitName["u"+i].substr(0,10)+'</td>';
+         });
+	 if (Options.AttackTroopsC==undefined) Options.AttackTroopsC = {};
+	 z += '</tr><tr><TD>'+unsafeWindow.arStrings.Common.City+'</td>';
+	 unsafeWindow.Barracks.allUnitIds.each(function(j){
+	  if (Options.AttackTroopsC[j]==undefined) Options.AttackTroopsC[j] = 0;
+	  z += '<TD><INPUT id="troop'+j+'" type=text size=5 maxlength=6 value="'+Options.AttackTroopsC[j]+'" /></td>';
+	 });
+	 z+='</tr>';		 		
+    	 z+='</table>';
+      	 z+='<DIV id=pbTraderDivD class=ptstat>'+unsafeWindow.arStrings.Common.Wilds.toUpperCase()+'</div><TABLE width=100%>';
+    	 z+='<tr><td colspan=3>'+translate('Time between attacks')+':</td><td  colspan=14><input type=text size=2 id=BOTimerAttack2 maxlenght=2 value='+Options.AttackTimer2+'> '+translate('hours')+'</tr><TR><TR><TD></td>';
+    	 unsafeWindow.Barracks.allUnitIds.each(function(i){
+    		z+='<TD>'+unsafeWindow.arStrings.unitName["u"+i].substr(0,10)+'</td>';
+         });
+    	 for(i=0;i<10;i++){
+    	         if (Options.AttackTroops[i+1]==undefined)
+    	 	        	Options.AttackTroops[i+1] = {};
+    	 	z += '<TR><TD>'+uW.arStrings.Common.Level+' '+(i+1)+': </td>';
+    	 	unsafeWindow.Barracks.allUnitIds.each(function(j){
+    	 	        if (Options.AttackTroops[i+1][j]==undefined)
+    	 	             Options.AttackTroops[i+1][j] = 0;
+    	 		z += '<TD><INPUT id="level'+i+'troop'+j+'" type=text size=5 maxlength=6 value="'+Options.AttackTroops[i+1][j]+'" /></td>';
+    	 	});
+    	 	z+='</tr>';		 		
+    	 }
+    	 z+='</table>';
+    	 z+='<DIV id=pbTraderDivD class=ptstat>'+unsafeWindow.arStrings.Common.BarbarianCamp.toUpperCase()+'</div><TABLE width=100%>';
+	 z+='<tr><td colspan=3>'+translate('Time between attacks')+':</td><td  colspan=14><input type=text size=2 id=BOTimerAttack3 maxlenght=2 value='+Options.AttackTimer3+'> '+translate('hours')+'</tr><TR><TR><TD></td>';
+	     	 unsafeWindow.Barracks.allUnitIds.each(function(i){
+	     		z+='<TD>'+unsafeWindow.arStrings.unitName["u"+i].substr(0,10)+'</td>';
+	          });
+	     	 for(i=0;i<10;i++){
+	     	         if (Options.AttackTroopsB[i+1]==undefined)
+	     	 	        	Options.AttackTroopsB[i+1] = {};
+	     	 	z += '<TR><TD>'+uW.arStrings.Common.Level+' '+(i+1)+': </td>';
+	     	 	unsafeWindow.Barracks.allUnitIds.each(function(j){
+	     	 	        if (Options.AttackTroopsB[i+1][j]==undefined)
+	     	 	             Options.AttackTroopsB[i+1][j] = 0;
+	     	 		z += '<TD><INPUT id="level'+i+'troopB'+j+'" type=text size=5 maxlength=6 value="'+Options.AttackTroopsB[i+1][j]+'" /></td>';
+	     	 	});
+	     	 	z+='</tr>';		 		
+	     	 }
+    	 z+='</table></div>';
+    	 t.troopselect.getMainDiv().innerHTML = z;
+    	 t.troopselect.show(true);
+    },
+    show : function () {
+     var t = my.attaque;
+     clearTimeout (t.displayTimer);
+     unsafeWindow.BOdeleteAttack=t.deleteAttack;
+     if (t.state == null){
+             t.cont.innerHTML = '<DIV id=attaqueContent style="height:630px; max-height:630px; overflow-y:auto"></div>';
+           t.state = 1;
+     }
+     if (Options.AttackTime == undefined) Options.AttackTime = {};
+     
+     var m = '<DIV class=ptstat>'+translate('AUTOMATED ATTACKS')+" - <input type=button value='Help' id='boaidetournoi' class=boAide onclick=window.open('"+sitesupport+"/index.php?/topic/56-gor-bottols-versione-18/');></div><TABLE id=pbbarbingfunctions width=100% height=0% class=pbTab><TR align='center'>";
+     if (Options.AttackAuto) {
+      m+= "<td><input type=button value='"+translate('ATTACK')+" = ON' id=BOAttackButton></td>";
+     } else {
+      m+= "<td><input type=button value='"+translate('ATTACK')+" = OFF' id=BOAttackButton></td>";
+     }
+     m+="<td colspan=2>"+uW.arStrings.Common.Attack+": <input type=checkbox id=BOAttack1 "+ (Options.AttackCible1?' CHECKED':'') +">"+uW.arStrings.Common.Wilds+"<input type=checkbox id=BOAttack3 "+ (Options.AttackCible3?' CHECKED':'') +">"+uW.arStrings.Common.BarbarianCamp+"<input type=checkbox id=BOAttack2 "+ (Options.AttackCible2?' CHECKED':'') +">"+uW.arStrings.Common.City+"</td></tr><tr>";
+     
+         m+='</table><br><DIV class=ptstat>'+translate('CONFIGURATION')+'</div><TABLE id=pbbarbingfunctions width=100% height=0% class=pbTab><TR align="center">';
+     m+= "<tr><td colspan=2><INPUT id=troopselect type=submit value='"+translate('Select troops')+"'></td><td>";
+     m+= '</td></tr>';
+     m+='<tr><td colspan=2><input type=checkbox id=BOGenAttack '+ (Options.AttackGen?'CHECKED ':'')+'> '+translate('Do not use the general with a level greater than')+' <input type=text size=3 value="'+Options.AttackGenNiv+'" id=BOGenNivAttack>';
+     m+='</table><br><DIV class=ptstat>'+translate('CITY SET PARAMETERS')+'</div>';
+     
+     var cc=Options.AttackTime;
+     var c=[];
+     for (h in cc) {
+   	 var z=Options.AttackTime[h];
+   	 if (z.cityId==undefined) { 
+   	  delete Options.AttackTime[h]; 
+   	 }else {
+   	   if (z.typea==undefined)
+   	    z.typea=2;
+   	     	  if (z.echec==undefined)
+	     	   z.echec=0;
+	     	  if (z.level==undefined) 
+	     	   z.level=0;
+	     	  if (z.reussi==undefined) 
+	     	   Options.AttackTime[h].reussi=0;
+   		
+	     	   
+   	  	  var x=Cities.byID[z.cityId].c.x;
+	    	  var y=Cities.byID[z.cityId].c.y;
+	    	  var dist = distance (x, y, z.coordX , z.coordY);
+	    	  var now = unixTime();
+	 	  var lastatt= Options.AttackTime[h].lastattack;
+	          var affichederniere=timestr(now - lastatt); 
+	          var affichedernierenonstr=now - lastatt; 
+   	     	 c.push([z.cityId,z.echec,z.reussi,z.lastattack,z.coordX,z.coordY, dist,affichederniere,h,affichedernierenonstr,z.typea,z.level]);
+   	 }
+     }
+     c = c.sort(function sort(a,b) {a = parseInt(a[t.numcol]);b = parseInt(b[t.numcol]);return a == b ? 0 : (a < b ? -1 : 1);}); 
+     if (c) {
+   	m+="<table width=95% cellpadding=3><tr><td>"+translate('Delete')+"</td><td>"+uW.arStrings.Common.City+" <select id=bofiltrecity><option value=''>...</option>";
+   	for(var ii=0; ii<Cities.numCities; ii++) {
+   	 m+="<option "+ (t.filtreville==Cities.cities[ii].c.id?' SELECTED':'') +" value="+Cities.cities[ii].c.id+">"+Cities.cities[ii].c.name+"</option>";
+   	}
+   	m+="</select></td><td><span id=clickCol10>"+translate('Target')+' '+translate('Type')+" <select id=bofiltrecible><option value=''>...</option><option value=1 "+ (t.filtrecible==1?' SELECTED':'') +">"+uW.arStrings.Common.Wilds+"</option><option "+ (t.filtrecible==2?' SELECTED':'') +" value=2>"+uW.arStrings.Common.City+"</option><option "+ (t.filtrecible==3?' SELECTED':'') +" value=3>"+uW.arStrings.Common.BarbarianCamp+"</option></select></span></td><td>"+uW.arStrings.Common.Level+"</td><td><span id=clickCol6>"+translate('Distance')+" Coords</span></td><td>Coords</td><td><span id=clickCol9>"+translate('Last Attack')+"</span></td><td><a id=borazcompteur>"+translate('Success')+"</a></td></tr>";
+   	 for (var i=0; i<c.length; i++){
+   	
+   	 if ((t.filtreville==null || t.filtreville==c[i][0]) && (t.filtrecible==null || t.filtrecible==c[i][10])) {
+  	  if (i % 2 == 0) {
+	          		 tabclass = 'xxtab';
+	          	} else {
+	          		tabclass = 'xxtab_even';
+    	} 
+  	if (c[i][10]==1) var typecible=uW.arStrings.Common.Wilds;
+  	if (c[i][10]==2) var typecible=uW.arStrings.Common.City;
+	if (c[i][10]==3) var typecible=uW.arStrings.Common.BarbarianCamp;
+	m+='<tr><td class='+ tabclass +' align=left><a href="javascript:void(0);" onclick="BOdeleteAttack(\''+c[i][8]+'\')">X</a></td><td class='+ tabclass +' align=left>'+Cities.byID[c[i][0]].c.name+'</td><td class='+ tabclass +' align=left>'+typecible+'</td><td class='+ tabclass +' align=left>'+c[i][11]+'</td><td class='+ tabclass +' align=left>'+c[i][6]+'</td><td class='+ tabclass +' align=left><a onclick="KB.Controllers.MapHelper.gotoCoord('+c[i][4] +','+ c[i][5] +');">('+c[i][4]+','+ c[i][5] +')</a></td><td class='+ tabclass +' align=left>' + c[i][7] +'</td><td class='+ tabclass +' align=left>'+c[i][2]+'</td></tr>';
+	 }
+	}
+        m+"</table>";
+     }else{
+     
+      m+="No attacks to program, thank you to search for city and launch an attack through the first Attack button.";
+     }
+     m+="";
+     
+     
+     document.getElementById('attaqueContent').innerHTML = m;
+     ById('troopselect').addEventListener('click', t.troopOptions , false);
+     document.getElementById("BOAttackButton").addEventListener('click', t.ToggleAutoAttack, false);
+     document.getElementById("clickCol9").addEventListener('click', function() {t.numcol=9;t.show();}, false);
+     document.getElementById("clickCol6").addEventListener('click', function() {t.numcol=7;t.show();}, false);
+     document.getElementById("BOAttack1").addEventListener('click', function() {
+      Options.AttackCible1 = document.getElementById("BOAttack1").checked;
+      saveOptions();
+     }, false);
+     document.getElementById("BOAttack2").addEventListener('click', function() {
+        Options.AttackCible2 = document.getElementById("BOAttack2").checked;
+        saveOptions();  
+     }, false);
+     document.getElementById("BOAttack3").addEventListener('click', function() {
+        Options.AttackCible3 = document.getElementById("BOAttack3").checked;
+        saveOptions();  
+     }, false);
+     document.getElementById("BOGenAttack").addEventListener('click', function() {
+      Options.AttackGen=document.getElementById("BOGenAttack").checked;
+       saveOptions();
+     }, false);
+     document.getElementById("BOGenNivAttack").addEventListener('change', function() {
+      if (parseInt(document.getElementById("BOGenNivAttack").value)>255) document.getElementById("BOGenNivAttack").value=255;
+      Options.AttackGenNiv=parseInt(document.getElementById("BOGenNivAttack").value);
+       saveOptions();
+     }, false);    
+     
+     
+     document.getElementById("borazcompteur").addEventListener('click', function() {
+      for (var i=0; i<c.length; i++){
+        Options.AttackTime[c[i][8]].echec = 0; 
+      }
+      saveOptions();
+      t.show();
+     
+     }, false);
+      document.getElementById("bofiltrecible").addEventListener('change', function() {
+            
+            if (document.getElementById("bofiltrecible").value=="") {
+             t.filtrecible=null;
+            }else{
+             t.filtrecible=document.getElementById("bofiltrecible").value;
+            }
+            t.show();
+            
+       }, false);
+       document.getElementById("bofiltrecity").addEventListener('change', function() {
+       
+       if (document.getElementById("bofiltrecity").value=="") {
+        t.filtreville=null;
+       }else{
+        t.filtreville=document.getElementById("bofiltrecity").value;
+       }
+       t.show();
+       
+       }, false);
+    }, 
+    ToggleAutoAttack: function() {
+      var t = my.attaque;
+      var obj=document.getElementById("BOAttackButton");
+       if (Options.AttackAuto== true) {
+                    Options.AttackAuto = false;
+                    if (obj) obj.value = translate('ATTACK')+" = OFF";
+                    clearTimeout (t.timer);
+                    saveOptions();
+            }  else {
+                    Options.AttackAuto = true;
+                    if (obj) obj.value = translate('ATTACK')+" = ON";
+                    clearTimeout (t.timer);
+                    t.timer=setInterval(t.start,t.timerzap);
+                    saveOptions();
+      }
+    },
+    deleteAttack: function(id) {
+     var t = my.attaque;
+     //var a=confirm("Voulez-vous supprimer ?")
+     //if (a) {
+       delete Options.AttackTime[id];
+       t.show();
+      // }
+    },
+    hide : function (){
+     var t = my.attaque;
+     clearTimeout (t.displayTimer);
+    }, 
+}
+/*********************************  Cresting Tab ***********************************/
+ my.Crest = {
+  cont : null,
+  rallypointlevel:null,
+  error_code: 0,
+  knt:{},
+  numslots:null,
+  init : function (cont){
+    var t = my.Crest;
+    Options.crestMarchError = 0;
+	
+    setTimeout(function(){ t.Rounds(1,0,0);}, 5*1000);
+    setTimeout(function() { 
+	if (Options.ShowShrtKeys) AddSubTabLink('Crech', t.toggleCrestState, 'pbautotstab'); 
+	
+	if (Options.crestRunning == false)
+	 updatebotbutton("Crest -OFF", 'pbautotstab');
+	else
+	 updatebotbutton("Crest -ON", 'pbautotstab');
+ 	 
+   },500);
+    t.cont = document.createElement('div');
+    return t.cont;
+  },
+  
+   getContent : function (){
+    var t = my.Crest;
+    return t.cont;
+  },
+ 	show : function (){
+	 var t = my.Crest;
+    var selbut=0;
+    var m = '<DIV id=pbTowrtDivF class=ptstat>'+translate('AUTO CREST')+'</div><TABLE id=pbcrestfunctions width=100% height=0% class=pbTab><TR align="center">';
+     if (Options.crestRunning == false) {
+	       m += '<TD><INPUT id=Cresttoggle type=submit value="Crest = OFF"></td>';
+	   } else {
+	       m += '<TD><INPUT id=Cresttoggle type=submit value="Crest = ON"></td>';
+	   }
+    m += '<TD colspan=2><INPUT id=CrestHelp type=submit value="'+translate('Help')+'">';
+    m += '<INPUT id=showCrestTargets type=submit value="'+translate('See target')+'"><br>'+translate('Attack Interval')+': <INPUT id="pbcrest_interval" type=text size=3 value='+Options.Crestinterval+' /> '+translate('seconds')+'</td>';
+    m += '<TD>'+translate('Do not use the general with the energy below')+' <INPUT id=pbgenenergy value='+ Options.CrestEnergy +' type=text size=3 \></td>';
+	m += '</tr></table>';
+    m += '<DIV id=pbOpt class=ptstat>'+translate('OPTIONS')+'</div><TABLE id=pbcrestopt	 width=100% height=0% class=pbTab><TR align="center"></table>';
+    m += '<DIV style="margin-bottom:10px;">'+translate('From')+': <span id=crestcity></span></div>';
+    m += '<TABLE class=ptTab><TR><TD>'+translate('To')+': &nbsp;&nbsp;X:<INPUT id=pbcrestx type=text size=3 maxlength=3 value=""></td>';
+    m += '<TD>Y:<INPUT id=pbcresty type=text size=3 maxlength=3 value=""></td></tr></table>';
+    m += '<DIV id=pbWave1 class=ptstat>'+translate('Wave')+' <b>1</b>:</div>';
+    m += '<table><tr>';
+    m += '<TD>'+uW.arStrings.unitName["u1"]+'</td><TD><INPUT id=R1SOM type=text size=6 maxlength=6 value=0></td>';
+    m += '<TD>'+uW.arStrings.unitName["u2"]+'</td><TD><INPUT id=R1REC type=text size=6 maxlength=6 value=0></td>';
+    m += '<TD>'+uW.arStrings.unitName["u6"]+'</td><TD><INPUT id=R1CAL type=text size=6 maxlength=6 value=0></td>';
+    m += '<TD>'+uW.arStrings.unitName["u7"]+'</td><TD><INPUT id=R1CAV type=text size=6 maxlength=6 value=0></td>';
+    m += '<TD>'+uW.arStrings.unitName["u4"]+'</td><TD><INPUT id=R1LEG type=text size=6 maxlength=6 value=0></td></tr>';
+    m += '<tr><TD>'+uW.arStrings.unitName["u10"]+'</td><TD><INPUT id=R1SCO type=text size=6 maxlength=6 value=0></td>';
+    m += '<TD>'+uW.arStrings.unitName["u9"]+'</td><TD><INPUT id=R1CAR type=text size=6 maxlength=6 value=0></td>';
+    m += '<TD>'+uW.arStrings.unitName["u8"]+'</td><TD><INPUT id=R1CAP type=text size=6 maxlength=6 value=0></td>';
+    m += '<TD>'+uW.arStrings.unitName["u5"]+'</td><TD><INPUT id=R1CEN type=text size=7 maxlength=6 value=0></td>';
+    m += '<TD>'+uW.arStrings.unitName["u11"]+'</td><TD><INPUT id=R1ARI type=text size=6 maxlength=6 value=0></td></tr>';
+    m += '<tr><TD>'+uW.arStrings.unitName["u12"]+'</td><TD><INPUT id=R1BAL type=text size=6 maxlength=6 value=0></td>';
+    m += '<TD>'+uW.arStrings.unitName["u31"]+'</td><TD><INPUT id=R1BER type=text size=6 maxlength=6 value=0></td>';
+    m += '<TD>'+uW.arStrings.unitName["u32"]+'</td><TD><INPUT id=R1RAI type=text size=6 maxlength=6 value=0></td></tr>';
+    m += '</table><br><br>';
+	m += '<DIV id=pbWave1 class=ptstat>'+translate('Wave')+' <b>2</b>:</div>';
+    m += '<table><tr>';
+    m += '<TD>'+uW.arStrings.unitName["u1"]+'</td><TD><INPUT id=R2SOM type=text size=6 maxlength=6 value=0></td>';
+    m += '<TD>'+uW.arStrings.unitName["u2"]+'</td><TD><INPUT id=R2REC type=text size=6 maxlength=6 value=0></td>';
+    m += '<TD>'+uW.arStrings.unitName["u6"]+'</td><TD><INPUT id=R2CAL type=text size=6 maxlength=6 value=0></td>';
+    m += '<TD>'+uW.arStrings.unitName["u7"]+'</td><TD><INPUT id=R2CAV type=text size=6 maxlength=6 value=0></td>';
+    m += '<TD>'+uW.arStrings.unitName["u4"]+'</td><TD><INPUT id=R2LEG type=text size=6 maxlength=6 value=0></td></tr>';
+    m += '<tr><TD>'+uW.arStrings.unitName["u10"]+'</td><TD><INPUT id=R2SCO type=text size=6 maxlength=6 value=0></td>';
+    m += '<TD>'+uW.arStrings.unitName["u9"]+'</td><TD><INPUT id=R2CAR type=text size=6 maxlength=6 value=0></td>';
+    m += '<TD>'+uW.arStrings.unitName["u8"]+'</td><TD><INPUT id=R2CAP type=text size=6 maxlength=6 value=0></td>';
+    m += '<TD>'+uW.arStrings.unitName["u5"]+'</td><TD><INPUT id=R2CEN type=text size=6 maxlength=6 value=0></td>';
+    m += '<TD>'+uW.arStrings.unitName["u11"]+'</td><TD><INPUT id=R2ARI type=text size=6 maxlength=6 value=0></td>';
+    m += '<tr><TD>'+uW.arStrings.unitName["u12"]+'</td><TD><INPUT id=R2BAL type=text size=6 maxlength=6 value=0></td>';
+    m += '<TD>'+uW.arStrings.unitName["u31"]+'</td><TD><INPUT id=R2BER type=text size=6 maxlength=6 value=0></td>';
+    m += '<TD>'+uW.arStrings.unitName["u32"]+'</td><TD><INPUT id=R2RAI type=text size=6 maxlength=6 value=0></td></tr></table>';
+    m += '<DIV style="text-align:center; margin-top:15px"><INPUT id=pbSaveRouteCrest type=submit value="'+translate('Add target')+'"></div>';
+    m += '<br><br><b><center>'+translate('Please support the GoR BoTTols by clicking the ads on the GoR BoTTols website from time to time')+'!</b><br><br>'+pubblicityBIG;
+ 
+    t.cont.innerHTML = m;
+	ById('pbgenenergy').addEventListener('change', function(){
+		Options.CrestEnergy = ById('pbgenenergy').value;
+		saveOptions();
+	}, false);
+    ById('pbcrest_interval').addEventListener('change', function(){
+       		if (parseIntNan(ById("pbcrest_interval").value<5)) ById("pbcrest_interval").value=5;
+    		Options.Crestinterval = parseIntNan(ById("pbcrest_interval").value);
+    		saveOptions();
+	},false);
+    for (var i=0;i<Cities.numCities;i++){
+		if (CrestOptions.CrestCity == Cities.cities[i][0]){
+			selbut=i;
+			break;
+		}
+	}
+	
+    t.tcp = new CdispCityPicker ('crestcityselect', document.getElementById('crestcity'), true, t.clickCitySelect, selbut);
+    
+    if (CrestOptions.CrestCity == 0) {
+    	CrestOptions.CrestCity = t.tcp.city.c.id;
+    }
+	
+      document.getElementById('pbcrestx').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('pbcrestx').value)) document.getElementById('pbcrestx').value='' ;
+      }, false);
+      document.getElementById('pbcresty').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('pbcresty').value)) document.getElementById('pbcresty').value='' ;
+      }, false);
+      document.getElementById('R1SOM').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R1SOM').value)) document.getElementById('R1SOM').value=0 ;
+      }, false);
+      document.getElementById('R1REC').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R1REC').value)) document.getElementById('R1REC').value=0 ;
+      }, false);
+      document.getElementById('R1CAV').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R1CAV').value)) document.getElementById('R1CAV').value=0 ;
+      }, false);
+      document.getElementById('R1CAL').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R1CAL').value)) document.getElementById('R1CAL').value=0 ;
+      }, false);
+      document.getElementById('R1LEG').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R1LEG').value)) document.getElementById('R1LEG').value=0 ;
+      }, false);
+      document.getElementById('R1SCO').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R1SCO').value)) document.getElementById('R1SCO').value=0 ;
+      }, false);
+      document.getElementById('R1CAR').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R1CAR').value)) document.getElementById('R1CAR').value=0 ;
+      }, false);
+      document.getElementById('R1CAP').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R1CAP').value)) document.getElementById('R1CAP').value=0 ;
+      }, false);
+      document.getElementById('R1CEN').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R1CEN').value)) document.getElementById('R1CEN').value=0 ;
+      }, false);
+      document.getElementById('R1ARI').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R1ARI').value)) document.getElementById('R1ARI').value=0 ;
+      }, false);
+      document.getElementById('R1BAL').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R1BAL').value)) document.getElementById('R1BAL').value=0 ;
+      }, false);
+      document.getElementById('R1BER').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R1BER').value)) document.getElementById('R1BER').value=0 ;
+      }, false);
+      document.getElementById('R1RAI').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R1RAI').value)) document.getElementById('R1RAI').value=0 ;
+      }, false);
+      
+      
+      document.getElementById('R2SOM').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R2SOM').value)) document.getElementById('R2SOM').value=0 ;
+      }, false);
+      document.getElementById('R2REC').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R2REC').value)) document.getElementById('R2REC').value=0 ;
+      }, false);
+      document.getElementById('R2CAV').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R2CAV').value)) document.getElementById('R2CAV').value=0 ;
+      }, false);
+      document.getElementById('R2CAL').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R2CAL').value)) document.getElementById('R2CAL').value=0 ;
+      }, false);
+      document.getElementById('R2LEG').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R2LEG').value)) document.getElementById('R2LEG').value=0 ;
+      }, false);
+      document.getElementById('R2SCO').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R2SCO').value)) document.getElementById('R2SCO').value=0 ;
+      }, false);
+      document.getElementById('R2CAR').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R2CAR').value)) document.getElementById('R2CAR').value=0 ;
+      }, false);
+      document.getElementById('R2CAP').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R2CAP').value)) document.getElementById('R2CAP').value=0 ;
+      }, false);
+      document.getElementById('R2CEN').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R2CEN').value)) document.getElementById('R2CEN').value=0 ;
+      }, false);
+      document.getElementById('R2ARI').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R2ARI').value)) document.getElementById('R2ARI').value=0 ;
+      }, false);
+      document.getElementById('R2BAL').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R2BAL').value)) document.getElementById('R2BAL').value=0 ;
+      }, false);
+      document.getElementById('R2BER').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R2BER').value)) document.getElementById('R2BER').value=0 ;
+      }, false);
+      document.getElementById('R2RAI').addEventListener('keyup', function(){
+          if (isNaN(document.getElementById('R2RAI').value)) document.getElementById('R2RAI').value=0 ;
+      }, false);
+         
+    document.getElementById('crestcity').addEventListener('click', function(){CrestOptions.CrestCity = t.tcp.city.id;} , false);
+    document.getElementById('Cresttoggle').addEventListener('click', function(){t.toggleCrestState(this)} , false);
+    document.getElementById('pbcrestx').addEventListener('change', function(){CrestOptions.X = document.getElementById('pbcrestx').value;;} , false);
+    document.getElementById('pbcresty').addEventListener('change', function(){CrestOptions.Y = document.getElementById('pbcresty').value;} , false);
+    document.getElementById('R1SOM').addEventListener('change', function(){CrestOptions.R1SOM = document.getElementById('R1SOM').value;} , false);
+    document.getElementById('R1REC').addEventListener('change', function(){CrestOptions.R1REC = document.getElementById('R1REC').value;} , false);
+    document.getElementById('R1CAL').addEventListener('change', function(){CrestOptions.R1CAL = document.getElementById('R1CAL').value;} , false);
+    document.getElementById('R1CAV').addEventListener('change', function(){CrestOptions.R1CAV = document.getElementById('R1CAV').value;} , false);
+    document.getElementById('R1LEG').addEventListener('change', function(){CrestOptions.R1LEG = document.getElementById('R1LEG').value;} , false);
+    document.getElementById('R1SCO').addEventListener('change', function(){CrestOptions.R1SCO = document.getElementById('R1SCO').value;} , false);
+    document.getElementById('R1CAR').addEventListener('change', function(){CrestOptions.R1CAR = document.getElementById('R1CAR').value;} , false);
+    document.getElementById('R1CAP').addEventListener('change', function(){CrestOptions.R1CAP = document.getElementById('R1CAP').value;} , false);
+    document.getElementById('R1CEN').addEventListener('change', function(){CrestOptions.R1CEN = document.getElementById('R1CEN').value;} , false);
+    document.getElementById('R1ARI').addEventListener('change', function(){CrestOptions.R1ARI = document.getElementById('R1ARI').value;} , false);
+    document.getElementById('R1BAL').addEventListener('change', function(){CrestOptions.R1BAL = document.getElementById('R1BAL').value;} , false);
+    document.getElementById('R1BER').addEventListener('change', function(){CrestOptions.R1BER = document.getElementById('R1BER').value;} , false);
+    document.getElementById('R1RAI').addEventListener('change', function(){CrestOptions.R1RAI = document.getElementById('R1RAI').value;} , false);
+    
+    document.getElementById('R2SOM').addEventListener('change', function(){CrestOptions.R2SOM = document.getElementById('R2SOM').value;} , false);
+    document.getElementById('R2REC').addEventListener('change', function(){CrestOptions.R2REC = document.getElementById('R2REC').value;} , false);
+    document.getElementById('R2CAL').addEventListener('change', function(){CrestOptions.R2CAL = document.getElementById('R2CAL').value;} , false);
+    document.getElementById('R2CAV').addEventListener('change', function(){CrestOptions.R2CAV = document.getElementById('R2CAV').value;} , false);
+    document.getElementById('R2LEG').addEventListener('change', function(){CrestOptions.R2LEG = document.getElementById('R2LEG').value;} , false);
+    document.getElementById('R2SCO').addEventListener('change', function(){CrestOptions.R2SCO = document.getElementById('R2SCO').value;} , false);
+    document.getElementById('R2CAR').addEventListener('change', function(){CrestOptions.R2CAR = document.getElementById('R2CAR').value;} , false);
+    document.getElementById('R2CAP').addEventListener('change', function(){CrestOptions.R2CAP = document.getElementById('R2CAP').value;} , false);
+    document.getElementById('R2CEN').addEventListener('change', function(){CrestOptions.R2CEN = document.getElementById('R2CEN').value;} , false);
+    document.getElementById('R2ARI').addEventListener('change', function(){CrestOptions.R2ARI = document.getElementById('R2ARI').value;} , false);
+    document.getElementById('R2BAL').addEventListener('change', function(){CrestOptions.R2BAL = document.getElementById('R2BAL').value;} , false);
+    document.getElementById('R2BER').addEventListener('change', function(){CrestOptions.R2BER = document.getElementById('R2BER').value;} , false);
+    document.getElementById('R2RAI').addEventListener('change', function(){CrestOptions.R2RAI = document.getElementById('R2RAI').value;} , false);
+    
+    document.getElementById('CrestHelp').addEventListener('click', function(){t.helpPop();} , false);
+    document.getElementById('pbSaveRouteCrest').addEventListener('click', function(){CrestOptions.active=true;t.addCrestRoute();}, false);
+    document.getElementById('showCrestTargets').addEventListener('click', function(){t.showCrestRoute();}, false);         
+    
+	}, 
+helpPop : function (){
+    var helpText = 'Non disponibile';
+     if (t.cresthelp == null) {
+     	t.cresthelp = new CPopup('ArmoiriesHelp', 0, 0, 585, 400, true, function() {clearTimeout (1000);});
+     	t.cresthelp.centerMe (mainPop.getMainDiv());
+   	}
+    t.cresthelp.getMainDiv().innerHTML = helpText;
+    t.cresthelp.getTopDiv().innerHTML = '<CENTER><B>'+translate('Help')+' - Crest</b></center>';
+    t.cresthelp.show (true);
+  },
+    addCrestRoute : function () {
+		if(CrestOptions.X == "" || CrestOptions.Y == "") {
+		        alert(translate('No coordinates')+'!');
+			return;
+		}
+		var t = my.Crest;
+		var CrestLength = CrestData.length;
+		CrestData[CrestLength] = new CrestFunc(CrestOptions);
+		saveCrestData();
+     	ById('pbOpt').style.background ='#99FF99';
+     	setTimeout(function(){ (ById('pbOpt').style.background =''); }, 500);
+    },
+    showCrestRoute : function () {
+		var t = my.Crest;
+     		if (t.popCrestTargets == null) {
+     		 t.popCrestTargets = new CPopup('pbShowCrestTargets', 0, 0, 1100, 500, true, function() {clearTimeout (1000);});
+     		 t.popCrestTargets.centerMe (mainPop.getMainDiv());
+     		}
+     		
+		var m = '<DIV style="max-height:460px; height:460px; overflow-y:auto"><TABLE align=center cellpadding=0 cellspacing=0 width=100% class="pbShowCrestTargets" id="pbCrestTargets">';       
+		t.popCrestTargets.getMainDiv().innerHTML = '</table></div>' + m;
+		t.popCrestTargets.getTopDiv().innerHTML = '<TD><B>'+translate('Target attack')+'</td>';
+		t.paintCrestTargets();
+		t._addTabHeader();
+		t.popCrestTargets.show(true);
+    },
+	
+	
+/** add header **/
+    _addTabHeader : function () {
+		var row = document.getElementById('pbCrestTargets').insertRow(0);
+		row.vAlign = 'top';
+	     	row.insertCell(0).innerHTML = translate('Target');
+	     	row.insertCell(1).innerHTML = translate('Wave') + " #";
+	     	row.insertCell(2).innerHTML = uW.arStrings.unitName["u1"];
+	     	row.insertCell(3).innerHTML = uW.arStrings.unitName["u2"];
+	     	row.insertCell(4).innerHTML = uW.arStrings.unitName["u6"];
+	     	row.insertCell(5).innerHTML = uW.arStrings.unitName["u7"];
+	     	row.insertCell(6).innerHTML = uW.arStrings.unitName["u4"];
+	     	row.insertCell(7).innerHTML = uW.arStrings.unitName["u10"];
+	     	row.insertCell(8).innerHTML = uW.arStrings.unitName["u9"];
+	     	row.insertCell(9).innerHTML = uW.arStrings.unitName["u8"];
+	     	row.insertCell(10).innerHTML = uW.arStrings.unitName["u5"];
+	     	row.insertCell(11).innerHTML = uW.arStrings.unitName["u11"];
+	     	row.insertCell(12).innerHTML = uW.arStrings.unitName["u12"];
+	     	row.insertCell(13).innerHTML = uW.arStrings.unitName["u31"];
+	     	row.insertCell(14).innerHTML = uW.arStrings.unitName["u32"];
+	     	row.insertCell(15).innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;";
+	     	row.insertCell(16).innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+    },
+	
+	
+/** paintCrestTargets **/
+    paintCrestTargets : function () {
+		t = my.Crest;
+		for(var i = 0; i < CrestData.length; i++) {
+			t._addTabCrest(i, translate('To')+': <a href="javascript:void(0)" onclick="KB.Controllers.MapHelper.gotoCoord(' + CrestData[i].X + ',' + CrestData[i].Y+');">('+CrestData[i].X+','+CrestData[i].Y+')</a>', "<b>2</b>", CrestData[i].R2SOM, CrestData[i].R2REC, CrestData[i].R2CAL, CrestData[i].R2CAV, CrestData[i].R2LEG, CrestData[i].R2SCO, CrestData[i].R2CAR, CrestData[i].R2CAP, CrestData[i].R2CEN, CrestData[i].R2ARI, CrestData[i].R2BAL, CrestData[i].R2BER, CrestData[i].R2RAI, " "," ");
+			if (CrestData[i].active==true)
+			 t._addTabCrest(i, CrestData[i].CrestCity, "<b>1</b>", CrestData[i].R1SOM, CrestData[i].R1REC, CrestData[i].R1CAL, CrestData[i].R1CAV, CrestData[i].R1LEG, CrestData[i].R1SCO, CrestData[i].R1CAR, CrestData[i].R1CAP, CrestData[i].R1CEN, CrestData[i].R1ARI, CrestData[i].R1BAL, CrestData[i].R1BER, CrestData[i].R1RAI, translate('Remove'), translate('Active'));
+			else
+			 t._addTabCrest(i, CrestData[i].CrestCity, "<b>1</b>", CrestData[i].R1SOM, CrestData[i].R1REC, CrestData[i].R1CAL, CrestData[i].R1CAV, CrestData[i].R1LEG, CrestData[i].R1SCO, CrestData[i].R1CAR, CrestData[i].R1CAP, CrestData[i].R1CEN, CrestData[i].R1ARI, CrestData[i].R1BAL, CrestData[i].R1BER, CrestData[i].R1RAI, translate('Remove'), translate('Deactive'));
+			
+//			t._addTabCrest(i, "","","","","","","","","","","","","","","","","");
+		}
+	},
+	
+	
+/** Add Tab Crest **/
+    _addTabCrest : function (QueID, col0, col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11, col12, col13, col14, col15, col16) {
+		var t = my.Crest;
+		var row = document.getElementById('pbCrestTargets').insertRow(0);
+		for (var i = 0; i < 17; i++) {
+			if (i == 15 && col15 == translate('Remove')) {
+				row.insertCell(i).innerHTML = "<input type=button id='pbCrestDel_" + QueID + "' value='"+translate('Remove')+"'>";
+				document.getElementById('pbCrestDel_' + QueID).addEventListener('click', function(){t.cancelCrestTarget(QueID);}, false);
+			} else if (col15 == translate('Remove') && i == 0) {
+				row.insertCell(i).innerHTML = Cities.byID[col0].c.name;
+			} else if  (i == 16 && col15 == translate('Remove')) {
+			
+			  if ( i == 16 && col16 == translate('Active')) {
+			   row.insertCell(i).innerHTML = "<input type=button id='BOCrestAct_" + QueID + "'  value='"+translate('Active')+"'>";
+			     document.getElementById('BOCrestAct_' + QueID).addEventListener('click', function(){ CrestData[QueID].active=false;saveCrestData();t.showCrestRoute();  }, false);
+			  } else if (i == 16 && col16 ==translate('Deactive')) {
+			   row.insertCell(i).innerHTML = "<input type=button id='BOCrestAct_" + QueID + "'  value='"+translate('Deactive')+"'>";
+			     document.getElementById('BOCrestAct_' + QueID).addEventListener('click', function(){ CrestData[QueID].active=true;saveCrestData();t.showCrestRoute();  }, false);
+			  
+			  }
+			
+			}else{
+				row.insertCell(i).innerHTML = eval("col" + i) + "&nbsp; &nbsp;";
+			}
+			
+			
+		}
+		
+    },
+	
+	
+/** Cancel Crest Target **/
+    cancelCrestTarget : function (QueID) {
+	     var t = my.Crest;
+	     var queueId = parseInt(QueID);
+	     CrestData.splice(queueId, 1);
+	     saveCrestData();
+	     t.showCrestRoute();
+    },
+         getRallypointLevel: function(id){
+           var t = my.Crest;
+          t.numslots=parseInt(unsafeWindow.Building.getMaxLevelForType(unsafeWindow.Constant.Building.RALLY_SPOT,id));
+		},
+         getRallypointLevel2: function(id){
+           var t = my.Crest;
+          t.rallypointlevel=parseInt(unsafeWindow.Building.getMaxLevelForType(unsafeWindow.Constant.Building.RALLY_SPOT,id));
+		},
+ 	sendMarch: function(p,callback,r,retry, CrestDataNum, cityID, a, b){
+           unsafeWindow.AjaxCall.gPostRequest("march.php",p,
+           function(h){
+           			actionLog('Crest',translate('Crest')+' '+translate('to')+' '+p.xcoord+','+p.ycoord);
+			 		var now = new Date().getTime()/1000.0;
+					now = now.toFixed(0); 
+					var i="attack",j=Number(h.eta)-Number(h.initTS);
+	   				unsafeWindow.Chrome.ResourcesBar.update();
+	   				unsafeWindow.Object.keys(a.units).each(function(k){Cities.byID[cityID].c.troops[k].subtract(a.units[k].sent)});
+	   				if(b){b.status=10;b.subtractEnergy()}
+	   				a.id=Number(h.marchId);
+	   				a.to.tileId=Number(h.tileId);
+	   				a.to.tileType=Number(h.tileType);
+	   				a.to.tileLevel=Number(h.tileLevel);
+	   				a.to.playerId=Number(h.tileUserId);
+	   				a.to.cityId=Number(h.tileCityId);
+	   				a.setStatus(unsafeWindow.Constant.MarchStatus.OUTBOUND);
+	   				a.setMarchTime(unsafeWindow.unixtime(),unsafeWindow.unixtime()+j,0);
+	   				Cities.byID[cityID].c.marches.outgoing[a.id]=a;
+	   				unsafeWindow.KTrack.event(["_trackEvent","March",i,unsafeWindow.player.level]);
+					if(r==1){
+											Options.Crest1Count++;
+											r = 2;
+//											CrestData[CrestDataNum].lastRoundTwo = now;
+					} else {
+											r = 1;
+											CrestDataNum = parseInt(CrestDataNum) + 1; 
+											Options.Crest2Count++;
+					}
+					saveCrestData();
+					t.timer = setTimeout (function(){callback(r,0,CrestDataNum);}, (Math.random()*10*50)+(Options.Crestinterval*1000));
+					return;
+				},
+				function(h){
+					var RetryTime = parseIntNan(Options.Crestinterval)*1000;
+					actionLog('Crest','<font color=red>'+translate('FAIL')+' '+translate('Crest')+' '+translate('to')+' '+p.xcoord+','+p.ycoord+' '+translate('I will try after')+' '+RetryTime);
+					setTimeout (function(){callback(r,retry,CrestDataNum);}, RetryTime);
+					return;
+			}, false);
+	},
+	
+	Rounds : function (r, retry, CrestDataNum) {
+		var t = my.Crest;
+		clearTimeout(t.timer);
+		
+		if (!Options.crestRunning) return;
+		if (CrestData.length == 0){
+			return;
+		}
+			
+		if (CrestDataNum >= CrestData.length) {
+			CrestDataNum = 0;
+			saveCrestData();
+			t.timer = setTimeout(function(){ t.Rounds(1,retry,CrestDataNum);},Options.Crestinterval*1000);
+			return;
+		}
+		cityID = CrestData[CrestDataNum].CrestCity;
+		
+		if (CrestData[CrestDataNum].active==false) {
+			alert('Disattivo');
+		    t.timer =setTimeout(function() { t.Rounds(1,0,parseInt(CrestDataNum+1)); },1000);
+		    return;
+		}
+		retry++;		
+		switch (retry) {
+			case 10:
+				t.timer =setTimeout(function(){ t.Rounds(r,retry,CrestDataNum);},30000);
+				return;
+				break;
+			case 20:
+				t.timer =setTimeout(function(){ t.Rounds(r,retry,CrestDataNum);},30000);
+				return;
+				break;
+			case 50:
+				//reloadKOC();
+				return;
+				break;
+		}
+   	   var unit1 = 1; var unit2 = 2; var unit6 = 6; var unit7 = 7; var unit4 = 4; var unit10 = 10; var unit9 = 9; var unit8 = 8; var unit5 = 5; var unit11 = 11; var unit12 = 12; var unit31 = 31; var unit32 = 32;
+ 	   var Controllo = true;
+       if(parseInt(Cities.byID[cityID].c.troops[unit1].count())  < CrestData[CrestDataNum].R1SOM) Controllo = false;
+       if(parseInt(Cities.byID[cityID].c.troops[unit2].count())  < CrestData[CrestDataNum].R1REC) Controllo = false;
+       if(parseInt(Cities.byID[cityID].c.troops[unit6].count())  < CrestData[CrestDataNum].R1CAL) Controllo = false;
+       if(parseInt(Cities.byID[cityID].c.troops[unit7].count())  < CrestData[CrestDataNum].R1CAV) Controllo = false;
+       if(parseInt(Cities.byID[cityID].c.troops[unit4].count())  < CrestData[CrestDataNum].R1LEG) Controllo = false;
+       if(parseInt(Cities.byID[cityID].c.troops[unit10].count()) < CrestData[CrestDataNum].R1SCO) Controllo = false;
+       if(parseInt(Cities.byID[cityID].c.troops[unit9].count())  < CrestData[CrestDataNum].R1CAR) Controllo = false;
+       if(parseInt(Cities.byID[cityID].c.troops[unit8].count())  < CrestData[CrestDataNum].R1CAP) Controllo = false;
+       if(parseInt(Cities.byID[cityID].c.troops[unit5].count())  < CrestData[CrestDataNum].R1CEN) Controllo = false;
+       if(parseInt(Cities.byID[cityID].c.troops[unit11].count()) < CrestData[CrestDataNum].R1ARI) Controllo = false;
+       if(parseInt(Cities.byID[cityID].c.troops[unit12].count()) < CrestData[CrestDataNum].R1BAL) Controllo = false;
+       if(parseInt(Cities.byID[cityID].c.troops[unit31].count()) < CrestData[CrestDataNum].R1BER) Controllo = false;
+       if(parseInt(Cities.byID[cityID].c.troops[unit32].count()) < CrestData[CrestDataNum].R1RAI) Controllo = false;
+       
+       if(parseInt(Cities.byID[cityID].c.troops[unit1].count())  < CrestData[CrestDataNum].R2SOM) Controllo = false;
+       if(parseInt(Cities.byID[cityID].c.troops[unit2].count())  < CrestData[CrestDataNum].R2REC) Controllo = false;
+       if(parseInt(Cities.byID[cityID].c.troops[unit6].count())  < CrestData[CrestDataNum].R2CAL) Controllo = false;
+       if(parseInt(Cities.byID[cityID].c.troops[unit7].count())  < CrestData[CrestDataNum].R2CAV) Controllo = false;
+       if(parseInt(Cities.byID[cityID].c.troops[unit4].count())  < CrestData[CrestDataNum].R2LEG) Controllo = false;
+       if(parseInt(Cities.byID[cityID].c.troops[unit10].count()) < CrestData[CrestDataNum].R2SCO) Controllo = false;
+       if(parseInt(Cities.byID[cityID].c.troops[unit9].count())  < CrestData[CrestDataNum].R2CAR) Controllo = false;
+       if(parseInt(Cities.byID[cityID].c.troops[unit8].count())  < CrestData[CrestDataNum].R2CAP) Controllo = false;
+       if(parseInt(Cities.byID[cityID].c.troops[unit5].count())  < CrestData[CrestDataNum].R2CEN) Controllo = false;
+       if(parseInt(Cities.byID[cityID].c.troops[unit11].count()) < CrestData[CrestDataNum].R2ARI) Controllo = false;
+       if(parseInt(Cities.byID[cityID].c.troops[unit12].count()) < CrestData[CrestDataNum].R2BAL) Controllo = false;
+       if(parseInt(Cities.byID[cityID].c.troops[unit31].count()) < CrestData[CrestDataNum].R2BER) Controllo = false;
+       if(parseInt(Cities.byID[cityID].c.troops[unit32].count()) < CrestData[CrestDataNum].R2RAI) Controllo = false;
+       if(!Controllo){
+			if (CrestData.length == 1) {
+				t.timer =setTimeout(function(){ t.Rounds(r,retry,CrestDataNum);},Options.Crestinterval*1000);
+				return;
+			 } else {
+				t.timer =setTimeout(function(){ t.Rounds(1,retry,parseInt(CrestDataNum)+1);},Options.Crestinterval*1000);
+				return;   
+			}    
+       }
+     	var kk=[];
+     	Cities.byID[cityID].c.generalsSorted().each(function(b){if(b.available() && b.energy()>Options.CrestEnergy){ kk.push(b);}}); // id du premier chevalier ! a trouver
+     	
+     	var selectedKnight=kk.length>0?kk[0].id:0;
+		
+		
+	//	alert(Cities.byID[cityID].c.name);
+		if(Cities.byID[cityID].c.canMarch()){
+			if(selectedKnight != 0){
+			
+			} else {
+				if (CrestData.length == 1) {
+					t.timer = setTimeout(function(){ t.Rounds(r,retry,CrestDataNum);},Options.Crestinterval*1000);
+					return;
+				} else {
+					t.timer = setTimeout(function(){ t.Rounds(1,retry,parseInt(CrestDataNum)+1);},Options.Crestinterval*1000);
+					return;
+				}
+			}
+		} else {
+			if (CrestData.length == 1) {
+				t.timer = setTimeout(function(){ t.Rounds(r,retry,CrestDataNum);},Options.Crestinterval*1000);
+				return;
+			} else {
+				t.timer = setTimeout(function(){ t.Rounds(1,retry,parseInt(CrestDataNum)+1);},Options.Crestinterval*1000);
+				return;
+			}
+		}
+		var kid = selectedKnight;
+		if (CrestData[CrestDataNum].R1SOM == 0 && CrestData[CrestDataNum].R1REC == 0 && CrestData[CrestDataNum].R1CAL == 0 && CrestData[CrestDataNum].R1CAV == 0 && CrestData[CrestDataNum].R1LEG == 0 && CrestData[CrestDataNum].R1SCO == 0 && CrestData[CrestDataNum].R1CAR == 0 && CrestData[CrestDataNum].R1CAP == 0 && CrestData[CrestDataNum].R1CEN == 0 && CrestData[CrestDataNum].R1ARI == 0 && CrestData[CrestDataNum].R1BAL == 0 && CrestData[CrestDataNum].R1BER == 0) {
+		   r=2;
+	   	}
+		if (CrestData[CrestDataNum].R2SOM == 0 && CrestData[CrestDataNum].R2REC == 0 && CrestData[CrestDataNum].R2CAL == 0 && CrestData[CrestDataNum].R2CAV == 0 && CrestData[CrestDataNum].R2LEG == 0 && CrestData[CrestDataNum].R2SCO == 0 && CrestData[CrestDataNum].R2CAR == 0 && CrestData[CrestDataNum].R2CAP == 0 && CrestData[CrestDataNum].R2CEN == 0 && CrestData[CrestDataNum].R2ARI == 0 && CrestData[CrestDataNum].R2BAL == 0 && CrestData[CrestDataNum].R2BER == 0) {
+		   r=1;
+	   	}	   	
+	   	/**else {
+			var now = new Date().getTime()/1000.0;
+			now = now.toFixed(0);
+			if (now > (parseInt(CrestData[CrestDataNum].lastRoundTwo) + 300)) { // 3 minutes entre les premires vagues 
+				r=1;
+			}
+		}	**/
+	   var d=unsafeWindow.Building.getMaxLevelForType(50,cityID);
+       var a=new unsafeWindow.March({marchId:Cities.byID[cityID].c.emptyMarchSlots()[0],toXCoord:CrestData[CrestDataNum].X,toYCoord:CrestData[CrestDataNum].Y,fromCityId:CrestData[CrestDataNum].CrestCity,marchType:unsafeWindow.Constant.MarchType.ATTACK,knightId:selectedKnight,fromHealLevel:d,apothecaryHealPercent:unsafeWindow.KB.Controllers.Apothecary.getHealPercent(d),gold:0,resource1:0,resource2:0,resource3:0,resource4:0});
+ 
+        var CalcEta = t.calculateTime(CrestData[CrestDataNum].CrestCity,7,CrestData[CrestDataNum].X,CrestData[CrestDataNum].Y);
+		var b=Cities.byID[cityID].c.generals[a.general.id];
+		if(b.energy()>0){
+		switch(r) {
+			case 1:
+				var params 		= 	{};
+				params.mid		= 	a.id;
+				params.xcoord 	= 	a.to.x;
+				params.ycoord 	= 	a.to.y;
+				params.cid		=	cityID;
+				params.type		=	unsafeWindow.Constant.MarchType.ATTACK;
+				params.kid		= 	a.general.id;
+				params.gold		=	a.gold;
+				params.r1		=	a.resources[1];
+				params.r2		=	a.resources[2];
+				params.r3		=	a.resources[3];
+				params.r4		=	a.resources[4];				
+				params.camp		=	0;
+				params.et		=	CalcEta;
+				if(CrestData[CrestDataNum].R1SOM >0) a.units[unit1].sent 		= 	CrestData[CrestDataNum].R1SOM;
+				if(CrestData[CrestDataNum].R1REC >0) a.units[unit2].sent 		= 	CrestData[CrestDataNum].R1REC;
+				if(CrestData[CrestDataNum].R1CAL >0) a.units[unit6].sent 		= 	CrestData[CrestDataNum].R1CAL;
+				if(CrestData[CrestDataNum].R1CAV >0) a.units[unit7].sent 		= 	CrestData[CrestDataNum].R1CAV;
+				if(CrestData[CrestDataNum].R1LEG >0) a.units[unit4].sent 		= 	CrestData[CrestDataNum].R1LEG;
+				if(CrestData[CrestDataNum].R1SCO >0) a.units[unit10].sent 		= 	CrestData[CrestDataNum].R1SCO;
+				if(CrestData[CrestDataNum].R1CAR >0) a.units[unit9].sent		= 	CrestData[CrestDataNum].R1CAR;
+				if(CrestData[CrestDataNum].R1CAP >0) a.units[unit8].sent 		= 	CrestData[CrestDataNum].R1CAP;
+				if(CrestData[CrestDataNum].R1CEN >0) a.units[unit5].sent 		= 	CrestData[CrestDataNum].R1CEN;
+				if(CrestData[CrestDataNum].R1ARI >0) a.units[unit11].sent		= 	CrestData[CrestDataNum].R1ARI;
+				if(CrestData[CrestDataNum].R1BAL >0) a.units[unit12].sent 		= 	CrestData[CrestDataNum].R1BAL;
+				if(CrestData[CrestDataNum].R1BER >0) a.units[unit31].sent	 	= 	CrestData[CrestDataNum].R1BER;
+				if(CrestData[CrestDataNum].R1RAI >0) a.units[unit32].sent		=	CrestData[CrestDataNum].R1RAI;
+				if(CrestData[CrestDataNum].R1SOM >0) params.u1 		= 	CrestData[CrestDataNum].R1SOM;
+				if(CrestData[CrestDataNum].R1REC >0) params.u2 		= 	CrestData[CrestDataNum].R1REC;
+				if(CrestData[CrestDataNum].R1CAL >0) params.u6 		= 	CrestData[CrestDataNum].R1CAL;
+				if(CrestData[CrestDataNum].R1CAV >0) params.u7 		= 	CrestData[CrestDataNum].R1CAV;
+				if(CrestData[CrestDataNum].R1LEG >0) params.u4 		= 	CrestData[CrestDataNum].R1LEG;
+				if(CrestData[CrestDataNum].R1SCO >0) params.u10 	= 	CrestData[CrestDataNum].R1SCO;
+				if(CrestData[CrestDataNum].R1CAR >0) params.u9		= 	CrestData[CrestDataNum].R1CAR;
+				if(CrestData[CrestDataNum].R1CAP >0) params.u8 		= 	CrestData[CrestDataNum].R1CAP;
+				if(CrestData[CrestDataNum].R1CEN >0) params.u5 		= 	CrestData[CrestDataNum].R1CEN;
+				if(CrestData[CrestDataNum].R1ARI >0) params.u11		= 	CrestData[CrestDataNum].R1ARI;
+				if(CrestData[CrestDataNum].R1BAL >0) params.u12 	= 	CrestData[CrestDataNum].R1BAL;
+				if(CrestData[CrestDataNum].R1BER >0) params.u31 	= 	CrestData[CrestDataNum].R1BER;
+				if(CrestData[CrestDataNum].R1RAI >0) params.u32		=	CrestData[CrestDataNum].R1RAI;
+				t.sendMarch(params,t.Rounds,r,retry, CrestDataNum, cityID, a, b);
+				break;
+			default:
+				var params 		= 	{};
+				params.mid		= 	a.id;
+				params.xcoord 	= 	a.to.x;
+				params.ycoord 	= 	a.to.y;
+				params.cid		=	cityID;
+				params.type		=	unsafeWindow.Constant.MarchType.ATTACK;
+				params.kid		= 	a.general.id;
+				params.gold		=	a.gold;
+				params.r1		=	a.resources[1];
+				params.r2		=	a.resources[2];
+				params.r3		=	a.resources[3];
+				params.r4		=	a.resources[4];				
+				params.camp		=	0;
+				params.et		=	CalcEta;
+				if(CrestData[CrestDataNum].R2SOM >0) a.units[unit1].sent 		= 	CrestData[CrestDataNum].R2SOM;
+				if(CrestData[CrestDataNum].R2REC >0) a.units[unit2].sent 		= 	CrestData[CrestDataNum].R2REC;
+				if(CrestData[CrestDataNum].R2CAL >0) a.units[unit6].sent 		= 	CrestData[CrestDataNum].R2CAL;
+				if(CrestData[CrestDataNum].R2CAV >0) a.units[unit7].sent 		= 	CrestData[CrestDataNum].R2CAV;
+				if(CrestData[CrestDataNum].R2LEG >0) a.units[unit4].sent 		= 	CrestData[CrestDataNum].R2LEG;
+				if(CrestData[CrestDataNum].R2SCO >0) a.units[unit10].sent 		= 	CrestData[CrestDataNum].R2SCO;
+				if(CrestData[CrestDataNum].R2CAR >0) a.units[unit9].sent		= 	CrestData[CrestDataNum].R2CAR;
+				if(CrestData[CrestDataNum].R2CAP >0) a.units[unit8].sent 		= 	CrestData[CrestDataNum].R2CAP;
+				if(CrestData[CrestDataNum].R2CEN >0) a.units[unit5].sent 		= 	CrestData[CrestDataNum].R2CEN;
+				if(CrestData[CrestDataNum].R2ARI >0) a.units[unit11].sent		= 	CrestData[CrestDataNum].R2ARI;
+				if(CrestData[CrestDataNum].R2BAL >0) a.units[unit12].sent 		= 	CrestData[CrestDataNum].R2BAL;
+				if(CrestData[CrestDataNum].R2BER >0) a.units[unit31].sent	 	= 	CrestData[CrestDataNum].R2BER;
+				if(CrestData[CrestDataNum].R2RAI >0) a.units[unit32].sent		=	CrestData[CrestDataNum].R2RAI;
+				if(CrestData[CrestDataNum].R2SOM >0) params.u1 		= 	CrestData[CrestDataNum].R2SOM;
+				if(CrestData[CrestDataNum].R2REC >0) params.u2 		= 	CrestData[CrestDataNum].R2REC;
+				if(CrestData[CrestDataNum].R2CAL >0) params.u6 		= 	CrestData[CrestDataNum].R2CAL;
+				if(CrestData[CrestDataNum].R2CAV >0) params.u7 		= 	CrestData[CrestDataNum].R2CAV;
+				if(CrestData[CrestDataNum].R2LEG >0) params.u4 		= 	CrestData[CrestDataNum].R2LEG;
+				if(CrestData[CrestDataNum].R2SCO >0) params.u10 	= 	CrestData[CrestDataNum].R2SCO;
+				if(CrestData[CrestDataNum].R2CAR >0) params.u9 		= 	CrestData[CrestDataNum].R2CAR;
+				if(CrestData[CrestDataNum].R2CAP >0) params.u8 		= 	CrestData[CrestDataNum].R2CAP;
+				if(CrestData[CrestDataNum].R2CEN >0) params.u5 		= 	CrestData[CrestDataNum].R2CEN;
+				if(CrestData[CrestDataNum].R2ARI >0) params.u11		= 	CrestData[CrestDataNum].R2ARI;
+				if(CrestData[CrestDataNum].R2BAL >0) params.u12 	= 	CrestData[CrestDataNum].R2BAL;
+				if(CrestData[CrestDataNum].R2BER >0) params.u31 	= 	CrestData[CrestDataNum].R2BER;
+				if(CrestData[CrestDataNum].R2RAI >0) params.u32		=	CrestData[CrestDataNum].R2RAI;
+           		t.sendMarch(params,t.Rounds,r,retry, CrestDataNum, cityID, a, b);
+				break;
+		}
+	}
+	},
+  calculateTime: function(id,b,g,e) {
+  var c=65535,a=Math.abs(Cities.byID[id].c.x-g),f=Math.abs(Cities.byID[id].c.y-e),d=Math.sqrt((a*a)+(f*f));
+  h=unsafeWindow.Unit.stats[b].speed*1;
+  if(h<c){c=h;}
+  return Math.ceil(d*6000/c)+30;
+  },	
+	
+	toggleCrestState: function(obj) {
+		var t = my.Crest;
+		obj = ById('Cresttoggle');
+			if (Options.crestRunning == true) {
+				Options.crestRunning = false;
+				if (obj) obj.value = "Crest = OFF";
+				updatebotbutton('Crest -OFF', 'pbautotstab');
+				saveOptions();
+			} else {
+				Options.crestRunning = true;
+				if (obj) obj.value = "Crest = ON";
+				updatebotbutton('Crest -ON', 'pbautotstab');
+					Options.Crest1Count = 0;
+					Options.Crest2Count = 0;
+				}
+				saveOptions();
+				t.timer =setTimeout(function(){ t.Rounds(1,0,0);}, 1000);
+			},
+	hide : function (){
+		var t = my.Crest;
+	},
+ };
+ 
+ 
+/** End Cresting tab **/
+/*********************************** General BUG ***********************************/
+my.Germ = {
+  cont : null,
+  timer : null,
+  pop:null,
+  summary : [],
+  selectedCity:null,
+  AutoAttackCity:null,
+  init : function (){
+    var t = my.Germ;
+    t.cont = document.createElement('div');
+    return t.cont;
+  },
+  show : function (){
+    var t = my.Germ;   
+      try {
+		var m = '<DIV class=ptstat>'+translate('GERMANIA')+'</div>';
+			m+= '<center>'+translate('City for scout/attack')+' <span id="CityGerm"></span><br>';
+			m+= '<input type="button" value="'+translate('UPDATE')+'" id="UpdateGerm"></center><br><br>';
+			m+= '<div id="GermaniaStats"><center><b>'+translate('Wait')+' . . .</b>';
+			m+= '</div>';
+			m+= '<br><br><DIV class=ptstat>'+translate('AUTO ATTACK')+'</div>';
+			m+= '<div id="AttackGeneral">';
+				m+= '<center><table width="300px"><tr>';
+				m+= '<td><b>'+translate('City')+':</b></td>';
+				m+= '<td><span id="GermAutoAttack"></span></center></td>';
+				m+= '</tr><tr><td><br></td></tr><tr>';
+				m+= '</tr><tr>';
+				m+= '<td><b>Germania:</b></td>';
+				m+= '<td><select id="NumGerm"><option value="2">1: Ungetmwald</option>\
+											  <option value="3">2: Saalburg</option>\
+											  <option value="4">3: Mogontiacum</option>\
+											  <option value="5">4: Minden</option>\
+											  <option value="6">5: Teutoburg</option>\
+				 		 </select></td>';
+				m+= '</tr><tr><td><br></td></tr><tr>';	 
+				m+= '</tr><tr>';
+				m+= '<td><b>'+uW.arStrings.Common["Generals"]+':</b></td>';
+				m+= '<td><input type="checkbox" id="SelAllGen"> <b>'+translate('Select all')+'</b>';
+				m+= '<div style="width:200px; max-width:500px; height:100px; max-height:100px; overflow-y:auto; text-align:left;" id="GenGerm"></div></td>';
+				m+= '</tr><tr><td><br></td></tr><tr>';
+				m+= '</tr><tr>';
+				m+= '<td><b>'+translate('Troops')+': </b></td>';
+				m+= '<td><select id="TroopsGenAutoAttack">';
+				uW.Barracks.allUnitIds.each(function(r){
+         			if (uW.arStrings.unitName["u"+r]) {
+          				m+= '<option value="'+r+'">'+uW.arStrings.unitName["u"+r]+"</option>";
+         			}
+        		});
+        		m+= '</select> <b>(<span id="AmoutTroopsGerm"></span>)</b> </td>';
+        		m+= '</tr></table><br><br>';
+				m+= '<input DISABLED type="button" id="StartAttackGen" value="'+uW.arStrings.Common.Attack+'"></center>';
+			m+= '</div>';
+			m+= '<div id="StatGeneral">';
+				m+= '<br><br><br><br>';
+				m+= '<center><span id="TottAttackGen"></span><br>';
+				m+= '<span id="TottErrAttackGen"></span><br><br>';
+				m+= '<input DISABLED type="button" id="HideStatGen" value="'+translate('Close')+'"></center>';
+			m+= '</div>';
+			m+= '<br><br><center><span id="MessageGerm"></span></center>';
+			t.cont.innerHTML = m; 
+						
+			ById('AttackGeneral').style.display = 'block';
+			ById('StatGeneral').style.display = 'none';
+			
+			var dcp = new CdispCityPicker ('germcity', ById('CityGerm'), true, t.clickCitySelect, 0);
+			var dcp = new CdispCityPicker ('germautoattackcity', ById('GermAutoAttack'), true, t.clickCityAutoAttackSelect, 0);
+			
+			t.getSummary();
+			t.UpdateTroops();
+	
+			ById("UpdateGerm").addEventListener('click', function(){ 
+				ById('GermaniaStats').innerHTML = '<center><b>'+translate('Wait')+' . . .</b>';
+				t.getSummary(); 
+			}, false);
+			
+			ById('SelAllGen').addEventListener('click', function(){ 
+				 t.getGeneral();
+			}, false);
+			
+			ById('HideStatGen').addEventListener('click', function(){
+				ById('AttackGeneral').style.display = 'block';
+				ById('StatGeneral').style.display = 'none';
+				ById('HideStatGen').disabled = true;
+				ById('StartAttackGen').disabled = true;
+				t.getGeneral(); 
+				t.UpdateTroops();
+				ById('MessageGerm').innerHTML = '<font color=red><b>'+translate('I suggest you refresh the page. Some data may not be real')+'!</b></font>';
+			}, false);
+			
+			ById("TroopsGenAutoAttack").addEventListener('change', function(){ 
+				t.UpdateTroops(); 
+			}, false);
+			
+			ById("StartAttackGen").addEventListener('click', function(){ 	
+				ById('AttackGeneral').style.display = 'none';
+				ById('StatGeneral').style.display = 'block';			
+				t.PreStart(); 
+			}, false);			
+			
+			
+			
+ 	} catch (e) {
+        t.cont.innerHTML = '<PRE>'+ e.name +' : '+ e.message +'</pre>';  
+      }      
+  },
+  
+  PreStart : function () {
+   var t = my.Germ;
+   var CityId = t.AutoAttackCity.c.id;
+   var TotAttacks = 0;
+   Cities.byID[CityId].c.generalsSorted().each(function(b){
+		if(b.available()){
+			if(b.energy()>0 && ById('GEN'+b.id).checked) {
+				TotAttacks += b.energy();
+			}
+		}
+	});	  
+	ById('TottAttackGen').innerHTML = '0/'+TotAttacks;
+	ById('TottErrAttackGen').innerHTML = '';
+	t.Start(TotAttacks);
+  },
+  
+  Start : function (TotAttacks) {
+   var t = my.Germ;
+   var TotAttackComp = 0;
+   var TotErrorComp = 0;
+   var Germania = ById('NumGerm').value;
+   var TroopsId = ById('TroopsGenAutoAttack').value;
+   var CityId = t.AutoAttackCity.c.id;
+   var kk = [];
+   Cities.byID[CityId].c.generalsSorted().each(function(b){
+		if(b.available()){
+			if(b.energy()>0 && ById('GEN'+b.id).checked) {
+				kk.push({
+					id 		: 	b.id,
+					energy 	: 	b.energy()
+				});
+			}
+		}
+	});	    
+	
+	for (var y = 0; y < kk.length; y++) {
+    	var KnightId = kk[y].id;
+    	var KnightEn = kk[y].energy;
+    	
+    	for (cont = 1; cont <= KnightEn; cont++) {
+    		
+    		var c = {};
+    			c.bid			=	1;
+    			c.lid			=	Germania;
+    			c.cid			=	CityId;
+    			c.kid			=	KnightId;
+    			c['u'+TroopsId]	=	1;
+    		unsafeWindow.AjaxCall.gPostRequest("battlegroundAttack.php", c, 
+      			function(rslt) {
+      				TotAttackComp += 1;
+      				ById('TottAttackGen').innerHTML = TotAttackComp + '/' + TotAttacks; 
+					if(TotAttackComp == TotAttacks) ById('HideStatGen').disabled = false;
+      			},
+      			function (rslt) {
+      				TotErrorComp += 1;
+      				ById('TottErrAttackGen').innerHTML = translate('Errors')+': '+TotErrorComp;
+      				TotAttackComp += 1;
+      				ById('TottAttackGen').innerHTML = TotAttackComp + '/' + TotAttacks; 
+					if(TotAttackComp == TotAttacks) ById('HideStatGen').disabled = false;
+      			}
+      		);
+    		
+    		
+    	}
+    }       
+  },
+  UpdateTroops : function (){
+  	var t = my.Germ;
+  	
+  	var cityid = t.AutoAttackCity.id;
+  	var TId = ById('TroopsGenAutoAttack').value;
+  	var m = parseInt(Cities.byID[cityid].c.troops[TId].count());
+  	ById('AmoutTroopsGerm').innerHTML = m;
+  },
+  getGeneral : function (){
+  	var t = my.Germ;
+  	var m = '<center><table>';
+	var id = t.AutoAttackCity.c.id;
+	Cities.byID[id].c.generalsSorted().each(function(b){
+			if(b.energy()>0) {
+				if(ById('SelAllGen').checked) {
+					m+= '<tr><td><input class="'+b.id+'" type="checkbox" id="GEN'+b.id+'" CHECKED></td><td>'+b.name+' '+b.level()+' ('+b.energy()+')</td></tr>';
+					ById('StartAttackGen').disabled = false;
+				} else {
+					m+= '<tr><td><input class="'+b.id+'" type="checkbox" id="GEN'+b.id+'"></td><td>'+b.name+' '+b.level()+' ('+b.energy()+')</td></tr>';
+					ById('StartAttackGen').disabled = true;
+				}
+			} else {
+				m+= '<tr><td><input DISABLED class="'+b.id+'" type="checkbox" id="GEN'+b.id+'"></td><td><font color=red>'+b.name+' '+b.level()+' ('+b.energy()+')</font></td></tr>';
+			}
+	});	
+	m+= '</table></center>';
+  	ById('GenGerm').innerHTML = m;
+  	var Enable = false;
+  	Cities.byID[id].c.generalsSorted().each(function(b){
+		if(b.available() && b.energy()>0){
+			ById('GEN'+b.id).addEventListener ('click', function(){
+	 			Cities.byID[id].c.generalsSorted().each(function(b){
+					if(b.available() && b.energy()>0){
+	 					if(ById('GEN'+b.id).checked) Enable = true;
+	 			}});
+	 			if(Enable) ById('StartAttackGen').disabled = false;
+				else ById('StartAttackGen').disabled = true;
+	 		},false);
+	 }});
+  },
+  getSummary : function (){
+  	var t = my.Germ;
+  	t.summary = [""];
+  	var c = {};
+  	unsafeWindow.AjaxCall.gPostRequest("battlegroundGetSummaryInfo.php", c, 
+      function(rslt) {
+      	var ff = rslt.data[1];
+      	for (k in ff) {
+      		var z = ff[k];
+      	//	alert(zz);
+      		var LocationId = z.locationId;
+      		if(LocationId > 1) {
+      			var NomeAlleanza = z.allianceName;
+      			if(NomeAlleanza == "") NomeAlleanza = translate('FREE');
+      			if(NomeAlleanza == translate('FREE')) {
+      				var Conq = 0;
+      				var Kick = 0;
+      			} else {
+      				var Time = parseInt(unixTime());
+      				var Conq = parseInt(Time - parseInt(z.conqueredUnixtime));
+      				var Kick = parseInt(parseInt(z.kickoutEtaUnixtime) - Time);
+      			}
+      			t.summary.push({
+      				AllianceName	:	NomeAlleanza,
+      				Conquered		:	Conq,
+      				KickOut			:	Kick,
+      			});
+      		}
+      	t.paint();
+      }});
+       
+  },
+  
+  scoutgerm : function (id) {
+  	var t = my.Germ;
+	var c = {};
+		c.bid = 1;
+		c.lid = id;
+		c.cid = t.selectedCity.c.id;
+  	unsafeWindow.AjaxCall.gPostRequest("battlegroundScouting.php", c, 
+      function(rslt) {
+      		var m = '';
+      		var AllianceId = rslt.index.toAllianceId;
+      		if(AllianceId != 0)
+      			var NameAlliance = rslt.arAllianceNames['a'+AllianceId];
+      		var Knight = rslt.details.knght['cbt'];	
+      		var Details = rslt.details.unts;
+      		m+= translate('Alliance')+': <b>';
+      			if(AllianceId != 0) m+= NameAlliance+'</b><br>';
+      			else m+= translate('FREE')+'</b><br>';
+      			m+= translate('Level')+' '+uW.arStrings.Common["Generals"]+': <b>'+Knight+'</b><br><br>';
+      			m+= '<b>'+translate('Troops')+'</b><br>';
+      			m+= '<table>';
+      		for (k in Details) {
+      			m+= '<tr><td>'+uW.arStrings.unitName[k]+': </td><td><b>'+Details[k] + '</b></td></tr>';
+      		}
+      		m+= '</table>';   		
+		 
+		 if (t.pop == null){
+		 t.pop = new CPopup ('BOScoutGermAlert', 50, 150, 500, 400, true);
+                 t.pop.getTopDiv().innerHTML =   '<DIV align=center><h2><B>'+ScriptName+'</B></h2></DIV>'; 
+          }
+          t.pop.getMainDiv().innerHTML = m;
+          t.pop.show (true);      		
+	  },
+	  function(rslt){
+	  		t.scoutgerm(id);
+	  });
+  },
+  
+  paint : function () {
+  	var t = my.Germ;
+  	uW.SpyGerm = t.scoutgerm;
+  	ById('GermaniaStats').innerHTML = "";  	
+    var cc = '<table width="100%"><tr>';
+	for (var y = 1; y < t.summary.length; y++) {
+		var Sum = t.summary[y];
+		if(y == 4) cc+= '</tr></table><table><tr><td>&nbsp;</td></tr><tr><td>&nbsp;</td></tr><tr><td>&nbsp;</td></tr></table><table width="100%"><tr>';
+		if(y >= 4) var WW = '50%';
+		else var WW = (100/3)+'%';
+		if (Sum.AllianceName == translate('FREE')) var Color = 'red';
+		else if (Sum.AllianceName == getMyAlliance()[1]) var Color = 'green';
+		else var Color = '';
+		cc+= '<td style="text-align:center; vertical-align:middle;" width="'+WW+'">'+y+': <b><font color="'+Color+'">'+Sum.AllianceName + '</font></b><br>\
+																				   '+translate('For')+': <b>'+timestrShort(Sum.Conquered)+'</b><br>\
+																				   '+translate('Force Quit')+': <b>'+timestrShort(Sum.KickOut)+'</b><br><br>';
+																				    if(Sum.AllianceName != getMyAlliance()[1]) { 
+																				    	cc+= '<button  onclick="SpyGerm('+(y+1)+');" class="button20" type="button"><span>'+translate('Scout')+'</span></button><br>';
+																				   	//	cc+= '<button DISABLED onclick="AttackGerm('+(y+1)+');" class="button20" type="button"><span>'+translate('Attack')+'</span></button></td>';
+																				    }
+	}
+	cc+= '</tr></table>';   
+	ById('GermaniaStats').innerHTML = cc;  
+  },
+  getContent : function (){
+    var t = my.Germ;
+    return t.cont;
+  },
+  hide : function (){ 
+  },
+  clickCityAutoAttackSelect : function (city){
+    var t = my.Germ;
+    t.AutoAttackCity = city; 
+    t.getGeneral(); 
+    t.UpdateTroops();
+  },
+  clickCitySelect : function (city){
+    var t = my.Germ;
+    t.selectedCity = city;
+  },
+}
+my.testattack = {
+  cont : null,
+  state : null,
+  timer : null,
+  koordlistpointer : null,
+ init : function (div){
+    var t = my.testattack;
+    setTimeout(function() {
+ 	if (Options.ShowShrtKeys) AddSubTabLink('AutoCoords', t.ToggleAutoAttack, 'pbattacktab');   
+    if (Options.AttackAutoTest) {
+    	updatebotbutton(uW.arStrings.Common.Attack+'Coords -ON', 'pbattacktab');
+    } else {
+     	updatebotbutton(uW.arStrings.Common.Attack+'Coords -OFF', 'pbattacktab');
+     } 
+     }, 500);
+    if (Options.AttackAutoTest) {
+     Options.Attacktimer=setTimeout(t.start,1000);
+     saveOptions();
+    }
+    
+    this.cont = document.createElement('div');
+    return t.cont;
+  },
+ getContent : function (){
+    var t = my.testattack;
+    return t.cont;
+  },
+  hide : function (){
+    var t = my.testattack;
+  },
+  show : function (){ 
+      var t = my.testattack;
+      var SP = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+         if (t.state == null){
+          unsafeWindow.BOdeleteAttack=t.deleteAttack;
+               t.cont.innerHTML = '<DIV id=attaquetestContent style="height:670px; max-height:670px; overflow-y:auto"></div>';
+               t.state = 1;
+         }
+         var m = '<DIV class=ptstat>AUTO ATTACK - by ProgramAngel</div><table width=100%><tr><td width="70%" style="vertical-align: middle;"><center>';
+         if (Options.AttackAutoTest) {
+          m+= "<input type=button value='AUTO ATTACK = ON' id=BOAttackTestButton>";
+         } else {
+          m+= "<input type=button value='AUTO ATTACK = OFF' id=BOAttackTestButton>";
+     }
+     m+='</center></td><td style="vertical-align: middle;"><center>'+pubblicity+'</center></td></tr></table>';
+     m+='<table width=100%><tr><td width=50%><DIV class=ptstat>'+translate('CONFIGURATION')+'</div>';
+     m+=translate('Time between attacks')+" : <input type=text size=3 id=BOAttackInterval value='"+Options.AttackInterval+"'> "+translate('seconds')+".<br>";
+     m+='</td><td width=50%><DIV class=ptstat>'+translate('STATISTICS')+'</div>';
+     m+='<center><b>ATTACK TIMER<br><br>';
+     m+=translate('Next attack')+': <span id="ptattackupdate">'+time(Options.TimerAttack)+'</span></b><br><br>';
+     m+='<input id="ptrestimnow" type="submit" value="'+translate('Reset Timer Now')+'"></center></td></tr></table><br>';
+     
+     m+='<table width=100%><tr>';
+      for (var c=0; c<Cities.numCities; c++) {
+	 if (c % 2) style = ''; else style = " style = 'background: #e8e8e8'";
+         cityId=Cities.cities[c].c.id;  
+     m+="<td "+style+"><DIV class=ptstat><input type=checkbox class="+c+" id='BOAttackCity"+c+"' "+ (Options.AttackCity[c]?'CHECKED ':'')+"> " + Cities.cities[c].c.name +"</div><br>";     
+     m+=translate('Attack Mode')+': <select class="'+c+'" id="BOselectAttackMode'+c+'"><option value="1" '+ (Options.CoordsMode[c]=='1'?'SELECTED':'')  +'>Single Coord</option>\
+     																				   <option value="2" '+ (Options.CoordsMode[c]=='2'?'SELECTED':'')  +'>Multi Coords</option></select><br><br><br>';
+     m+="Single Coord: X:<input type=text class='"+c+"' id='TestX"+c+"' size=2 value='"+Options.SingleCoordX[c]+"'>-Y:<input type=text size=2 class='"+c+"' id='TestY"+c+"' value='"+Options.SingleCoordY[c]+"'><br><br>";
+     m+='Multi Coords: <i>x,y</i><br>';
+     m+='<textarea name="coordlist'+c+'" class="'+c+'" id="coordlist'+c+'" rows=10 cols=20></textarea><br>';
+     m+='<br></td>';
+     }
+     m+='</tr></table><hr>';
+     m+='<table width=100%><tr>';
+	 m+='<td><input type=checkbox id="BoStopRoute" ' +(Options.AdvAtk.StopCicle?'CHECKED':'')+'>'+translate('AutoAttack stops when coordinates will be finished')+'<br>';
+	 m+=SP+SP+SP+'<i>('+translate('do not be resumed')+')</i></center><br>';
+	 								
+	 m+='<input type=checkbox id="EnBoStopAtk" ' +(Options.AdvAtk.EnMaxAtk?'CHECKED':'')+'> '+translate('Stop after')+" <input type=text size=2 id=BoStopAtk value='"+Options.AdvAtk.MaxAtk+"'> "+translate('attacks')+'<br>';
+	 m+=SP+translate('Resume the attacks after')+" <input type=text size=2 id=BoTempoAtk value='"+Options.AdvAtk.TempoAtk+"'> "+ htmlSelector({1:translate('seconds'), 2:translate('minutes'), 3:translate('hours')},Options.AdvAtk.TempoMode,'id=BOselectTempoMode');
+     m+='</td><td><br>'+pubblicity+'</td></tr></table>';
+ 	 m+="<DIV class=ptstat>"+translate('TROOPS')+"</div>";
+ 	 m+='<table width=100%>';
+      for (var c=0; c<Cities.numCities; c++) {
+	 if (c % 2) style = ''; else style = " style = 'background: #e8e8e8'";
+         cityId=Cities.cities[c].c.id;  
+         m+='<tr '+style+'><td rowspan="3">';
+         m+= Cities.cities[c].c.name +": </td>";
+         m+='<td>'+uW.arStrings.unitName["u1"]+' <input type=text class="'+c+'" size=3 id="AttackUnity1'+c+'" value="'+Options.Unity1[c]+'"></td>';
+         m+='<td>'+uW.arStrings.unitName["u2"]+' <input type=text class="'+c+'" size=3 id="AttackUnity2'+c+'" value="'+Options.Unity2[c]+'"></td>';
+         m+='<td>'+uW.arStrings.unitName["u6"]+' <input type=text class="'+c+'" size=3 id="AttackUnity6'+c+'" value="'+Options.Unity6[c]+'"></td>';
+         m+='<td>'+uW.arStrings.unitName["u7"]+' <input type=text class="'+c+'" size=3 id="AttackUnity7'+c+'" value="'+Options.Unity7[c]+'"></td>';
+         m+='<td>'+uW.arStrings.unitName["u4"]+' <input type=text class="'+c+'" size=3 id="AttackUnity4'+c+'" value="'+Options.Unity4[c]+'"></td>';
+         m+='</tr><tr '+style+'>';
+         m+='<td>'+uW.arStrings.unitName["u10"]+' <input type=text class="'+c+'" size=3 id="AttackUnity10'+c+'" value="'+Options.Unity10[c]+'"></td>';
+         m+='<td>'+uW.arStrings.unitName["u9"]+' <input type=text class="'+c+'" size=3 id="AttackUnity9'+c+'" value="'+Options.Unity9[c]+'"></td>';
+         m+='<td>'+uW.arStrings.unitName["u8"]+' <input type=text class="'+c+'" size=3 id="AttackUnity8'+c+'" value="'+Options.Unity8[c]+'"></td>';
+         m+='<td>'+uW.arStrings.unitName["u5"]+' <input type=text class="'+c+'" size=3 id="AttackUnity5'+c+'" value="'+Options.Unity5[c]+'"></td>';
+         m+='<td>'+uW.arStrings.unitName["u11"]+' <input type=text class="'+c+'" size=3 id="AttackUnity11'+c+'" value="'+Options.Unity11[c]+'"></td>';
+         m+='</tr><tr '+style+'>';
+         m+='<td>'+uW.arStrings.unitName["u12"]+' <input type=text class="'+c+'" size=3 id="AttackUnity12'+c+'" value="'+Options.Unity12[c]+'"></td>';
+         m+='<td>'+uW.arStrings.unitName["u31"]+' <input type=text class="'+c+'" size=3 id="AttackUnity31'+c+'" value="'+Options.Unity31[c]+'"></td>';
+         m+='<td>'+uW.arStrings.unitName["u32"]+' <input type=text class="'+c+'" size=3 id="AttackUnity32'+c+'" value="'+Options.Unity32[c]+'"></td>';
+         m+='<td></td>';
+         m+='<td></td></tr>';
+      }  
+      m+='</table>';
+           
+    document.getElementById('attaquetestContent').innerHTML = m;
+    
+    for (var c=0; c<Cities.numCities; c++) {
+    ById("coordlist"+c).value = Options.MultiCoords[c];
+     document.getElementById("BOselectAttackMode"+c).addEventListener('change', function(e) {
+       Options.CoordsMode[e.target['className']] = document.getElementById("BOselectAttackMode"+e.target['className']).value;
+       saveOptions();
+     }, false);      
+     document.getElementById("TestX"+c).addEventListener('change', function(e) {
+       Options.SingleCoordX[e.target['className']] = document.getElementById("TestX"+e.target['className']).value;
+       saveOptions();
+     }, false); 
+     document.getElementById("TestY"+c).addEventListener('change', function(e) {
+       Options.SingleCoordY[e.target['className']] = document.getElementById("TestY"+e.target['className']).value;
+       saveOptions();
+     }, false); 		
+     document.getElementById("coordlist"+c).addEventListener('change', function(e) {
+       Options.MultiCoords[e.target['className']] = document.getElementById("coordlist"+e.target['className']).value;
+       saveOptions();
+     }, false);
+     document.getElementById("BOAttackCity"+c).addEventListener('click', function(e) {
+       Options.AttackCity[e.target['className']] = document.getElementById("BOAttackCity"+e.target['className']).checked;
+       saveOptions();
+     }, false); 
+     document.getElementById("AttackUnity1"+c).addEventListener('change', function(e) {
+       Options.Unity1[e.target['className']] = document.getElementById("AttackUnity1"+e.target['className']).value;
+       saveOptions();
+     }, false); 
+     document.getElementById("AttackUnity2"+c).addEventListener('change', function(e) {
+       Options.Unity2[e.target['className']] = document.getElementById("AttackUnity2"+e.target['className']).value;
+       saveOptions();
+     }, false); 
+     document.getElementById("AttackUnity6"+c).addEventListener('change', function(e) {
+       Options.Unity6[e.target['className']] = document.getElementById("AttackUnity6"+e.target['className']).value;
+       saveOptions();
+     }, false); 
+     document.getElementById("AttackUnity7"+c).addEventListener('change', function(e) {
+       Options.Unity7[e.target['className']] = document.getElementById("AttackUnity7"+e.target['className']).value;
+       saveOptions();
+     }, false); 
+     document.getElementById("AttackUnity4"+c).addEventListener('change', function(e) {
+       Options.Unity4[e.target['className']] = document.getElementById("AttackUnity4"+e.target['className']).value;
+       saveOptions();
+     }, false); 
+     document.getElementById("AttackUnity10"+c).addEventListener('change', function(e) {
+       Options.Unity10[e.target['className']] = document.getElementById("AttackUnity10"+e.target['className']).value;
+       saveOptions();
+     }, false); 
+     document.getElementById("AttackUnity9"+c).addEventListener('change', function(e) {
+       Options.Unity9[e.target['className']] = document.getElementById("AttackUnity9"+e.target['className']).value;
+       saveOptions();
+     }, false); 
+     document.getElementById("AttackUnity8"+c).addEventListener('change', function(e) {
+       Options.Unity8[e.target['className']] = document.getElementById("AttackUnity8"+e.target['className']).value;
+       saveOptions();
+     }, false); 
+     document.getElementById("AttackUnity5"+c).addEventListener('change', function(e) {
+       Options.Unity5[e.target['className']] = document.getElementById("AttackUnity5"+e.target['className']).value;
+       saveOptions();
+     }, false); 
+     document.getElementById("AttackUnity11"+c).addEventListener('change', function(e) {
+       Options.Unity11[e.target['className']] = document.getElementById("AttackUnity11"+e.target['className']).value;
+       saveOptions();
+     }, false); 
+     document.getElementById("AttackUnity12"+c).addEventListener('change', function(e) {
+       Options.Unity12[e.target['className']] = document.getElementById("AttackUnity12"+e.target['className']).value;
+       saveOptions();
+     }, false); 
+     document.getElementById("AttackUnity31"+c).addEventListener('change', function(e) {
+       Options.Unity31[e.target['className']] = document.getElementById("AttackUnity31"+e.target['className']).value;
+       saveOptions();
+     }, false); 
+     document.getElementById("AttackUnity32"+c).addEventListener('change', function(e) {
+       Options.Unity32[e.target['className']] = document.getElementById("AttackUnity32"+e.target['className']).value;
+       saveOptions();
+     }, false); 
+    }
+  	setInterval(function() {
+  		var obj = document.getElementById("BOAttackTestButton");
+  		if (Options.TimerAttack == 1000 && Options.AttackAutoTest){ 
+    				ById('ptattackupdate').innerHTML = time(Options.TimerAttack);
+					Options.AdvAtk.TimerAttack = 0;
+					saveOptions();
+  					t.start();
+  					saveOptions();
+  		} else {
+    	ById('ptattackupdate').innerHTML = time(Options.TimerAttack);
+    	saveOptions();
+    	}
+  	}, 1000) 
+    document.getElementById("ptrestimnow").addEventListener('click', function(e) {
+       Options.TimerAttack = 0;
+       saveOptions();
+       t.start();
+     }, false); 
+    document.getElementById('BoTempoAtk').addEventListener ('change', function () {
+    	if(Options.AdvAtk.TempoMode == 1 && ById('BoTempoAtk').value < 30) ById('BoTempoAtk').value = 30; 
+		Options.AdvAtk.TempoAtk = document.getElementById('BoTempoAtk').value;
+       saveOptions();
+	}, false);	
+    document.getElementById('BOselectTempoMode').addEventListener ('change', function () {
+		Options.AdvAtk.TempoMode = document.getElementById('BOselectTempoMode').value;
+       saveOptions();
+	}, false);	  
+    document.getElementById("BoStopRoute").addEventListener('click', function(e) {
+       Options.AdvAtk.StopCicle = document.getElementById("BoStopRoute").checked;
+       saveOptions();
+     }, false);
+    document.getElementById("EnBoStopAtk").addEventListener('click', function(e) {
+       Options.AdvAtk.EnMaxAtk = document.getElementById("EnBoStopAtk").checked;
+       saveOptions();
+     }, false);   
+    ById('BoStopAtk').addEventListener ('change', function () {
+    	if(ById('BoStopAtk').value == '') ById('BoStopAtk').value = 0;
+    	if(ById('BoStopAtk').value < 0) ById('BoStopAtk').value = 0;
+		Options.AdvAtk.MaxAtk = ById('BoStopAtk').value;
+       saveOptions();
+	}, false);
+    document.getElementById("BOAttackTestButton").addEventListener('click', t.ToggleAutoAttack, false);   
+    document.getElementById("BOAttackInterval").addEventListener('change',  function() { 
+    if (document.getElementById("BOAttackInterval").value<5) ById("BOAttackInterval").value=5;
+    Options.AttackInterval=parseInt(document.getElementById("BOAttackInterval").value);
+    saveOptions(); 
+    }, false);
+  },
+  klistchecka : function(numcity) {
+		var t = my.testattack;
+		var counter = 0;
+		var u_koords = Options.MultiCoords[numcity].split("\n");
+		for (var i = 0; i < u_koords.length; i++) {
+			var xy = u_koords[i].split(',');
+			var x = parseInt(xy[0],10);
+			var y = parseInt(xy[1],10);
+			if (isNaN(x) || isNaN(y)) continue;
+			if (x < 1 || x > 800) continue;
+			if (y < 1 || y > 800) continue;			
+			Options.MultiCoordsCheck[numcity].push(x+","+y);
+			counter++;
+		};
+	//	Options.MultiCoords[numcity] = Options.MultiCoordsCheck[numcity].join("\n");
+		saveOptions();
+		if (counter < 0) {
+			return;
+		}
+	},
+  ActivateTimer : function (){
+  		if(Options.AdvAtk.TempoMode == 1) var CalcTime = Options.AdvAtk.TempoAtk*1000;
+  		if(Options.AdvAtk.TempoMode == 2) var CalcTime = Options.AdvAtk.TempoAtk*60000;
+  		if(Options.AdvAtk.TempoMode == 3) var CalcTime = Options.AdvAtk.TempoAtk*3600000;
+  		
+  		Options.TimerAttack = CalcTime;
+  },
+  start:function() {
+   var t = my.testattack;
+     var tableau = [];
+     for (var c=0; c<Cities.numCities; c++) {
+      if (Options.AttackCity[c]) tableau.push(c);
+     } 
+     var numcity=tableau[Math.floor(Math.random()*tableau.length)];
+     if (numcity===undefined)
+       return;
+       
+       
+     var f=Cities.cities[numcity].c;
+     var id=f.id;
+   
+   clearTimeout (Options.Attacktimer);
+   saveOptions();
+   if (!Options.AttackAutoTest || Options.TimerAttack > 0) return;
+   if (Options.AdvAtk.EnMaxAtk && (Options.AdvAtk.MaxAtk == Options.AdvAtk.TimeAtk)){
+   		Options.AdvAtk.TimeAtk = 0;
+   		saveOptions();
+   		t.ActivateTimer();
+   } else {
+   if(Options.CoordsMode[numcity] == 1){
+      var cooX = Options.SingleCoordX[numcity];
+   	  var cooY = Options.SingleCoordY[numcity]; 
+   	} else {
+   		t.klistchecka(numcity);
+  		if (t.koordlistpointer == null){
+  			t.koordlistpointer = 0;
+  		} else {
+  			t.koordlistpointer++;
+  		}
+  		if(Options.MultiCoordsCheck[numcity][t.koordlistpointer] == undefined){
+  			if (Options.AdvAtk.StopCicle){
+  				t.koordlistpointer = null;
+						t.TurnOFF();
+  					  return;
+  			} else {
+  				t.koordlistpointer = null;
+				t.start(); t.klistchecka(numcity);
+			}
+  		} else {
+  			var koord = Options.MultiCoordsCheck[numcity][t.koordlistpointer].split(',');
+					var cooX = parseInt(koord[0],10);
+					var cooY = parseInt(koord[1],10);
+		}
+	}  
+   var unit1 = 1; var unit2 = 2; var unit6 = 6; var unit7 = 7;
+   var unit4 = 4; var unit10 = 10; var unit9 = 9; var unit8 = 8;
+   var unit5 = 5; var unit11 = 11; var unit12 = 12; var unit31 = 31;
+   var unit32 = 32;
+   
+     var kk=[];
+     Cities.byID[id].c.generalsSorted().each(function(b){if(b.available() && b.energy()>0){ kk.push(b);}}); // id du premier chevalier ! a trouver
+     var selectedKnight=kk.length>0?kk[0].id:0;
+  //   alert(selectedKnight);
+     if (Cities.byID[id].c.canMarch() && Cities.byID[id].c.generalsCount()!=0 && selectedKnight!=0) {
+       var d=unsafeWindow.Building.getMaxLevelForType(50,id);
+       var a=new unsafeWindow.March({marchId:Cities.byID[id].c.emptyMarchSlots()[0],toXCoord:cooX,toYCoord:cooY,fromCityId:id,marchType:unsafeWindow.Constant.MarchType.ATTACK,knightId:selectedKnight,fromHealLevel:d,apothecaryHealPercent:unsafeWindow.KB.Controllers.Apothecary.getHealPercent(d),gold:0,resource1:0,resource2:0,resource3:0,resource4:0});
+ 
+       var g={mid:a.id,xcoord:a.to.x,ycoord:a.to.y,cid:id,type:unsafeWindow.Constant.MarchType.ATTACK,kid:a.general.id,gold:a.gold,r1:a.resources[1],r2:a.resources[2],r3:a.resources[3],r4:a.resources[4],camp:0,et:t.calculateTime(id,7,cooX,cooY)};
+       var b=Cities.byID[id].c.generals[a.general.id];
+       if(Options.Unity1[numcity] >0) a.units[unit1].sent=Options.Unity1[numcity];
+       if(Options.Unity2[numcity] >0) a.units[unit2].sent=Options.Unity2[numcity];
+       if(Options.Unity6[numcity] >0) a.units[unit6].sent=Options.Unity6[numcity];
+       if(Options.Unity7[numcity] >0) a.units[unit7].sent=Options.Unity7[numcity];
+       if(Options.Unity4[numcity] >0) a.units[unit4].sent=Options.Unity4[numcity];
+       if(Options.Unity10[numcity] >0) a.units[unit10].sent=Options.Unity10[numcity];
+       if(Options.Unity9[numcity] >0) a.units[unit9].sent=Options.Unity9[numcity];
+       if(Options.Unity8[numcity] >0) a.units[unit8].sent=Options.Unity8[numcity];
+       if(Options.Unity5[numcity] >0) a.units[unit5].sent=Options.Unity5[numcity];
+       if(Options.Unity11[numcity] >0) a.units[unit11].sent=Options.Unity11[numcity];
+       if(Options.Unity12[numcity] >0) a.units[unit12].sent=Options.Unity12[numcity];
+       if(Options.Unity31[numcity] >0) a.units[unit31].sent=Options.Unity31[numcity];
+       if(Options.Unity32[numcity] >0) a.units[unit32].sent=Options.Unity32[numcity];
+       if(Options.Unity1[numcity] >0) g["u"+unit1]=Options.Unity1[numcity];
+       if(Options.Unity2[numcity] >0) g["u"+unit2]=Options.Unity2[numcity];
+       if(Options.Unity6[numcity] >0) g["u"+unit6]=Options.Unity6[numcity];
+       if(Options.Unity7[numcity] >0) g["u"+unit7]=Options.Unity7[numcity];
+       if(Options.Unity4[numcity] >0) g["u"+unit4]=Options.Unity4[numcity];
+       if(Options.Unity10[numcity] >0) g["u"+unit10]=Options.Unity10[numcity];
+       if(Options.Unity9[numcity] >0) g["u"+unit9]=Options.Unity9[numcity];
+       if(Options.Unity8[numcity] >0) g["u"+unit8]=Options.Unity8[numcity];
+       if(Options.Unity5[numcity] >0) g["u"+unit5]=Options.Unity5[numcity];
+       if(Options.Unity11[numcity] >0) g["u"+unit11]=Options.Unity11[numcity];
+       if(Options.Unity12[numcity] >0) g["u"+unit12]=Options.Unity12[numcity];
+       if(Options.Unity31[numcity] >0) g["u"+unit31]=Options.Unity31[numcity];
+       if(Options.Unity32[numcity] >0) g["u"+unit32]=Options.Unity32[numcity];
+ // actionLog('AutoAttack','Send attack to '+cooX+','+cooY);
+ 		var Controllo = false;
+       if(Cities.byID[id].c.troops[unit1].count()>=1) Controllo = true;
+       if(Cities.byID[id].c.troops[unit2].count()>=1) Controllo = true;
+       if(Cities.byID[id].c.troops[unit6].count()>=1) Controllo = true;
+       if(Cities.byID[id].c.troops[unit7].count()>=1) Controllo = true;
+       if(Cities.byID[id].c.troops[unit4].count()>=1) Controllo = true;
+       if(Cities.byID[id].c.troops[unit10].count()>=1) Controllo = true;
+       if(Cities.byID[id].c.troops[unit9].count()>=1) Controllo = true;
+       if(Cities.byID[id].c.troops[unit8].count()>=1) Controllo = true;
+       if(Cities.byID[id].c.troops[unit5].count()>=1) Controllo = true;
+       if(Cities.byID[id].c.troops[unit11].count()>=1) Controllo = true;
+       if(Cities.byID[id].c.troops[unit12].count()>=1) Controllo = true;
+       if(Cities.byID[id].c.troops[unit31].count()>=1) Controllo = true;
+       if(Cities.byID[id].c.troops[unit32].count()>=1) Controllo = true;       
+       
+       if(b.energy()>0){
+           if (Controllo) {
+           unsafeWindow.AjaxCall.gPostRequest("march.php",g,function(h){	   
+	   var i="attack",j=Number(h.eta)-Number(h.initTS);
+	   unsafeWindow.Chrome.ResourcesBar.update();
+	   unsafeWindow.Object.keys(a.units).each(function(k){Cities.byID[id].c.troops[k].subtract(a.units[k].sent)});
+	   if(b){b.status=10;b.subtractEnergy()}
+	   a.id=Number(h.marchId);
+	   a.to.tileId=Number(h.tileId);
+	   a.to.tileType=Number(h.tileType);
+	   a.to.tileLevel=Number(h.tileLevel);
+	   a.to.playerId=Number(h.tileUserId);
+	   a.to.cityId=Number(h.tileCityId);
+	   a.setStatus(unsafeWindow.Constant.MarchStatus.OUTBOUND);
+	   a.setMarchTime(unsafeWindow.unixtime(),unsafeWindow.unixtime()+j,0);
+	   Cities.byID[id].c.marches.outgoing[a.id]=a;
+	   unsafeWindow.KTrack.event(["_trackEvent","March",i,unsafeWindow.player.level]);
+	  },
+          function(h){},
+         false);
+     
+        }
+       
+      }
+      
+   	if(Options.AdvAtk.EnMaxAtk){	
+   		var Agg = Options.AdvAtk.TimeAtk + 1;
+      	Options.AdvAtk.TimeAtk = Agg;
+    }
+    
+     }
+   Options.Attacktimer=setTimeout(t.start,Options.AttackInterval*1000);
+   saveOptions();
+}
+  },
+  TurnOFF : function () {
+    	var obj = document.getElementById("BOAttackTestButton");
+        Options.AttackAutoTest = true;
+        if (obj) obj.value = "AUTO ATTACK = ON";
+        clearTimeout (Options.Attacktimer);
+        Options.AdvAtk.TimeAtk = 0;
+        saveOptions();
+  },
+  calculateTime: function(id,b,g,e) {
+  var c=65535,a=Math.abs(Cities.byID[id].c.x-g),f=Math.abs(Cities.byID[id].c.y-e),d=Math.sqrt((a*a)+(f*f));
+  h=unsafeWindow.Unit.stats[b].speed*1;
+  if(h<c){c=h;}
+  return Math.ceil(d*6000/c)+30;
+  },
+  ToggleAutoAttack: function() {
+        var t = my.testattack;
+        var obj=document.getElementById("BOAttackTestButton");
+         if (Options.AttackAutoTest== true) {
+                      Options.AttackAutoTest = false;
+                      if (obj) obj.value = "AUTO ATTACK = OFF";
+                      updatebotbutton(uW.arStrings.Common.Attack+'Coords -OFF', 'pbattacktab');
+                      clearTimeout (Options.Attacktimer);
+                      Options.AdvAtk.TimeAtk = 0;
+                      Options.TimerAttack = 0;
+                      for (var c=0; c<Cities.numCities; c++) {
+                      Options.MultiCoordsCheck[c] = [];
+                      }
+                      saveOptions();
+              }  else {
+              		  var a = confirm(translate('Do you really want to enable this tab')+'?'); if(a){
+                      Options.AttackAutoTest = true;
+                      if (obj) obj.value = "AUTO ATTACK = ON";
+                      updatebotbutton(uW.arStrings.Common.Attack+'Coords -ON', 'pbattacktab');
+                      clearTimeout (Options.Attacktimer);
+                      Options.AdvAtk.TimeAtk = 0;
+                      t.start(); ///
+                      saveOptions();
+                      }
+        }
+    },
+}
+my.KDO = {
+  cont : null,
+  state : null,
+  displayTimerKDO:null,
+  displayTimerAcceptKDO:null,
+  init : function (div){
+    var t = my.KDO;
+    this.cont = document.createElement('div');
+    return t.cont;
+  },
+  
+  getContent : function (){
+    var t = my.KDO;
+    return t.cont;
+  },
+  hide : function (){
+    var t = my.KDO;
+  },
+  nbitem: function(id) {
+   var nb=0;
+   if (unsafeWindow.items[id].count>0){
+     nb=unsafeWindow.items[id].count;
+   }else{
+     nb=0;
+   }
+   return nb;
+  },
+  show : function (){ 
+    var t = my.KDO;
+    
+     if (t.state == null){
+    m='<div id="presentModalWrapper1" class="presentWrapper"><div class=header style="height:280px"><h1>'+translate('Pick a free gift to send to all your friends')+'!</h1><ul id="presentList1" class="clearfix">\
+<li class="unlocked"><div class="frame"><div class="item pic px70 items item_1005"></div></div><button class="button25" onclick="KB.Views.Gift.popupInvite(1005);"><span>'+translate('SEND')+'</span></button><button id="BOItem1005" class="button25" type="button"><span>'+translate('USE')+'</span></button><div class="itemowned">'+translate('You have')+': <span class="modal_itemowned_923" id="BONbItem1005">'+ t.nbitem(1005) +'</span></div></li>\
+<li class="unlocked"><div class="frame"><div class="item pic px70 items item_1015"></div></div><button class="button25" onclick="KB.Views.Gift.popupInvite(1015);"><span>'+translate('SEND')+'</span></button><button id="BOItem1015"  class="button25" type="button"><span>'+translate('USE')+'</span></button><div class="itemowned">'+translate('You have')+': <span class="modal_itemowned_923" id="BONbItem1015">'+ t.nbitem(1015) +'</span></div></li>\
+<li class="unlocked"><div class="frame"><div class="item pic px70 items item_1025"></div></div><button class="button25" onclick="KB.Views.Gift.popupInvite(1025);"><span>'+translate('SEND')+'</span></button><button id="BOItem1025"  class="button25" type="button"><span>'+translate('USE')+'</span></button><div class="itemowned">'+translate('You have')+': <span class="modal_itemowned_923" id="BONbItem1025">'+ t.nbitem(1025) +'</span></div></li>\
+<li class="unlocked"><div class="frame"><div class="item pic px70 items item_1035"></div></div><button class="button25" onclick="KB.Views.Gift.popupInvite(1035);"><span>'+translate('SEND')+'</span></button><button id="BOItem1035"  class="button25" type="button"><span>'+translate('USE')+'</span></button><div class="itemowned">'+translate('You have')+': <span class="modal_itemowned_923" id="BONbItem1035">'+ t.nbitem(1035) +'</span></div></li>\
+<li class="unlocked"><div class="frame"><div class="item pic px70 items item_1045"></div></div><button class="button25" onclick="KB.Views.Gift.popupInvite(1045);"><span>'+translate('SEND')+'</span></button><button id="BOItem1045"  class="button25" type="button"><span>'+translate('USE')+'</span></button><div class="itemowned">'+translate('You have')+': <span class="modal_itemowned_923" id="BONbItem1045">'+ t.nbitem(1045) +'</span></div></li>\
+</ul></div>\
+<br><button onclick="Temple.Offering.askForOffering(); return false;" class="button25" type="button" id="askButton"><span>'+translate('Send offerings')+'</span></button><br>\
+<br><br><button  id="BOAcceptAllKDO" class="button25" type="button"><span>'+translate('Accept all gifts')+'</span></button><br><br><hr><b><center>'+translate('Please support the GoR BoTTols by clicking the ads on the GoR BoTTols website from time to time')+'!</center></b><br><center>'+pubblicityBIG+'</div>';
+    
+t.cont.innerHTML = m;
+  
+document.getElementById('BOAcceptAllKDO').addEventListener ('click', function(){
+      document.getElementById('BOAcceptAllKDO').disabled=true;
+       unsafeWindow.AjaxCall.gNetworkPostRequest("requests","getRequest.php",{typeRequest:1},function(m){
+         if (m.ok){
+           var NameGift = uW.arStrings.Common.Gift;
+           var v=unsafeWindow.Object.keys(m.data.requests);
+           unsafeWindow.KB.Views.Cohort.pending = m.data.requests;
+      
+           for(var f=0;f<v.length;f++){
+            
+            
+            var d=m.data.requests[v[f]][1]; // item
+            var b=v[f]; //request_id
+            var c={request_id:b , type_request:1, item_id: d, sender_fbuid:m.data.requests[v[f]][0]};
+            unsafeWindow.AjaxCall.gNetworkPostRequest("requests","acceptRequest.php",c,function(e){
+             if (e.ok) {
+              unsafeWindow.items[d].add(1);
+              delete unsafeWindow.KB.Views.Gift.request[b];
+             }
+            },function(e) {}, true);
+           }
+           actionLog(uW.arStrings.Common.Gift,translate('Accept all gifts'));
+          }
+          document.getElementById('BOAcceptAllKDO').disabled=false;  
+       });
+   },false);	
+   // Bouton utiliser Stones	      
+   document.getElementById("BOItem1035").addEventListener ('click', function(){
+    if (t.nbitem(1035)>0) {
+     var b={iid:1035,cid:unsafeWindow.currentCity.id};
+     unsafeWindow.AjaxCall.gPostRequest("resourceCrate.php",b,function(d){
+      if (d.ok) {
+       unsafeWindow.KB.Models.Resource.addToSeed(d.rtype,d.amt);
+       unsafeWindow.items[1035].subtract();
+       document.getElementById("BONbItem1035").innerHTML=t.nbitem(1035);    
+      }
+     }, function(d) {});
+    }
+   },false);
+      // Bouton utiliser Iron	      
+      document.getElementById("BOItem1045").addEventListener ('click', function(){
+       if (t.nbitem(1045)>0) {
+        var b={iid:1045,cid:unsafeWindow.currentCity.id};
+        unsafeWindow.AjaxCall.gPostRequest("resourceCrate.php",b,function(d){
+         if (d.ok) {
+         unsafeWindow.KB.Models.Resource.addToSeed(d.rtype,d.amt);
+         unsafeWindow.items[1045].subtract();
+         document.getElementById("BONbItem1045").innerHTML=t.nbitem(1045);
+         }
+          }, function(d) {});
+       }
+   },false);
+   // Bouton utiliser Wood	      
+         document.getElementById("BOItem1025").addEventListener ('click', function(){
+          if (t.nbitem(1025)>0) {
+           var b={iid:1025,cid:unsafeWindow.currentCity.id};
+           unsafeWindow.AjaxCall.gPostRequest("resourceCrate.php",b,function(d){
+            if (d.ok) {
+            unsafeWindow.KB.Models.Resource.addToSeed(d.rtype,d.amt);
+            unsafeWindow.items[1025].subtract();
+            document.getElementById("BONbItem1025").innerHTML=t.nbitem(1025);
+            }
+             }, function(d) {});
+          }
+   },false);
+      // Bouton utiliser Food	      
+            document.getElementById("BOItem1015").addEventListener ('click', function(){
+             if (t.nbitem(1015)>0) {
+              var b={iid:1015,cid:unsafeWindow.currentCity.id};
+              unsafeWindow.AjaxCall.gPostRequest("resourceCrate.php",b,function(d){
+               if (d.ok) {
+               unsafeWindow.KB.Models.Resource.addToSeed(d.rtype,d.amt);
+               unsafeWindow.items[1015].subtract();
+               document.getElementById("BONbItem1015").innerHTML=t.nbitem(1015);
+               }
+                }, function(d) {});
+             }
+   },false);
+      // Bouton utiliser Silver	      
+            document.getElementById("BOItem1005").addEventListener ('click', function(){
+             if (t.nbitem(1005)>0) {
+              var b={iid:1005,cid:unsafeWindow.currentCity.id};
+              unsafeWindow.AjaxCall.gPostRequest("resourceCrate.php",b,function(d){
+               if (d.ok) {
+               unsafeWindow.KB.Models.Resource.addToSeed(d.rtype,d.amt);
+               unsafeWindow.items[1005].subtract();
+               document.getElementById("BONbItem1005").innerHTML=t.nbitem(1005);
+               }
+                }, function(d) {});
+             }
+   },false);
+   
+   
+	          
+    c={};
+    
+    unsafeWindow.AjaxCall.gNetworkPostRequest("requests","getFriendsGift.php",c,function(e){
+     unsafeWindow.KB.Views.Gift.friends=e.data.friends?e.data.friends:{};
+     unsafeWindow.KB.Views.Gift.potentials=e.data.potentials?e.data.potentials:{};
+     unsafeWindow.KB.Views.Gift.cohorts=e.data.cohorts?e.data.cohorts:{};
+     unsafeWindow.KB.Views.Gift.lockGift=e.data.lockedItems?e.data.lockedItems:{};
+     unsafeWindow.KB.Views.Gift.sortLockGift();
+     unsafeWindow.KB.Views.Gift.unlockGift=e.data.newUnlockItems?e.data.newUnlockItems:{};
+     unsafeWindow.KB.Views.Gift.user=e.data.user?e.data.user:0;    
+     var f={typeRequest:unsafeWindow.KB.Views.Gift.TYPE_REQUEST_GIFT};
+      
+    });
+    
+    
+     t.state = 1;
+    }
+    
+    document.getElementById("BONbItem1045").innerHTML=t.nbitem(1045);  
+    document.getElementById("BONbItem1035").innerHTML=t.nbitem(1035);  
+    document.getElementById("BONbItem1025").innerHTML=t.nbitem(1025);  
+    document.getElementById("BONbItem1015").innerHTML=t.nbitem(1015); 
+    document.getElementById("BONbItem1005").innerHTML=t.nbitem(1005); 
+        
+    t.displayTimer = setTimeout (t.show, parseInt(GlobalOptions.BOAutomateKDOsec*1000));
+    
+    
+  },
+  togOpt : function (checkboxId, optionName, callOnChange){
+      var t = my.Options;
+      var checkbox = document.getElementById(checkboxId);
+      if (Options[optionName])
+        checkbox.checked = true;
+      checkbox.addEventListener ('change', eventHandler, false);
+      function eventHandler (){
+        Options[optionName] = this.checked;
+        saveOptions();
+        if (callOnChange)
+          callOnChange (this.checked);
+      }
+    },
+    
+    changeOpt : function (valueId, optionName, callOnChange){
+      var t = my.Options;
+      var e = document.getElementById(valueId);
+      e.value = Options[optionName];
+      e.addEventListener ('change', eventHandler, false);
+      function eventHandler (){
+        Options[optionName] = this.value;
+        saveOptions();
+        if (callOnChange)
+          callOnChange (this.value);
+      }
+    },
+}
+my.Marks = {
+  cont : null,
+  state : null,
+  init : function (div){
+    var t = my.Marks;
+    this.cont = document.createElement('div');
+    return t.cont;
+  },
+  
+  getContent : function (){
+    var t = my.Marks;
+    return t.cont;
+  },
+  hide : function (){
+    var t = my.Marks;
+  },
+  show : function (){ 
+    var t = my.Marks;
+    
+   
+	var auguste,tiberus,caligula,claude,vespasien;
+	if (unsafeWindow.items[1101].count>0){auguste=unsafeWindow.items[1101].count}else{auguste=0};
+	if (unsafeWindow.items[1102].count>0){tiberus=unsafeWindow.items[1102].count}else{tiberus=0};
+	if (unsafeWindow.items[1103].count>0){caligula=unsafeWindow.items[1103].count}else{caligula=0};
+	if (unsafeWindow.items[1104].count>0){claude=unsafeWindow.items[1104].count}else{claude=0};
+	if (unsafeWindow.items[1105].count>0){vespasien=unsafeWindow.items[1105].count}else{vespasien=0};
+if (unsafeWindow.items[1106].count>0){titus=unsafeWindow.items[1106].count}else{titus=0};
+if (unsafeWindow.items[1107].count>0){Domitien=unsafeWindow.items[1107].count}else{Domitien=0};
+if (unsafeWindow.items[1108].count>0){Trajan=unsafeWindow.items[1108].count}else{Trajan=0};
+if (unsafeWindow.items[1109].count>0){Hadrien=unsafeWindow.items[1109].count}else{Hadrien=0};
+	if (Cities.cities[1]){ville2="#99EE99";}else{ville2="#EE9999";}
+	if (Cities.cities[2]){ville3="#99EE99";}else{ville3="#EE9999";}
+	if (Cities.cities[3]){ville4="#99EE99";}else{ville4="#EE9999";}
+   	if (Cities.cities[4]){ville5="#99EE99";}else{ville5="#EE9999";}
+   	if (Cities.cities[5]){ville6="#99EE99";}else{ville6="#EE9999";}
+   if (t.state == null){
+    
+var m = '<style>CAPTION.MYTABLE  {background-color:eeffff;color:black;     border-style:solid;     border-width:1px;     border-color:black;  }\
+  TABLE.MYTABLE  {font-family:arial;border-collapse:collapse;font-size:12pt;background-color:F5F5F5;width:100%;border-style:solid;border-color:black;border-width:1px;  }\
+  TH.MYTABLE  {font-size:12pt;color:black;text-align:center;border-style:solid;border-color:black;border-width:1px;  }\
+  TR.MYTABLE  {  }\
+  TD.MYTABLE  {font-size:12pt;background-color:FFFFE5;color:black;border-style:solid;border-width:1px;text-align:left;}</style>\
+<DIV class=ptstat>'+translate('TROOP INFO')+'</div><TABLE align=center CLASS="MYTABLE" cellpadding=4 cellspacing=0><tr><td>'+translate('Troops')+'</td><td>'+translate('Glory')+'</td><td>'+translate('Life')+'</td><td>'+translate('Attack')+'</td><td>'+translate('Defense')+'</td><td>'+translate('Speed')+'</td><td>'+translate('Range')+'</td><td>'+translate('Load')+'</td><td>'+translate('Upkeep')+'</td></tr>';
+var unitmight={u1:"1",u2:"1",u4:"3",u5:"6",u6:"3",u7:"3",u8:"6",u9:"3",u10:"6",u11:"5",u12:"12",u31:"50",u32:"50"};
+var unitupkeeps={"1":2,"2":3,"3":5,"4":9,"5":35,"6":9,"7":9,"8":35,"9":10,"10":35,"11":50,"12":100,"31":65,"32":65};
+ unsafeWindow.Barracks.allUnitIds.each(function(nbu){
+ if (unsafeWindow.arStrings.unitName["u"+nbu]) {
+ m+="<tr><td>"+unsafeWindow.arStrings.unitName["u"+nbu]+"</td>";
+ m+="<td>"+unitmight["u"+nbu]+"</td>";
+ m+="<td>"+uW.Unit.stats[nbu].life+"</td>";
+ m+="<td>"+uW.Unit.stats[nbu].attack+"</td>";
+ m+="<td>"+uW.Unit.stats[nbu].defense+"</td>";
+ m+="<td>"+uW.Unit.stats[nbu].speed+"</td>";
+ m+="<td>"+uW.Unit.stats[nbu].range+"</td>";
+ m+="<td>"+uW.Unit.stats[nbu].load+"</td>";
+ m+="<td>"+unitupkeeps[nbu]+"</td>";
+ m+="</tr>";
+ 
+ }
+});
+m +='</table><br><TABLE CLASS="MYTABLE" CELLPADDING=3 CELLSPACING=0 align=center>\
+    <CAPTION CLASS="MYTABLE"><DIV class=ptstat>'+translate('NEEDED MARKS TO GET NEW CITY')+'</div></CAPTION>\
+    <THEAD >\
+      <TR CLASS="MYTABLE">\
+        <TH CLASS="MYTABLE">'+translate('City')+'</TH>\
+        <TH CLASS="MYTABLE">'+translate('Requirements')+'</TH>\
+      </TR>\
+    </THEAD>\
+    <TBODY>\
+      <TR CLASS="MYTABLE">\
+        <TD CLASS="MYTABLE" style="background-color:'+ville2+';"><b><center>'+translate('City')+' 2</TD>\
+        <TD CLASS="MYTABLE" style="background-color:'+ville2+';">'+translate('Level')+' 7 ('+translate('Your level')+' : ' + unsafeWindow.player.level + ')\
+        <br>5 '+translate('Cohorts')+'</TD>\
+      </TR>\
+      <TR CLASS="MYTABLE">  \
+        <TD CLASS="MYTABLE" style="background-color:'+ville3+';"><b><center>'+translate('City')+' 3</TD>\
+        <TD CLASS="MYTABLE" style="background-color:'+ ( (auguste>=10 && tiberus>=5 && caligula>=2)?"#99EE99":ville3 ) +';">'+auguste+' / 10 '+unsafeWindow.arStrings.itemName["i1101"]+'<br>'+tiberus+' / 5 '+unsafeWindow.arStrings.itemName["i1102"]+'<br>'+caligula+' / 2 '+unsafeWindow.arStrings.itemName["i1103"]+'</TD>\
+      </TR>\
+            <TR CLASS="MYTABLE">  \
+              <TD CLASS="MYTABLE" style="background-color:'+ville4+';"><b><center>'+translate('City')+' 4</TD>\
+              <TD CLASS="MYTABLE" style="background-color:'+ ( (auguste>=20 && tiberus>=15 && caligula>=9)?"#99EE99":ville4 ) +';">'+auguste+' / 20 '+unsafeWindow.arStrings.itemName["i1101"]+'\
+              <br>'+tiberus+' / 15 '+unsafeWindow.arStrings.itemName["i1102"]+'\
+              <br>'+caligula+' / 9 '+unsafeWindow.arStrings.itemName["i1103"]+'\
+              <br>'+claude+' / 4 '+unsafeWindow.arStrings.itemName["i1104"]+'\
+              <br>'+vespasien+' / 2 '+unsafeWindow.arStrings.itemName["i1105"]+'\
+              </TD>\
+      </TR>\
+            </TR>\
+                  <TR CLASS="MYTABLE">  \
+                    <TD CLASS="MYTABLE" style="background-color:'+ville5+';"><b><center>'+translate('City')+' 5</TD>\
+                    <TD CLASS="MYTABLE" style="background-color:'+ ( (caligula>=20 && claude>=15 && vespasien>=9 && titus>=4 && Domitien>=2)?"#99EE99":ville5 ) +';">'+caligula+' / 20 '+unsafeWindow.arStrings.itemName["i1103"]+'\
+                    <br>'+claude+' / 15 '+unsafeWindow.arStrings.itemName["i1104"]+'\
+                    <br>'+vespasien+' / 9 '+unsafeWindow.arStrings.itemName["i1105"]+'\
+                    <br>'+titus+' / 4 '+unsafeWindow.arStrings.itemName["i1106"]+'\
+                    <br>'+Domitien+' / 2 '+unsafeWindow.arStrings.itemName["i1107"]+'\
+                    </TD>\
+      </TR>\
+          </TR>\
+            </TR>\
+                  <TR CLASS="MYTABLE">  \
+                    <TD CLASS="MYTABLE" style="background-color:'+ville6+';"><b><center>'+translate('City')+' 6</TD>\
+                    <TD CLASS="MYTABLE" style="background-color:'+ ( (caligula>=20 && claude>=15 && vespasien>=9 && titus>=4 && Domitien>=2)?"#99EE99":ville6 ) +';">'+caligula+' / 20 '+unsafeWindow.arStrings.itemName["i1103"]+'\
+                    <br>'+claude+' / 15 '+unsafeWindow.arStrings.itemName["i1104"]+'\
+                    <br>'+vespasien+' / 9 '+unsafeWindow.arStrings.itemName["i1105"]+'\
+                    <br>'+titus+' / 4 '+unsafeWindow.arStrings.itemName["i1106"]+'\
+                    <br>'+Domitien+' / 2 '+unsafeWindow.arStrings.itemName["i1107"]+'\
+                    </TD>\
+      </TR>\
+    </TBODY>\
+  </TABLE>';
+      t.cont.innerHTML = m;
+      t.state = 1;
+    }
+  },
+}
+/************************ Gold Collector ************************/
+var CollectGold = {
+  timer : null,
+  lastCollect : {},
+      
+  init : function (){
+    var t = CollectGold;
+    for (var c=0; c<Cities.numCities; c++)
+      t.lastCollect['c'+ Cities.cities[c].c.id] = 0;
+    if (Options.pbGoldEnable)
+      t.setEnable (true);
+  },
+  
+  setEnable : function (tf){
+    var t = CollectGold;
+    clearTimeout (t.timer);
+    if (tf)
+      t.tick();
+  },
+  colCityName : null,
+  colHappy : 0,  
+  tick : function (){
+    var t = CollectGold;
+    for (var c=0; c<Cities.numCities; c++){
+      var city = Cities.cities[c];
+      var since = unixTime() - t.lastCollect['c'+city.c.id];
+      if (since>15*60 && city.c.population.happiness()>=Options.pbGoldHappy){
+        t.lastCollect['c'+city.c.id] = unixTime();
+        t.colCityName = city.c.name;
+        t.ajaxCollectGold (city.c, t.e_ajaxDone); 
+        break;
+      }
+    }
+    t.timer = setTimeout (t.tick, 60000);    
+  },
+  e_ajaxDone : function (rslt){
+    var t = CollectGold;
+  },
+  
+  ajaxCollectGold : function (city, notify){
+    var c={};
+    c.cid=city.id;
+    c.eventid=1;
+    unsafeWindow.AjaxCall.gPostRequest("coliseumEvent.php",c,
+    function(rslt){
+       if (notify)  
+        notify (rslt);
+      }, function (rslt) {
+        if (notify)  
+          notify (rslt);
+      }
+    );
+  },
+}
+/************************ Collecte de ressources en auto ************************/
+var CollectRessource = {
+	lastCollect : {},
+	minuteTimer : null,
+	
+  init : function (){
+    var t = CollectRessource;
+    for (var c=0; c<Cities.numCities; c++)
+    t.lastCollect['c'+ Cities.cities[c].c.id] = 0;
+    t.tick();
+  },
+  tick : function (){
+		var t = CollectRessource;
+		if (t.minuteTimer != null && Options.pbRessEnable) {
+			for (var c=0; c<Cities.numCities; c++){
+					var cityid = Cities.cities[c].c.id;
+					var since = unixTime() - t.lastCollect['c'+cityid];
+					if (since>(Options.pbRessTime*60)){
+					t.lastCollect['c'+cityid] = unixTime();
+//   			 		setTimeout (function(){t.ajaxCollectRessource(cityid, t.e_ajaxDone);}, 10000);
+					t.ajaxCollectRessource(c,cityid);
+   			 		}
+			}
+		}
+//		t.minuteTimer = setTimeout (t.tick, 10000);
+    	t.minuteTimer = setTimeout (t.tick, (Options.pbRessTime*60)*1000);
+  },
+  
+  ajaxCollectRessource : function (ff, city){
+  	var t = CollectRessource;
+    var c={};
+    c.cid=city;
+    unsafeWindow.AjaxCall.gPostRequest("collectResource.php",c,
+    function(rslt){
+    		actionLog(translate('Collect')+' '+translate('resources'),Cities.cities[ff].c.name+': '+translate('Collect')+' '+translate('resources')); 
+    }, 
+    function (rslt) {
+		actionLog(translate('Collect')+' '+translate('resources'),Cities.cities[ff].c.name+': <font color=red>'+translate('ERROR')+' '+translate('Collect')+' '+translate('resources')+'</font>');
+		setTimeout (function (){t.ajaxCollectRessource(ff, city);}, 5000);
+    });
+  },
+}
+/**
+var CollectRessource = {
+  timer : null,
+  lastCollect : {},
+      
+  init : function (){
+    var t = CollectRessource;
+    for (var c=0; c<Cities.numCities; c++)
+      t.lastCollect['c'+ Cities.cities[c].c.id] = 0;
+    if (Options.pbRessEnable)
+      t.setEnable (true);
+  },
+  
+  setEnable : function (tf){
+    var t = CollectRessource;
+    clearTimeout (t.timer);
+    if (tf)
+      t.tick();
+  },
+  colCityName : null,
+  colHappy : 0,  
+  tick : function (){
+    var t = CollectRessource;
+    for (var c=0; c<Cities.numCities; c++){
+      var city = Cities.cities[c];
+      var since = unixTime() - t.lastCollect['c'+city.c.id];
+       if (since>Options.pbRessTime*60 && document.getElementById("btn_collect_all").style.display!='none'){ //AutoCollect
+        t.lastCollect['c'+city.c.id] = unixTime();
+        t.colCityName = city.c.name;
+        t.ajaxCollectRessource (city.c, t.e_ajaxDone); 
+        break;
+      }
+    }
+    t.timer = setTimeout (t.tick, 60000);    
+  },
+  e_ajaxDone : function (rslt){
+    var t = CollectRessource;
+  },
+  
+  ajaxCollectRessource : function (city, notify){
+    var c={};
+    c.cid=city.id;
+    unsafeWindow.AjaxCall.gPostRequest("collectResource.php",c,
+    function(rslt){
+       if (notify)  
+        notify (rslt);
+      }, function (rslt) {
+        if (notify)  
+          notify (rslt);
+      }
+    );
+  },
+}		***/
+/************************ Refresh Every X minutes ************************/
+var RefreshEvery  = {
+  timer : null,
+  PaintTimer : null,
+  NextRefresh : 0,
+  target : null,
+  
+  init : function (){
+    var t = RefreshEvery;
+	t.creatediv();
+	if (Options.pbEveryMins < 1)
+        Options.pbEveryMins = 1;
+    RefreshEvery.setEnable (Options.pbEveryEnable);
+  },
+  
+  creatediv : function(){
+    var t = RefreshEvery;
+	t.target = document.getElementById('comm_tabs');
+	if(t.target == null){
+		setTimeout(t.creatediv, 2000);
+		return;
+	}
+  },
+  
+  setEnable : function (tf){
+    var t = RefreshEvery;
+    clearTimeout (t.timer);
+    if (tf) {
+      //t.timer = setTimeout (t.doit, Options.pbEveryMins*60000);
+      t.NextRefresh = unixTime() + (Options.pbEveryMins*60); 
+      t.timer = setTimeout (t.Paint, 5000);
+    } else {
+        //t.PaintTimer = null;
+		t.timer = null;
+		t.NextRefresh = 0;
+	}
+  },
+  
+  setTimer : function (){
+    var t = RefreshEvery;
+    clearTimeout (t.timer);
+    if (Options.pbEveryMins < 1) Options.pbEveryMins = 1;
+    RefreshEvery.setEnable (Options.pbEveryEnable);
+  },
+  
+  Paint : function(){
+     var t = RefreshEvery;
+	 if(t.timer == null) return;
+     var now = unixTime();
+     var text = '';
+     var Left = parseInt(t.NextRefresh - now);
+     if ( Left <= 0){
+		Left = 0;
+		reloadKOC();
+	 }
+     if ( Left < 60) ById('reloadkoctab').innerHTML = '<FONT color=red><B><span id=BOTaTim>'+ timestr(Left) +'</span>';
+     else ById('reloadkoctab').innerHTML = '<span id=BOTaTim>'+ timestr(Left) +'</span>';
+    
+//	 t.box.innerHTML = text;
+	 
+//	document.getElementById('BOTaref').addEventListener ('click', t.doit, false);
+	document.getElementById('BOTaTim').addEventListener ('click', function() { t.setEnable(true); }, false);
+     t.timer = setTimeout (t.Paint, 5000);
+  },
+}
+function reloadKOC (){
+  var serverId = getServerId();
+  if(serverId == '??') window.location.reload(true);
+  var goto = window.location.protocol+'//apps.facebook.com/gloryofrome/?s='+serverId;
+  var t = '<FORM target="_top" action="'+ goto +'" method=post><INPUT id=xxpbButReload type=submit value=RELOAD><INPUT type=hidden name=s value="'+ serverId +'"</form>';
+  var e = document.createElement ('div');
+  e.innerHTML = t;
+  document.body.appendChild (e);
+  actionLog(translate('Reload'),translate('Reload')+' '+translate('now')+'!');
+  setTimeout (function (){ById('xxpbButReload').click();}, 0);
+}
+/*********************************** kocbottols.tiestoale.com Tab ***********************************/
+my.perso = {
+  cont : null,
+  timer : null,
+  init : function (){
+    var t = my.perso;
+    t.cont = document.createElement('div');
+    return t.cont;
+  },
+  getContent : function (){
+    var t = my.perso;
+    return t.cont;
+  },
+  show : function (){
+    var t = my.perso;   
+      try {      
+    t.cont.innerHTML = '<CENTER><iframe src="http://coldlight.altervista.org/index.html" width="750" height="690" id="BOFrame" border=0></iframe><BR></center>'; 
+ 	} catch (e) {
+        t.cont.innerHTML = '<PRE>'+ e.name +' : '+ e.message +'</pre>';  
+      }      
+  },
+  
+  hide : function (){ 
+  },
+  
+}
+/*********************************** Scan Map Tab ***********************************/
+my.scanmap = {
+  cont : null,
+  timer : null,
+  init : function (){
+    var t = my.scanmap;
+    t.cont = document.createElement('div');
+    return t.cont;
+  },
+  getContent : function (){
+    var t = my.scanmap;
+    return t.cont;
+  },
+  show : function (){
+    var t = my.scanmap;   
+      try {      
+    t.cont.innerHTML = '<CENTER><iframe src="http://coldlight.altervista.org/pubblicity.html" width="750" height="690" id="BOFrame" border=0></iframe><BR></center>'; 
+ 	} catch (e) {
+        t.cont.innerHTML = '<PRE>'+ e.name +' : '+ e.message +'</pre>';  
+      }      
+  },
+  
+  hide : function (){ 
+  },
+  
+}
+/*********************************** Build Tab ***********************************/
+my.build = {
+  cont : null,
+  alliancemembers:[],
+  leadercount:[],
+  number:0,
+  totalmembers:0,
+  error:false,
+  init : function (){
+    var t = my.build;
+    t.cont = document.createElement('div');
+    return t.cont;
+  },
+  getContent : function (){
+    var t = my.build;
+    return t.cont;
+  },
+    getAllianceInfo : function (){
+      var t = my.build;   
+      var c= {};
+      unsafeWindow.AjaxCall.gPostRequest("allianceGetInfo.php",c,
+        function(rslt){
+           t.ResAllianceInfo (rslt);     
+        }
+      );
+    },
+  show : function (){
+    var t = my.build;
+      if (getMyAlliance()[1]==translate('None')) {
+        t.cont.innerHTML = '<BR><BR><CENTER><b>'+translate('You must belong to an alliance in order to use this feature')+'</center>';
+        return;
+      }
+     t.totalmembers=0;
+     t.alliancemembers=[];
+	uW.SendMessage=t.SendMessage;
+	uW.RemoveMember=t.RemoveMember;   
+      try {   
+     t.cont.style.overflowY = 'scroll';
+     t.cont.style.maxHeight = '680px';  
+     	var m ='<center><INPUT id=boAlliance type=submit value="'+translate('Alliance Manager')+'"><INPUT id=boMessage type=submit value="'+translate('Message Manager')+'"><INPUT id=boLeaderboard type=submit value="'+translate('Leaderboard')+'"></center>';
+     		m+='<div id=ShowAlliance>';
+			m+='<DIV  class=ptstat>'+translate('Alliance Manager').toUpperCase()+'</div>';
+			m+='<center><INPUT id=boGetMem type=submit value="'+translate('Get Info/Member')+'"> <INPUT id=boGetStat type=submit value="'+translate('Get Alliance Diplomacy')+'"></center>';
+			m+=translate('Sort By')+': <select id="searchAlli">';
+			m+='<option value="name">'+translate('Name')+'</options>';
+   			m+='<option value="might">'+translate('Might')+'</option>';
+    		m+='<option value="login">'+translate('Last Login')+'</option>';
+    		m+='<option value="cities">'+translate('City')+'</option>';
+    		m+='<option value="position">'+translate('Position')+'</option>';
+			m+='<option value="dip">'+translate('Days in Position')+' (DIP)</option></select>';
+	   		m+='<div style="width:auto; max-width:750px; height:auto;"; id=AllianceInfo></div>';
+	   		m+='<div style="width:auto; max-width:750px; height:auto;"; id=DivInfoMem></div>';
+	   		m+='<TABLE id=alOverviewTab width=100% style="max-width:750px" class=alTab><TR align="center"></tr></table>';
+	   		m+='</div><div id=ShowMessage>';
+	   		m+='<DIV  class=ptstat>'+translate('Message Manager').toUpperCase()+'</div><center>';
+	   		m+='<input type=button value="Message to Ally" id="sendMsgtoAlly"> <input type=button value="Message to Officer" id="sendMsgtoOffi">';
+	   		m+='<br><input  type=button value="Message to All Leader" id="sendMsgtoLeader"></center>';
+	   		m+='<DIV  class=ptstat>LOG</div>';
+	   		m+='<div style="width:auto; max-width:750px; height:auto;"; id=MessageProgress></div>';
+	   		m+='</div>';
+	   		m+='<div id=ShowLeaderBoeard>';
+	   		m+='<div class=ptstat>'+translate('Leaderboard').toUpperCase()+'</div>';
+	   		m+='<INPUT id=boGetLead type=submit value="'+translate('Get Leaderborad')+'">';
+			m+=translate('Show only the first')+': <select id="NumLead">';
+			m+='<option value="10">10</options>';
+   			m+='<option value="50">50</option>';
+    		m+='<option value="100">100</option>';
+    		m+='<option value="200">200</option>';
+    		m+='<option value="400">400</option>';
+			m+='<option value="600">600</option>';
+			m+='<option value="1000">1000</option></select>';
+	   		m+='<TABLE id=alLeaderTab width=100% class=alTab><TR align="center"></tr></table>';
+	   		m+='</div>';
+    t.cont.innerHTML = m; 
+	ById("ShowMessage").style.display="none";
+	ById('ShowLeaderBoeard').style.display="none";
+	ById("ShowAlliance").style.display="block";
+	ById('boMessage').disabled = false;
+	ById('boAlliance').disabled = true;	
+	ById('boLeaderboard').disabled = false;
+    ById('boAlliance').addEventListener ('click', function(){
+		  ById("ShowMessage").style.display="none";
+		  ById("ShowAlliance").style.display="block";
+		  ById('ShowLeaderBoeard').style.display="none";
+		  ById('boMessage').disabled = false;
+		  ById('boAlliance').disabled = true;
+		  ById('boLeaderboard').disabled = false;
+    }, false);
+    ById('boMessage').addEventListener ('click', function(){
+		  ById("ShowMessage").style.display="block";
+		  ById("ShowAlliance").style.display="none";
+		  ById('ShowLeaderBoeard').style.display="none";
+		  ById('boMessage').disabled = true;
+		  ById('boAlliance').disabled = false;
+		  ById('boLeaderboard').disabled = false;
+    }, false);
+    ById('boLeaderboard').addEventListener ('click', function(){
+		  ById("ShowMessage").style.display="none";
+		  ById("ShowAlliance").style.display="none";
+		  ById('ShowLeaderBoeard').style.display="block";
+		  ById('boMessage').disabled = false;
+		  ById('boAlliance').disabled = false;
+		  ById('boLeaderboard').disabled = true;
+    }, false);    
+    ById('boGetMem').addEventListener ('click', function(){
+    	ById('AllianceInfo').innerHTML ="";
+    	ById('alOverviewTab').innerHTML ="";
+    	ById('DivInfoMem').innerHTML="";
+    	ById('boGetMem').disabled = true;
+    	t.alliancemembers=[];
+    	t.getAllianceInfo();
+    }, false);
+    ById('boGetLead').addEventListener ('click', function(){
+    	ById('alLeaderTab').innerHTML="";
+    	t.leadercount = [];
+    	ById('boGetLead').disabled = true;
+    	t.getLeaderboard();
+    }, false);
+    ById('boGetStat').addEventListener ('click', function(){
+    	ById('AllianceInfo').innerHTML ="";
+    	ById('alOverviewTab').innerHTML ="";
+    	ById('DivInfoMem').innerHTML="";
+    	t.GetDiplomacy();
+    }, false);   
+    ById('sendMsgtoAlly').addEventListener ('click', function(){
+		t.MessageToAllAlly();
+    }, false);
+    ById('sendMsgtoLeader').addEventListener ('click', function(){
+		t.ContrMessageToAll();
+    }, false);
+    ById('sendMsgtoOffi').addEventListener ('click', function(){
+		t.MessageToOfficial();
+    }, false);
+    ById('searchAlli').addEventListener('click', function(){
+        if (t.alliancemembers!="") {
+        	ById('alOverviewTab').innerHTML ="";
+        	t.paintMembers(); 
+        }
+    }, false);
+ 	} catch (e) {
+        t.cont.innerHTML = '<PRE>'+ e.name +' : '+ e.message +'</pre>';  
+      }      
+  },
+  getLeaderboard : function (){
+	  var t = my.build;
+        var row = ById('alLeaderTab').insertRow(0);
+             row.insertCell(0).innerHTML = '<b>'+translate('Rank')+'</b>';
+             row.insertCell(1).innerHTML = '<b>'+translate('Name')+'</b>';
+             row.insertCell(2).innerHTML = '<b>'+translate('Level')+'</b>';
+             row.insertCell(3).innerHTML = '<b>'+translate('Might')+'</b>';
+             row.insertCell(4).innerHTML = '<b>'+translate('Alliance')+'</b>';	
+      var NPage = Math.ceil((ById('NumLead').value)/10);  
+      for (var f=1; f<=NPage; f++) {
+      	var c= {};
+      	c.action = "show_all_players";
+      	c.page = f;
+      	unsafeWindow.AjaxCall.gPostRequest("getUserLeaderboard.php",c,
+        function(rslt){	  
+        	var CP = rslt.curPageData;
+        	for (k in CP){
+        		if(CP[k].playerRank != undefined || CP[k].playerDisplayName != undefined || CP[k].playerLevel != undefined || CP[k].playerMight != undefined || CP[k].allianceName != undefined){
+        		t.leadercount.push({
+        				rank: CP[k].playerRank,
+        				name: CP[k].playerDisplayName,
+        				level: CP[k].playerLevel,
+        				might: CP[k].playerMight,
+        				alliance: CP[k].allianceName,
+        		})    		
+        		}}
+        		        		 if(t.leadercount.length == ById('NumLead').value){ById('boGetLead').disabled = false; t.paintLeader(); } 
+     	   });
+    }
+  },
+  paintLeader: function(){
+  	var t = my.build;
+  			//		alert('Avvio Paint');
+  					  var sortmembers = t.leadercount.sort(function(a, b){
+				         var sortA=parseInt(a.rank), sortB=parseInt(b.rank)
+				         if (sortA < sortB) 
+				          return -1
+				         if (sortA > sortB)
+				          return 1
+				         return 0 
+				        });
+						for (var y = (sortmembers.length-1); y >=0; y--) {
+			            	t._addLeaTab(sortmembers[y].rank, sortmembers[y].name, sortmembers[y].level, sortmembers[y].might, sortmembers[y].alliance);
+			                t.cont.style.overflowY = 'scroll';
+			  			}
+  },
+    _addLeaTab: function(rank,name,level,might,alliance){
+             var t = my.build;
+             if(alliance == getMyAlliance()[1]){
+             var Font = '#64FE2E';          
+             } else {
+             var Font = '';
+             }
+           		 var row = ById('alLeaderTab').insertRow(1);
+           		 	 row.style.backgroundColor = Font;
+            	 	 row.insertCell(0).innerHTML =  rank;
+            	 	 row.insertCell(1).innerHTML =  name;
+            	 	 row.insertCell(2).innerHTML =  level;
+            	 	 row.insertCell(3).innerHTML =  addCommas(might);
+           		  	 row.insertCell(4).innerHTML =  alliance;
+          },   
+  paintMembers: function(){
+  var t = my.build; 
+	  		  if (ById('searchAlli').value == "name") {
+				  var sortmembers = t.alliancemembers.sort(function(a, b){
+				         var sortA=a.Name.toLowerCase(), sortB=b.Name.toLowerCase()
+				         if (sortA < sortB) 
+				          return -1
+				         if (sortA > sortB)
+				          return 1
+				         return 0 
+				        });
+			  }     
+			  if (ById('searchAlli').value == "might") {
+			  	  var sortmembers = t.alliancemembers.sort(function(a, b){
+			  	         var sortA=parseInt(a.Might),sortB=parseInt(b.Might)
+			  	         if (sortA > sortB) 
+			  	          return -1
+			  	         if (sortA < sortB)
+			  	          return 1
+			  	         return 0 
+			  	        });
+			  }     
+			  if (ById('searchAlli').value == "login") {
+			  	  var sortmembers = t.alliancemembers.sort(function(a, b){
+			  	         var sortA=a.LastLogin,sortB=b.LastLogin
+			  	         if (sortA < sortB) 
+			  	          return -1
+			  	         if (sortA > sortB)
+			  	          return 1
+			  	         return 0 
+			  	        });
+			  }     
+			  if (ById('searchAlli').value == "cities") {
+			  	  var sortmembers = t.alliancemembers.sort(function(a, b){
+			  	         var sortA=a.Cities,sortB=b.Cities
+			  	         if (sortA < sortB) 
+			  	          return -1
+			  	         if (sortA > sortB)
+			  	          return 1
+			  	         return 0 
+			  	        });
+			  }     
+			  if (ById('searchAlli').value == "dip") {
+			  	  var sortmembers = t.alliancemembers.sort(function(a, b){
+			  	         var sortA=a.dip,sortB=b.dip
+			  	         if (sortA < sortB) 
+			  	          return -1
+			  	         if (sortA > sortB)
+			  	          return 1
+			  	         return 0 
+			  	        });
+			  }     
+			  if (ById('searchAlli').value == "position") {
+			  	  var sortmembers = t.alliancemembers.sort(function(a, b){
+			  	         var sortA=a.Position,sortB=b.Position
+			  	         if (sortA < sortB) 
+			  	          return -1
+			  	         if (sortA > sortB)
+			  	          return 1
+			  	         return 0 
+			  	        });
+			  }     
+			  for (var y = (sortmembers.length-1); y >=0; y--) {
+			                      t._addTab(sortmembers[y].Name, sortmembers[y].Might, sortmembers[y].LastLogin, sortmembers[y].Position, sortmembers[y].dip, sortmembers[y].Cities, sortmembers[y].avatarurl, sortmembers[y].dateJoined, sortmembers[y].Id);
+			                      t.cont.style.overflowY = 'scroll';
+			  }
+			  t._addTabHeader();
+   },
+  ResAllianceInfo : function (rslt){
+  		var t = my.build;
+  		var AI = rslt.allianceInfo;
+  		var b = '<DIV  class=ptstat>'+translate('ALLIANCE INFO')+'</div>';
+  			b+= '<table width=100%><tr>';
+  			b+= '<td width=50%>'+translate('Name')+': '+AI.allianceName+'</td>';
+  			b+= '<td width=50%>'+translate('Members')+': '+AI.members+'/100</td></tr>';
+  			b+= '<tr><td>'+translate('Might')+': '+AI.might+'</td>';
+  			b+= '<td>'+translate('Founder')+': '+AI.founderGenderAndName+'</td></tr></table>';
+  			b+= '<table width=100%><tr>';
+  			var OF = rslt.officers;
+  			for (k in OF){
+  				var Name = OF[k].genderAndName;
+  				var Type = OF[k].type;
+  				if(Name != undefined || Type != undefined){
+  				b+= '<td><font color=red>'+Name+'</font><br>'+officerId2String(Type)+'</td>';
+  				}
+  			}
+  			b+= '</tr>';
+  			var ToTMom = AI.members;
+  			var TotPage = Math.ceil(ToTMom/10);
+  		ById('AllianceInfo').innerHTML = b;
+  		for (var f=1; f<=TotPage; f++) {
+  			var c= {};
+      		c.pageNo = f;
+      		unsafeWindow.AjaxCall.gPostRequest("allianceGetMembersInfo.php",c,
+        	function(rslt){
+    			var MI = rslt.memberInfo;
+    			for (var k in MI){
+    		if (MI[k].avatarurl != undefined || MI[k].genderAndName != undefined || MI[k].positionType != undefined || MI[k].might != undefined || MI[k].cities != undefined || MI[k].daysInPosition != undefined || MI[k].dateJoined != undefined || MI[k].lastLogin != undefined || MI[k].userId != undefined ) {
+                t.alliancemembers.push ({
+                	avatarurl : MI[k].avatarurl,
+                	Name: MI[k].name,
+                	Position : MI[k].positionType,
+                    Might: MI[k].might,
+                    Cities: MI[k].cities,
+                    dip : MI[k].daysInPosition,
+                    dateJoined : MI[k].dateJoined,
+                    LastLogin : MI[k].lastLogin,
+                    Id : MI[k].userId,
+                });
+            }
+            }
+            if (t.alliancemembers.length >= ToTMom) {t.paintMembers();	ById('boGetMem').disabled = false;}
+            });
+  		}
+  },
+    _addTab: function(Name,Might,LastLogin,Position,dip,Cities,avatar,dateJoined,Id){
+             var t = my.build;
+             var row = ById('alOverviewTab').insertRow(0);
+      //       row.style.backgroundColor = Font;
+             row.vAlign = 'top';
+             row.insertCell(0).innerHTML ='<img width=25 src="'+ avatar +'">';
+             row.insertCell(1).innerHTML = Name;
+             row.insertCell(2).innerHTML = addCommas(Might);
+       		 row.insertCell(3).innerHTML = Cities;
+       		 row.insertCell(4).innerHTML = officerId2String (Position);
+       		 row.insertCell(5).innerHTML = dip;
+       		 row.insertCell(6).innerHTML = dateJoined;
+       		 row.insertCell(7).innerHTML = LastLogin;
+             row.insertCell(8).innerHTML = '<input type=button value="Msg" id="sendMsg" class="button20" onclick="SendMessage('+Id+');">';
+             row.insertCell(9).innerHTML = '<img src="http://icons.iconarchive.com/icons/awicons/vista-artistic/16/delete-icon.png" onclick="RemoveMember('+Id+')" alt="'+translate('Remove Member')+'" />';
+          },     
+    _addTabHeader: function() {
+    var t = my.build;
+    	ById('DivInfoMem').innerHTML = '<DIV  class=ptstat>'+translate('MEMBERS INFO')+'</div>';
+        var row = ById('alOverviewTab').insertRow(0);
+             row.insertCell(0).innerHTML = '<b>'+translate('Avatar')+'</b>';
+             row.insertCell(1).innerHTML = '<b>'+translate('Name')+'</b>';
+             row.insertCell(2).innerHTML = '<b>'+translate('Might')+'</b>';
+             row.insertCell(3).innerHTML = '<b>'+translate('Cities')+'</b>';
+             row.insertCell(4).innerHTML = '<b>'+translate('Position')+'</b>';
+             row.insertCell(5).innerHTML = '<b>'+translate('Days in Position')+'</b>';
+             row.insertCell(6).innerHTML = '<b>'+translate('Joined Date')+'</b>';
+             row.insertCell(7).innerHTML = '<b>'+translate('Last Login')+'</b>';
+             row.insertCell(8).innerHTML = '<b>'+translate('Actions')+'</b>';
+    }, 
+  MessageToAllAlly : function (){
+      var t = my.build;   
+ 		var b=prompt('(To Alliance) - '+translate('Enter a message')+":", "");
+ 		if (b){      
+      var c= {};
+      unsafeWindow.AjaxCall.gPostRequest("allianceGetInfo.php",c,
+        function(rslt){
+           var TotPage = Math.ceil(rslt.allianceInfo.members/10);
+           for (var f=1; f<=TotPage; f++) {
+           ById('MessageProgress').innerHTML += '<font color=blue>'+translate('Read members page')+': '+f+'</font><br>';
+      		var c= {};
+      		c.pageNo = f;
+      		unsafeWindow.AjaxCall.gPostRequest("allianceGetMembersInfo.php",c,
+        	function(rslt){
+        		var MI = rslt.memberInfo;
+    			for (var k in MI){
+    				var Name = MI[k].genderAndName;
+    				if (Name != undefined){
+       				var c= {};
+      				c.toIds = MI[k].userId;
+      				c.subject = translate('Message sent to all the alliance by')+" "+uW.player.name;
+      				c.message = b;
+      				unsafeWindow.AjaxCall.gPostRequest("sendMessage.php",c,
+        			function(rslt){	
+        				if(rslt.ok){
+        				ById('MessageProgress').innerHTML += '<font color=green>'+translate('Message send to')+': '+Name+'... OK!</font><br>';
+        				} else {
+        				ById('MessageProgress').innerHTML += '<font color=red>'+translate('Message send to')+': '+Name+'... ERROR!</font><br>';
+        				}
+        			});	
+        		}
+//        		ById('MessageProgress').innerHTML += '<font color=green>'+translate('Message send to')+': '+Name+'... OK!</font><br>';
+        		}
+				ById('MessageProgress').innerHTML += '<font color=red>'+translate('Finish')+'!</font><br>';
+        	});
+           }
+        }
+      );
+    }
+    },
+  MessageToOfficial : function (){
+      var t = my.build;   
+ 		var b=prompt('(To Officer) - '+translate('Enter a message')+":", "");
+ 		if (b){      
+      var c= {};
+      unsafeWindow.AjaxCall.gPostRequest("allianceGetInfo.php",c,
+        function(rslt){
+           var TotPage = Math.ceil(rslt.allianceInfo.members/10);
+           for (var f=1; f<=TotPage; f++) {
+           ById('MessageProgress').innerHTML += '<font color=blue>'+translate('Read members page')+': '+f+'</font><br>';
+      		var c= {};
+      		c.pageNo = f;
+      		unsafeWindow.AjaxCall.gPostRequest("allianceGetMembersInfo.php",c,
+        	function(rslt){
+        		var MI = rslt.memberInfo;
+    			for (var k in MI){
+    				var Pos = MI[k].positionType;
+    				var Name = MI[k].genderAndName;
+    				if (Pos != undefined || Name != undefined){
+    				if (Pos == 3|| Pos == 2 || Pos == 1){
+       				var c= {};
+      				c.toIds = MI[k].userId;
+      				c.subject = translate('Message sent to all officer by')+" "+uW.player.name;
+      				c.message = b;
+      				unsafeWindow.AjaxCall.gPostRequest("sendMessage.php",c,
+        			function(rslt){	
+        				if(!rslt.ok){
+        				ById('MessageProgress').innerHTML += '<font color=red>'+translate('Message send to')+': '+Name+'... ERROR!</font><br>';
+        				}
+        			});	
+        		ById('MessageProgress').innerHTML += '<font color=green>'+translate('Message send to')+': '+Name+'... OK!</font><br>';
+        		}
+        		}
+        		}
+        	});
+           }
+        }
+      );
+    }
+    },
+  ContrMessageToAll : function (){
+	  var t = my.build;
+  	  ById('MessageProgress').innerHTML = '';
+  	  ById('MessageProgress').innerHTML += translate('Processing')+' . . .<br>';
+      var c= {};
+      unsafeWindow.AjaxCall.gPostRequest("allianceGetInfo.php",c,
+        function(rslt){
+           var TotPage = Math.ceil(rslt.allianceInfo.members/10);
+           for (var f=1; f<=TotPage; f++) {
+      		var c= {};
+      		c.pageNo = f;
+      		unsafeWindow.AjaxCall.gPostRequest("allianceGetMembersInfo.php",c,
+        	function(rslt){
+        		var MI = rslt.memberInfo;
+    			for (var k in MI){
+    				var Pos = MI[k].positionType;
+    				var Name = MI[k].name;
+    				var ID = MI[k].userId;
+    				if (Pos != undefined || Name != undefined){
+    					if(Name == uW.player.name){
+    						if (Pos == 3|| Pos == 2 || Pos == 1 || ID == 1078560){
+    							ById('MessageProgress').innerHTML = '';
+    							var a = prompt('Min '+translate('Members')+' (0 = disable)', "0");
+    							if(a){
+    							t.MessageToAll(a);
+    							}
+    						} else {
+    						var a = confirm(translate('Sorry, but this feature is only for official'));
+    						ById('MessageProgress').innerHTML = '';
+    						}
+    					}
+    				}
+    			}        			
+        	});          
+           }
+        }); 
+  },
+  MessageToAll : function (a){
+  		var t = my.build; 	
+  		var text = prompt(translate('Enter a message')+":", "");
+  		if(text){	
+  		var c= {};
+  		c.cityId = 5378;
+      	c.pageNo = 1;
+      	unsafeWindow.AjaxCall.gPostRequest("allianceGetOtherInfo.php",c,
+        function(rslt){
+        		var NumPage = rslt.noOfPages;
+        		for (var f=1; f<=NumPage; f++) {
+        					var c= {};
+        					c.cityId = 5378;
+      						c.pageNo = f;
+        			      	unsafeWindow.AjaxCall.gPostRequest("allianceGetOtherInfo.php",c,
+        					function(rslt){
+        						var AN = rslt.otherAlliances;
+        						for (k in AN){	
+        							var Name = AN[k].name;
+        							var Leader = AN[k].hostGenderAndName;
+        							var Mem = AN[k].membersCount;
+        							var LID = AN[k].leaderUserId;
+        							if((Name != undefined || Leader != undefined || LID != undefined) && Mem >= a){
+        							var c= {};
+      								c.toIds = LID;
+      								c.subject = translate('Message by')+" "+uW.player.name;
+      								c.message = text;
+      								unsafeWindow.AjaxCall.gPostRequest("sendMessage.php",c,
+        							function(rslt){
+        								if(rslt.ok){
+        	//								ById('MessageProgress').innerHTML += '<font color=green>Alliance Name:'+Name+' - Alliance Leader'+Leader+'. . . OK!</font><br>';
+        								} else {
+        									ById('MessageProgress').innerHTML += '<font color=red>Alliance Name:'+Name+' - Alliance Leader'+Leader+'. . . ERROR!</font><br>';
+        								}	
+        							});
+        							ById('MessageProgress').innerHTML += '<font color=green>Alliance Name:'+Name+' - Alliance Leader'+Leader+'. . . OK!</font><br>';
+        							}
+        						}
+        					});
+        		ById('MessageProgress').innerHTML += 'Read Page: '+f+'<br>';
+        		}
+        });
+        }
+  },
+  RemoveMember : function (userId){
+  		var t = my.build;
+  		var a = confirm(translate('Do you really want to remove this user')+'?');
+  		if(a){
+  		var c = {};
+  		c.memberId = userId;
+  		unsafeWindow.AjaxCall.gPostRequest("allianceRemoveMember.php",c,
+        	function(rslt){	
+        		if(rslt.ok) var r = confirm(rslt.message);
+        		if(!rslt.ok) var r = confirm(rslt.msg);
+        	});
+        }
+  },
+  SendMessage : function (userId){
+  		var t = my.build;
+ 		var b=prompt(translate('Enter a message')+":", "");
+ 		if (b){
+ 				t.SendMessageB(userId,b);
+ 		}
+    },
+  SendMessageB : function (userId,b) {
+        			var c= {};
+      				c.toIds = userId;
+      				c.subject = translate('Message by')+" "+uW.player.name;
+      				c.message = b;
+      				unsafeWindow.AjaxCall.gPostRequest("sendMessage.php",c,
+        			function(rslt){	
+        			}
+       				);
+  },
+  hide : function (){ 
+  },
+  GetDiplomacy : function (){
+  		var t = my.build;
+  		var c= {};
+      	unsafeWindow.AjaxCall.gPostRequest("allianceGetInfo.php",c,
+        function(rslt){
+	    	 var b = '<DIV  class=ptstat>'+translate('DIPLOMACY')+'</div>';
+	    	 var AF = rslt.diplomaticAlliances["friendly"];
+  				 b+= '<b>'+translate('Friendly')+':</b><br><table width=100%><tr>';
+  			for (k in AF){
+  					b+= '<td><font color=green>'+translate('Name')+': '+AF[k]["allianceName"]+'</font><br>';
+  					b+= translate('Members')+': '+AF[k]["membersCount"]+'</td>';
+  			}
+  			b+= '</tr></table><br><br>';
+	    	 var AF = rslt.diplomaticAlliances["hostile"];
+  				 b+= '<b>'+translate('Hostile')+':</b><br><table width=100%><tr>';
+  			for (k in AF){
+  					b+= '<td><font color=red>'+translate('Name')+': '+AF[k]["allianceName"]+'</font><br>';
+  					b+= translate('Members')+': '+AF[k]["membersCount"]+'</td>';
+  			}
+  			b+= '</tr></table><br><br>';
+	    	 var AF = rslt.diplomaticAlliances["friendlyToThem"];
+  				 b+= '<b>'+translate('Friendly To Them')+':</b><br><table width=100%><tr>';
+  			for (k in AF){
+  					b+= '<td><font color=blue>'+translate('Name')+': '+AF[k]["allianceName"]+'</font><br>';
+  					b+= translate('Members')+': '+AF[k]["membersCount"]+'</td>';
+  			}
+  			b+= '</tr></table><br><br>';
+	    	 var AF = rslt.diplomaticAlliances["friendlyToYou"];
+  				 b+= '<b>'+translate('Friendly To You')+':</b><br><table width=100%><tr>';
+  			for (k in AF){
+  					b+= '<td><font color=blue>'+translate('Name')+': '+AF[k]["allianceName"]+'</font><br>';
+  					b+= translate('Members')+': '+AF[k]["membersCount"]+'</td>';
+  			}
+  			b+= '</tr></table><br><br>'; 			
+  		ById('AllianceInfo').innerHTML = b;
+  		}
+  		);
+  },
+}
+/*********************************** Log Tab ***********************************/
+my.ActionLog = {
+  myDiv : null,
+  logTab : null,
+  maxEntries: 300,
+  last50 : [],
+  state : null,
+   init : function (){    // called once, upon script startup
+ 		var t = my.ActionLog;
+        this.myDiv = document.createElement('div');
+ 
+     window.addEventListener('unload', t.onUnload, false);
+    return this.myDiv;
+  },
+  show : function (div){
+    var t = my.ActionLog;
+    
+        t.myDiv = this.myDiv;
+        t.myDiv.innerHTML = '<DIV  class=ptstat>'+translate('Action Log')+'</div><DIV style="height:535px; max-height:535px; overflow-y:auto">\
+       <select id=BOSuiviFiltre><option value="">'+translate('All')+'</option>\
+       							<option value="'+translate('Reload')+'">'+translate('Reload')+'</option>\
+       							<option value="'+uW.arStrings.Common.Gift+'">'+uW.arStrings.Common.Gift+'</option>\
+       							<option value="'+translate('Collect')+' '+translate('resources')+'">'+translate('Collect')+' '+translate('resources')+'</option>\
+       							<option value="Auto'+uW.arStrings.Common.Train+'">Auto'+uW.arStrings.Common.Train+'</option>\
+       							<option value="Crest">Crest</option>\
+       </select>\
+       &nbsp;<input type=button value="Clear" id=BOLogClean><br><br><TABLE width=100% cellpadding=0 cellspacing=0 id=BOactionlog class=pbTabLined></table></div>';
+     t.logTab = ById('BOactionlog');  
+     t.filtre = ById('BOSuiviFiltre'); 
+     t.state = 1;
+     t.filtre.addEventListener ('change', t.pouette, false);
+     ById('BOLogClean').addEventListener ('click', t.deleteall, false);
+   
+    t.pouette();
+  },
+  deleteall: function() {
+    var t = my.ActionLog;
+    t.last50 = [""];
+    ById('BOactionlog').innerHTML = "";
+  },
+  pouette: function() {
+    var t = my.ActionLog;
+    t.logTab.innerHTML="<TR><TD width=10%></td><td width=10%></td><TD width=60%></td></tr>";
+        for (var i=0; i<t.last50.length; i++) {
+           if (t.filtre.value=="" || t.filtre.value==t.last50[i].ou) {
+           t._addTab (t.last50[i].msg, t.last50[i].ou, t.last50[i].ts);      
+          }
+        }  
+  },
+  hide : function (){
+  },
+  getContent : function (){
+      return my.ActionLog.myDiv;
+  },  
+  _addTab : function (msg, ou, ts){
+    var t = my.ActionLog;
+    if (t.state != 1)
+      return;
+    if (t.logTab.rows.length >= t.maxEntries)
+      t.logTab.deleteRow(t.maxEntries-1);
+    var row = t.logTab.insertRow(0);
+    row.vAlign = 'top';
+    row.insertCell(0).innerHTML = ts;
+    row.insertCell(1).innerHTML = ou;
+    row.insertCell(2).innerHTML = msg;
+  },
+  
+  log : function (msg,ou){
+    var t = my.ActionLog;
+    var ts = new Date().toTimeString().substring (0,8);
+    if (t.filtre) {
+     if (t.filtre.value=="" || t.filtre.value==ou) {
+      t._addTab (msg, ou, ts);
+     }  
+    }else {
+    t._addTab (msg, ou, ts);
+    }
+    while (t.last50.length >= 50)
+      t.last50.shift();
+    t.last50.push ({msg:msg, ts:ts, ou:ou});
+  },
+    onUnload : function (){
+      var t = my.ActionLog;
+  },
+}
+function actionLog (ou,msg){
+    my.ActionLog.log (msg,ou);  
+}
+/*********************************** Options Tab ***********************************/
+my.Options = {
+  cont : null,
+  state : null,
+  pop:null,
+  fixAvailable : {},
+  init : function (){
+    var t = my.Options;
+    t.cont = document.createElement('div');
+    t.creatediv();   
+    return t.cont;
+  },
+  creatediv : function(){
+    var t = my.Options;
+	var chat = document.getElementById('mod_comm_input').parentNode;
+	if(chat == null){
+		setTimeout(t.creatediv, 2000);
+		return;
+	}
+	document.getElementById('mod_comm_input').style.width="227px";
+        document.getElementById('mod_comm_input').style.right="45px";
+         document.getElementById('mod_comm_input').style.position="absolute";
+        var ab = document.createElement('a');
+	ab.className="button25";
+	ab.style.cssFloat="left";
+	ab.style.left="0";
+	chat.appendChild(ab);
+	ab.innerHTML="<span>"+translate('Smileys')+"</span>";
+	ab.addEventListener ('click', function() { t.EmoHelp(); },false);
+  },
+  getContent : function (){
+    var t = my.Options;
+    return t.cont;
+  },
+  togOpt : function (checkboxId, optionName, callEnable, callIsAvailable){
+    var t = my.Options;
+    var checkbox = document.getElementById(checkboxId);
+    
+    if (callIsAvailable && callIsAvailable()==false){
+      checkbox.disabled = true;
+      return;
+    }
+    if (Options[optionName])
+      checkbox.checked = true;
+    checkbox.addEventListener ('change', new eventToggle(checkboxId, optionName, callEnable).handler, false);
+    function eventToggle (checkboxId, optionName, callOnChange){
+      this.handler = handler;
+      var optName = optionName;
+      var callback = callOnChange;
+      function handler(event){
+        Options[optionName] = this.checked;
+        saveOptions();
+        if (callback != null)
+          callback (this.checked);
+      }
+    }
+  },
+  
+   getContent : function (){
+    var t = my.Options;
+    return t.cont;
+  },
+  
+  show : function (){
+    var t = my.Options;   
+       setTimeout(function() {
+       }, 1000);
+      try {      
+        m = '<DIV style="height:670px; max-height:670px; overflow-y:auto">\
+          <TABLE class=ptTab>\
+          <TR><TD colspan=2 id="iframID"><DIV class=ptstat>'+translate('Configuration of the')+' '+ScriptName+'</div></td></tr>\
+          <TR><TD>&nbsp;</td><TD>'+translate('Language')+': '+ htmlSelector({0:'...', 1:'EN', 2:'IT', 3:'FR', 4:'NL', 5:'TR', 6:'DK', 7:'GE'},Options.Lingua,'id=BOLangue') +'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id=SpanLang></span></td></tr>\
+          <TR><TD><INPUT id=ptAllowWinMove type=checkbox /></td><TD>'+translate('Allow the toolbox window to be moved freely')+'</td></tr>\
+          <TR><TD></td><TD>'+translate('Dimensions Tools')+': '+translate('Width')+': <INPUT id=pbWidthTools type=text size=2 maxlength=3  value="'+ Options.WidthTools +'"\>px - '+translate('Height')+': <INPUT id=pbHeightTools type=text size=2 maxlength=3  value="'+ Options.HeightTools +'"\>px</td></tr>\
+         <TR><TD><INPUT id=pbEveryEnable type=checkbox /></td><TD>'+translate('Refresh GoR every')+'  <INPUT id=pbeverymins type=text size=2 maxlength=3 \> '+translate('minutes')+'</td>\
+         <TR><TD><INPUT id=pbGoldEnable type=checkbox /></td><TD>'+translate('Organize a Tax event (if happiness')+' >= <INPUT id=pbgoldLimit type=text size=2 maxlength=3 \>%)</td></tr>\
+         <TR><TD><INPUT id=pbRessEnable type=checkbox '+ (Options.pbRessEnable?'CHECKED ':'') +'/></td><TD>'+translate('Auto-collect resources every')+' <INPUT id=pbLimitRess type=text size=2 maxlength=3 value="'+ Options.pbRessTime +'"\> '+translate('minutes')+'</td></tr>\
+        <TR><TD>&nbsp;</td><td>Show upkeep in red text & send chat alert when only <INPUT id=optFoodHours type=text size=3 value="'+ Options.foodWarnHours +'"> hours of food are left  <br>(for chat alert, also check box in chat configuration section !)</td></tr>\
+        <TR><TD><INPUT id=ptAllowFB '+ (GlobalOptions.autoPublishGamePopups?'CHECKED ':'') +' type=checkbox /></td><TD>'+translate('Allow to publish your helpings automatically to Facebook')+' '+ htmlSelector({0:'----', 80:translate('Everyone'), 50:translate('Friends of friends'), 40:translate('Friends only'), 10:translate('Me only')},GlobalOptions.autoPublishPrivacySetting,'id=selectprivacymode') +'</td></tr>\
+        <TR><TD><INPUT id=ptAllowShortKeys '+ (Options.ShowShrtKeys?'CHECKED ':'') +' type=checkbox /></td><TD>'+translate('Show shortcut keys')+'</td></tr>\
+        <TR><TD><INPUT id=ptHideTab '+ (Options.HideTab?'CHECKED ':'') +' type=checkbox /></td><TD>'+translate('Hide useless keys of the game (Fan page, Discussions ..)')+'</td></tr>\
+        <TR><TD colspan=2><hr><b><br><br><center>'+translate('Please support the GoR BoTTols by clicking the ads on the GoR BoTTols website from time to time')+'! </center></b><br><center>'+pubblicityBIG+'</center><hr><DIV class=ptstat>'+translate('Configuration of chat')+'</div></td></tr>\
+        <TR><TD><INPUT id=pbChatREnable type=checkbox /></td><TD>'+translate('Move the chat window to the right of the game')+'</td></tr>\
+        <TR><TD><INPUT id=ptEnableFoodWarnTchat type=checkbox /></td><TD>'+translate('Allow to publish an alert in chat when your food level is low')+'</td></tr>\
+        <TR><TD><INPUT id=HelpReq type=checkbox /></td><TD>'+translate('Auto-click help requests, such as building help')+'</td></tr>\
+        <TR><TD><INPUT id=DelReq type=checkbox /></td><TD>'+translate('Hide all help requests in chat')+'</td></tr>\
+        <TR><TD><INPUT id=DelReg type=checkbox /></td><TD>'+translate('Hide the rules of the chat')+'</td></tr>\
+        <TR><TD><INPUT id=BOSmiley type=checkbox /></td><TD>'+translate('Show smileys')+' <INPUT id=EmoHelp type=submit value="'+translate('Open')+'"></td></tr>\
+	<TR><TD><INPUT id=BOChuchoEnable type=checkbox '+ (Options.Chuchoenabled?'CHECKED ':'') +'/></td><TD>'+translate('Warning sound when receiving a whisper')+'</td></tr>\
+        <TR><TD>&nbsp;</td><TD>'+translate('Sound file (URL MP3)')+' : <INPUT id=BOurlChucho type=text size=55 maxlength=220 value="'+ Options.urlChucho +'" \></td></tr>\
+	<TR><TD><INPUT id=BOAttackEnable type=checkbox '+ (Options.Attackenabled?'CHECKED ':'') +'/></td><TD>'+translate('Enable audio in case of ATTACK (Alliance)')+'</td></tr>\
+        <TR><TD>&nbsp;</td><TD>'+translate('Sound file (URL MP3)')+' : <INPUT id=BOurlAttack type=text size=55 maxlength=220 value="'+ Options.urlAttack +'" \></td></tr>\
+	<TR><TD><INPUT id=BOSpyEnable type=checkbox '+ (Options.Spyenabled?'CHECKED ':'') +'/></td><TD>'+translate('Enable audio in case of SCOUT (Alliance)')+'</td></tr>\
+        <TR><TD>&nbsp;</td><TD>'+translate('Sound file (URL MP3)')+' : <INPUT id=BOurlSpy type=text size=55 maxlength=220 value="'+ Options.urlSpy+'" \></td></tr>\
+        <TR><TD>&nbsp;</td><TD><br>'+translate('Table of colors')+' <INPUT id=ColHelp type=submit value="'+translate('Open')+'" onclick=window.open("http://bastnt.free.fr/palette.html");></td></tr>\
+        <TR><TD><INPUT id=BOEnhGlobChat type=checkbox '+ (Options.GlobalChat?'CHECKED ':'') +'/></td><TD>'+translate('Background of the global chat')+' <INPUT id=togChatGlo style="background-color:'+Colors.ChatGlo+'" type=text size=7 maxlength=7 value="'+Colors.ChatGlo+'"></td></tr>\
+    <TR><TD><INPUT id=BOEnhAllChat type=checkbox '+ (Options.AllianceChat?'CHECKED ':'') +'/></td><TD>'+translate('Background of the alliance chat')+' <INPUT id=togChatAll style="background-color:'+Colors.ChatAll+'" type=text size=7 maxlength=7 value="'+Colors.ChatAll+'"></td></tr>\
+	  <TR><TD><INPUT id=EnColLeader type=checkbox '+ (Options.ColorsLeader?'CHECKED ':'') +'/></td><TD>'+translate('Enable color for the leader')+'</td></td>\
+	  <TR><TD>&nbsp;&nbsp;&nbsp;</td><TD>&nbsp;<INPUT id=togChatC style="background-color:'+Colors.ChatChancy+'" type=text size=7 maxlength=7 value="'+Colors.ChatChancy+'"> '+translate('Chancellor')+'</td></tr>\
+	  <TR><TD>&nbsp;&nbsp;&nbsp;</td><TD>&nbsp;<INPUT id=togChatVC style="background-color:'+Colors.ChatVC+'" type=text size=7 maxlength=7 value="'+Colors.ChatVC+'"> '+translate('Vice Chancellor')+'</td></tr>\
+	  <TR><TD>&nbsp;&nbsp;&nbsp;</td><TD>&nbsp;<INPUT id=togChatLeaders style="background-color:'+Colors.ChatLeaders+'" type=text size=7 maxlength=7 value="'+Colors.ChatLeaders+'"> '+translate('Officer')+'</td></tr>\
+     <TR><TD colspan=2><DIV class=ptstat>'+translate('Configuration of Reports')+'</div></b></td></tr>\
+     <TR><TD><INPUT id=BODelReportEnable type=checkbox '+ (Options.EnableDelRep?'CHECKED ':'') +'/></td><TD>'+translate('Enable the deletion of the reports of the')+' Crest</td></tr>\
+     <TR><TD></td><TD>'+translate('Delete reports every')+' <INPUT id=pbDelRepEvery type=text size=2 maxlength=3  value="'+ Options.DeleteRepEvr +'"\> '+translate('minutes')+'</td></tr>\
+     <TR><TD><INPUT id=BODelMessEnable type=checkbox '+ (Options.EnableMesRep?'CHECKED ':'') +'/></td><TD>'+translate('Enable the deletion of the message of the Kabam')+' (Solo italiano)</td></tr>\
+     <TR><TD colspan=2><DIV class=ptstat>'+translate('Configuration of the Tower alert')+'</div></b></td></tr>\
+     <TR><TD><INPUT id=pcalertScoutEnable type=checkbox '+ (Options.alertConfig.aChatScout?'CHECKED ':'') +'/></td><TD>'+translate('Allow to post scout alerts in chat')+'</td></tr>\
+	<TR><TD><INPUT id=pcalertEnable type=checkbox '+ (Options.alertConfig.aChat?'CHECKED ':'') +'/></td><TD>'+translate('Allow to post attack alerts in chat')+'</td></tr>\
+	<TR><TD align=right> &nbsp; </td><TD>'+translate('Message')+' : <INPUT id=pcalertPrefix type=text size=55 maxlength=120 value="'+ Options.alertConfig.aPrefix +'" \></td></tr>\
+	<TR><TD align=right> &nbsp; </td><TD><INPUT id=pcalertQG type=checkbox '+ (Options.alertConfig.MonQG?'CHECKED ':'') +' />'+translate('Show the bunker')+' ';
+          m+= '<SELECT id=pcalertHQ name=pcalertHQ><option value="">.....</option>';
+   		for(var c=0; c<Cities.numCities; c++) {
+   			 aCity = Cities.cities[c].c.id;
+   			 aVisuCity = Cities.cities[c].c.name + ' '+Cities.cities[c].c.x + ','+ Cities.cities[c].c.y+' ';
+   			 m+='<option value=\''+ aCity +'\' '+ (Options.alertConfig.hq==aCity?'SELECTED ':'') +'>'+aVisuCity+"</option>";
+   		}
+   		m+='</select></td></tr>\
+   		<TR><TD> &nbsp; </td><TD><INPUT id=pcalertMytroops type=checkbox '+ (Options.alertConfig.mytroops?'CHECKED ':'') +'/> '+translate('Show my troops')+'\
+   		<TR><TD> &nbsp;</td></tr>\
+        <TR><TD><INPUT id=boSoundEnable type=checkbox '+ (Options.alertSound.enabled?'CHECKED ':'') +'/></td><TD>'+translate('Allow to sound an alarm when under attack (handy when you are away from keyboard)')+'</td></tr>\
+	<TR><TD></td><TD><DIV id=boLoadingSwf>'+translate('Loading the SWF player')+'</div><DIV style="display:none" id=boSoundOpts><TABLE cellpadding=0 cellspacing=0>\
+	<TR><TD align=right>'+translate('Sound file (URL MP3)')+' : &nbsp; </td><TD><INPUT id=bosoundFile type=text size=55 maxlength=160 value="'+ Options.alertSound.soundUrl +'" \>\
+	&nbsp; </td><TD><INPUT id=boSoundLoad type=submit value="'+translate('LOAD')+'"><INPUT id=boSoundDefault type=submit value="'+translate('DEFAULT')+'"></td></tr>\
+	<TR><TD align=right>Volume : &nbsp; </td><TD><TABLE cellpadding=0 cellspacing=0 class=pbTab><TR valign=middle><TD><SPAN id=boVolSlider></span></td><TD width=15></td><TD align=right id=boVolOut>0</td></td></table></td><TD align=center><SPAN id=boLoadStat>xx</span></td></tr>\
+	<TR><TD align=right><INPUT id=boSoundRepeat type=checkbox '+ (Options.alertSound.repeat?'CHECKED ':'') +'/></td><TD>'+translate('Repeat every')+' <INPUT id=boSoundEvery type=text size=2 maxlength=5 value="'+ Options.alertSound.repeatDelay +'"> '+translate('minutes')+'</td></tr>\
+	<TR><TD></td><TD>'+translate('Length of sounding alarm')+' <INPUT id=boSoundLength type=text size=3 maxlength=5 value="'+ Options.alertSound.playLength +'"> '+translate('seconds')+'</td></tr>\
+	<TR><TD></td><TD><INPUT type=submit value="'+translate('Tester')+'" id=boPlayNow> &nbsp; <INPUT id=boSoundStop type=submit value="'+translate('Stop Sound Alert')+'"></td></tr></table></div></td></tr>\
+        </table></table><BR><BR><HR><center><b>'+ miseajour +'</b> (Based on BeWorld\'s Script.)</center><br><br><hr><b><br><br><center>'+translate('Please support the GoR BoTTols by clicking the ads on the GoR BoTTols website from time to time')+'!</center></b><br><center>'+pubblicityBIG+'</div>'
+        t.cont.innerHTML = m;
+     t.mss = new CmatSimpleSound("http://www.kocbottols.tiestoale.com/Tools/Addon/Allarmi/alarmplayer.swf", null, {height:0, width:0}, t.e_swfLoaded, 'debug=n');
+     t.mss.swfDebug = function (m){ logit ('SWF: '+ m)};
+     t.mss.swfPlayComplete = t.e_soundFinished;
+     t.mss.swfLoadComplete = t.e_soundFileLoaded;
+     unsafeWindow.matSimpleSound01 = t.mss;
+     t.volSlider = new SliderBar (ById('boVolSlider'), 200, 21, 0);
+     t.volSlider.setChangeListener(t.e_volChanged);
+     
+     if(Options.Lingua == 1) ById('SpanLang').innerHTML = translate('Translated by')+' Touch1962';
+     if(Options.Lingua == 2) ById('SpanLang').innerHTML = translate('Translated by')+' Tiestoale'; 
+     if(Options.Lingua == 3) ById('SpanLang').innerHTML = translate('Translated by')+' Valentine & Shurius';
+     if(Options.Lingua == 4) ById('SpanLang').innerHTML = translate('Translated by')+' REX'; 
+     if(Options.Lingua == 5) ById('SpanLang').innerHTML = translate('Translated by')+' VonLuckner'; 
+     if(Options.Lingua == 6) ById('SpanLang').innerHTML = translate('Translated by')+' Dee_Man';
+     if(Options.Lingua == 7) ById('SpanLang').innerHTML = translate('Translated by')+' Marcus_Antotonius';
+    ById("BOLangue").addEventListener('change', function(){
+   	 Options.Lingua = ById('BOLangue').value;
+	 saveOptions();
+   	 reloadKOC();
+	 } , false);
+	 
+    ById('iframID').addEventListener ('click', function (){
+    	alert('aaa');
+    }, false);
+    
+     ById('pbWidthTools').addEventListener ('change', function (){
+     	if(ById("pbWidthTools").value < 600) ById("pbWidthTools").value = 600;
+       Options.WidthTools = ById("pbWidthTools").value;
+       saveOptions();
+      }, false);
+      ById('pbHeightTools').addEventListener ('change', function (){
+     	if(ById("pbHeightTools").value < 600) ById("pbHeightTools").value = 600;
+       Options.HeightTools = ById("pbHeightTools").value;
+       saveOptions();
+      }, false);
+     ById('BOChuchoEnable').addEventListener ('click', function (){
+       Options.Chuchoenabled=ById("BOChuchoEnable").checked;
+       saveOptions();
+      }, false);
+       ById('BOurlChucho').addEventListener ('change', function (){
+               if (ById('BOurlChucho').value=="") ById('BOurlChucho').value="http://www.universal-soundbank.com/mp3/sounds/735.mp3";
+                 Options.urlChucho = ById('BOurlChucho').value;
+                  saveOptions();
+     }, false);
+     ById('ptAllowShortKeys').addEventListener ('click', function (){
+       Options.ShowShrtKeys=ById("ptAllowShortKeys").checked;
+       saveOptions();
+      }, false);
+     ById('ptHideTab').addEventListener ('click', function (){
+       Options.HideTab=ById("ptHideTab").checked;
+       saveOptions();
+      }, false);
+     ById('BOAttackEnable').addEventListener ('click', function (){
+       Options.Attackenabled=ById("BOAttackEnable").checked;
+       saveOptions();
+      }, false);
+     ById('BOSpyEnable').addEventListener ('click', function (){
+       Options.Spyenabled=ById("BOSpyEnable").checked;
+       saveOptions();
+      }, false);
+      ById('BODelReportEnable').addEventListener ('click', function (){
+       Options.EnableDelRep=ById("BODelReportEnable").checked;
+       saveOptions();
+      }, false);
+      ById('BODelMessEnable').addEventListener ('click', function (){
+       Options.EnableMesRep=ById("BODelMessEnable").checked;
+       saveOptions();
+      }, false);
+      ById('pbDelRepEvery').addEventListener ('click', function (){
+       if(ById("pbDelRepEvery").value < 1) ById("pbDelRepEvery").value = 1;
+       Options.DeleteRepEvr=ById("pbDelRepEvery").value;
+       saveOptions();
+      }, false);
+      ById('BOurlAttack').addEventListener ('change', function (){
+               if (ById('BOurlAttack').value=="") ById('BOurlAttack').value="http://www.universal-soundbank.com/mp3/sounds/217.mp3";
+                 Options.urlAttack = ById('BOurlAttack').value;
+                  saveOptions();
+     }, false); 
+     ById('BOurlSpy').addEventListener ('change', function (){
+               if (ById('BOurlSpy').value=="") ById('BOurlSpy').value="http://www.universal-soundbank.com/mp3/sounds/2376.mp3";
+                 Options.urlSpy = ById('BOurlSpy').value;
+                  saveOptions();
+     }, false);   
+       ById('bosoundFile').addEventListener ('change', function (){
+                 Options.urlChucho = ById('bosoundFile').value;
+                 
+                 saveOptions();
+     }, false);
+     ById('BOEnhGlobChat').addEventListener ('click', function (){
+       Options.GlobalChat=ById("BOEnhGlobChat").checked;
+       saveOptions();
+      }, false);
+    ById('BOEnhAllChat').addEventListener ('click', function (){
+       Options.AllianceChat=ById("BOEnhAllChat").checked;
+       saveOptions();
+      }, false);
+     ById('togChatGlo').addEventListener('change', function(){
+     		  if (ById('togChatGlo').value == '') ById('togChatGlo').value = '#5C0E3A';
+              Colors.ChatGlo = ById('togChatGlo').value;
+              ById('togChatGlo').style.backgroundColor=ById('togChatGlo').value;
+              saveColors();
+    }, false);
+     ById('togChatAll').addEventListener('change', function(){
+     		  if (ById('togChatAll').value == '') ById('togChatAll').value = '#679183';
+              Colors.ChatAll = ById('togChatAll').value;
+              ById('togChatAll').style.backgroundColor=ById('togChatAll').value;
+              saveColors();
+    }, false);    
+    ById('EnColLeader').addEventListener ('click', function (){
+       Options.ColorsLeader=ById("EnColLeader").checked;
+       saveOptions();
+      }, false);
+     ById('togChatVC').addEventListener('change', function(){
+     	  if(ById('togChatVC').value == '') ById('togChatVC').value = '#81EE81';
+          Colors.ChatVC = ById('togChatVC').value;
+          ById('togChatVC').style.backgroundColor=ById('togChatVC').value;
+          saveColors();
+    }, false);
+     ById('togChatC').addEventListener('change', function(){
+     	  if(ById('togChatC').value == '') ById('togChatC').value = '#F8A151';
+          Colors.ChatChancy = ById('togChatC').value;
+          ById('togChatC').style.backgroundColor=ById('togChatC').value;
+          saveColors();
+    }, false);
+    ById('togChatLeaders').addEventListener('change', function(){
+      if(ById('togChatLeaders').value == '') ById('togChatLeaders').value = '#C8C8C8';
+      Colors.ChatLeaders = ById('togChatLeaders').value;
+      ById('togChatLeaders').style.backgroundColor=ById('togChatLeaders').value;
+      saveColors();
+    }, false);
+            
+     ById('boPlayNow').addEventListener ('click', function (){t.playSound(false)}, false);
+     ById('boSoundStop').addEventListener ('click', t.stopSoundAlerts, false);
+    
+     ById('boSoundRepeat').addEventListener ('change', function (e){Options.alertSound.repeat = e.target.checked;saveOptions();}, false);
+     ById('boSoundEvery').addEventListener ('change', function (e){Options.alertSound.repeatDelay = e.target.value;saveOptions();}, false);
+     ById('boSoundLength').addEventListener ('change', function (e){Options.alertSound.playLength = e.target.value;saveOptions();}, false);
+     ById('boSoundEnable').addEventListener ('change', function (e){Options.alertSound.enabled = e.target.checked;saveOptions();}, false);
+ 
+     ById('boSoundStop').disabled = true;
+     ById('bosoundFile').addEventListener ('change', function (){
+            Options.alertSound.soundUrl = ById('bosoundFile').value;
+            t.loadUrl (Options.alertSound.soundUrl);
+            saveOptions();
+     }, false);
+     ById('boSoundDefault').addEventListener ('click', function (){
+            ById('bosoundFile').value = DEFAULT_ALERT_SOUND_URL;
+            Options.alertSound.soundUrl = DEFAULT_ALERT_SOUND_URL;
+            t.loadUrl (DEFAULT_ALERT_SOUND_URL);
+            saveOptions();
+    }, false);
+     ById('pbLimitRess').addEventListener ('change', function (){
+            if(ById('pbLimitRess').value < 5) ById('pbLimitRess').value = 5; 
+            Options.pbRessTime = ById('pbLimitRess').value;
+            saveOptions();
+    }, false);   
+     ById('pbRessEnable').addEventListener ('click', function (){
+            Options.pbRessEnable = ById('pbRessEnable').checked;
+            saveOptions();
+    }, false); 
+    
+        t.togOpt ('ptAllowWinMove', 'ptWinDrag', mainPop.setEnableDrag);
+        t.togOpt ('ptEnableFoodWarnTchat', 'enableFoodWarnTchat', FoodAlerts.init);
+	t.togOpt ('pbGoldEnable', 'pbGoldEnable', CollectGold.setEnable);
+//	t.togOpt ('pbRessEnable', 'pbRessEnable');
+	t.changeOpt ('pbeverymins', 'pbEveryMins' , RefreshEvery.setTimer);
+	t.togOpt ('pbEveryEnable', 'pbEveryEnable', RefreshEvery.setEnable);
+	 ById('EmoHelp').addEventListener('click', function(){t.EmoHelp();} , false);
+	t.togOpt ('pbChatREnable', 'pbChatOnRight', WideScreen.setChatOnRight);
+	t.togOpt ('HelpReq', 'HelpRequest');
+	t.togOpt ('DelReq', 'DeleteRequest');
+	t.togOpt ('DelReg', 'DeleteRules');
+	t.togOpt ('BOSmiley', 'Smiley');
+	t.changeOpt ('pbgoldLimit', 'pbGoldHappy');
+//	t.changeOpt ('pbLimitRess', 'pbRessTime');
+	
+	  document.getElementById('ptAllowFB').addEventListener ('change', function(){
+	      		GlobalOptions.autoPublishGamePopups = document.getElementById('ptAllowFB').checked;
+				GM_setValue ('Options_??', JSON2.stringify(GlobalOptions));
+	      },false);	
+	  
+	      document.getElementById('selectprivacymode').addEventListener ('change', function(){
+	      		GlobalOptions.autoPublishPrivacySetting = document.getElementById('selectprivacymode').value;
+				GM_setValue ('Options_??', JSON2.stringify(GlobalOptions));
+      },false);
+	document.getElementById('optFoodHours').addEventListener ('change', function () {
+	            var x = document.getElementById('optFoodHours').value; 
+	            if (isNaN(x) || x<0.01 || x>99999){
+	              document.getElementById('optFoodHours').value = Options.foodWarnHours;
+	              return;
+	            }
+	            Options.foodWarnHours = x; 
+	            saveOptions();
+	          }, false);
+       ById('pcalertEnable').addEventListener ('change', t.e_alertOptChanged, false);
+       ById('pcalertScoutEnable').addEventListener ('change', t.e_alertOptChanged, false);
+       ById('pcalertPrefix').addEventListener ('change', t.e_alertOptChanged, false);
+       ById('pcalertQG').addEventListener ('change', t.e_alertOptChanged, false);
+       ById('pcalertHQ').addEventListener ('change', t.e_alertOptChanged, false);
+       ById('pcalertMytroops').addEventListener ('change', t.e_alertOptChanged, false);
+      } catch (e) {
+        t.cont.innerHTML = '<PRE>'+ e.name +' : '+ e.message +'</pre>';  
+      }      
+ 
+   },
+     EmoClick: function(what) {
+        document.getElementById ("mod_comm_input").value += " " + what + " ";
+   },
+      EmoHelp : function (){
+      	var t = my.Options;
+      	
+          	unsafeWindow.BOEmoClick = t.EmoClick;
+              var helpText = '<DIV style="max-height:430px; height:430px; overflow-y:auto">';
+              helpText += '<TABLE width=98% cellspacing=0 cellpadding=2 border=0 bordercolor=black class=ptTab><tr>';
+              var row=0;
+              for (k in Smileys) {
+               helpText += '<TR><TD><img title="'+k+'" class=emoicon src=\"'+Smileys[k]+'\" onclick="BOEmoClick(\''+k+'\')"></td><TD><font size=1>'+k+'</td></tr>';
+              }
+              helpText += '</table></div>';
+          
+          
+          if (t.pop == null){
+		 t.pop = new CPopup ('EmoHelp', 0, 0, 115, 455, true);
+                 t.pop.getTopDiv().innerHTML = '<CENTER><B><i>Smileys</b></center>';
+          }
+          t.pop.getMainDiv().innerHTML = helpText;
+          t.pop.show (true);
+          
+          var inputtext=ById('mod_comm_input');
+        ById("EmoHelp_outer").style.top = (getOffset(inputtext).top+30) +'px';
+       ById("EmoHelp_outer").style.left = (getOffset(inputtext).left+230) +'px';
+  },
+    stopSoundAlerts : function (){
+       var t = my.Options;
+       obj = ById('boSoundStop');
+   	t.mss.stop (1);
+       clearTimeout (t.soundStopTimer);
+       clearTimeout (t.soundRepeatTimer);
+       ById('boSoundStop').disabled = true;
+       Options.alertSound.alarmActive = false;
+       Options.alertSound.expireTime = 0;
+	   if (ById('botowertab')) ById('botowertab').style.display="none";      
+     },
+     e_soundFileLoaded : function (chan, isError){
+         if (chan != 1)
+           return;
+         if (isError)  
+           ById('boLoadStat').innerHTML = translate('Error')+'!';
+         else
+           ById('boLoadStat').innerHTML = translate('Loaded');
+       },  
+     playSound : function (doRepeats){
+         var t = my.Options;
+         ById('boSoundStop').disabled = false;
+         clearTimeout (t.soundStopTimer);
+         clearTimeout (t.soundRepeatTimer);
+         t.mss.play(1, 0);
+         t.soundStopTimer = setTimeout (function(){t.mss.stop(1); t.e_soundFinished(1)}, Options.alertSound.playLength*1000);
+         if (doRepeats && Options.alertSound.repeat)
+           t.soundRepeatTimer = setTimeout (function (){t.playSound(true)}, Options.alertSound.repeatDelay*60000);
+         else
+           Options.alertSound.alarmActive = false;
+       },
+      e_soundFinished : function (chan){ 
+       var t = my.Options;
+       if (chan != 1)
+         return;
+       if (!Options.alertSound.alarmActive){
+         ById('boSoundStop').disabled = true;
+       }
+     },        
+     soundTheAlert : function (){
+         var t = my.Options;
+         Options.alertSound.alarmActive = true;
+         t.playSound(true);
+  },
+  loadUrl : function (url){
+          var t = my.Options;
+          t.mss.load (1, url, true);
+          ById('boLoadStat').innerHTML = 'Loading';
+     },
+     e_swfLoaded : function (){
+          var t = my.Options;
+          ById('boLoadingSwf').style.display = 'none';
+          ById('boSoundOpts').style.display = 'inline';
+          t.volSlider.setValue (Options.alertSound.volume/100);
+          t.loadUrl (Options.alertSound.soundUrl);
+          setTimeout (function (){t.mss.setVolume (1, Options.alertSound.volume);}, 500);
+          if (Options.alertSound.alarmActive && Options.alertSound.expireTime>unixTime())   {
+            t.soundTheAlert();
+          }
+      },
+      e_volChanged : function (val){
+        var t = my.Options;
+        ById('boVolOut').innerHTML = parseInt(val*100);
+        Options.alertSound.volume = parseInt(val*100);
+        t.mss.setVolume (1, Options.alertSound.volume);
+    },
+   hide : function (){
+    },
+    togOpt : function (checkboxId, optionName, callOnChange){
+      var t = my.Options;
+      var checkbox = document.getElementById(checkboxId);
+      if (Options[optionName])
+        checkbox.checked = true;
+      checkbox.addEventListener ('change', eventHandler, false);
+      function eventHandler (){
+        Options[optionName] = this.checked;
+        saveOptions();
+        if (callOnChange)
+          callOnChange (this.checked);
+      }
+    },
+    
+    changeOpt : function (valueId, optionName, callOnChange){
+      var t = my.Options;
+      var e = document.getElementById(valueId);
+      e.value = Options[optionName];
+      e.addEventListener ('change', eventHandler, false);
+      function eventHandler (){
+        Options[optionName] = this.value;
+        saveOptions();
+        if (callOnChange)
+          callOnChange (this.value);
+      }
+    },
+     e_alertOptChanged : function (){
+      Options.alertConfig.aChat = document.getElementById('pcalertEnable').checked;
+      Options.alertConfig.aChatScout = document.getElementById('pcalertScoutEnable').checked;
+      Options.alertConfig.aPrefix=document.getElementById('pcalertPrefix').value; 
+      Options.alertConfig.MonQG=ById('pcalertQG').checked;
+      Options.alertConfig.hq=ById('pcalertHQ').options[ById('pcalertHQ').selectedIndex].value;
+      Options.alertConfig.mytroops=ById('pcalertMytroops').checked;
+      saveOptions();
+      TowerAlerts.setPostToChatOptions(Options.alertConfig);
+  },	
+}
+function getOffset( el ) {
+    var _x = 0;
+    var _y = 0;
+    while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
+        _x += el.offsetLeft - el.scrollLeft;
+        _y += el.offsetTop - el.scrollTop;
+        el = el.offsetParent;
+    }
+    return { top: _y, left: _x };
+}
+function SliderBar (container, width, height, value, classPrefix, margin){
+  var self = this;
+  this.listener = null;
+  if (value==null)
+    value = 0;
+  if (!margin)
+    margin = parseInt(width*.05);
+  this.value = value;
+  if (width<20) width=20;
+  if (height<5) height=5;
+  if (classPrefix == null){
+    classPrefix = 'slider';
+    var noClass = true;
+  }      
+  var sliderHeight = parseInt(height/2);  
+  var sliderTop = parseInt(height/4);
+  this.sliderWidth = width - (margin*2);
+    
+  this.div = document.createElement ('div');  
+  this.div.style.height = height +'px';
+  this.div.style.width = width +'px';
+  this.div.className = classPrefix +'Cont';
+  if (noClass)
+    this.div.style.backgroundColor='#ddd';
+  
+  this.slider = document.createElement ('div');
+  this.slider.setAttribute ('style', 'position:relative;');
+  this.slider.style.height = sliderHeight + 'px'
+  this.slider.style.top = sliderTop + 'px';
+  this.slider.style.width = this.sliderWidth +'px';
+  this.slider.style.left = margin +'px';
+  this.slider.className = classPrefix +'Bar';
+  this.slider.draggable = true;
+  if (noClass)
+    this.slider.style.backgroundColor='#fff';
+  
+  this.sliderL = document.createElement ('div');
+  this.sliderL.setAttribute ('style', 'width:100px; height:100%; position:relative; ');
+  this.sliderL.className = classPrefix +'Part';
+  this.sliderL.draggable = true;
+  if (noClass)
+    this.sliderL.style.backgroundColor='#0c0';
+  
+  this.knob = document.createElement ('div');
+  this.knob.setAttribute ('style', 'width:3px; position:relative; left:0px; background-color:#222');
+  this.knob.style.height = height +'px';
+  this.knob.style.top = (0-sliderTop) +'px';
+  this.knob.className = classPrefix +'Knob';
+  this.knob.draggable = true;
+  this.slider.appendChild(this.sliderL);
+  this.sliderL.appendChild (this.knob);
+  this.div.appendChild (this.slider);
+  container.appendChild (this.div);
+  this.div.addEventListener('mousedown',  mouseDown, false);
+  this.getValue = function (){
+    return self.value;
+  }
+  this.setValue = function (val){
+    var relX = (val * self.sliderWidth);
+    self.sliderL.style.width = relX + 'px';
+    self.knob.style.left =  relX + 'px';
+    self.value = val;
+    if (self.listener)
+      self.listener(self.value);
+  }
+  
+  this.setChangeListener = function (listener){
+    self.listener = listener;
+  }
+  function moveKnob (me){
+    var relX = me.clientX - self.divLeft;
+    if (relX < 0)
+      relX = 0;
+    if (relX > self.sliderWidth)
+      relX = self.sliderWidth;
+    self.knob.style.left = (relX - (self.knob.clientWidth/2) ) +'px';
+    self.sliderL.style.width = relX + 'px';
+    self.value =  relX / self.sliderWidth;   
+    if (self.listener)
+      self.listener(self.value);
+  }
+  function doneMoving (){
+    self.div.removeEventListener('mousemove', mouseMove, true);
+    document.removeEventListener('mouseup', mouseUp, true);
+  }  
+  function mouseUp (me){
+    moveKnob (me);
+    doneMoving();
+  }
+  
+  function mouseDown(me){
+    var e = self.slider;
+    self.divLeft = 0;
+    while (e.offsetParent){
+      self.divLeft += e.offsetLeft;
+      e = e.offsetParent;
+    }
+    moveKnob (me);
+    document.addEventListener('mouseup',  mouseUp, true);
+    self.div.addEventListener('mousemove',  mouseMove, true);
+  }
+  function mouseMove(me){
+    moveKnob (me);
+  }
+}
+function CmatSimpleSound (playerUrl, container, attrs, onLoad, flashVars) {
+  var self = this;
+  this.player = null;
+  this.volume = 100;
+  this.isLoaded = false;
+  this.onSwfLoaded = null;
+  var div = document.createElement ('div');
+  this.onSwfLoaded = onLoad;
+  if (navigator.appName.toLowerCase().indexOf('microsoft')+1) {
+    div.innerHTML = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0"><param name="movie" value="'+playerUrl+'"><param name="quality" value="high"></object>';
+    this.player = div.getElementsByTagName('object')[0];
+  } else {
+    div.innerHTML = '<embed src="'+playerUrl+'"  bgcolor="#eeeeee" allowfullscreen=false FlashVars="'+ flashVars +'" quality="high" allowscriptaccess="always" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" ></embed>';
+    this.player = div.getElementsByTagName('embed')[0].wrappedJSObject;
+  }
+  if (container)
+    container.appendChild (div);
+  else
+    document.body.appendChild (div);
+  for (k in attrs)
+    this.player.setAttribute(k, attrs[k]);
+       
+  this.setVolume = function (chanNum, vol){
+    if (!self.isLoaded)
+      return;
+    self.player.jsSetVolume (chanNum, vol);
+    volume = vol;
+  }
+  
+  this.load = function (chanNum, url, bStream, bAutoplay, bUsePolicyFile){ 
+    self.player.jsLoad (chanNum, url, bStream, bAutoplay, bUsePolicyFile);
+  }
+  
+  this.play = function (chanNum, position){
+    if (self.player.jsPlay)  self.player.jsPlay (chanNum, position);
+  }
+    
+  this.stop = function (chanNum){
+   if (!self.isLoaded)
+      return;
+    self.player.jsStop (chanNum);
+  }
+    
+  this.getStatus = function (chanNum){   
+    return self.player.jsGetStatus (chanNum);
+  }
+  
+  this.debugFunc = function (msg){ 
+  }
+      
+  this.swfDebug = function (msg){ 
+    self.debugFunc('SWF: '+ msg);
+  }
+  this.swfLoaded = function (){ 
+    self.isLoaded = true;
+    self.debugFunc ('playerIsReady');
+    if (self.onSwfLoaded)
+      self.onSwfLoaded();
+  }
+  this.swfPlayComplete = function (chanNum){ 
+  }
+  this.swfLoadComplete = function (chanNum, isError){ 
+  }
+}
+function htmlSelector (valNameObj, curVal, tags){
+  var m = [];
+  m.push ('<SELECT');
+  if (tags){
+    m.push (' ');
+    m.push (tags);
+  }  
+  for (var k in valNameObj){
+    m.push ('><OPTION ');
+    if (k == curVal)
+      m.push ('SELECTED ');
+    m.push ('value="');
+    m.push (k);
+    m.push ('">');
+    m.push (valNameObj[k]);
+    m.push ('</option>');
+  }
+  m.push ('</select>');
+  return m.join ('');
+}
+/********************************* Search Tab *************************************/
+my.Search = {
+  cont:null,
+  state : null,
+  opt : {},
+  searchRunning : false,
+  tilesSearched : 0,
+  tilesFound : 0,
+  curX : 0,
+  curY : 0,
+  lastX : 0,
+  firstX : 0,
+  firstY : 0,
+  lastY : 0,
+  sourceCity :null,
+  init : function (){
+    var t = my.Search;
+    this.cont = document.createElement('div');
+    unsafeWindow.BOPCpo2 = t.clickedPlayerCheckOnline;
+    unsafeWindow.BOSaveAttack = t.saveattack;
+    unsafeWindow.BOPCplo2 = t.clickedPlayerGetLastLogin;
+    return this.cont;
+  },
+  getContent : function (){
+    var t = my.Search;
+    return t.cont;
+  },
+  hide : function (){
+ 
+  },
+  saveattack: function(x,y,typea,lvl) {
+   var t = my.Search;
+   var SourceId = t.sourceCity.c.id;
+   var id = x+"x"+y;
+   var now = unixTime();
+   if (Options.AttackTime == undefined) Options.AttackTime = {};
+   Options.AttackTime[id] = { lastattack : (now-(24*60*60)), coordX: x, coordY: y, cityId: t.sourceCity.id, typea: typea,level:lvl };
+   saveOptions();
+  },
+  findlastattack: function(x,y) {
+   var id = x+"x"+y;
+   if (Options.AttackTime[id]) {
+     var now = unixTime();
+     var lastatt= Options.AttackTime[id].lastattack;
+     return timestr(now - lastatt);
+    } else {
+     return "-";
+   }
+  },
+  show : function (cont){
+    var t = my.Search;
+      if (t.state == null){
+        this.cont.innerHTML = '\
+          <DIV class=ptentry><table><tr valign=bottom><TD class=xtab width=100 align=right>'+translate('Type')+' : </td><TD>\
+          <SELECT id="srcType">\
+            <OPTION selected value=1>'+unsafeWindow.arStrings.Common.Wilds+'</option>\
+  	    <OPTION value=0>'+translate('Barbarian camps')+'</option>\
+  	   <OPTION value=2>'+translate('Cities')+'</option>\
+          </select></td></tr>\
+        </table>\
+         <DIV id="srcOpts" style="height:80px"></div></div>\
+        <DIV id="srcResults" style="height:400px; max-height:400px;"></div>';
+      m = '<TABLE><TR valign=middle><TD class=xtab width=100 align=right>'+translate('City to start from')+' : &nbsp; X: </td><TD class=xtab>\
+        <INPUT id="srchX" type=text\ size=3> &nbsp; Y: <INPUT id="srchY" type=text\ size=3> &nbsp;<SPAN id=spInXY></span>';
+    	  m += '</td></tr><TR><TD class=xtab align=right>'+translate('Distance')+' : </td><TD class=xtab>'+translate('from')+' <INPUT id=srcaDist size=4 value=0 /> '+translate('to')+' <INPUT id=srcDist size=4 value=70 /></td></tr>';
+          m += '<TR><TD class=xtab></td><TD class=xtab><INPUT id=srcStart type=submit value="'+translate('Launch search')+'"/></td></tr>';
+      m += '</table>';
+    
+      document.getElementById ('srcOpts').innerHTML = m;
+      var citysrc0=new CdispCityPicker ('srchdcp', document.getElementById ('spInXY'), false, t.clickCitySourceSelect, Cities.byID[unsafeWindow.currentcityid].idx);
+      document.getElementById ('srcStart').addEventListener ('click', t.clickedSearch, false);
+      
+      t.state = 1;
+     }
+  },
+   clickCitySourceSelect : function (city){
+    var t = my.Search;
+    t.sourceCity = city;
+    document.getElementById ('srchX').value=t.sourceCity.c.x;
+    document.getElementById ('srchY').value=t.sourceCity.c.y;
+   },
+  clickedPlayerCheckOnline : function (span, uid){
+          var t = my.AllianceList;
+          var s = my.Search;
+            span.onclick = '';
+            span.innerHTML = translate('Searching')+"...";
+            t.fetchPlayerStatusSimple (uid, function (r) {s.gotPlayerStatus(r, span, uid)});
+          },
+  clickedPlayerGetLastLogin : function (span, uid){
+     var t = my.AllianceList;
+     var s = my.Search;
+            span.onclick = '';
+            span.innerHTML = translate('Searching')+"...";
+            t.fetchPlayerLastLogin (uid, function (r) {s.gotPlayerLastLogin(r, span)});
+  },
+  gotPlayerStatus : function (rslt, span,uid){
+        var t = my.AllianceList;
+        if (!rslt.ok){
+          span.innerHTML = rslt.errorMsg;
+          return;
+        }
+    
+        var p = rslt.data;
+        if (p[uid] == true) {
+          m = '<span style="color:green"><b>Online!</b></span>';
+        } else {
+           m = '<span style="color:red"><b>Offline!</b></span>';
+        }  
+        span.innerHTML = m + '';
+      },
+    
+  gotPlayerLastLogin : function (rslt, span){
+        var t = my.AllianceList;
+        if (!rslt.ok){
+          span.innerHTML = rslt.errorMsg;
+          return;
+        }
+    
+        var p = rslt.playerInfo;
+        var lastLogin = rslt.playerInfo.lastLogin;
+        
+        if (lastLogin) {
+          m = '<span style="color:black">'+lastLogin+'</span>';
+        } else {
+           m = '<span style="color:red">?</span>';
+        }  
+        span.innerHTML = m + '';
+    },
+  
+  clickedSearch : function (){
+      var t = my.Search;
+  
+      if (t.searchRunning){
+        t.stopSearch (translate('SEARCH CANCELLED')+' !');
+        return;
+     }
+    t.opt.searchType = document.getElementById ('srcType').value;
+        t.opt.startX = parseInt(document.getElementById ('srchX').value);
+        t.opt.startY = parseInt(document.getElementById ('srchY').value);
+        t.opt.maxDistance = parseInt(document.getElementById ('srcDist').value);
+        t.opt.maxDistanceA = parseInt(document.getElementById ('srcaDist').value);
+    errMsg = '';
+    
+    if (isNaN (t.opt.maxDistanceA) ||t.opt.maxDistanceA<0)
+         errMsg += translate("The minimum distance cannot be lower than 0")+"<BR>";
+    if (isNaN (t.opt.maxDistance) ||t.opt.maxDistance<1)
+          errMsg += translate("The distance has to be higher than 1")+"<BR>";
+    if (t.opt.maxDistance<=t.opt.maxDistanceA)
+          errMsg += translate("The maximum/minimum distance has been exceeded")+"<BR>";
+     if(t.opt.maxDistanceA > 375)
+           errMsg += translate("The distance cannot be higher than 375")+" ! <BR>";
+        if (errMsg != ''){
+          document.getElementById('srcResults').innerHTML = '<FONT COLOR=#660000>ERROR :</font><BR><BR>'+ errMsg;
+          return;
+    }
+    
+    t.searchRunning = true;
+      document.getElementById ('srcStart').value = translate('Cancel the search');
+        m = '<DIV class=ptstat><TABLE width=100% cellspacing=0><TR><TD class=xtab width=125><DIV id=statSearched></div></td>\
+            <TD class=xtab align=center><SPAN id=statStatus></span></td>\
+            <TD class=xtab align=right width=125><DIV id=statFound></div></td></tr></table></div>\
+          <TABLE width=100%><TR valign=top><TD><DIV id=divOutTab style="height:500px; max-height:500px; overflow-y:auto; width:100%;"></div></td>\
+          <TD id="tddivOutOpts" width="290px" height=100% style="background:#e0e0f0; height:100%; padding:5px, top:0px"><DIV id=divOutOpts style="width:260px"></div></td></tr></table><br><input type=checkbox id=ShowHideOpts>'+translate('Hide option window');
+    document.getElementById('srcResults').innerHTML = m;
+    
+    
+    document.getElementById('ShowHideOpts').addEventListener ('click', function (){
+    		  if (document.getElementById("ShowHideOpts").checked) {
+    		  document.getElementById("tddivOutOpts").style.display="none";
+    		  //document.getElementById("divOutTab").style.width="740px";
+    		  } else {
+    		  document.getElementById("tddivOutOpts").style.display="block";
+    		  //document.getElementById("divOutTab").style.width="460px";
+    		  }
+	  }, false);
+   if (t.opt.searchType == 0)
+       typeName = translate('Barbarian camp');
+     else if (t.opt.searchType == 1)
+       typeName = unsafeWindow.arStrings.Common.Wilds;
+ 	else  
+ 	  typeName = translate('Cities');
+ 
+     m = '<CENTER><B>'+translate('Search')+' '+ typeName +'<BR>\
+         '+translate('Source')+' : '+ t.opt.startX +','+ t.opt.startY +'  &nbsp; '+translate('Distance')+' : '+ t.opt.maxDistanceA +' '+ t.opt.maxDistance +'<BR></center>\
+         <DIV class=ptentry><TABLE cellspacing=0 width=100%><TR align=center><TD class=xtab colspan=10><B>'+translate('OPTIONS')+' :</b><BR></td></tr>';
+     if (t.opt.searchType == 1 || t.opt.searchType == 0) {
+      m += '<TR><TD class=xtab align=right>'+translate('Level')+' Min. :</td><TD class=xtab> <INPUT id=filMinLvl size=2 value='+ Options.srcMinLevel +' /></td></tr>\
+         <TR><TD class=xtab align=right>'+translate('Level')+' Max. :</td><TD class=xtab> <INPUT id=filMaxLvl size=2 value='+ Options.srcMaxLevel +' /></td></tr>';
+ 	}
+     if (t.opt.searchType == 1){
+       m += '<TR><TD class=xtab align=right>'+translate('Fields')+' :</td><TD class=xtab align=right>\
+             '+translate('Woods')+'<INPUT id=woodWild type=CHECKBOX'+ (Options.woodWild?' CHECKED':'') +'></td></tr>';
+       m += '<TR><TD class=xtab align=right>'+translate('Grassland')+'/'+translate('River')+'<INPUT  id=foodWild type=CHECKBOX '+ (Options.foodWild?' CHECKED':'') +'></td>\
+ 	       <TD class=xtab align=right>'+translate('Mountains')+'<INPUT id=mtnWild type=CHECKBOX '+ (Options.mtnWild?' CHECKED':'') +'></td></tr>';
+       m += '<TR><TD class=xtab align=right>'+translate('Plains')+'<INPUT id=plnWild type=CHECKBOX '+ (Options.plnWild?' CHECKED':'') +'></td>\
+            <TD class=xtab align=right>'+translate('Hills')+'<INPUT id=hillWild type=CHECKBOX'+ (Options.hillWild?' CHECKED':'') +'></td></tr>';
+       m += '<TR><TD class=xtab align=right>'+translate('Non-occupied only')+' :</td><TD class=xtab><INPUT id=filUnowned type=CHECKBOX '+ (Options.unownedOnly?' CHECKED':'') +'\><td></tr>';
+     } 
+     if (t.opt.searchType == 1 || t.opt.searchType == 0) {
+         m+= '<TR><TD class=xtab align=right>'+translate('Sort by')+' :</td><TD class=xtab><SELECT id=filSortBy>\
+           <OPTION value="level" '+ (Options.srcSortBy=='level'?'SELECTED':'')  +'>'+translate('Level')+'</option>\
+           <OPTION value="dist" '+ (Options.srcSortBy=='dist'?'SELECTED':'')  +'>'+translate('Distance')+'</option>';
+           if (t.opt.searchType == 1) {
+                 m+= '<OPTION value="play" '+ (Options.srcSortBy=='play'?'SELECTED':'')  +'>'+translate('Player')+'</option>';
+           m+= '<OPTION value="alli" '+ (Options.srcSortBy=='alli'?'SELECTED':'')  +'>'+translate('Alliance')+'</option>';
+             }    
+ 		  m+= '</select></td></tr>\
+ 			<TR><TD class=xtab align=right>'+translate('Coords')+' :</td><TD class=xtab><INPUT type=checkbox id=coordsOnly \></td></tr>\
+ 			</table></div><BR><SPAN id=srchSizeWarn></span><DIV id=BOpbSrcExp></div>';
+     } else {
+ 			
+ 		m+= '<TR><TD class=xtab align=right >'+translate('Filter')+' :</td><TD class=xtab align=left ><SELECT style="width: 135px" id=idSrchFilter>\
+              <OPTION value=0>'+translate('All cities')+'</option>\
+              <OPTION value=1>'+translate('Hostile cities only')+'</option>\
+ 	     <OPTION value=2>'+translate('Misty cities only')+'</option>\
+ 	     <OPTION value=3>'+translate('Allied cities only')+'</option>\
+ 	     <OPTION value=4>'+translate('Friendly cities only')+'</option>\
+ 	     <OPTION value=5>'+translate('Neutral cities only')+'</option>\
+ 	     <OPTION value=6>'+translate('Cities with no alliance only')+'</option>\
+              </select></td></tr>';
+ 	
+ 		m+= '<TR><TD class=xtab align=right>'+translate('Sort by')+' :</td><TD class=xtab><SELECT id=filSortBy>\
+           <OPTION value="might" '+ (Options.srcSortBy=='might'?'SELECTED':'')  +'>'+translate('Glory')+'</option>\
+           <OPTION value="dist" '+ (Options.srcSortBy=='dist'?'SELECTED':'')  +'>'+translate('Distance')+'</option>\
+                   <OPTION value="play" '+ (Options.srcSortBy=='play'?'SELECTED':'')  +'>'+translate('Player')+'</option>\
+         <OPTION value="alli" '+ (Options.srcSortBy=='alli'?'SELECTED':'')  +'>'+translate('Alliance')+'</option>\
+         </select></td></tr>\
+         <tr><TD class=xtab align=right>'+translate('Minimum')+' '+translate('Glory')+' :</td><TD class=xtab><select id=filPuissance>\
+          <option value="0" '+ (Options.filPuissance=='0'?'SELECTED':'')  +'>0</option>\
+          <option value="500" '+ (Options.filPuissance=='500'?'SELECTED':'')  +'>500</option>\
+          <option value="2500" '+ (Options.filPuissance=='2500'?'SELECTED':'')  +'>2 500</option>\
+          <option value="10000" '+ (Options.filPuissance=='10000'?'SELECTED':'')  +'>10 000</option>\
+          <option value="50000" '+ (Options.filPuissance=='50000'?'SELECTED':'')  +'>50 000</option>\
+          <option value="100000" '+ (Options.filPuissance=='100000'?'SELECTED':'')  +'>100 000</option>\
+          <option value="500000" '+ (Options.filPuissance=='500000'?'SELECTED':'')  +'>500 000</option>\
+          <option value="1000000" '+ (Options.filPuissance=='1000000'?'SELECTED':'')  +'>1 000 000</option>\
+          <option value="10000000" '+ (Options.filPuissance=='100000000'?'SELECTED':'')  +'>10 millions</option>\
+          <option value="100000000" '+ (Options.filPuissance=='1000000000'?'SELECTED':'')  +'>100 millions</option>\
+          </select></td></tr>\
+          <tr><TD class=xtab align=right>'+translate('Maximum')+' '+translate('Glory')+' :</td><TD class=xtab><select id=filPuissanceMax>\
+          <option value="500" '+ (Options.filPuissanceMax=='500'?'SELECTED':'')  +'>500</option>\
+          <option value="2500" '+ (Options.filPuissanceMax=='2500'?'SELECTED':'')  +'>2 500</option>\
+          <option value="10000" '+ (Options.filPuissanceMax=='10000'?'SELECTED':'')  +'>10 000</option>\
+          <option value="50000" '+ (Options.filPuissanceMax=='50000'?'SELECTED':'')  +'>50 000</option>\
+          <option value="100000" '+ (Options.filPuissanceMax=='100000'?'SELECTED':'')  +'>100 000</option>\
+          <option value="500000" '+ (Options.filPuissanceMax=='100000'?'SELECTED':'')  +'>500 000</option>\
+          <option value="1000000" '+ (Options.filPuissanceMax=='1000000'?'SELECTED':'')  +'>1 000 000</option>\
+          <option value="10000000" '+ (Options.filPuissanceMax=='100000000'?'SELECTED':'')  +'>10 millions</option>\
+          <option value="100000000" '+ (Options.filPuissanceMax=='100000000'?'SELECTED':'')  +'>100 millions</option>\
+          <option value="500000000" '+ (Options.filPuissanceMax=='500000000'?'SELECTED':'')  +'>500 millions</option>\
+          </select></td></tr>\
+          <tr><TD class=xtab align=right>'+translate('Alliance')+' '+translate('content')+' :</td><td class=xtab><input type=text size=10 id=filfiltreAlliance value="'+Options.filfiltreAlliance+'"></td></tr>\
+        <tr><TD class=xtab align=right>'+translate('Player')+' '+translate('content')+' :</td><td class=xtab><input type=text size=10 id=filfiltreJoueur value="'+Options.filfiltreJoueur+'"></td></tr>\
+         <TR style="display:none;"><TD class=xtab align=right>'+translate('Coords')+' :</td><TD class=xtab><INPUT type=checkbox id=coordsOnly \></td></tr>\
+          </table></div><BR><SPAN id=srchSizeWarn></span>';	
+ 	}
+     document.getElementById('divOutOpts').innerHTML = m;
+     
+     
+     
+     if (t.opt.searchType == 1 || t.opt.searchType == 0) {
+ 		document.getElementById('filMinLvl').addEventListener ('change', function (){
+ 		  Options.srcMinLevel = document.getElementById('filMinLvl').value;
+ 		  saveOptions();
+ 		  t.dispMapTable ();
+ 		  }, false);
+ 		document.getElementById('filMaxLvl').addEventListener ('change', function (){
+ 		  Options.srcMaxLevel = document.getElementById('filMaxLvl').value;
+ 		  saveOptions();
+ 		  t.dispMapTable ();
+ 		  }, false);
+ 	 }
+ 	  document.getElementById('filSortBy').addEventListener ('change', function (){
+	        Options.srcSortBy = document.getElementById('filSortBy').value;
+	        saveOptions();
+	        t.dispMapTable ();
+       }, false);
+    
+     document.getElementById('coordsOnly').addEventListener ('change', function (){ t.dispMapTable (); }, false);
+     if (t.opt.searchType == 1){
+     document.getElementById('foodWild').addEventListener ('change', function(){
+         Options.foodWild = document.getElementById('foodWild').checked;
+         saveOptions();
+         t.dispMapTable ();
+         }, false);
+     document.getElementById('hillWild').addEventListener ('change', function(){
+         Options.hillWild = document.getElementById('hillWild').checked;
+         saveOptions();
+         t.dispMapTable();
+         }, false);
+     document.getElementById('mtnWild').addEventListener ('change', function(){
+         Options.mtnWild = document.getElementById('mtnWild').checked;
+         saveOptions();
+         t.dispMapTable();
+         }, false);
+     document.getElementById('plnWild').addEventListener ('change', function(){
+         Options.plnWild = document.getElementById('plnWild').checked;
+         saveOptions();
+         t.dispMapTable();
+         }, false);
+     document.getElementById('woodWild').addEventListener ('change', function(){
+         Options.woodWild = document.getElementById('woodWild').checked;
+         saveOptions();
+         t.dispMapTable ();
+         }, false);
+       document.getElementById('filUnowned').addEventListener ('change', function (){
+         Options.unownedOnly = (document.getElementById('filUnowned').checked);
+         saveOptions();
+         t.dispMapTable ();
+        }, false);
+     }
+     if (t.opt.searchType == 2){
+ 
+ 	document.getElementById('idSrchFilter').addEventListener ('change', function (){
+         Options.citySrchFilter = (document.getElementById('idSrchFilter').value);
+         saveOptions();
+         t.dispMapTable ();
+         }, false);
+ 
+ 	document.getElementById('idSrchFilter').value = Options.citySrchFilter;
+ 	
+         document.getElementById('filfiltreAlliance').addEventListener ('keyup', function (){
+	       Options.filfiltreAlliance = document.getElementById('filfiltreAlliance').value;
+	       saveOptions();
+	       t.dispMapTable ();
+       }, false);
+        document.getElementById('filfiltreJoueur').addEventListener ('keyup', function (){
+       	       Options.filfiltreJoueur = document.getElementById('filfiltreJoueur').value;
+       	       saveOptions();
+       	       t.dispMapTable ();
+       }, false);
+         document.getElementById('filPuissance').addEventListener ('change', function (){
+         Options.filPuissance = parseInt(document.getElementById('filPuissance').value);
+         saveOptions();
+         t.dispMapTable ();
+         }, false);
+         document.getElementById('filPuissanceMax').addEventListener ('change', function (){
+         Options.filPuissanceMax = parseInt(document.getElementById('filPuissanceMax').value);
+         saveOptions();
+         t.dispMapTable ();
+         }, false);
+ 	
+ 	}
+ 
+ 
+ 
+ 
+     t.mapDat = [];
+     t.firstX =  t.opt.startX - t.opt.maxDistance;
+     if (t.firstX<0) t.firstX=0;
+     t.lastX = t.opt.startX + t.opt.maxDistance;
+     if (t.lastX>800) t.lastX=800;
+     t.firstY =  t.opt.startY - t.opt.maxDistance;
+     if (t.firstY<0) t.firstY=0;
+     t.lastY = t.opt.startY + t.opt.maxDistance;
+     if (t.lastY>800) t.lastY=800;
+     t.tilesSearched = 0;
+     t.tilesFound = 0;
+     t.curX = t.firstX;
+     t.curY = t.firstY;
+     var xxx = t.normalizeCoord(t.curX);
+     var yyy = t.normalizeCoord(t.curY);
+     document.getElementById ('statStatus').innerHTML = translate('Research')+' '+ xxx +','+ yyy;
+     setTimeout (function(){ 
+       Map.request (xxx, yyy, 15, t.mapCallback)
+     }, 500);
+  },
+  
+    normalizeCoord : function (x){
+      if ( x >= 800)
+        x = 800;
+      else if (x < 0)
+        x = 0;
+      return parseInt (x/5) * 5;
+    },
+   mapCallback : function (left, top, width, rslt){
+      function insertRow (x, y, msg){
+        row = document.getElementById('srcOutTab').insertRow(-1);
+        row.insertCell(0).innerHTML = x +','+ y;
+        row.insertCell(1).innerHTML = distance (t.opt.startX, t.opt.startY, x, y);
+        row.insertCell(2).innerHTML = msg;
+      }
+      
+         
+      var t = my.Search;
+      if (!t.searchRunning)
+        return;
+      if (!rslt.ok){
+        t.stopSearch ('ERROR : '+ rslt.errorMsg);
+        return;
+      }
+  
+      map = rslt.data;
+      var userInfo = rslt.userInfo;
+      var alliance = rslt.allianceNames;
+  
+      for (k in map){
+        
+        if (t.opt.searchType==0 && map[k].tileType==51 && map[k].tileCityId==0 && map[k].tileUserId==0) {  // if barb
+          type = 0;
+        } else if (t.opt.searchType==1 && map[k].tileType>=10 &&  map[k].tileType<=50) {
+          if (map[k].tileType == 10)
+            type = 1;
+          else if (map[k].tileType == 11)
+            type = 2;
+          else if (map[k].tileType == 12)
+            type = 2;
+          else
+            type = (map[k].tileType/10) + 1;
+        } else if (t.opt.searchType==2 && map[k].tileCityId >= 0 && map[k].tileType > 50 && map[k].cityName) {
+  		  type = 7;
+        } else {
+          continue;
+        }
+        dist = distance (t.opt.startX, t.opt.startY, map[k].xCoord, map[k].yCoord);
+        if (dist <= t.opt.maxDistance && dist >= t.opt.maxDistanceA){
+  	        if (t.opt.searchType==2) {
+  	            
+  			var isMisted = map[k].tileUserId == 0 || false;		
+  			var uu = 'u'+map[k].tileUserId;
+  			var aU = 'unknown';
+  			var aD = 'unknown';
+  			var mightU = 0;
+  			var nameU = 'unknown';
+  			if (isMisted) {
+  				nameU = 'Mist';
+  				mightU = 0; 
+  			} else {
+  				if (userInfo[uu] ) { // Corrects a problem with hung search.
+  					nameU = ""+ userInfo[uu].n +"";
+  					mightU = userInfo[uu].m; 
+  					
+  					aD = getDiplomacy2(userInfo[uu].a);
+  					if ( alliance && alliance['a'+userInfo[uu].a] ) {
+  						aU = alliance['a'+userInfo[uu].a];
+  					}
+  					else {
+  					
+  						aU = '----';
+  						aD = translate('Unaligned');
+  					}
+  				}
+  			}
+  			
+  			t.mapDat.push ([map[k].xCoord, map[k].yCoord, dist, type, map[k].tileLevel, isMisted, map[k].tileCityId, map[k].tileUserId, map[k].cityName,nameU,mightU,aU,aD ]);
+  		} else {
+  			isOwned = map[k].tileUserId>0 || map[k].misted;
+  			
+  			var uu = 'u'+map[k].tileUserId;
+  			var aU = 'unknown';
+  			var aD = 'unknown';
+  			var nameU = 'unknown';
+  			var mightU = 0;
+  			
+  			if (map[k].misted) {
+  				nameU = 'Under the Mist';
+  			}else {
+  			 if (userInfo[uu] ) {
+  			   var nameU = "<a onclick=getInfoForAnUser('"+ map[k].tileUserId +"');>"+ userInfo[uu].n +"</a>";
+  			   mightU = userInfo[uu].m; 
+  			   aD = getDiplomacy2(userInfo[uu].a);
+  					if ( alliance && alliance['a'+userInfo[uu].a] ) {
+  						aU = alliance['a'+userInfo[uu].a];
+  					}
+  			 }else {
+  			   var nameU = 'unknown';
+  			 }
+  			}
+  			
+  			if (isOwned==undefined) isOwned=false;
+  			t.mapDat.push ([map[k].xCoord, map[k].yCoord, dist, type, map[k].tileLevel, isOwned, map[k].tileCityId, map[k].tileUserId, map[k].cityName, nameU, mightU, aU, aD]);       
+  		}
+  			++t.tilesFound;
+         }   
+      }
+      t.tilesSearched += (15*15);
+      document.getElementById('statSearched').innerHTML = translate('Search')+' '+translate('results')+' : '+ t.tilesSearched;
+      
+      
+      t.dispMapTable();
+  
+      t.curX += 15;
+       if (t.curX > t.lastX){
+        t.curX = t.firstX;
+        t.curY += 15;
+        if (t.curY > t.lastY){
+          t.stopSearch (translate('SEARCH FINISHED')+' !');
+          return;
+        }
+      }
+      
+      //
+      t.opt.maxDistanceA
+      if (t.opt.maxDistanceA>0) {
+       var  plagedeX=t.opt.startX-t.opt.maxDistanceA;
+       var  plageaX=t.opt.startX+t.opt.maxDistanceA;
+       var  plagedeY=t.opt.startY-t.opt.maxDistanceA;
+       var  plageaY=t.opt.startY+t.opt.maxDistanceA;
+       if (t.curX >  plagedeX &&  t.curX < plageaX) {
+        var nb = parseInt( (t.opt.maxDistanceA*2) / 15) -1;
+        t.curX = t.curX + (nb*15);
+       }
+       if (t.curY >  plagedeY &&  t.curY < plageaY) {
+         var nb = parseInt( (t.opt.maxDistanceA*2) / 15) -1;
+        t.curY = t.curY + (nb*15);
+       }
+      }
+      var x = t.normalizeCoord(t.curX);
+      var y = t.normalizeCoord(t.curY);
+      document.getElementById ('statStatus').innerHTML = translate('Research')+' '+ x +','+ y;
+      setTimeout (function(){Map.request (x, y, 15, t.mapCallback)}, 500);
+  },
+  
+   dispMapTable : function (){
+      var tileNames = ['Barbarian camp', 'Grassland', 'River', 'Woods', 'Hills', 'Mountains', 'Plains', 'Cities' ];
+      var t = my.Search;     
+      var coordsOnly = document.getElementById('coordsOnly').checked;
+      function mySort(a, b){
+        if (Options.srcSortBy == 'level'){
+          if ((x = a[4] - b[4]) != 0)
+            return x;
+        }
+  	  if (Options.srcSortBy == 'might'){
+          if ((x = b[10] - a[10]) != 0)
+            return x;
+        }
+        if (Options.srcSortBy == 'alli'){
+            
+            if (a[11] < b[11]) return -1;
+  	      else if (a[11] == b[11]) return 0;
+  	       else return 1;
+            
+        }
+          if (Options.srcSortBy == 'play'){
+           
+            if (a[9] < b[9]) return -1;
+  	      else if (a[9] == b[9]) return 0;
+  	       else return 1;
+            
+        }
+        return a[2] - b[2];
+      }
+  
+      dat = [];
+      for (i=0; i<t.mapDat.length; i++){
+        lvl = parseInt (t.mapDat[i][4]);
+        type = t.mapDat[i][3];
+        Glory = t.mapDat[i][10];
+  	  if (t.opt.searchType == 2 && type == 7 ) {
+  	  switch(parseInt (Options.citySrchFilter)) {
+                  case 0:
+                   if (Options.filPuissance<=Glory && Glory<=Options.filPuissanceMax) {
+                    dat.push(t.mapDat[i]);
+                   }
+                   break;
+                  case 1:
+                     if ((t.mapDat[i][12] == translate('Hostile')) && (Options.filPuissance<=Glory && Glory<=Options.filPuissanceMax)) {
+                      dat.push(t.mapDat[i]);
+                     }
+                     break;
+                  case 2:
+                     if ((t.mapDat[i][5]===true) && (Options.filPuissance<=Glory && Glory<=Options.filPuissanceMax)) {
+                      dat.push(t.mapDat[i]);
+                     }
+                     break;
+                  case 3:
+                     if ((t.mapDat[i][12] == 'Ally') && (Options.filPuissance<=Glory && Glory<=Options.filPuissanceMax)) {
+                      dat.push(t.mapDat[i]);
+                     }
+                     break;
+                  case 4:
+                     if ((t.mapDat[i][12] == translate('Friendly')) && (Options.filPuissance<=Glory && Glory<=Options.filPuissanceMax)) {
+                      dat.push(t.mapDat[i]);
+                     }
+                     break;
+                  case 5:
+                     if ((t.mapDat[i][12] == translate('Neutral')) && (Options.filPuissance<=Glory && Glory<=Options.filPuissanceMax)) {
+                      dat.push(t.mapDat[i]);
+                     }
+                     break;
+                   case 6:
+                     if ((t.mapDat[i][12] == translate('Unaligned')) && (Options.filPuissance<=Glory && Glory<=Options.filPuissanceMax)) {
+                      dat.push(t.mapDat[i]);
+                     }
+                     break;
+               }
+       
+  		
+  	  } else {
+         if (lvl>=Options.srcMinLevel && lvl<=Options.srcMaxLevel){
+          if (t.opt.searchType==0
+              || (Options.woodWild==1 && type == 3)
+              || (Options.hillWild==1 && type ==4)
+              || (Options.mtnWild==1 && type==5)
+              || (Options.plnWild==1 && type == 6)
+              || (Options.foodWild==1 && (type==1 || type==2)))
+            if (!Options.unownedOnly || t.mapDat[i][5]===false)
+              dat.push (t.mapDat[i]);
+          }
+         }
+      }
+      document.getElementById('statFound').innerHTML = translate('Search')+' '+translate('results')+' : '+ dat.length;
+      if (dat.length == 0){
+        m = '<BR><CENTER>'+translate('Not found')+'</center>';
+      } else {
+        dat.sort(mySort);
+        if (coordsOnly)
+          m = '<TABLE align=center id=srcOutTab cellpadding=2 cellspacing=0 style="padding:2px"><TR style="font-weight: bold"><TD style="padding:2px">'+translate('Coordinates')+'</td></tr>';
+        else {
+          if (t.opt.searchType == 0) {
+  			m = '<TABLE id=srcOutTab cellpadding=2 cellspacing=0 style="padding:2px"><TR style="font-weight: bold"><TD style="padding:2px">'+translate('Coordinates')+'</td><TD style="padding:2px;padding-left: 10px">'+translate('Distance')+'</td><TD style="padding-left: 10px;">'+translate('Level')+'</td><TD style="padding-left: 10px;">'+translate('Type')+'</td></tr>';
+  		}
+  		if (t.opt.searchType == 1) {
+  			m = '<TABLE id=srcOutTab cellpadding=2 cellspacing=2 style="padding:2px"><TR style="font-weight: bold"><TD style="padding:2px">'+translate('Coordinates')+'</td><TD style="padding:2px;padding-left: 10px">'+translate('Distance')+'</td><TD style="padding-left: 10px;">'+translate('Level')+'</td><TD style="padding-left: 10px;">'+translate('Type')+'</td><TD style="padding-left: 10px;">'+translate('Player')+'</td><td style="padding-left: 10px;">'+translate('Glory')+'</td><td style="padding-left: 10px;">'+translate('Alliance')+'</td><td style="padding-left: 10px;" colspan=2>'+translate('More Info')+'</td></tr>';
+  		}
+  		if (t.opt.searchType == 2) {
+  			 m = '<TABLE id=srcOutTab cellpadding=2 cellspacing=2 style="padding:2px" width=100%><TR style="font-weight: bold"><TD style="padding:2px">'+translate('Coordinates')+'</td><TD style="padding:2px;padding-left: 10px">'+translate('Distance')+'</td><TD  style="padding-left: 10px;">'+translate('City')+'</td><TD style="padding-left: 10px;">'+translate('Player')+'</td><TD style="padding-left: 10px;">'+translate('Glory')+'</td><td style="padding-left: 10px;">'+translate('Alliance')+'</td><td style="padding-left: 10px;" colspan=2>'+translate('More info')+'</td><td colspan=3 width=20% style="padding-left: 10px;">'+translate('Attack')+'</td></tr>';
+  		}
+  	
+  	  }
+  	  var numRows = dat.length;
+        if (numRows > 1000 && t.searchRunning){
+        //  numRows = 1000;
+         document.getElementById('srchSizeWarn').innerHTML = '<FONT COLOR=#600000>'+translate('NOTE : WARNING, there is no limitation to the search, but this can have consequences on the performance of your browser')+'.</font>';
+        }
+        for (i=0; i<numRows; i++){
+         
+         if ((t.opt.searchType != 2) || (dat[i][11].search(Options.filfiltreAlliance, "i") != -1 && dat[i][9].search(Options.filfiltreJoueur, "i") != -1 && t.opt.searchType == 2) ) {
+        
+          m += '<TR valign="top"';
+  		if (dat[i][12]) m += 'class="'+dat[i][12]+'"';
+  		
+  		if (coordsOnly) {
+  		   m += ' ><TD valign="top" style="padding:2px"><DIV><a href="javascript:void(0);" onclick="KB.Controllers.MapHelper.gotoCoord('+ dat[i][0] +','+ dat[i][1] +');">'+ dat[i][0] +','+ dat[i][1] +'</a></div></td></tr>';
+          } else {
+             m += ' ><TD valign="top" style="padding:2px"><DIV>\
+  	             <a href="javascript:void(0);" onclick="KB.Controllers.MapHelper.gotoCoord('+ dat[i][0] +','+ dat[i][1] +');">'+ dat[i][0] +','+ dat[i][1] +'</a></div>';
+  	             
+  	            
+  	              
+  	              
+  	            m += '</td>';
+     		  if (t.opt.searchType == 2) { 
+  			m += '<TD align="left" style="padding:2px" valign="top">'+ dat[i][2].toFixed(2) +'</a></td><TD align=left style="padding:2px">'+ dat[i][8] +'</td>\
+  			   <TD valign="top" style="padding:2px">'+dat[i][9]+'</td>\
+  			   <TD valign="top" style="padding:2px">'+addCommasInt(dat[i][10])+'</td>\
+  			   <td style="padding:2px">'+dat[i][11]+'</td><td style="padding:2px">';
+  			   if (dat[i][5]) {
+			   			
+			   } else {
+			   			
+			   		m+='<DIV style="" onclick="BOPCpo2(this, '+ dat[i][7] +')"><A style="font-size:9px;">'+translate('Status')+'</a></div></td>\
+					<td style="padding:2px"></div>';
+			   }
+                      m+= '</td>';
+                      
+                      		        	             
+		      m+= '<td style="padding-left: 10px;"><a href="javascript:void(0)" onclick="BOSaveAttack('+ dat[i][0] +','+ dat[i][1] +',2,0);">'+translate('Record')+'</a></td><td align=right style="padding-left: 10px;"><span title="'+translate('Last Attack')+'">'+t.findlastattack(dat[i][0],dat[i][1])+'</span></td>';
+  	           
+                      
+                      m+= '</tr>';
+           
+  		  } else { 
+             m += '<TD align=right  valign="top" style="padding:2px">'+ dat[i][2].toFixed(2) +' &nbsp; </td><TD align=right>'+ dat[i][4] +'</td><TD> &nbsp; '+ translate(tileNames[dat[i][3]]);
+               +'</td>';
+             if (t.opt.searchType == 1) {
+              if (dat[i][5]) {
+               m += '<td style="padding:2px">'+dat[i][9]+'<td>'+addCommasInt(dat[i][10])+'</td><td>'+dat[i][11]+'</td>';
+               
+               if (dat[i][7] && dat[i][7]!=0) {
+               m+='<td style="padding:2px"><DIV style="" onclick="BOPCpo2(this, '+ dat[i][7] +')"><A style="font-size:9px;">Status</a></div></td><td colspan=4>-</div></td>';
+               } else {
+               m+='<td style="padding:2px">&nbsp;</td><td>&nbsp;</td>';
+               }
+               
+                
+              } else  {
+               m +='<td colspan=5 style="text-align=center"><i><b>'+translate('free')+'...</b></i>';
+               m +='<td style="padding-left: 10px;"><a href="javascript:void(0)" onclick="BOSaveAttack('+ dat[i][0] +','+ dat[i][1] +',1,'+ dat[i][4]+');">'+translate('Record')+'</a></td><td align=right style="padding-left: 10px;"><span title="Derniere attaque">'+t.findlastattack(dat[i][0],dat[i][1])+'</span></td>';
+              }
+  		   }else{
+              m+="<td></td>";
+              m+='<td style="padding-left: 10px;"><a href="javascript:void(0)" onclick="BOSaveAttack('+ dat[i][0] +','+ dat[i][1] +',3,'+ dat[i][4]+');">'+translate('Record')+'</a></td><td align=right style="padding-left: 10px;"><span title="Derniere attaque">'+t.findlastattack(dat[i][0],dat[i][1])+'</span></td>';
+             }
+              m +='</tr>';
+  		  }
+  		}
+            }
+         }
+        m += '</table>';
+      }
+      document.getElementById('divOutTab').innerHTML = m;
+      dat = null;
+  },
+  
+  
+    mapDat : [],
+  
+    stopSearch : function (msg){
+      var t = my.Search;
+      document.getElementById ('statStatus').innerHTML = '<FONT color=#ffaaaa>'+ msg +'</font>';
+      document.getElementById ('srcStart').value = translate('Launch search');
+      document.getElementById('srchSizeWarn').innerHTML = '';
+      t.searchRunning = false;
+  },
+}
+function distance (d, f, c, e) {
+  var a = 800;
+  var g = a / 2;
+  var b = Math.abs(c - d);
+  if (b > g)
+    b = a - b;
+  var h = Math.abs(e - f);
+  if (h > g)
+    h = a - h;
+  return Math.round(100 * Math.sqrt(b * b + h * h)) / 100;
+};
+function getDiplomacy2 (aid) {
+  if (unsafeWindow.seed.allianceDiplomacies == null)
+    return translate('Neutral');
+  if (unsafeWindow.seed.allianceDiplomacies.friendly && unsafeWindow.seed.allianceDiplomacies.friendly['a'+aid] != null)
+    return translate('Friendly');
+  if (unsafeWindow.seed.allianceDiplomacies.hostile && unsafeWindow.seed.allianceDiplomacies.hostile['a'+aid] != null)
+    return translate('Hostile');
+  if (aid == unsafeWindow.seed.allianceDiplomacies.allianceId)
+    return 'Ally';
+  return translate('Neutral');
+};
+Map = {
+  generateBlockList : function(left, top, width) {
+    var width5 = parseInt(width / 5);
+    var bl = [];
+    for (x=0; x<width5; x++){
+      xx = left + (x*5);
+      if (xx > 795)
+        xx = 800-5;
+      for (y=0; y<width5; y++){
+        yy = top + (y*5);
+        if (yy > 795)
+          yy = 800-5;
+        bl.push ('bl_'+ xx +'_bt_'+ yy);
+      }
+    }
+    return bl.join(",");
+  },
+  callback : null,
+  request : function (left, top, width, cb) {
+    left = parseInt(left / 5) * 5;
+    top = parseInt(top / 5) * 5;
+    width = parseInt((width+4) / 5) * 5;
+    var blockString = this.generateBlockList(left, top, width);
+    Map.callback = cb;
+    var c={blocks:blockString}
+    unsafeWindow.AjaxCall.gPostRequest("fetchMapTiles.php", c, function(rslt) {
+        Map.callback(left, top, width, rslt);
+      },
+      function (rslt) {
+        Map.callback(left, top, width, rslt);
+      }
+    );
+  },
+};
+
+my.Train = {
+  cont : null,
+  timer : null,
+  state : null,
+  stats : {},
+  selectedCity : {},
+  init : function (){
+    var t = my.Train;
+    
+    t.cont = document.createElement('div');
+    return t.cont;
+  },
+  getContent : function (){
+    var t = my.Train;
+    return t.cont;
+  },
+  hide : function (){
+    var t = my.Train;
+    clearTimeout (t.timer);
+  },
+  cancelTrainingBO : function (i,cityId,typetrn,numtrptrn,p5,p6,p7,trainingId) {
+   var t = my.Train;
+   
+   Cities.byID[cityId].c.queues.training.slot(i).cancel(function(){
+   
+   unsafeWindow.Barracks.renderBarracksQueue()
+   
+   t.dispTrainStatus ('<font color=#550000><B>'+translate('Cancel the training')+'</b></font><BR>');
+          t.displayCityStats();
+   })
+   
+ },
+  show : function (){
+    var t = my.Train;
+    clearTimeout (t.timer);
+    if (t.state == null){
+     unsafeWindow.BOcancelTraining = t.cancelTrainingBO;
+      s = "<DIV id=trainTopSelect>\
+        <DIV class=ptstat>"+unsafeWindow.arStrings.MainChrome.TrainTroops+"</div><DIV style='height:10px'></div><DIV class=ptentry>\
+        <DIV style='text-align:center; margin-bottom:10px;'>"+translate('City')+" : &nbsp; <span id=ptspeedcity></span></div>\
+        <TABLE class=ptTab width=100%><TR valign=top><TD width=100%>\
+        <TABLE align=center><TR><TD align=right>"+translate('Troop type')+" : </td><TD colspan=2>\
+        <SELECT id=ptttType>";
+        unsafeWindow.Barracks.allUnitIds.each(function(r){
+         if (unsafeWindow.arStrings.unitName["u"+r]) {
+          s+="<option value="+r+">"+unsafeWindow.arStrings.unitName["u"+r]+"</option>";
+         }
+        });
+        s+="</select> &nbsp; ("+translate('Max')+" <span id=ptttSpMax></span>)</td></tr>\
+        <TR><TD align=right>"+translate('Number of troops per slot')+" : </td><TD><INPUT id='ptttInpPS' size=5 type='text' value='0'\></td>\
+          <TD><INPUT id='ptttButMaxPS' type=submit value='"+translate('Max')+"'\> &nbsp; ("+translate('Max')+" <span id=ptttSpMaxPS>0</span>)</td></tr>\
+        <TR><TD align=right>"+translate('Number of slots')+" : </td><TD><INPUT id='ptttInpSlots' size=2 type='text' value='1'\></td>\
+          <TD width=75%><INPUT id='ptttButMaxSlots' type=submit value='"+translate('Max')+"'\> &nbsp; ("+translate('Max')+" <span id=ptttSpMaxSlots>1</span>)</td></tr>\
+        <TR><TD colspan=3 align=center><DIV style='height:10px'></div><INPUT id='ptttButDo' type=submit value='"+uW.arStrings.Common.Train+"'\></td></tr>\
+        </table></td></tr></table></div></div>\
+        <TABLE align=center width=425 class=ptTab><TR><TD><div id=ptTrainStatus style='overflow-y:auto; max-height:78px; height: 78px;'></div></td></tr></table>\
+        <div style='height: 325px; background: #e8ffe8'>\
+        <TABLE width=100% class=ptTab><TR><TD colspan=3><DIV id=divSTtop></div></td></tr>\
+        <TR><TD width=50% style='padding-left:15px; padding-right:15px'><DIV style='text-align:center'><B>"+translate('Queue')+" &nbsp; (<SPAN id=statTTtot></span>)</b><BR><HR></div><DIV id=divSTleft style='overflow-y: auto; height:210px; max-height:210px'></div></td>\
+          <TD width=50% style='padding-left:15px; padding-right:15px'><DIV style='text-align:center'><B>"+translate('Queue')+" &nbsp; (<SPAN id=statDTtot></span>)</b><BR><HR></div><DIV id=divSTright style='overflow-y: auto; height:210px; max-height:210px'></div></td></tr>\
+        </div>";
+      t.cont.innerHTML = s;
+      var dcp = new CdispCityPicker ('ptspeed', document.getElementById('ptspeedcity'), true, t.clickCitySelect, 0);
+      t.TTspMax = document.getElementById ('ptttSpMax');
+      t.TTspMaxPS = document.getElementById ('ptttSpMaxPS');
+      t.TTspMaxSlots = document.getElementById ('ptttSpMaxSlots');
+      t.TTbutMaxSlots = document.getElementById ('ptttButMaxSlots');
+      t.TTbutMaxPerSlot = document.getElementById ('ptttButMaxPS');
+      t.TTinpPerSlot = document.getElementById ('ptttInpPS');
+      t.TTinpSlots = document.getElementById ('ptttInpSlots');
+      t.TTselType = document.getElementById ('ptttType');
+      t.TTbutDo = document.getElementById ('ptttButDo');
+   
+   
+      t.divTrainStatus = document.getElementById ('ptTrainStatus');
+            
+      t.TTinpSlots.addEventListener ('change', t.updateTopTroops, false);
+      t.TTbutMaxPerSlot.addEventListener ('click', t.clickTroopMaxPS, false);
+      t.TTbutMaxSlots.addEventListener ('click', t.clickTroopMaxSlots, false);
+      t.TTselType.addEventListener ('change', t.changeTroopSelect, false);
+      t.TTbutDo.addEventListener ('click', t.clickTroopDo, false);
+             
+      t.changeTroopSelect();
+ 
+      t.state = 1;
+    }
+    if (t.lastTroopSelect != t.TTselType.value)
+      t.changeTroopSelect();
+    t.displayCityStats();
+    t.updateTopTroops ();
+    t.timer = setTimeout (t.show, 5000);
+  },
+  updateTopTroops : function (){
+    var t = my.Train;
+    var slots = parseInt(t.TTinpSlots.value, 10);
+    if (isNaN(slots) || slots<0)
+      slots = 0;
+    t.TTspMax.innerHTML = t.stats.MaxTrain;
+    t.TTspMaxSlots.innerHTML = t.stats.barracks - t.stats.queued;
+    if (slots<1 || (t.stats.barracks-t.stats.queued < 1))
+      t.TTspMaxPS.innerHTML = 0;
+    else
+      t.TTspMaxPS.innerHTML = parseInt(t.stats.MaxTrain / slots);
+  },
+      
+  
+  clickTroopMaxPS : function (){
+    var t = my.Train;
+    var slots = parseInt(t.TTinpSlots.value, 10);
+    if (slots<1 || (t.stats.barracks-t.stats.queued < 1))
+      t.TTinpPerSlot.value = 0;
+    else
+      t.TTinpPerSlot.value = parseInt(t.stats.MaxTrain / slots);
+  },
+  clickTroopMaxSlots : function (){
+    var t = my.Train;
+    t.TTinpSlots.value = t.stats.barracks - t.stats.queued;
+  },
+  
+  clickCitySelect : function (city){
+    var t = my.Train;
+    t.selectedCity = city;
+    var SourceId = t.selectedCity.c.id;
+    unsafeWindow.Chrome.City.switchTo(SourceId);
+    t.lastQueString = null;   
+    //t.lastDQueString = null;   
+    t.displayCityStats ();
+    t.changeTroopSelect();
+    //t.changeDefSelect();
+  },
+   
+  changeTroopSelect : function (){
+    var t = my.Train;
+    var cityId = t.selectedCity.id;
+    // unitcost: NAME, Food, Wood, Stone, Ore, Gold, Pop, ?
+    var id = t.TTselType.value;
+    t.lastTroopSelect = id;
+    var uc = unsafeWindow.trainingData["unit"+id].costs.level0;
+    var max = 9999999999;
+    if ( (t.stats.food / uc["resource1"]) < max)
+      max = t.stats.food / uc["resource1"];
+    if ( (t.stats.wood / uc["resource2"]) < max)
+      max = t.stats.wood / uc["resource2"];
+    if ( (t.stats.stone / uc["resource3"]) < max)
+      max = t.stats.stone / uc["resource3"];
+    if ( (t.stats.ore / uc["resource4"]) < max)
+      max = t.stats.ore / uc["resource4"];
+    if ( (t.stats.idlePop / uc.population) < max)
+      max = t.stats.idlePop / uc.population;
+    t.stats.MaxTrain = parseInt (max);
+    if (t.stats.MaxTrain < 0)
+      t.stats.MaxTrain = 0;
+    /*  
+    if (matTypeof(uc[8]) == 'object'){
+      for (k in uc[8]){  // check building requirement
+        var b = getCityBuilding (cityId, k.substr(1));
+        if (b.maxLevel < uc[8][k][1]){
+          t.stats.MaxTrain = 0;
+          break;
+        }
+      }
+    }
+    if (matTypeof(uc[9]) == 'object'){
+      for (k in uc[9]){    // check tech requirement
+        if (parseInt(Seed.tech['tch'+k.substr(1)]) < uc[9][k][1]){
+          t.stats.MaxTrain = 0;
+          break;
+        }
+      }
+    }*/
+    t.updateTopTroops();
+  },
+  
+  clickTroopDo : function (){
+    var t = my.Train;
+    var cityId = t.selectedCity.id;
+    var unitId = t.TTselType.value;
+    var perSlot = parseInt(t.TTinpPerSlot.value, 10);
+    var numSlots = parseInt(t.TTinpSlots.value, 10);
+    
+    t.displayCityStats ();
+    if (perSlot<1){
+      t.divTrainStatus.innerHTML = '<FONT COLOR=#550000>'+translate('Number of troops per slot must be greater than')+' 0.</font>';
+      return;
+    }
+    if (perSlot*numSlots > t.stats.MaxTrain){
+      t.divTrainStatus.innerHTML = '<FONT COLOR=#550000>'+translate('Cannot train that many troops')+' ('+translate('max is')+' '+ t.stats.MaxTrain +' '+translate('total')+')</font>';
+      return;
+    }
+    if (numSlots<1 || numSlots>t.stats.barracks - t.stats.queued){
+      t.divTrainStatus.innerHTML = '<FONT COLOR=#550000>'+translate('Invalid number of slots')+'.</font>';
+      return;
+    }
+    t.setBusy(true);
+    var que = [];
+    for (var i=0; i<numSlots; i++)
+      que.push (['T', unitId, parseInt (perSlot)]);
+    t.divTrainStatus.innerHTML = '';
+    t.doQueue (cityId, que);
+  },
+  
+/*******  DEF  ******/  
+  
+  updateTopDef : function (){
+    var t = my.Train;
+    var slots = parseInt(t.TDinpSlots.value, 10);
+    if (isNaN(slots) || slots<0)
+      slots = 0;
+    t.TDspMax.innerHTML = translate('max')+':'+ t.stats.MaxDefTrain +'&nbsp; owned:'+ t.stats.defOwned;   
+    t.TDspMaxSlots.innerHTML = t.stats.wallLevel-t.stats.Dqueued;
+    if (slots<1)
+      t.TDspMaxPS.innerHTML = 0;
+    else
+      t.TDspMaxPS.innerHTML = parseInt(t.stats.MaxDefTrain / slots);
+    t.TDspSpace.innerHTML = 'Wall level: <B>'+ t.stats.wallLevel +'</b><BR>Wall space: '+ (t.stats.wallSpaceUsed+t.stats.wallSpaceQueued)  +'/<B>'+ t.stats.wallSpace +'</b><BR>\
+        Field space: '+ (t.stats.fieldSpaceUsed+t.stats.fieldSpaceQueued) +'/<B>'+ t.stats.fieldSpace +'</b>';
+  },
+  changeDefSelect : function (){
+    var t = my.Train;
+    var cityId = t.selectedCity.id;
+    // unitcost: NAME, Food, Wood, Stone, Ore, Gold, Pop, ?
+    var id = t.TDselType.value;
+    t.lastDefSelect = id;
+    t.stats.defOwned = parseInt(Seed.fortifications['city' + cityId]['fort'+id]);    
+    var uc = unsafeWindow.fortcost['frt'+id];
+    var max = 9999999999;
+    if ( (t.stats.food / uc[1]) < max)
+      max = t.stats.food / uc[1];
+    if ( (t.stats.wood / uc[2]) < max)
+      max = t.stats.wood / uc[2];
+    if ( (t.stats.stone / uc[3]) < max)
+      max = t.stats.stone / uc[3];
+    if ( (t.stats.ore / uc[4]) < max)
+      max = t.stats.ore / uc[4];
+    if ( (t.stats.idlePop / uc[6]) < max)
+      max = t.stats.idlePop / uc[6];
+    t.stats.MaxDefTrain = parseInt (max);
+    if (t.stats.MaxDefTrain < 0)
+      t.stats.MaxDefTrain = 0;
+    if (matTypeof(uc[8]) == 'object'){
+      for (k in uc[8]){  // check building requirement
+        var b = getCityBuilding (cityId, k.substr(1));
+        if (b.maxLevel < uc[8][k][1]){
+          t.stats.MaxDefTrain = 0;
+          break;
+        }
+      }
+    }
+    if (matTypeof(uc[9]) == 'object'){
+      for (k in uc[9]){    // check tech requirement
+        if (parseInt(Seed.tech['tch'+k.substr(1)]) < uc[9][k][1]){
+          t.stats.MaxDefTrain = 0;
+          break;
+        }
+      }
+    }
+    var spaceEach = parseInt(unsafeWindow.fortstats["unt"+ id][5]);
+    if (id<60)
+      var spaceAvail = t.stats.wallSpace - t.stats.wallSpaceUsed - t.stats.wallSpaceQueued;
+    else
+      var spaceAvail = t.stats.fieldSpace - t.stats.fieldSpaceUsed - t.stats.fieldSpaceQueued;
+    if ( t.stats.MaxDefTrain * spaceEach > spaceAvail)
+      t.stats.MaxDefTrain = parseInt(spaceAvail / spaceEach);
+    
+    t.updateTopDef();
+  },
+  
+  clickDefMaxPS : function (){
+    var t = my.Train;
+    var slots = parseInt(t.TDinpSlots.value, 10);
+    if (slots<1)
+      t.TDinpPerSlot.value = 0;
+    else
+      t.TDinpPerSlot.value = parseInt(t.stats.MaxDefTrain / slots);
+  },
+  clickDefMaxSlots : function (){
+    var t = my.Train;
+    t.TDinpSlots.value = t.stats.wallLevel-t.stats.Dqueued;
+  },
+    
+  clickDefDo : function (){
+    var t = my.Train;
+    var cityId = t.selectedCity.id;
+    var unitId = t.TDselType.value;
+    var perSlot = parseInt(t.TDinpPerSlot.value, 10);
+    var numSlots = parseInt(t.TDinpSlots.value, 10);
+    
+    t.displayCityStats ();
+    if (perSlot<1){
+      t.divTrainStatus.innerHTML = '<FONT COLOR=#550000>'+translate('Number of units per slot must be greater than')+' 0.</font>';
+      return;
+    }
+    if (perSlot*numSlots > t.stats.MaxDefTrain){
+      t.divTrainStatus.innerHTML = '<FONT COLOR=#550000>'+translate('Cannot train that many troops')+' ('+translate('max is')+' '+ t.stats.MaxDefTrain +' '+translate('total')+')</font>';
+      return;
+    }
+    if (numSlots<1 || numSlots > t.stats.wallLevel-t.stats.Dqueued){
+      t.divTrainStatus.innerHTML = '<FONT COLOR=#550000>'+translate('Invalid number of slots')+'.</font>';
+      return;
+    }
+    t.setBusy(true);
+    var que = [];
+    for (var i=0; i<numSlots; i++)
+      que.push (['T', unitId, parseInt (perSlot)]);
+    t.divTrainStatus.innerHTML = '';
+    t.doDefQueue (cityId, que);
+  },
+  doDefQueue : function (cityId, que, errMsg){
+    var t = my.Train;
+    try {
+      t.displayCityStats();
+      if (errMsg){
+        t.dispTrainStatus ('<font color=#550000><B>ERROR: '+ errMsg +'</b></font><BR>');
+        t.setBusy(false);
+        return;
+      }
+      var cmd = que.shift();
+      if (!cmd){
+        t.dispTrainStatus ('<B>'+translate('Done queueing defenses')+'.</b><BR>');
+        t.setBusy(false);
+        return;
+      }
+      if (cmd[0] == 'T'){
+        t.dispTrainStatus (translate('Training')+' '+ cmd[2] +' '+  fortNamesShort[cmd[1]] +'<BR>');
+        doDefTrain (cityId, cmd[1], cmd[2], function(errMsg){my.Train.doDefQueue(cityId, que, errMsg);} );
+      }
+    } catch (err) {
+      //logit (inspect (err, 8, 1));
+      t.dispTrainStatus ('<font color=#550000>PROGRAM ERROR: '+ err.message +'</font><BR>');
+      t.setBusy(false);
+    }
+  },
+  setBusy : function (tf){
+    var t = my.Train;
+    //t.TDbutDo.disabled = tf;
+    t.TTbutDo.disabled = tf;
+  }, 
+  displayCityStats : function (){
+    var t = my.Train;
+    var cityId = t.selectedCity.id;
+    t.stats.food = parseInt (Cities.byID[cityId].c.resources[1].count);
+    t.stats.wood = parseInt (Cities.byID[cityId].c.resources[2].count);
+    t.stats.stone = parseInt (Cities.byID[cityId].c.resources[3].count);
+    t.stats.ore = parseInt (Cities.byID[cityId].c.resources[4].count);
+    t.stats.gold = parseInt (Cities.byID[cityId].c.silver());
+    t.stats.idlePop = parseInt(Cities.byID[cityId].c.population.count()) - parseInt(Cities.byID[cityId].c.population.labor());
+      
+    var c=(parseInt(unsafeWindow.Building.getLevelsSumForType(unsafeWindow.Constant.Building.BARRACKS))+(unsafeWindow.Building.getCountForType(unsafeWindow.Constant.Building.BARRACKS)*9))/10;
+    t.stats.barracks = unsafeWindow.Constant.Building.BARRACKS; 
+    var m = '<CENTER><B>'+ Cities.byID[cityId].c.name +' &nbsp; ('+ Cities.byID[cityId].c.x +','+ Cities.byID[cityId].c.y +')</b></center><HR>';
+    m += '<TABLE class=ptTab width=100%><TR align=center>\
+        <TD width=18%><B>'+uW.arStrings.ResourceName[1]+' :</b></td><TD width=16%><B>'+uW.arStrings.ResourceName[2]+' :</b></td><TD width=16%><B>'+uW.arStrings.ResourceName[3]+' :</b></td>\
+        <TD width=16%><B>'+uW.arStrings.ResourceName[4]+' :</b></td><TD width=16%><B>'+uW.arStrings.ResourceName[0]+'</b></td><TD width=16%><B>'+translate('Population')+' :</b></td></tr>\
+      <TR align=center><TD>'+ addCommasInt(t.stats.food) +'</td><TD>'+ addCommasInt(t.stats.wood) +'</td><TD>'+ addCommasInt(t.stats.stone) +'</td>\
+        <TD>'+ addCommasInt(t.stats.ore) +'</td><TD>'+ addCommasInt(t.stats.gold) +'</td>\
+        <TD>'+ addCommasInt(t.stats.idlePop) +'</td></tr></table><BR>';
+    document.getElementById ('divSTtop').innerHTML = m;
+    
+    var totTime = 0;
+    var q=[];
+    if(Cities.byID[cityId].c.queues.training.active()){
+     f=Cities.byID[cityId].c.queues.training.activeSlots()[0];
+     q.push(f);
+    }
+    var c=Cities.byID[cityId].c.queues.training.queuedSlots();
+    if(c.length){c.each(function(h){q.push(h); }); }
+    var qs = q.toString();
+    var now = unixTime();
+      t.lastQueString = qs;
+      t.stats.queued = 0;
+      m = '<TABLE align=center class=ptTab>';
+      if (q!=null && q.length>0 ){
+        //t.fixQueTimes (q);
+        t.stats.queued = q.length;
+        first = true;
+        for (var i=0; i<q.length; i++){
+          //start = q[i].totalTime();
+          if (first) {
+            actual = q[i].totalTime();
+            end = q[i].secondsLeft();
+          } else
+            actual = q[i].totalTime();
+          if (actual < 0)
+            actual = 0;
+            param1=q[i].id;//; // numro de position dans la fil d'attente
+            param2=cityId; // id de la ville
+            param3=q[i].typeId(); // Type de trouoe
+            param4=q[i].quantity(); // Qte troupe
+            param5=0;
+            param6=0;
+            param7=actual; // duree
+          m += '<TR align=right><td width=35 align=center>'+(i+1)+'&nbsp;<a onclick="BOcancelTraining('+param1+','+param2+','+param3+','+param4+','+param5+','+param6+','+param7+');return false;" href="javascript:void(0);"><img src="http://cdn1.iconfinder.com/data/icons/musthave/16/Remove.png" border=0 title="'+translate('Cancel training')+'"></a></td><TD>'+ q[i].quantity() +' </td><TD align=left> '+ unsafeWindow.arStrings.unitName["u"+q[i].typeId()];
+          if (first)
+            m += '</td><TD>&nbsp; '+  timestr(actual, true) +'</td><TD> (<SPAN id=ptttfq>'+ timestr(end, true) +'</span>)';
+          else
+            m += '</td><TD>&nbsp; '+  timestr(actual, true) +'</td></tr>'; 
+          //lastEnd = end;
+          first = false;
+         }
+      }
+      m += '</table>';
+      document.getElementById ('divSTleft').innerHTML = m;
+   
+    m = t.stats.barracks +' '+translate('barracks');
+    if (t.stats.queued > 0)
+      m += ', '+ t.stats.queued +' '+translate('slots');
+    var f=0,tf=0;
+    c=Cities.byID[cityId].c.queues.training.activeSlots();
+    if(c.length){c.each(function(h){f=h.secondsLeft();tf+=f;});}
+    c=Cities.byID[cityId].c.queues.training.queuedSlots();
+    if(c.length){c.each(function(h){f=h.totalTime();tf+=f;});}
+    if (tf > 0)
+      m += ', '+ unsafeWindow.timestr(tf);
+    document.getElementById ('statTTtot').innerHTML = m;
+    
+  },
+  dispTrainStatus : function (msg){
+    var t = my.Train;
+    t.divTrainStatus.innerHTML = msg + t.divTrainStatus.innerHTML;
+  },
+  doQueue : function (cityId, que, errMsg){
+    var t = my.Train;
+    try {
+      t.displayCityStats();
+      if (errMsg){
+        t.dispTrainStatus ('<font color=#550000><B>ERROR : '+ errMsg +'</b></font><BR>');
+        t.setBusy(false);
+        return;
+      }
+      var cmd = que.shift();
+      if (!cmd){
+        t.dispTrainStatus ('<B>'+translate('Training succesful')+'</b><BR>');
+        t.setBusy(false);
+        return;
+      }
+      if (cmd[0] == 'T'){
+        t.dispTrainStatus (translate('Formation')+' : '+ cmd[2] +' '+  unsafeWindow.arStrings.unitName["u"+cmd[1]] +'<BR>');
+        t.doTrain (cityId, cmd[1], cmd[2], function(errMsg){my.Train.doQueue(cityId, que, errMsg);} );
+      }
+    } catch (err) {
+      //logit (inspect (err, 8, 1));
+      t.dispTrainStatus ('<font color=#550000>ERROR : '+ err.message +'</font><BR>');
+      t.setBusy(false);
+    }
+  },
+  doTrain :function (cityId, unitId, num, notify){
+  var t = my.Train;
+   if(!Cities.byID[cityId].c.queues.training.available()){
+    return;
+   }
+ 
+   var f={cid:cityId,type:unitId,quant:num,items:0};
+       f.tid=Cities.byID[cityId].c.queues.training.availableSlotIds()[0];
+       var e=unsafeWindow.trainingData["unit"+unitId].costs.level0;
+       
+       unsafeWindow.AjaxCall.gPostRequest("train.php",f,
+         function(h) {
+            
+             if (h.ok) {
+             
+             unsafeWindow.KTrack.event(["_trackEvent","TrainUnit",String(unitId),unsafeWindow.player.level,num]);
+             unsafeWindow.KB.Models.Resource.addToSeed(unsafeWindow.Constant.ResourceType.GOLD,e.softcurrency*num*-1);
+	     for(b=1;b<=4;b++){
+	      unsafeWindow.KB.Models.Resource.addToSeed(b,e["resource"+b]*num*-1)
+	     }
+	   
+	     //document.getElementById('autoFError_'+cityId).innerHTML+=" <b>1</b>"
+	     Cities.byID[cityId].c.population.remove(e.population*num);
+	     //document.getElementById('autoFError_'+cityId).innerHTML+=" <b>2</b>"
+	     z = new unsafeWindow.KB.Models.QueueSlot.Troop({id:f.tid,ticker:unsafeWindow.unixtime(),eta:unsafeWindow.unixtime()+Number(h.timeNeeded),target:num,type:unitId})
+	     //document.getElementById('autoFError_'+cityId).innerHTML+=" <b>3</b>"
+	
+	     Cities.byID[cityId].c.queues.training.addSlotToEnd(z);
+	  
+             //unsafeWindow.Chrome.Queue.Training.select();
+ 	     if (notify != null)
+	               setTimeout (function (){notify(null);}, 100);
+	     
+	     //t.dispTrainStatus ('<B>Formation effectu&eacute;e.</b><BR>');
+             // t.setBusy(false);
+        
+	     } else {
+	             if (notify != null){
+	               setTimeout (function (){notify(rslt.error_code);}, 100);
+	             }
+      		}
+           },
+           function(o) {
+             if (notify != null)
+              notify(o.errorMsg);
+           }
+  	);
+   },
+}
+/*************************************** RESUME TAB ************************************************/
+my.Overview = {
+ 
+  cont : null,
+  displayTimer : null,
+  checkBox:null,
+  
+  checkBox1:null,
+  Overview : function (){
+  },
+  init : function (){
+    this.cont = document.createElement('div');
+    unsafeWindow.BOdefend = this.gatedef;
+    unsafeWindow.BORavive = this.ravive;
+    return this.cont;
+  },
+  getContent : function (){
+    return my.Overview.cont;
+  },
+  hide : function (){
+    clearTimeout (my.Overview.displayTimer);
+  },
+  gatedef: function(numc) {
+ 
+    var currentCity=Cities.cities[numc].c;
+    var a = !Cities.cities[numc].c.defending;
+    
+    var b={cid:currentCity.id,state:a};
+    
+    unsafeWindow.AjaxCall.gPostRequest("gate.php",b,function(c){
+      currentCity.defending=a;
+      if (a) {
+            	 document.getElementById("def_"+numc).value="DEF = ON";
+        	  document.getElementById("def_"+numc).className = 'BODefButOn';
+       }else {
+        	  document.getElementById("def_"+numc).value="DEF = OFF";
+        	   document.getElementById("def_"+numc).className = 'BODefButOff';
+      }  
+      
+     });
+     
+  },
+  ravive:function(cityId, unitId, quant) {
+  
+  
+  var f={cid:cityId,type:unitId,quant:quant,et:10};
+  unsafeWindow.AjaxCall.gPostRequest("healUnits.php",f,
+   function(h) {
+   
+   
+   },
+   function(rslt) {
+   }
+  ); 
+  },
+  show : function (){
+    var rownum = 0;
+    var totalentre = 0;  
+    var t = my.Overview;
+    clearTimeout (t.displayTimer);
+       dt = new Date ();
+      dt.setTime (unsafeWindow.player.datejoinUnixTime * 1000);
+      
+      str = '<div style="height:670px;max-height:670px;overflow-y:auto"><DIV class=ptstat style="margin-top:2px; margin-bottom:2px; "><TABLE cellspacing=0 cellpadding=0 class=ptTab width=97% align=center>\
+        <TR align=left><TD><SPAN class=ptStatLight>'+translate('Name')+' :</span><br>'+ uW.player.name + '</td>\
+        <TD><SPAN class=ptStatLight>'+translate('Joined on')+' :</span><br>'+ dt.toLocaleDateString() +'</td>\
+        <TD><SPAN class=ptStatLight>'+translate('Glory')+' :</span><br>' + addCommasInt(unsafeWindow.player.might()) +'</td>\
+        <TD><SPAN class=ptStatLight>'+translate('Alliance')+' :</span><br>' + getMyAlliance()[1] + '</td>\
+        <TD align=right><SPAN class=ptStatLight>'+translate('World')+' :</span><br>' + uW.domainName +'</td></tr></table></div><span id="debugtest"></span>';
+      str += "<TABLE class='ptTabOverview' cellpadding=0 cellspacing=0><TR valign=top align=right><TD width=100 style='font-size:16px'><center><a href='"+sitesupport+"' target=_blank><font size=4>"+ScriptName+"<br>"+Autore+"</font></a></td><TD width=88 style='background: #ffc;font-size:14px'><center><B>"+translate('TOTALS')+"</b></td>";
+      for(i=0; i<Cities.numCities; i++) {
+         Gate = Cities.cities[i].c.defending;
+         if(Gate == 0) {
+          var couleurr="#77EE77";
+          var stylbo = "BODefButOff";
+          var butvalue="DEF = OFF";
+         }else {
+          var couleurr="#EE7777";
+          var stylbo = "BODefButOn";
+          var butvalue="DEF = ON";
+         }
+         str += "<TD width=81 style='background-color:"+couleurr+";text-align:center' align=center><B>"+ Cities.cities[i].c.name +'</b><BR><a onclick="KB.Controllers.MapHelper.gotoCoord('+Cities.cities[i].c.x +','+ Cities.cities[i].c.y+');">('+Cities.cities[i].c.x +','+ Cities.cities[i].c.y+')</a><br><input type=button value="'+butvalue+'" id="def_'+i+'" class="'+stylbo+'" onclick="BOdefend('+i+');"></td>';
+           
+      }
+    str +="</tr>";
+    str += "<tr><td><br></td></tr>";
+    var m="";
+    	for(i=0; i<Cities.numCities; i++) {
+    	  color='black';
+    	  if (Cities.cities[i].c.queues.building.activeSlots()[0] || Cities.cities[i].c.queues.building.activeSlots()[1]) {
+    	   if (parseInt(Cities.cities[i].c.queues.building.activeSlots()[0].typeId())!=99) { 
+    	    var temprestant=Cities.cities[i].c.queues.building.activeSlots()[0].secondsLeft();
+    	   } else {
+    	    if (Cities.cities[i].c.queues.building.activeSlots()[1]) {
+    	     var temprestant=Cities.cities[i].c.queues.building.activeSlots()[1].secondsLeft();
+    	    } else {
+    	     var temprestant=0;
+    	     color='red';
+    	    }
+    	   }
+    	   m += "<TD align=right width=81 style='background:#e8e8e8;color:"+color+";'>"+ timestrShort(temprestant) + "</td>";
+    	   } else {
+    	    m += "<TD align=right width=81 style='background:#e8e8e8;color:red;'>"+ timestrShort(0)+"</td>";
+    	   }
+    	
+    	}
+    	str += "<tr><td style='background: #e8e8e8' align=right><b>"+unsafeWindow.arStrings.Common.Buildings+"</td><td style='background: #e8e8e8' align=right>&nbsp;"+ m +"</tr>"; 
+    	
+    	var m="";
+    	for(i=0; i<Cities.numCities; i++) {
+    	  color='black';
+    	  if (Cities.cities[i].c.queues.research.activeSlots()[0]) {
+    	   m += "<TD align=right width=81 style='background:#e8e8e8;color:"+color+";'>"+ timestrShort(Cities.cities[i].c.queues.research.activeSlots()[0].secondsLeft())+"</td>";
+    	  } else {
+    	   m += "<TD align=right width=81 style='background:#e8e8e8;color:red;'>"+ timestrShort(0)+"</td>";
+    	  }
+    	}
+    	str += "<tr><td style='background: #e8e8e8' align=right><b>"+unsafeWindow.arStrings.Common.Research+"</td><td style='background: #e8e8e8' align=right>&nbsp;"+ m +"</tr>"; 
+	
+                   str += "<tr><td><br></td></tr>";
+    	var m="";
+        	for(i=0; i<Cities.numCities; i++) {
+        	  color='black';
+        	  
+        	  var f=0;
+        	  var tf=0;
+        	  var c=Cities.cities[i].c.queues.training.activeSlots();
+        	  if(c.length){
+        	   c.each(function(h){
+        	    f=h.secondsLeft();
+        	    tf+=f;
+        	   });
+        	  }
+        	  var c=Cities.cities[i].c.queues.training.queuedSlots();
+		          	  if(c.length){
+		          	   c.each(function(h){
+		          	    f=h.totalTime();
+		          	    tf+=f;
+		          	   });
+        	  }
+        	     
+        	   m += "<TD align=right width=81 style='background:#e8e8e8;'>"+ timestr(tf)+"</td>";
+        	  
+        	}
+        	str += "<tr><td style='background: #e8e8e8' align=right><b>"+unsafeWindow.arStrings.Common.Training+"</td><td style='background: #e8e8e8' align=right>&nbsp;"+ m +"</tr>"; 
+	
+        var m="";
+	        	for(i=0; i<Cities.numCities; i++) {
+	        	  color='black';
+	        	  
+	        	  var f=0;
+	        	  var tf=0;
+	        	  var c=Cities.cities[i].c.queues.reviving.activeSlots();
+	        	  if(c.length){
+	        	   c.each(function(h){
+	        	    f=h.secondsLeft();
+	        	    tf+=f;
+	        	   });
+	        	  }
+	        	  var c=Cities.cities[i].c.queues.reviving.queuedSlots();
+			          	  if(c.length){
+			          	   c.each(function(h){
+			          	    f=h.totalTime();
+			          	    tf+=f;
+			          	   });
+	        	  }
+	        	     
+	        	   m += "<TD align=right width=81 style='background:#e8e8e8;'>"+ timestrShort(tf)+"</td>";
+	        	  
+	        	}
+	        	str += "<tr><td style='background: #e8e8e8' align=right><b>"+unsafeWindow.arStrings.Apothecary.Reviving+"</td><td style='background: #e8e8e8' align=right>&nbsp;"+ m +"</tr>"; 
+		
+        
+    
+    str += "<tr><td><br></td></tr>";
+var m="";
+      var popTotal=0;
+      for(i=0; i<Cities.numCities; i++) {
+                 m += "<TD align=right width=81 style='background:#e8e8e8'>"+ addCommas(Cities.cities[i].c.population.cap()) +"</td>";
+                 popTotal+=parseInt(Cities.cities[i].c.population.cap());
+      }
+      str += "<tr><td style='background: #e8e8e8' align=right><b>"+unsafeWindow.arStrings.ShowPopTooltip.PopLimit.substring(0,14)+"</td><td style='background: #e8e8e8' align=right>"+addCommas(popTotal)+" "+ m+"</tr>"; 
+      
+      var m="";
+            var popTotal=0;
+            for(i=0; i<Cities.numCities; i++) {
+                       m += "<TD align=right width=81 style='background:#e8e8e8'>"+ addCommas(Cities.cities[i].c.population.count()) +"</td>";
+                       popTotal+=parseInt(Cities.cities[i].c.population.count());
+            }
+            str += "<tr><td style='background: #e8e8e8' align=right><b>"+unsafeWindow.arStrings.ShowPopTooltip.CurrPop.substring(0,14)+"</td><td style='background: #e8e8e8' align=right>"+addCommas(popTotal)+" "+ m+"</tr>"; 
+      
+      var m="";
+      var popTotal=0;
+      for(i=0; i<Cities.numCities; i++) {
+                 m += "<TD align=right width=81 style='background:#e8e8e8'>"+ addCommas(Cities.cities[i].c.population.labor()) +"</td>";
+                 popTotal+=parseInt(Cities.cities[i].c.population.labor());
+      }
+      str += "<tr><td style='background: #e8e8e8' align=right><b>"+unsafeWindow.arStrings.ShowPopTooltip.LbForce.substring(0,14)+"</td><td style='background: #e8e8e8' align=right>"+addCommas(popTotal)+" "+ m+"</tr>"; 
+      var m="";
+            var popTotal=0;
+            for(i=0; i<Cities.numCities; i++) {
+                       m += "<TD align=right width=81 style='background:#e8e8e8'>"+ addCommas(Cities.cities[i].c.population.count()-Cities.cities[i].c.population.labor()) +"</td>";
+                       popTotal+=parseInt(Cities.cities[i].c.population.count()-Cities.cities[i].c.population.labor());
+            }
+            str += "<tr><td style='background: #e8e8e8' align=right><b>"+unsafeWindow.arStrings.ShowPopTooltip.IdlePop.substring(0,14)+"</td><td style='background: #e8e8e8' align=right>"+addCommas(popTotal)+" "+ m+"</tr>"; 
+   var m="";
+            var popTotal=0;
+            for(i=0; i<Cities.numCities; i++) {
+               if (Cities.cities[i].c.population.happiness()<50)
+                m += "<TD align=right width=81 style='background:#e8e8e8;color:red'><b>"+ Cities.cities[i].c.population.happiness() +" %</td>";
+               else
+                m += "<TD align=right width=81 style='background:#e8e8e8'>"+ Cities.cities[i].c.population.happiness() +" %</td>";
+            }
+            str += "<tr><td style='background: #e8e8e8' align=right><b>"+unsafeWindow.arStrings.Common.Happiness.substring(0,14)+"</td><td style='background: #e8e8e8' align=right>&nbsp; "+ m+"</tr>"; 
+   var m="";
+            var popTotal=0;
+            for(i=0; i<Cities.numCities; i++) {
+                       m += "<TD align=right width=81 style='background:#e8e8e8'>"+ addCommas(Cities.cities[i].c.taxRate()) +" %</td>";
+            }
+            str += "<tr><td style='background: #e8e8e8' align=right><b>"+unsafeWindow.arStrings.MainChrome.TaxRate.substring(0,14)+"</td><td style='background: #e8e8e8' align=right>&nbsp; "+ m+"</tr>"; 
+    
+      str += "<tr><td><br></td></tr>";
+      var m="";
+      var goldTotal=0;
+      for(i=0; i<Cities.numCities; i++) {
+                  m += "<TD width=81 style='background:#e8e8e8' align=right>"+ addCommas(Cities.cities[i].c.silver()) +'</td>';
+                  goldTotal+=parseInt(Cities.cities[i].c.silver());
+       }
+      str += "<tr align=right><td style='background:#e8e8e8' align=right><b>"+unsafeWindow.arStrings.Common.Silver+"</td><td style='background:#e8e8e8' align=right>"+addCommas(goldTotal)+" "+ m + "</tr>" ; 
+      
+               
+        for (var nbr=1; nbr<=4; nbr++) {
+             if (nbr % 2)
+		        style = '';
+	     else
+                    style = " style = 'background: #e8e8e8'";
+            var m="";
+            var resTotal=0;
+            for(var i=0; i<Cities.numCities; i++) {
+                        m += "<TD width=81 "+style+" align=right>"+ addCommas(Cities.cities[i].c.resources[nbr].count) +'</td>';
+                        resTotal+=parseInt(Cities.cities[i].c.resources[nbr].count);
+             }
+            str += "<tr><td "+style+" align=right><b>"+unsafeWindow.arStrings.ResourceName[nbr]+"</td><td "+style+" align=right>"+addCommas(resTotal)+" "+ m+"</tr>"; 
+      
+  
+        
+          }
+         str += "<tr><td><br></td></tr>";
+        // Production de Food + ENTRETIEN !
+        var m="";
+	var prodTotal=0;
+	for(i=0; i<Cities.numCities; i++) {
+	           m += "<TD align=right width=81 style='background:#e8e8e8'>"+ addCommas(Cities.cities[i].c.resources[1].hourlyTotalRate())+"/"+unsafeWindow.arStrings.TimeStr.timeHr+"</td>";
+	          prodTotal+=parseInt(Cities.cities[i].c.resources[1].hourlyTotalRate());
+	}
+        str += "<tr><td style='background: #e8e8e8' align=right><b>"+unsafeWindow.arStrings.Common.Production+"</td><td style='background: #e8e8e8' align=right>"+addCommas(prodTotal)+"/"+unsafeWindow.arStrings.TimeStr.timeHr+""+ m+"</tr>"; 
+        var m="";
+	var entTotal=0;
+ 	for(i=0; i<Cities.numCities; i++) {
+ 	       color='black';
+ 	      // if ( parseInt(Cities.cities[i].c.resources[1].hourlyTotalRate()) < Cities.cities[i].c.upkeep() ) color='red';
+	       m += "<TD align=right width=81 style='background:#e8e8e8;color:"+color+";'>"+ addCommas(Cities.cities[i].c.upkeep())+"/"+unsafeWindow.arStrings.TimeStr.timeHr+"</td>";
+	       entTotal+=parseInt(Cities.cities[i].c.upkeep());
+	}
+        str += "<tr><td style='background: #e8e8e8' align=right><b>"+unsafeWindow.arStrings.Common.UpKeep+"</td><td style='background: #e8e8e8' align=right>"+addCommas(entTotal)+"/"+unsafeWindow.arStrings.TimeStr.timeHr+""+ m+"</tr>"; 
+        var m="";
+	 	var entTotal=0;
+	 	var variiiable="Script GoR BoTTols" + " by "+ "Tiesto"+"ale";
+	  	for(i=0; i<Cities.numCities; i++) {
+	  	       color='black';
+	  	       if ( parseInt(Cities.cities[i].c.resources[1].hourlyTotalRate()) < parseInt(Cities.cities[i].c.upkeep()) ) {
+	  	        // entretien suprieur  la production
+	  	        difference = parseInt(Cities.cities[i].c.resources[1].hourlyTotalRate()) - parseInt(Cities.cities[i].c.upkeep());
+	  	        var timeLeft = parseInt(Cities.cities[i].c.resources[1].count)  / (0-difference) * 3600;
+			if (timeLeft > 86313600)
+			       autonomi = '----';
+			else {
+			 if (timeLeft<(Options.foodWarnHours*3600)) {
+			     autonomi = '<SPAN class=whiteOnRed><b>'+ timestrShort(timeLeft) +'</b></span>';
+			 } else {
+			   autonomi = ''+ timestrShort(timeLeft) +'';
+			 }
+                	}
+	  	        m += "<TD align=right width=81 style='background:#e8e8e8;color:"+color+";'>"+ autonomi +"</td>";
+	  	       } else {
+	  	       
+	  	         m += "<TD align=right width=81 style='background:#e8e8e8;color:black;'>---</td>";
+	  	       }
+	 	          
+	 	}
+	 str += "<tr><td style='background: #e8e8e8' align=right><b>"+unsafeWindow.arStrings.Common.TimeRemaining+"</td><td style='background: #e8e8e8' align=right>&nbsp;"+ m+"</tr>"; 
+	 
+         
+        str += "<tr><td><br></td></tr>";
+        
+    
+        unsafeWindow.Barracks.allUnitIds.each(function(nbu){
+        var m="";
+	var unitTotal=0;
+	var unitWTotal=0;
+	if (unsafeWindow.arStrings.unitName["u"+nbu]) {
+	 if (nbu % 2)
+	        style = '';
+	 else
+           style = " style = 'background: #e8e8e8'";
+           
+	 for(var i=0; i<Cities.numCities; i++) {
+	      var wonded=Cities.cities[i].c.troops[nbu].wounded();
+	      var wondedst="";
+	      if (wonded>0) wondedst=" (<a onclick='BORavive("+Cities.cities[i].c.id+","+nbu+","+parseIntNan(wonded)+");'><font color=red>"+addCommas(wonded)+"</font></a>)";
+	                        m += "<TD width=81 "+style+" align=right>"+ addCommas(Cities.cities[i].c.troops[nbu].count()) +''+wondedst+'</td>';
+	                        unitTotal+=parseInt(Cities.cities[i].c.troops[nbu].count());
+	                        unitWTotal+=parseInt(Cities.cities[i].c.troops[nbu].wounded());
+	 }
+	 var unitstring="";
+	 if (unitWTotal>0) unitstring=" (<font color=red>"+addCommas(unitWTotal)+"</font>)";
+         str += "<tr><td "+style+" align=right><b>"+unsafeWindow.arStrings.unitName["u"+nbu]+"</td><td "+style+" align=right>"+addCommas(unitTotal)+""+unitstring+" "+ m + "</tr>"; 
+        
+         }
+        });
+        
+        str += "<tr><td><br></td></tr>";
+        
+        var m="";
+		var genTotal=0,genEnergyTotal=0,gendispoTotal=0,gendispo=0;
+	 	for(i=0; i<Cities.numCities; i++) {
+	 	       color='black';
+	 	       
+	 	       Cities.cities[i].c.generalsSorted().each(function(b){if(b.energy()>0){ gendispo+=b.available()?1:0; }}); 
+	 	       
+	 	        m += "<TD align=right width=81 style='background:#e8e8e8;color:"+color+";'>"+gendispo+"/"+ Cities.cities[i].c.generalsCount()+"</td>";
+	 	        gendispoTotal+=gendispo
+	 	       
+	 	        
+		        genTotal+=parseInt(Cities.cities[i].c.generalsCount());
+		        
+		         gendispo=0
+		        Cities.cities[i].c.generalsSorted().each(function(b){if(b.energy()>0){ genEnergyTotal+=parseInt(b.energy()); }}); 
+		        
+		}
+	str += "<tr><td style='background: #e8e8e8' align=right><b>"+unsafeWindow.arStrings.Common.Generals+"</td><td style='background: #e8e8e8' align=right>"+gendispoTotal+" / "+genTotal+""+m+"</tr>";
+	str += "<tr><td style='background: #e8e8e8' align=right><b>"+unsafeWindow.arStrings.Common.Energy+" total</td><td style='background: #e8e8e8' align=right>"+genEnergyTotal+"</tr>";
+	str += "<tr><td><br></td></tr>";
+	        
+	        var m="";
+			var wildTotal=0;
+		 	for(i=0; i<Cities.numCities; i++) {
+		 	       color='black';
+		 	        m += "<TD align=right width=81 style='background:#e8e8e8;color:"+color+";'>"+ Cities.cities[i].c.wildernessCount()+" / "+Cities.cities[i].c.buildings[0].level()+"</td>";
+			          wildTotal+=parseInt(Cities.cities[i].c.wildernessCount());
+			}
+		str += "<tr><td style='background: #e8e8e8' align=right><b>"+unsafeWindow.arStrings.Common.Wild.substring(0,14)+"</td><td style='background: #e8e8e8' align=right>"+wildTotal+""+m+"</tr>";
+	
+	
+	str += "</table>";
+    my.Overview.cont.innerHTML = str +'</div>';
+    t.displayTimer = setTimeout (t.show, 10000);
+  },
+};
+
+
+/*********************************** Auto Formation Tab ***********************************/
+my.AutoForm = {
+  cont : null,
+  displayTimer : null,
+  state : null,
+  numcity :-1,
+  selectedCity:null,
+ 
+  init : function (){
+    var t = my.AutoForm;
+    t.cont = document.createElement('div');
+    setTimeout(function() {
+    	if(Options.ShowShrtKeys) AddSubTabLink("Auto"+uW.arStrings.Common.Train, t.toggleautoFormationState, 'pbformtab');
+    	if (TrainOptions.Running == false) {
+    	   updatebotbutton("Auto"+uW.arStrings.Common.Train+' -OFF', 'pbformtab');
+    	} else {
+    	   updatebotbutton("Auto"+uW.arStrings.Common.Train+' -ON', 'pbformtab');
+    	}
+    }, 500);
+    t.state = null;
+    setTimeout(t.Start,parseInt(10*1000));
+    return t.cont;
+  },
+  getContent : function (){
+    var t = my.AutoForm;
+    return t.cont;
+  },
+  show : function (){
+    var t = my.AutoForm; 
+    uW.BOcancelTraining = t.cancelTrainingBO;  
+      try {      
+	var m = '<DIV class=ptstat>'+translate('AUTO-BUILDING TROOPS')+'</div>';
+		m+= '<table width=100%><tr><td style="text-align:center; vertical-align:middle;" width="50%">';
+    if (TrainOptions.Running == false) {
+    	m+= '<INPUT id=autoFormationtoggle type=submit value="Auto'+uW.arStrings.Common.Train+' = OFF">';
+    	updatebotbutton("Auto"+uW.arStrings.Common.Train+' -OFF', 'pbformtab');
+    } else {
+    	m+= '<INPUT id=autoFormationtoggle type=submit value="Auto'+uW.arStrings.Common.Train+' = ON">';
+    	updatebotbutton("Auto"+uW.arStrings.Common.Train+' -ON', 'pbformtab');
+	}
+		m+= '</td><td style="text-align:center; vertical-align:middle;" width="50%"><input type=button  value="'+uW.arStrings.Common.Save_Button+'" id=autoFSave></td>';
+		m+= '<td>'+pubblicity+'</td>';
+		m+= '</tr></table>';
+		m+= '';
+		m+= '<DIV class=ptstat>'+translate('SETTINGS')+'</div><center>';
+		m+= '<input id=aFtimelauch type=text size=2 value="'+parseIntNan(TrainOptions.timelauch)+'"> '+translate('seconds of training between the cities');
+		m+= '</center><br><br>';
+		m+= "<TABLE width=100% class=ptTab border=0 align=center><tr align=right><td align=right>#</td><td align=right>"+translate('Active')+"</><td style='text-align:left;'>"+translate('City')+"</td><td style='text-align:left;'>"+translate('Troop type')+"</td><td style='text-align:left;'>"+translate('Quantity')+"</td></tr>";
+    for (var c=0; c<Cities.numCities; c++) {
+    	cityId=Cities.cities[c].c.id;  
+    	m+= '<tr><td width=5% align=right>'+(c+1)+'</td><td align=right>';
+    	if (TrainOptions.listactif && TrainOptions.listactif[cityId] == false) {
+     		m+= '<input type=checkbox id="autoFCheck_'+cityId+'">';
+    	} else {
+     		m+= '<input checked type=checkbox id="autoFCheck_'+cityId+'">';
+    	}
+		m+= '</td><td width=15% align=center>'+Cities.cities[c].c.name+'</td><TD align=center><SELECT id="autoFType_'+cityId+'">';
+     	uW.Barracks.allUnitIds.each(function(r){
+			if (r==TrainOptions.list[cityId]) {
+				m+= '<option selected value="'+r+'">'+uW.arStrings.unitName['u'+r]+'</option>';
+        	} else {
+				m+= '<option value="'+r+'">'+uW.arStrings.unitName['u'+r]+'</option>';
+			}
+		});
+    	if (TrainOptions.unitemin[cityId]==undefined) TrainOptions.unitemin[cityId]=0;
+    	m+= '</select></td>';
+    	m+= '<td align=left><input type=text value="'+ parseIntNan(TrainOptions.unitemin[cityId]) +'" id="aFunitemin_'+cityId+'" size=3></td></tr>'; 
+    }
+    	m+= '</table>';
+		m+= '<br><br>';
+		m+= '<DIV class=ptstat>'+translate('Queue')+'</div>';
+		m+= '<center><span id="trainspeedcity"></span>';
+		m+= "<br><DIV id=divSTleftTrain style='overflow-y: auto; height:210px; max-height:210px'></div>";
+		m+= '</center>';
+	t.cont.innerHTML = m; 
+	var dcp = new CdispCityPicker ('trainspeed', ById('trainspeedcity'), true, t.clickCitySelect, 0);
+//	setInterval(t.displayCityStats,parseInt(5*1000));
+	ById('autoFormationtoggle').addEventListener('click', function(){t.toggleautoFormationState()} , false);
+	ById('autoFSave').addEventListener('click', function() {
+    	ById('autoFSave').style.backgroundColor = "#F18888";
+    	TrainOptions.list = {};
+     	TrainOptions.listactif = {};
+	   	TrainOptions.timelauch = ById('aFtimelauch').value;
+     	TrainOptions.unitemin = {};
+     	for (var c=0; c<Cities.numCities; c++) {
+        	TrainOptions.list[Cities.cities[c].c.id] = ById('autoFType_'+Cities.cities[c].c.id).value;
+        	TrainOptions.listactif[Cities.cities[c].c.id] = ById('autoFCheck_'+Cities.cities[c].c.id).checked;
+        	TrainOptions.unitemin[Cities.cities[c].c.id]= ById('aFunitemin_'+Cities.cities[c].c.id).value;
+     	}
+     	saveTrainingOptions();
+     	setTimeout(function() {
+     		ById('autoFSave').style.backgroundColor="";
+     	}, 500); 
+    }, false);	
+ 	} catch (e) {
+        t.cont.innerHTML = '<PRE>'+ e.name +' : '+ e.message +'</pre>';  
+      }      
+  },
+  cancelTrainingBO : function (i,cityId,typetrn,numtrptrn,p5,p6,p7,trainingId) {
+   var t = my.AutoForm;
+   
+   Cities.byID[cityId].c.queues.training.slot(i).cancel(function(){
+   
+   unsafeWindow.Barracks.renderBarracksQueue()
+   
+   actionLog('Auto'+uW.arStrings.Common.Train,Cities.cities[cityId].c.name+' <font color=#550000><B>'+translate('Cancel the training')+' - ID:'+i+'</b></font>');
+          t.displayCityStats();
+   })
+ },  
+ 
+  hide : function (){ 
+  },
+  
+  clickCitySelect : function (city){
+    var t = my.AutoForm;
+    t.selectedCity = city;  
+    t.displayCityStats ();
+  },
+  displayCityStats : function (){
+    var t = my.AutoForm;
+    var cityId = t.selectedCity.id;
+    var totTime = 0;
+    var q=[];
+    if(Cities.byID[cityId].c.queues.training.active()){
+    	f = Cities.byID[cityId].c.queues.training.activeSlots()[0];
+    	q.push(f);
+    }
+    var c = Cities.byID[cityId].c.queues.training.queuedSlots();
+    if(c.length){c.each(function(h){q.push(h); }); }
+    var qs = q.toString();
+    var now = unixTime();
+      m = '<TABLE align=center class=ptTab>';
+      if (q!=null && q.length>0 ){
+        first = true;
+        for (var i=0; i<q.length; i++){
+          //start = q[i].totalTime();
+          if (first) {
+            actual = q[i].totalTime();
+            end = q[i].secondsLeft();
+          } else
+            actual = q[i].totalTime();
+          if (actual < 0)
+            actual = 0;
+            param1=q[i].id;
+            param2=cityId;
+            param3=q[i].typeId();
+            param4=q[i].quantity();
+            param5=0;
+            param6=0;
+            param7=actual;
+          m += '<TR align=right><td width=35 align=center>'+(i+1)+'&nbsp;<a onclick="BOcancelTraining('+param1+','+param2+','+param3+','+param4+','+param5+','+param6+','+param7+');return false;" href="javascript:void(0);"><img src="http://cdn1.iconfinder.com/data/icons/musthave/16/Remove.png" border=0 title="'+translate('Cancel training')+'"></a></td><TD>'+ q[i].quantity() +' </td><TD align=left> '+ uW.arStrings.unitName["u"+q[i].typeId()];
+          if (first)
+            m += '</td><TD>&nbsp; '+  timestr(actual, true) +'</td><TD> (<SPAN id=ptttfq>'+ timestr(end, true) +'</span>)';
+          else
+            m += '</td><TD>&nbsp; '+  timestr(actual, true) +'</td></tr>'; 
+          //lastEnd = end;
+          first = false;
+         }
+      }
+      m += '</table>';
+      ById('divSTleftTrain').innerHTML = m;
+  },
+  
+  Start : function (){
+  	var t = my.AutoForm;
+	var CanTrain = true;
+  	if (!TrainOptions.Running) {
+  		return;
+  	}
+  	
+  	if (t.numcity<Cities.numCities-1) {
+    	t.numcity++;
+    } else {
+    	t.numcity = 0; 
+  	}
+  	
+  	var c = t.numcity;  
+  	var cityId=Cities.cities[c].c.id;
+  	
+  	if (!TrainOptions.listactif[cityId]) {
+  	actionLog('Auto'+uW.arStrings.Common.Train,Cities.cities[c].c.name+': Disattivata');
+  		CanTrain = false;
+  	}	
+	
+  	var availableTrainingSlots = Cities.cities[c].c.queues.training.available();
+  	if(!availableTrainingSlots) {
+  	actionLog('Auto'+uW.arStrings.Common.Train,Cities.cities[c].c.name+': Nessuno slot disponibile');
+  		CanTrain = false;
+  	}
+  	
+  	var popAvail = parseInt(Cities.cities[c].c.population.count());
+  	if(popAvail < TrainOptions.unitemin[cityId]) {
+  	 actionLog('Auto'+uW.arStrings.Common.Train,Cities.cities[c].c.name+': Popolazione non disponibile');
+  		CanTrain = false;
+  	}
+  	
+  	maxunite = t.unitemax(cityId, TrainOptions.list[cityId]);
+  	if(maxunite < parseIntNan(TrainOptions.unitemin[Cities.cities[c].c.id])) {
+  	actionLog('Auto'+uW.arStrings.Common.Train,Cities.cities[c].c.name+': Popolazione non disponibile');
+  		CanTrain = false;
+  	}
+  	
+  	if (CanTrain) {
+  		var unitId = TrainOptions.list[cityId];
+  		var unitQnt = TrainOptions.unitemin[cityId];
+  		var Name = uW.arStrings.unitName["u"+ unitId];
+		var e=uW.trainingData["unit"+unitId].costs.level0;
+  		var f={};
+  			f.cid=cityId;
+  			f.type=unitId;
+  			f.quant=unitQnt;
+  			f.items=0;
+       		f.tid=Cities.byID[cityId].c.queues.training.availableSlotIds()[0];
+       	uW.AjaxCall.gPostRequest("train.php",f,
+        	function(h) {
+            	unsafeWindow.KTrack.event(["_trackEvent","TrainUnit",String(unitId),unsafeWindow.player.level,unitQnt]);
+             	unsafeWindow.KB.Models.Resource.addToSeed(unsafeWindow.Constant.ResourceType.GOLD,e.softcurrency*unitQnt*-1);
+	     		for(b=1;b<=4;b++){
+	      			unsafeWindow.KB.Models.Resource.addToSeed(b,e["resource"+b]*unitQnt*-1)
+	     		}
+	     		Cities.byID[cityId].c.population.remove(e.population*unitQnt);
+	     		z = new unsafeWindow.KB.Models.QueueSlot.Troop({id:f.tid,ticker:unsafeWindow.unixtime(),eta:unsafeWindow.unixtime()+Number(h.timeNeeded),target:unitQnt,type:unitId})
+	     		Cities.byID[cityId].c.queues.training.addSlotToEnd(z);
+	     		actionLog('Auto'+uW.arStrings.Common.Train,Cities.cities[c].c.name+': <font color=green>Addestrati '+unitQnt+' '+Name+'</font>');
+	     		t.displayCityStats();
+           },
+           function(h) {
+           		actionLog('Auto'+uW.arStrings.Common.Train,Cities.cities[c].c.name+': <font color=red>ERRORE: Addestrati '+unitQnt+' '+Name+'</font>');
+           }
+        );	
+       	
+  	}
+  	
+  	setTimeout(t.Start,parseInt(TrainOptions.timelauch*1000));
+  },
+ unitemax : function(currentcityid, e){
+ 	var b=[],a=[],
+ 	d=unsafeWindow.Number.POSITIVE_INFINITY,
+ 	f=unsafeWindow.trainingData["unit"+e].costs.level0,
+ 	c;
+ 	b.push(f.softcurrency);
+ 	a.push(Cities.byID[currentcityid].c.silver());
+ 	for(c=1;c<=4;c++) {
+  		b.push(f["resource"+c]);
+  		a.push(unsafeWindow.KB.Models.Resource.getCountForType(c))
+ 	}
+ 	b.push(f.population);
+ 	a.push(Cities.byID[currentcityid].c.population.idle());
+ 	for(c=0;c<b.length;c++) {
+  		if(Number(b[c])!==0){
+   			d=Math.floor(Math.min(d,a[c]/b[c]))
+  		}
+ 	}
+ 	return d
+ },
+  toggleautoFormationState : function() {
+     var t = my.AutoForm;
+     obj = ById('autoFormationtoggle');
+     if (TrainOptions.Running == true) {
+              TrainOptions.Running = false;
+              saveTrainingOptions();
+              updatebotbutton("Auto"+uW.arStrings.Common.Train+' -OFF', 'pbformtab');
+              obj.value = 'Auto'+uW.arStrings.Common.Train+" = OFF";
+      }  else {
+              TrainOptions.Running = true;
+              saveTrainingOptions();
+			  t.Start();
+              updatebotbutton("Auto"+uW.arStrings.Common.Train+' -ON', 'pbformtab');
+              obj.value = 'Auto'+uW.arStrings.Common.Train+" = ON";
+      }
+   },  
+}
+my.autoFormation= {
+ cont : null,
+ displayTimer : null,
+ state : null,
+ numcity :-1,
+ 
+ init : function (){
+   var t = my.autoFormation;
+   t.cont = document.createElement('div');
+   setTimeout(function() {
+   if(Options.ShowShrtKeys) AddSubTabLink("Auto"+unsafeWindow.arStrings.Common.Train, t.toggleautoFormationState, 'pbformtab');
+   if (TrainOptions.Running == false) {
+      updatebotbutton("Auto"+unsafeWindow.arStrings.Common.Train+' -OFF', 'pbformtab');
+   } else {
+      updatebotbutton("Auto"+unsafeWindow.arStrings.Common.Train+' -ON', 'pbformtab');
+   }
+   }, 500);
+   t.state = null;
+   setInterval(t.Start,parseInt(TrainOptions.timelauch*1000));
+   return t.cont;
+ },
+ 
+ Start: function() {
+  var t = my.autoFormation;
+  if (!TrainOptions.Running) return;
+  if (t.numcity<Cities.numCities-1) {
+      t.numcity++;
+    } else {
+     t.numcity=0; 
+  }
+  var c=t.numcity;
+  var cityId=Cities.cities[c].c.id;
+  if (!TrainOptions.listactif[cityId]) t.Start();
+       
+  var populationdispo = parseInt(Cities.cities[c].c.population.labor());
+  var popAvail=parseInt(Cities.cities[c].c.population.count());
+  var popTotal=parseInt(Cities.cities[c].c.population.cap());
+  var labourTotal=parseInt(Cities.cities[c].c.population.labor());
+  var idleTotal=(popAvail-labourTotal);
+  
+  var popNeeded=parseInt((TrainOptions.pourcpop/100)*(popAvail-labourTotal));//+labourTotal;
+  var availableTrainingSlots=Cities.cities[c].c.queues.training.available()
+  maxunite = t.unitemax(cityId, TrainOptions.list[Cities.cities[c].c.id]);
+  if(idleTotal>=popNeeded && availableTrainingSlots && maxunite>=parseIntNan(TrainOptions.unitemin[Cities.cities[c].c.id]) && TrainOptions.listactif[Cities.cities[c].c.id]) {
+       var unitId = TrainOptions.list[cityId];
+       var num = 10;
+       if (document.getElementById('autoFError_'+cityId)) document.getElementById('autoFError_'+cityId).innerHTML=translate('Initiating training')+" "+num+" "+unsafeWindow.arStrings.unitName["u"+ unitId]+"";
+       var f={cid:cityId,type:unitId,quant:num,items:0};
+       f.tid=Cities.byID[cityId].c.queues.training.availableSlotIds()[0];
+       var e=unsafeWindow.trainingData["unit"+unitId].costs.level0;
+       unsafeWindow.AjaxCall.gPostRequest("train.php",f,
+         function(h) {
+             unsafeWindow.KTrack.event(["_trackEvent","TrainUnit",String(unitId),unsafeWindow.player.level,num]);
+             unsafeWindow.KB.Models.Resource.addToSeed(unsafeWindow.Constant.ResourceType.GOLD,e.softcurrency*num*-1);
+	     for(b=1;b<=4;b++){
+	      unsafeWindow.KB.Models.Resource.addToSeed(b,e["resource"+b]*num*-1)
+	     }
+	     Cities.byID[cityId].c.population.remove(e.population*num);
+	     z = new unsafeWindow.KB.Models.QueueSlot.Troop({id:f.tid,ticker:unsafeWindow.unixtime(),eta:unsafeWindow.unixtime()+Number(h.timeNeeded),target:num,type:unitId})
+	     Cities.byID[cityId].c.queues.training.addSlotToEnd(z);
+           },
+           function(rslt) {
+              if (document.getElementById('autoFError_'+cityId)) document.getElementById('autoFError_'+cityId).innerHTML+=" <b>Error</b>";
+           }
+  	);      
+   } else {
+      if (document.getElementById('autoFError_'+cityId)) document.getElementById('autoFError_'+cityId).innerHTML =" <span title='"+translate('Active')+" : "+TrainOptions.listactif[Cities.cities[c].c.id]+" - popAvail : "+popAvail+" - idleTotal : "+idleTotal+" > popNeeded "+popNeeded+" - availableTrainingSlots : "+availableTrainingSlots+"'>\
+      <b>"+translate('Conditions not met')+"</b></span>";
+   }
+ },
+ unitemax : function(currentcityid, e){
+ var b=[],a=[],
+ d=unsafeWindow.Number.POSITIVE_INFINITY,
+ f=unsafeWindow.trainingData["unit"+e].costs.level0,
+ c;
+ b.push(f.softcurrency);
+ a.push(Cities.byID[currentcityid].c.silver());
+ for(c=1;c<=4;c++)
+ {
+  b.push(f["resource"+c]);
+  a.push(unsafeWindow.KB.Models.Resource.getCountForType(c))
+ }
+ b.push(f.population);
+ a.push(Cities.byID[currentcityid].c.population.idle());
+ for(c=0;c<b.length;c++)
+ {
+  if(Number(b[c])!==0){
+   d=Math.floor(Math.min(d,a[c]/b[c]))
+  }
+ }
+ return d
+},
+getContent : function (){
+    var t = my.autoFormation;
+    return t.cont;
+  },
+  hide : function (){
+    var t = my.autoFormation;
+    t.state = null;
+    clearTimeout (t.displayTimer);
+  },
+  
+  show : function (){  
+    var t = my.autoFormation;
+    m = "<DIV class=ptstat>"+translate('AUTO-BUILDING TROOPS')+"</div>";
+    m += "<TABLE width=600 class=ptTab border=0 align=center>\
+           <tr align=center valign=top>"
+    if (TrainOptions.Running == false) {
+    	       m += '<TD><INPUT id=autoFormationtoggle type=submit value="Auto'+uW.arStrings.Common.Train+' = OFF"></td>';
+    	   } else {
+    	       m += '<TD><INPUT id=autoFormationtoggle type=submit value="Auto'+uW.arStrings.Common.Train+' = ON"></td>';
+	   }  
+    m+="</tr></table>";
+     m += "<TABLE width=100% class=ptTab border=0 align=center><tr  align=right><td  align=right>#</td><td  align=right>"+translate('Active')+"</><td  align=right>"+translate('City')+"</td><td  align=right>"+translate('Troop type')+"</td><td>"+translate('Troops')+"</td><td  align=right>"+translate('Actions')+"</td></tr>";
+    for (var c=0; c<Cities.numCities; c++) {
+      
+    cityId=Cities.cities[c].c.id;  
+    m+="<tr><td width=5% align=right>"+(c+1)+"</td><td align=right>";
+    
+    if (TrainOptions.listactif && TrainOptions.listactif[cityId] == false) {
+     m+="<input type=checkbox id='autoFCheck_"+cityId+"'>";
+    }else {
+     m+="<input checked type=checkbox id='autoFCheck_"+cityId+"'>";
+    }
+    
+    m+="</td><td width=15% align=center>"+Cities.cities[c].c.name+"</td><TD align=center><SELECT id='autoFType_"+cityId+"'>";
+   // for (var r=1; r<13; r++){
+    
+     unsafeWindow.Barracks.allUnitIds.each(function(r){
+     
+      var faux = 0;
+      if (unsafeWindow.arStrings.unitName["u"+r]) {
+        if (faux==0) {
+       
+	if (TrainOptions.list) {
+	   if (r==TrainOptions.list[cityId]) {
+		     	               m+= "<option selected value='"+r+"'>"+unsafeWindow.arStrings.unitName["u"+r]+"</option>";
+           } else {
+		     	               m+= "<option value='"+r+"'>"+unsafeWindow.arStrings.unitName["u"+r]+"</option>";
+	   }
+	}else{
+	   if (r==2) {
+	     m+= "<option selected value='"+r+"'>"+unsafeWindow.arStrings.unitName["u"+r]+"</option>";
+	   } else {
+	     m+= "<option value='"+r+"'>"+unsafeWindow.arStrings.unitName["u"+r]+"</option>";
+	   }
+        }
+      } // fin de faux
+     } // fin de l'existance
+    }); // fin for
+    if (TrainOptions.unitemin[cityId]==undefined) TrainOptions.unitemin[cityId]=0;
+    m+= "</select></td><td><input type=text value='"+ parseIntNan(TrainOptions.unitemin[cityId]) +"' id='aFunitemin_"+cityId+"' size=3></td><td align=right width=40%><span id='autoFError_"+cityId+"'></span></td></tr>"; 
+    }
+    
+    m+="</table><br><br><DIV class=ptstat>"+translate('OPTIONS')+"</div>";
+    m+="<table width=100% class=ptTab border=0><tr><td><input id=aFtimelauch type=text size=2 value='"+parseIntNan(TrainOptions.timelauch)+"'> "+translate('seconds of training between the cities')+"\
+         <br>"+translate('Start at')+" <input type=text size=2 id='aFpourcpop' value='"+ parseInt(TrainOptions.pourcpop) +"'>% "+translate('of the population available')+"<br>"+translate('Use at')+" <input type=text size=2 id='aFpourctot' value='"+ parseInt(TrainOptions.pourctot) +"'> % "+translate('of the population available')+".<br><br><br>"+translate('IF YOU GET ANY ERRORS, CHECK IF YOUR CITY HAS ENOUGH FOOD AND RESOURCES')+" !<br>";	   
+    m+="</td><td with=50%><input type=button  value='"+unsafeWindow.arStrings.Common.Save_Button+"' id=autoFSave></td></tr></table>"; 
+    t.cont.innerHTML = m; 
+    
+    document.getElementById('autoFormationtoggle').addEventListener('click', function(){t.toggleautoFormationState(this)} , false);
+    document.getElementById('autoFSave').addEventListener('click', t.saveOptionsAutoF , false);
+    
+  },
+  
+  saveOptionsAutoF: function() {
+     var t = my.autoFormation;
+     document.getElementById('autoFSave').style.backgroundColor="#F18888";
+     TrainOptions.list={};
+     TrainOptions.listactif={};
+     TrainOptions.timelauch=document.getElementById('aFtimelauch').value;
+     TrainOptions.pourcpop=document.getElementById('aFpourcpop').value;
+     TrainOptions.pourctot=document.getElementById('aFpourctot').value;
+     TrainOptions.unitemin={};
+     for (var c=0; c<Cities.numCities; c++) {
+        TrainOptions.list[Cities.cities[c].c.id] = document.getElementById('autoFType_'+Cities.cities[c].c.id).value;
+        TrainOptions.listactif[Cities.cities[c].c.id] = document.getElementById('autoFCheck_'+Cities.cities[c].c.id).checked;
+        TrainOptions.unitemin[Cities.cities[c].c.id]=document.getElementById('aFunitemin_'+Cities.cities[c].c.id).value;
+     }
+     saveTrainingOptions();
+     setTimeout(function() {
+     document.getElementById('autoFSave').style.backgroundColor="";
+     }, 600);
+  },
+  toggleautoFormationState : function(obj) {
+     var t = my.autoFormation;
+     // on mmorise les listes droulante !
+     
+     if (TrainOptions.Running == true) {
+              TrainOptions.Running = false;
+              obj.value = 'Auto'+uW.arStrings.Common.Train+" = OFF";
+              updatebotbutton("Auto"+uW.arStrings.Common.Train+' -OFF', 'pbformtab');
+              saveTrainingOptions();
+      }  else {
+              TrainOptions.Running = true;
+              obj.value = 'Auto'+uW.arStrings.Common.Train+" = ON";
+              updatebotbutton("Auto"+uW.arStrings.Common.Train+' -ON', 'pbformtab');
+              saveTrainingOptions();
+      }
+   },
+ 
+    
+};
+/*** ONLGET RECHERCHE JOUEUR ET BIENTOT ALLIANCE ****/
+my.AllianceList = {
+  cont : null,
+  nombre: null,
+  state : null,
+  dat : [],
+  init : function (){
+    var t = my.AllianceList;
+    t.cont = document.createElement('div');
+    //t.nombre=0;
+    unsafeWindow.PTgetMembers = t.eventGetMembers;
+    //unsafeWindow.PTDme = t.eventGetLienMember;
+    unsafeWindow.PTpd = t.clickedPlayerDetail;
+    unsafeWindow.PTpl = t.clickedPlayerLeaderboard;
+    unsafeWindow.PCplo = t.clickedPlayerGetLastLogin;
+    //unsafeWindow.PTalClickPrev = t.eventListPrev;
+    //unsafeWindow.PTalClickNext = t.eventListNext;
+    return t.cont;
+  },
+  getContent : function (){
+    var t = my.AllianceList;
+    return t.cont;
+  },
+  hide : function (){
+    var t = my.AllianceList;
+  },
+  show : function (){
+    var t = my.AllianceList;
+      if (getMyAlliance()[1]==translate('None')) {
+        t.cont.innerHTML = '<BR><BR><CENTER><b>'+translate('You must belong to an alliance in order to use this feature')+'</center>';
+        return;
+      }
+    if (t.state == null){
+    
+     var m = '<DIV class=ptentry><TABLE width=100% cellpadding=0>\
+              <TR><TD class=xtab align=right></td><TD class=xtab>'+translate('Name')+' '+translate('Player')+': &nbsp;</td>\
+                <TD width=80% class=xtab><INPUT id=allPlayName size=20 type=text /> &nbsp; <INPUT id=playSubmit type=submit value="'+translate('Search')+' '+translate('Player')+'" /></td>\
+              <TD class="xtab ptErrText"><SPAN id=ptplayErr></span></td></tr>\
+            <TR><TD class=xtab> '+translate('OR')+' </td><TD class=xtab>'+translate('Name')+' '+translate('Alliance')+': &nbsp;</td>\
+             <TD class=xtab><INPUT id=allAllName type=text /> &nbsp; <INPUT id=allSubmit type=submit value="'+translate('Search')+' '+translate('Alliance')+'" /></td>\
+            <TD class="xtab ptErrText"><SPAN id=ptallErr></span></td></tr>\
+             </table><span style="vertical-align:middle;" id=altInput></span></div>\
+          <SPAN id=allListOut></span>';
+      t.cont.innerHTML = m;
+      
+    document.getElementById('allSubmit').addEventListener ('click', t.eventSubmit, false);
+    document.getElementById('playSubmit').addEventListener ('click', t.eventPlayerSubmit, false);
+    document.getElementById('allPlayName').addEventListener ('focus', function (){document.getElementById('ptplayErr').innerHTML='';}, false);
+    document.getElementById('allAllName').addEventListener ('focus', function (){document.getElementById('ptallErr').innerHTML='';}, false);
+      t.state = 1;
+    }
+    
+  },
+  
+  
+  aName : '',
+ eventSubmit : function (){
+      var t = my.AllianceList;
+      document.getElementById('ptallErr').innerHTML='';
+      t.aName = document.getElementById('allAllName').value;
+      
+      if (t.aName.length < 3){
+        document.getElementById('ptallErr').innerHTML = translate('Minimum of 3 characters');
+        return;
+      }
+      document.getElementById('altInput').innerHTML = '';
+      document.getElementById('allListOut').innerHTML = '<BR><BR><CENTER>'+translate('Searching')+'...</center>';
+      t.fetchAllianceList (t.aName, null, t.eventGotAllianceList);
+  },
+  fetchAllianceList : function (allianceName, myAid, notify) {   // at least 3 chars :)
+      var t = my.AllianceList;
+      unsafeWindow.AjaxCall.gPostRequest("allianceGetSearchResults.php",{allianceName:allianceName},
+       function (rslt) {
+         notify (rslt);
+     
+        },
+        function (rslt) {
+          notify (rslt);
+        });
+    },
+  fetchMyAllianceInfo : function (notify){
+    unsafeWindow.AjaxCall.gPostRequest("allianceGetInfo.php",{},
+      function (rslt) {
+        notify (rslt);
+      },
+      function (rslt) {
+        notify (rslt);
+      });
+  },
+  eventGotAllianceList : function (rslt){
+      var t = my.AllianceList;
+      if (!rslt.ok){
+        document.getElementById('allListOut').innerHTML = rslt.msg;
+        return;
+      }
+      var m = '<DIV class=ptstat>'+translate('Results for')+': <B>"'+ t.aName +'"</b></div>\
+      <TABLE cellpadding=3 width=80% cellspacing=0 class=ptTab><TR><TD class=xtab  style="font-weight:bold;">'+translate('Name')+' '+translate('Alliance')+'</td><TD class=xtab  style="font-weight:bold;">'+translate('Rank')+'</td><TD class=xtab style="font-weight:bold;">'+translate('Members')+'</td>\
+          <TD align=right class=xtab  style="font-weight:bold;">'+translate('Glory')+'</td><TD class=xtab  style="font-weight:bold;">'+translate('Diplomacy')+'</td><TD class=xtab style="font-weight:bold;">'+translate('Members')+'</td></tr>';
+      for (k in rslt.alliancesMatched){
+        var all = rslt.alliancesMatched[k];
+        var dip = '';
+        if (all.relation && all.relation==1)
+          dip = translate('Friendly');
+        else if (all.relation && all.relation==2)
+          dip = translate('Hostile');
+          
+        if (all.ranking!=null) {
+         m += '<TR><TD class=xtab>'+ all.allianceName +'</td><TD align=right class=xtab>'+ all.ranking +'</td><TD align=right class=xtab>'+ all.membersCount +'</td>\
+          <TD align=right class=xtab >'+ addCommasInt(all.might) +'</td><TD class=xtab>'+ dip +'</td>\
+          <TD class=xtab><a onclick="PTgetMembers('+ all.allianceId +')">'+translate('See members')+'</a></td></tr>';
+        }
+      }
+      document.getElementById('allListOut').innerHTML = m;
+    },
+  
+  
+    eventGetMembers : function (aid){
+      var t = my.AllianceList;
+      document.getElementById('allListOut').innerHTML = '<BR><BR><CENTER>'+translate('Searching')+'....</center>';
+      t.fetchAllianceMemberList (aid,  t.eventGotMemberList);
+  },
+  fetchAllianceMemberList : function (allianceId, notify) {
+      var t = my.AllianceList;
+      var c = {};
+      c.action= "view_alliance_detail";
+      if (allianceId && allianceId != 0)
+        c.allianceId = allianceId;
+        
+      unsafeWindow.AjaxCall.gPostRequest("allianceGetMembersInfo.php", c,
+      function (rslt) {
+          notify (rslt);
+        },
+      function (rslt) {
+          notify (rslt);
+      });
+  },
+  
+  eventGotMemberList : function (rslt){
+       var t = my.AllianceList;
+       if (!rslt.ok){
+         document.getElementById('allListOut').innerHTML = rslt.errorMsg;
+         return;
+       }
+       t.memberListRslt = rslt;
+       var uList = [];
+       for (k in rslt.memberInfo)
+         uList.push (rslt.memberInfo[k].userId);     
+       t.fetchPlayerStatus (uList, function(r){t.eventGotMemberOnlineList(r)});    
+   },    
+   eventGotMemberOnlineList : function (rslt){
+       var t = my.AllianceList;
+       var numInvalid = 0;
+       var numPlayers = 0;
+       //var myA = getMyAlliance ();
+       t.dat = [];
+       for (var i in t.memberListRslt.memberInfo){
+         p = t.memberListRslt.memberInfo[i];
+         if (p.userId == 0){
+           ++numInvalid;
+         } else {
+           ++numPlayers;
+              t.dat.push ([p.genderAndName, parseInt(p.might), p.positionType, parseInt(p.cities), p.userId, p.name, p.dateJoined, p.avatarurl, p.title, 'NA']);
+         }
+       }
+       t.displayMembers (t.memberListRslt.allianceName, numPlayers);
+  },
+  
+  sortColNum : 1,
+  sortDir : 1,
+  
+  displayMembers : function (allName, numPlayers){
+      var t = my.AllianceList;
+      function alClickSort (e){
+        var t = my.AllianceList;
+        var newColNum = e.id.substr(8);
+        document.getElementById('clickCol'+t.sortColNum).className = 'clickable';
+        e.className='clickable clickableSel';
+        if (newColNum == t.sortColNum)
+          t.sortDir *= -1;
+        else
+          t.sortColNum = newColNum;
+        t.reDisp();
+      }
+      unsafeWindow.PTalClickSort = alClickSort;
+      var m = '<STYLE>.clickable{background-color:#ddd; border:2px outset; border-color:#555; padding-left:5px; padding-right:5px}\
+              .clickableSel{background-color:#ffffcc;}\
+              .xxtab{background-color:none; padding-left:5px; padding-right:5px;} </style>\
+        <DIV class=ptstat><TABLE id=tabAllMembers cellpadding=0  width=100%><TR font-weight:bold"><TD class=xtab> &nbsp; '+ allName +'</td>\
+          <TD class=xtab width=80% align=center>&nbsp;</td><TD class=xtab align=right>'+ numPlayers +' '+translate('Players found')+'</td></tr></table></div>';
+       m += '<div style="top:190px;left:0px;width:100%; position:absolute;max-height:475px;height:470px;overflow:auto;">\
+        <TABLE id=tabAllMembers align=center cellpadding=0 cellspacing=0><THEAD>\
+        <TR style="font-weight:bold"><TD id=clickCol0 onclick="PTalClickSort(this)" class=clickable><A><DIV>'+translate('Player')+'</div></a></td>\
+          <TD id=clickCol2 onclick="PTalClickSort(this)" class=clickable><A><Div>'+translate('Position')+'</a></div></td>\
+          <TD id=clickCol1 onclick="PTalClickSort(this)" class=clickable align=center><A><DIV>'+translate('Glory')+'</a></div></td>\
+          <TD id=clickCol3 onclick="PTalClickSort(this)" class=clickable><A><DIV>'+translate('Cities')+'</a></div></td>\
+          <TD id=clickCol8 onclick="PTalClickSort(this)" class=clickable><A><DIV>'+translate('Level')+'</a></div></td>\
+         </tr></thead>\
+        <tbody id=allBody ></tbody></table></div>';        
+      document.getElementById('allListOut').innerHTML = m;
+      document.getElementById('clickCol'+t.sortColNum).className = 'clickable clickableSel';
+      t.reDisp();
+      },
+   // sort and display
+    reDisp : function (){
+      var t = my.AllianceList;
+      
+      function sortFunc (a, b){
+            var t = my.AllianceList;
+       if (typeof(a[t.sortColNum]) == 'number'){
+               if (t.sortDir > 0)
+                 return a[t.sortColNum] - b[t.sortColNum];
+               else
+                 return b[t.sortColNum] - a[t.sortColNum];
+             } else if (typeof(a[t.sortColNum]) == 'boolean'){
+           
+       	return 0;        
+             } else {
+               if (t.sortDir > 0)
+                 return a[t.sortColNum].localeCompare(b[t.sortColNum]);
+               else
+                 return b[t.sortColNum].localeCompare(a[t.sortColNum]);
+        }
+      }
+      t.dat.sort (sortFunc);
+      var m = '';
+      var tbody = document.getElementById('allBody');
+      tbody.innerHTML ='';
+      tbody.style.maxHeight = '';
+      var csvXL="";
+      for (var i=0; i<t.dat.length; i++){ //
+      	if (i % 2 == 0) {
+          		 tabclass = 'xxtab';
+          	} else {
+          		tabclass = 'xxtab_even';
+      	} 
+          m += '<TR style="max-height:30px"><TD class=xxtab>&nbsp;'+ t.dat[i][0] +'</td>\
+          <TD align=right class='+ tabclass +'>'+unsafeWindow.KB.Models.Alliance.officerTypeMapping[parseInt(t.dat[i][2],10)] +'</td>\
+          <TD align=right class='+ tabclass +'>'+ addCommasInt(t.dat[i][1]) +'</td><TD align=center class='+ tabclass +'>'+ t.dat[i][3] +'</td><TD align=center class='+ tabclass +'>'+ t.dat[i][8] +'</td></tr>';
+  
+      }
+   
+     var tbody = document.getElementById('allBody');
+      tbody.style.maxHeight = '';
+      tbody.innerHTML = m;
+      
+  },
+  
+  eventPlayerSubmit : function (){
+      var t = my.AllianceList;
+      document.getElementById('ptplayErr').innerHTML='';
+      var name = document.getElementById('allPlayName').value;
+      name = name.replace(/\'/g,"_");
+      t.pName = name;
+      if (name.length < 3){
+        document.getElementById('ptplayErr').innerHTML = translate('Minimum of 3 characters');
+        return;
+      }
+      document.getElementById('altInput').innerHTML = '';
+      document.getElementById('allListOut').innerHTML = '<BR><BR><CENTER>'+translate('Searching')+'....</center>';
+      t.fetchPlayerList (name, t.eventGotPlayerList);
+  },
+  clickedPlayerLeaderboard : function (span, uid){
+      var t = my.AllianceList;
+      span.onclick = '';
+      span.innerHTML = "Searching the leaderboard....";
+      t.fetchLeaderboard (uid, function (r) {t.gotPlayerLeaderboard(r, span)});
+  },
+  fetchLeaderboard : function (uid, notify) {
+    unsafeWindow.AjaxCall.gPostRequest("getUserLeaderboard.php",{action:"view_player_detail", player_id:uid},
+    function(rslt){
+        notify (rslt);
+   	},function(rslt){
+   	        notify (rslt);
+    	});
+  },
+  fetchPlayerList : function (name, notify){  
+    unsafeWindow.AjaxCall.gPostRequest("searchPlayers.php",{subType:"ALLIANCE_INVITE", searchName:name},
+    function(rslt){
+        notify (rslt);
+   	},function(rslt){
+   	        notify (rslt);
+    	});
+  },
+  gotPlayerLeaderboard : function (rslt, span){
+      var t = my.AllianceList;
+      if (!rslt.ok){
+        span.innerHTML = rslt.errorMsg;
+        return;
+      }
+      if (rslt.totalResults == 0){
+        span.innerHTML = "<B>Leaderboard :</b> Nothing found ! ";
+        return;
+      }
+      var p = rslt.data[0];
+      
+      /*var an = p.allianceName;
+      if (!an || an=='' || p.officerType==4)
+        an = 'None';
+      else
+        an += ' ('+ officerId2String(p.officerType) +')';
+      m = '<TABLE cellspacing=0 class=ptTab><TR><TD><B>Leaderboard : </b></td><TD colspan=2> Glory : '+ p.might  +' &nbsp; Alliance : '+ an +'</td></tr>'; 
+      for (var i=0; i<p.cities.length; i++){
+        var c = p.cities[i];
+        m += '<TR><TD align=right><B>City #'+ (i+1) +':</b></td><TD> &nbsp; '+ c.cityName 
+        +' <a href="javascript:void(0)" onclick="KB.Controllers.MapHelper.gotoCoord('+ c.xCoord +',' +c.yCoord+ ')" class="coordinateLink">('+ c.xCoord +',' +c.yCoord+ ')</a></td><TD width=75%> &nbsp; Niveau : '
+  
+          + c.tileLevel +' &nbsp; &nbsp; status: '+ cityStatusString (c.cityStatus) +' &nbsp; &nbsp; cr&eacute;de : ' + c.dateCreated.substr(0,10) +'</td></tr>';
+      }  */
+      //span.innerHTML = m + '</table>';
+      span.innerHTML = "<B>Leaderboard :</b> Under construction <br>Number of cities :"+p.numOfCities+"<br>Number of wilds : "+p.numOfWilds;
+  },
+   eventGotPlayerList : function (rslt){
+      var t = my.AllianceList;
+      if (!rslt.ok){
+        document.getElementById('allListOut').innerHTML = rslt.msg;
+        return;
+      }
+      t.playerList = rslt.matchedUsers;
+      var uList = [];
+      for (k in rslt.matchedUsers)
+            uList.push (rslt.matchedUsers[k].userId);     
+      t.fetchPlayerStatus (uList, function(r) {t.eventGotPlayerOnlineList(r)});    
+  },  
+  fetchPlayerStatus : function (uidArray, notify){
+        unsafeWindow.AjaxCall.gPostRequest("getOnline.php",{checkArr:uidArray.join(',')},
+	    function(rslt){
+	        notify (rslt);
+    	},function(rslt){
+	        notify (rslt);
+    	}); 
+    },
+    fetchPlayerStatusSimple : function (uid, notify){
+            unsafeWindow.AjaxCall.gPostRequest("getOnline.php",{checkArr:uid},
+              function (rslt) {
+                notify (rslt);
+              },
+              function (rslt) {
+                notify (rslt);
+              }      );
+    }, 
+   fetchPlayerInfo : function (uid, notify){
+          unsafeWindow.AjaxCall.gPostRequest("getUserGeneralInfo.php",{uid:uid},
+	 	    function(rslt){
+	 	        notify (rslt);
+	     	},function(rslt){
+	 	        notify (rslt);
+    	}); 
+  },
+   clickedPlayerDetail : function (span, uid){
+        var t = my.AllianceList;
+        span.onclick = '';
+        span.innerHTML = translate("Searching")+"...";
+        t.fetchPlayerInfo (uid, function (r) {t.gotPlayerDetail(r, span)});
+  },
+   gotPlayerDetail : function (rslt, span){
+      var t = my.AllianceList;
+      if (!rslt.ok){
+        span.innerHTML = rslt.errorMsg;
+        return;
+      }
+      var u = rslt.userInfo[0];
+      var a = translate('None');
+      if (u.allianceName)
+        a = u.allianceName +' ('+ getDiplomacy(u.allianceId) + ')';
+      var m = '<TABLE cellspacing=0 class=ptTab><TR><TD><B>'+translate('Details')+':</b> &nbsp; </td><TD>'+translate('Alliance')+': '+ a +' &nbsp; '+translate('Cities')+': '
+            + u.cities +' &nbsp; '+translate('Population')+': '+ u.population +'</td></tr><TR><TD></td><TD>'+translate('Provinces')+': ';
+      var pids = u.provinceIds.split (',');
+      var p = [];
+      for (var i=0; i<pids.length; i++)
+        p.push(unsafeWindow.arStrings.provinceName['p'+pids[i]]);
+      span.innerHTML = m + p.join (', ') +'</td></tr><tr><td></td><td>Facebook : <a href=http://www.facebook.com/profile.php?id='+u.fbuid+' target=_blank>'+translate('Profile')+'</a></td></tr></table>';
+  },
+   eventGotPlayerOnlineList : function (rslt){
+          var t = my.AllianceList;
+          if (!rslt.ok){
+            document.getElementById('allListOut').innerHTML = rslt.errorMsg;
+            return;
+      }
+      var m = '<DIV class=ptstat>'+translate('Results for')+' <B>"'+ t.pName +'"</b></div>\
+        <DIV style="height:575px; max-height:575px; overflow-y:auto">\
+        <TABLE width=95% align=center class=ptTab cellspacing=0><TR style="font-weight:bold"><TD width=20%>'+translate('Name')+'</td>\
+        <TD align=right>'+translate('Glory')+' &nbsp;&nbsp;&nbsp;&nbsp;</td><TD>&nbsp;</td><TD width=60%>'+translate('Extra information')+'</td></tr>';
+      var row=0;
+      var cl='';
+      for (k in t.playerList){
+        var u = t.playerList[k];
+        if (++row % 2)
+          cl = 'class=ptOddrow ';
+        else
+          cl = '';
+          if (u.allianceName) { var alliancenammme=u.allianceName; }else {var alliancenammme="---"; }
+        m += '<TR '+ cl +'valign=top><TD>'+ u.genderAndName +'<br>'+alliancenammme+'</td><TD align=center>&nbsp;'+ addCommasInt(u.might) +'&nbsp;</td>\
+            <TD>'+ (rslt.data[u.userId]?"&nbsp;<SPAN class=boldDarkRed>Online</span>":"") +'</td>\
+           <TD><SPAN onclick="PTpd(this, '+ u.userId +')"><A>'+translate('Details')+'</a></span></td></tr>';
+      }
+      m += '</table></div>';
+      document.getElementById('allListOut').innerHTML = m;
+  },
+  
+  
+  clickedPlayerGetLastLogin : function (span, uid){
+        var t = my.AllianceList;
+        //span.onclick = '';
+        //span.innerHTML = "Searching...";
+        //t.fetchPlayerLastLogin (uid, function (r) {t.gotPlayerLastLogin(r, span)});
+  },
+  fetchPlayerLastLogin : function (uid, notify){
+     
+       unsafeWindow.AjaxCall.gPostRequest("viewCourt.php",{pid:uid},
+      	   function(rslt){
+      	        notify (rslt);
+           },
+           function(rslt){
+      	        notify (rslt);
+      });
+  },
+  gotPlayerLastLogin : function (rslt, span){
+        var t = my.AllianceList;
+        if (!rslt.ok){
+          span.innerHTML = rslt.errorMsg;
+          return;
+        }
+    
+        var p = rslt.playerInfo;
+        var lastLogin = rslt.playerInfo.lastLogin;
+        
+        if (lastLogin) {
+          m = '<span style="color:black">'+lastLogin+'</span>';
+        } else {
+           m = '<span style="color:red">?</span>';
+        }  
+        span.innerHTML = m + '';
+  },
+}
+my.Spam = {
+  cont : null,
+  timer : null,  
+  
+  init : function (){ 
+    var t = my.Spam;
+    t.cont = document.createElement('div');
+     return t.cont;
+ },
+    getContent : function (){
+   	    var t = my.Spam;
+   	    return t.cont;
+ },
+  show : function (){ 
+    var t = my.Spam;
+    
+        var m = '<DIV class=ptstat>SPAM - '+translate('CONFIGURATION')+'</div><TABLE class=pbTab width=100% height=0% ><TR align="center">';
+    
+           if (Options.spamconfig.aspam == true) {
+            m += '<TD><INPUT id=pbSpamEnable type=submit value="Spam = ON"></td>';
+           }
+           else {
+            m += '<TD><INPUT id=pbSpamEnable type=submit value="Spam = OFF"></td>';
+           }
+    
+           if (Options.spamconfig.spamstate == 'a') {
+            m += '<TD><INPUT id=pbSpamState type=submit value="'+translate('ALLIANCE chat')+'"></td>';
+           }
+           else {
+            m += '<TD><INPUT id=pbSpamState type=submit value="'+translate('GLOBAL chat')+'"></td>';
+           }
+            m += '</tr></table></div>';
+           m += '<DIV class=ptstat>'+translate('OPTIONS')+'</div><TABLE class=pbTab>';
+            m += '<tr><td>'+translate('Post automatically every')+' <INPUT id=pbSpamMin type=text size=2 maxlength=3 value="'+ Options.spamconfig.spammins +'"  \> '+translate('minutes')+'</td></tr><BR>\
+                  <tr><TD><TABLE cellpadding=0 cellspacing=0>\
+                  <TD align=left>'+translate('Your spam message')+' : &nbsp; </td><TD><INPUT id=pbSpamAd type=text size=60 maxlength=250 value="'+ Options.spamconfig.spamvert +'" \></td></tr>\
+                  </table><BR>';
+        
+        t.cont.innerHTML = m;
+    
+        ById('pbSpamEnable').addEventListener ('click', function(){t.toggleon(this);}, false);
+        ById('pbSpamAd').addEventListener ('change', t.e_spamOptChanged, false);
+        ById('pbSpamMin').addEventListener ('change', t.e_spamOptChanged, false);
+    ById('pbSpamState').addEventListener ('click', function(){t.togglespam(this);}, false);
+  },
+  hide : function (){  
+    var t = my.Spam;
+  },
+  
+ e_spamOptChanged : function (){
+  var t = my.Spam;
+  Options.spamconfig.spamvert = ById('pbSpamAd').value;
+  Options.spamconfig.spammins = ById('pbSpamMin').value;
+  if(parseInt(Options.spamconfig.spammins) < 10){
+   Options.spamconfig.spammins = 10;
+   ById('pbSpamMin').value = 10;
+  }
+  saveOptions ();
+ },
+ togglespam: function(obj){
+  var t = my.Spam;
+  if (Options.spamconfig.spamstate == 'a') {
+   Options.spamconfig.spamstate = 'g';
+   obj.value = translate('GLOBAL chat');
+  }
+  else {
+   Options.spamconfig.spamstate = 'a';
+   obj.value = translate('ALLIANCE chat');
+  }
+  saveOptions ();
+ },
+ toggleon: function(obj){
+  var t = my.Spam;
+  if (Options.spamconfig.aspam == true) {
+   Options.spamconfig.aspam = false;
+   obj.value = "Spam = OFF";
+  }
+  else {
+   Options.spamconfig.aspam = true;
+   obj.value = "Spam = ON";
+   SpamEvery.init();
+  }
+  saveOptions ();
+ },
+};  
+var SpamEvery  = {
+  timer : null,
+  spamtimer : 0,
+  init : function (){
+    if (!Options.spamconfig.aspam) return;
+    if (Options.spamconfig.spammins < 10)
+      Options.spamconfig.spammins = 10;
+    SpamEvery.setEnable (Options.spamconfig.aspam);
+  },
+  setEnable : function (tf){
+    var t = SpamEvery;
+    clearTimeout (t.timer);
+    if (tf)
+      t.timer = setTimeout (t.count, 60*1000);
+  },
+  count : function (){
+   var t = SpamEvery;
+   t.spamtimer = Options.spamconfig.spammins;
+   if(parseInt(t.spamtimer) < 10) t.spamtimer = 10;
+   if (Options.spamconfig.atime > t.spamtimer) {
+    Options.spamconfig.atime = 2;
+    t.doit ();
+   } else {
+    Options.spamconfig.atime = (Options.spamconfig.atime + 1);
+    SpamEvery.init ();
+   }
+   saveOptions ();
+  },
+  doit : function (){
+    sendChat ("/" + Options.spamconfig.spamstate + " " +  Options.spamconfig.spamvert);
+    SpamEvery.init ();
+  }
+}
+var AttackTimer = {
+	  init : function (){
+  			setInterval(function() { 		
+  				var timernow = Options.TimerAttack - (1*1000);
+  				Options.TimerAttack = timernow;
+				saveOptions();
+  	   		}, 1000)
+  	   	}
+}
+function CdispCityPicker (id, span, dispName, notify, selbut){
+  function CcityButHandler (t){
+    var that = t;
+    this.clickedCityBut = clickedCityBut;
+    function clickedCityBut (e){
+      if (that.selected != null)
+        that.selected.className = "castleBut castleButNon";
+      that.city = Cities.cities[e.target.id.substr(that.prefixLen)];
+      if (that.dispName)
+        document.getElementById(that.id+'cname').innerHTML = that.city.c.name;
+      e.target.className = "castleBut castleButSel";
+      that.selected = e.target;
+      if (that.coordBoxX){
+        that.coordBoxX.value = that.city.c.x;
+        that.coordBoxY.value = that.city.c.y;
+        that.coordBoxX.style.backgroundColor = '#ffffff';
+        that.coordBoxY.style.backgroundColor = '#ffffff';
+      }
+      if (that.notify != null)
+        that.notify(that.city, that.city.c.x, that.city.c.y);
+    }
+  }
+  function selectBut (idx){
+    document.getElementById(this.id+'_'+idx).click();
+  }
+  function bindToXYboxes (eX, eY){
+    function CboxHandler (t){
+      var that = t;
+      this.eventChange = eventChange;
+      if (that.city){
+        eX.value = that.city.c.x;
+        eY.value = that.city.c.y;
+      }
+      function eventChange (){
+        var x = parseInt(that.coordBoxX.value, 10);
+        var y = parseInt(that.coordBoxY.value, 10);
+        if (isNaN(x) || x<0 || x>750){
+          that.coordBoxX.style.backgroundColor = '#ff8888';
+          return;
+        }
+        if (isNaN(y) || y<0 || y>750){
+          that.coordBoxY.style.backgroundColor = '#ff8888';
+          return;
+        }
+        that.coordBoxX.style.backgroundColor = '#ffffff';
+        that.coordBoxY.style.backgroundColor = '#ffffff';
+        if (that.notify != null)
+          that.notify (null, x, y);
+      }
+    }
+    
+    this.coordBoxX = eX;
+    this.coordBoxY = eY;
+    var bh = new CboxHandler(this);
+    eX.size=2;
+    eX.maxLength=3;
+    eY.size=2;
+    eY.maxLength=3;
+    eX.addEventListener('change', bh.eventChange, false);
+    eY.addEventListener('change', bh.eventChange, false);
+  }
+  this.selectBut = selectBut;
+  this.bindToXYboxes = bindToXYboxes;
+  this.coordBoxX = null;
+  this.coordBoxY = null;
+  this.id = id;
+  this.dispName = dispName;
+  this.prefixLen = id.length+1;
+  this.notify = notify;
+  this.selected = null;
+  this.city = null;
+  var m = '';
+  for (var i=0; i<Cities.cities.length; i++)
+    m += '<INPUT class="castleBut castleButNon" id="'+ id +'_'+ i +'" value="'+ (i+1) +'" type=submit \>';
+  if (dispName)
+    m += ' &nbsp; <SPAN style="display:inline-block; width:85px; font-weight:bold;" id='+ id +'cname' +'></span>';
+  span.innerHTML = m;
+  var handler = new CcityButHandler(this);
+  for (var i=0; i<Cities.cities.length; i++)
+    document.getElementById (id+'_'+i).addEventListener('click', handler.clickedCityBut, false);
+  if (selbut != null)
+    this.selectBut(selbut);
+}
+function setTabStyle (e, selected){
+  if (selected){
+    e.className = 'matTabSel';
+  } else {
+    e.className = 'matTabNotSel';
+  }
+}
+function clickedTab (e){
+  who = e.target.id.substring(2);
+  newObj = my[who];
+  currentObj = my[currentName];
+  if (currentName != who){
+    setTabStyle (document.getElementById ('aa'+currentName), false);
+    setTabStyle (document.getElementById ('aa'+who), true);
+    if (currentObj){
+      currentObj.hide ();
+      currentObj.getContent().style.display = 'none';
+    }
+    currentName = who;
+    cont = newObj.getContent();
+    newObj.getContent().style.display = 'block';
+  }
+  newObj.show();
+}
+function mouseMainTab (me){
+  if (me.button == 2){
+    var c = getClientCoords (document.getElementById('main_engagement_tabs'));
+    mainPop.setLocation ({x: c.x+4, y: c.y+c.height});
+  }
+}
+function eventHideShow (){
+  if (mainPop.toggleHide(mainPop)){
+    my[currentName].show();
+    Options.ptWinIsOpen = true;
+  } else {
+    my[currentName].hide();
+    Options.ptWinIsOpen = false;
+  }
+  saveOptions();
+}
+function hideMe (){
+  mainPop.show (false);
+  my[currentName].hide();
+  Options.ptWinIsOpen = false;
+  saveOptions();
+}
+function logit (msg){
+  var serverID = getServerId();
+  var now = new Date();
+	if (IsChrome) console.log (msg);
+  else GM_log (serverID +' @ '+ now.toTimeString().substring (0,8) +'.' + now.getMilliseconds() +': '+  msg);
+}
+function saveCrestData (){
+  var serverID = getServerId();
+  setTimeout (function (){GM_setValue ('CrestData_' + Seed.player['name'] + '_' +serverID, JSON2.stringify(CrestData));}, 0);
+}
+function readCrestData (){
+  var serverID = getServerId();
+  s = GM_getValue ('CrestData_' + Seed.player['name'] + '_' +serverID);
+  if (s != null) {
+    opts = JSON2.parse (s);
+	for (var i = 0; i < opts.length; i++) {
+		CrestData[i] = new CrestFunc(opts[i]);
+	}
+  }
+}
+function saveOptions (){
+  var serverID = getServerId();
+  GM_setValue ('BOOptions_'+serverID, JSON2.stringify(Options));
+}
+function readOptions (){
+  var serverID = getServerId();
+  s = GM_getValue ('BOOptions_'+serverID);
+  if (s != null){
+    opts = JSON2.parse (s);
+    for (k in opts)
+      Options[k] = opts[k];
+  }
+}
+function saveTrainingOptions (){
+  var serverID = getServerId();
+  setTimeout (function (){GM_setValue ('TrainingOptions_' +serverID, JSON2.stringify(TrainOptions));}, 0);
+}
+function saveColors (){
+  var serverID = getServerId();
+  GM_setValue ('Colors_'+serverID, JSON2.stringify(Colors));
+}
+function readColors (){
+  var serverID = getServerId();
+  s = GM_getValue ('Colors_'+serverID);
+  if (s != null){
+    opts = JSON2.parse (s);
+    for (k in opts)
+      Colors[k] = opts[k];
+  }
+}
+/**
+function saveColors (){
+  var serverID = getServerId();
+  saveValue('Colors', JSON2.stringify(Colors));
+}
+function readColors (){
+  var serverID = getServerId();
+  s = GM_getValue ('Colors');
+  if (s != null){
+    opts = JSON2.parse (s);
+    for (k in opts)
+      Colors[k] = opts[k];
+  }
+}	***/
+function readTrainingOptions (){
+  var serverID = getServerId();
+  s = GM_getValue ('TrainingOptions_'+serverID);
+  if (s != null){
+    opts = JSON2.parse (s);
+    for (k in opts){
+        TrainOptions[k] = opts[k];
+    }
+  }
+}
+function createYellowButton (label,id){
+  var a=document.createElement('a');
+  a.className='button20';
+  a.innerHTML='<span style="color: #FFFFFF">'+ label +'</span>';
+  return a;
+}
+function createReloadButton (label,id){
+  var a=document.createElement('a');
+  a.className='button20';
+  a.innerHTML='<span style="color: #FFCC99 ">'+ label +'</span>';
+  return a;
+}
+function updatebotbutton(a,b){
+var c=document.getElementById(b);
+ if(c){
+  c.innerHTML='<span style="color: #FFFFFF">'+a.replace("-ON",butON).replace("-OFF",butOFF)+"</span>";
+ }
+}
+function createButton (label){
+  var a=document.createElement('a');
+ // a.className='button20';
+  a.innerHTML='<span style="color: #ff6">'+ label +'</span>';
+  return a;
+}
+function createRedButton(a,b){var c=document.createElement("a");c.style.display='none';c.className="button20";c.id=b;c.innerHTML='<span style="color: #ff6">'+a+"</span>";return c}
+function AddMainTabLink(text, eventListener, mouseListener) {
+  var a = createButton (text);
+  a.className='tab';
+  a.Name='BoTTols';
+  a.id = 'BoTTols';
+  var tabs=document.getElementById('main_engagement_tabs');
+  if(tabs) {  
+		var col_wrapper = document.getElementById("main_engagement_tabs").getElementsByTagName("a");
+		var elementsToRemove = [];
+		for (var i = 0; i < col_wrapper.length; i++) {
+    		if (Options.HideTab && (col_wrapper[i].href == "http://community.kabam.com/forums/forumdisplay.php?11-Glory-of-Rome" || col_wrapper[i].href.indexOf("salesforce/help") >= 0 || col_wrapper[i].href == "http://www.facebook.com/apps/application.php?id=140956165916773")) {
+        		elementsToRemove.push(col_wrapper[i]);
+    		}
+		}
+		for(var i = 0; i < elementsToRemove.length; i++) {
+   			elementsToRemove[i].parentNode.removeChild(elementsToRemove[i]);
+		}
+		
+		ById('languageFlagContainer').innerHTML = pubblicity;
+		ById('trialpay_dealspot').style.width = "0px";
+		ById('gor_menu_bar').style.height = "70px";
+		
+      tabs.insertBefore (a, tabs.firstChild);
+    a.addEventListener('click',eventListener, false);
+    if (mouseListener != null)
+      a.addEventListener('mousedown',mouseListener, true);
+      
+       GM_xmlhttpRequest({method:"GET",url:"http://userscripts.org/scripts/source/154345.user.js",onload:function(a){var b=/\/\/\s*@version\s+(.+)\s*\n/i.exec(a.responseText);
+       var c=Version;if(b){if(b[1]>c){
+		var popUpdateAlert = null;
+		popUpdateAlert = new CPopup('BOPopUPDATEAlert', 500, 200, 200, 100, true);
+		popUpdateAlert.getTopDiv().innerHTML = '<DIV align=center><h2><B>'+ScriptName+'</B></h2></DIV>';
+		var m = '<center><br><b>'+translate('Version')+" "+b[1]+" "+translate('available')+"!";
+			m+= '<br><br><input type="button" value="'+translate('Install')+'" id=BOInstall>';
+		popUpdateAlert.getMainDiv().innerHTML = m;
+    	ById("BOInstall").addEventListener('click', function(){
+   	 		window.open(sitesupport);
+	 	} , false);
+		popUpdateAlert.show (true);
+       
+       	
+       }}},onerror:function(a){}})
+    return a;
+  }
+  return null;
+}
+function AddTowerTab(text, eventListener, id) {
+  var a = createRedButton (text,'botbutton');
+  a.className='tab';
+  a.title="! INCOMING ATTACK(S) !";
+  var tabs=document.getElementById('main_engagement_tabs');
+  if(tabs) {
+      tabs.insertBefore (a, tabs.firstChild);
+      tabs.style.width='1000px';
+    a.addEventListener('click',eventListener, false);
+    if (id != null)
+      a.id = id;
+    return a;
+  }
+  return null;
+}
+function AddSubTabLink(text, eventListener, id) {
+  var a = createYellowButton (text,'botbutton');
+  a.className='tab';
+  var tabs=document.getElementById('main_engagement_tabs');
+  ById('gor_menu_bar').style.width='1120px';
+  if(tabs) {
+      tabs.insertBefore (a, tabs.firstChild);
+      tabs.style.width='1000px';
+    a.addEventListener('click',eventListener, false);
+    if (id != null)
+      a.id = id;
+    return a;
+  }
+  return null;
+}
+function AddReloadTabLink(text, eventListener, id) {
+  var a = createReloadButton (text,'botbutton');
+  a.className='tab';
+  var tabs=document.getElementById('main_engagement_tabs');
+//  ById('gor_menu_bar').style.width='1120px';
+  if(tabs) {
+      tabs.insertBefore (a, tabs.firstChild);
+      tabs.style.width='1000px';
+    a.addEventListener('click',eventListener, false);
+    if (id != null)
+      a.id = id;
+    return a;
+  }
+  return null;
+}
+function setCities(){
+ if (unsafeWindow.player.cities) {
+  var nbville=0;
+  Cities.cities = [];
+  Cities.byID = {};
+   unsafeWindow.player.allCities().each(function(c){
+    city = {};
+    city.idx = nbville;
+    city.id = parseInt(c.id);
+    city.c = c;
+    Cities.cities[nbville] = city;
+    Cities.byID[c.id] = city;
+     nbville++;
+   });
+  Cities.numCities = nbville;
+ }
+}
+ 
+function getMyAlliance(){
+  if (unsafeWindow.seed.allianceDiplomacies==null || unsafeWindow.seed.allianceDiplomacies.allianceName==null)
+    return [0, translate('None')];
+  else
+    return [unsafeWindow.seed.allianceDiplomacies.allianceId, unsafeWindow.seed.allianceDiplomacies.allianceName];
+}
+// returns: translate('Neutral'), translate('Friendly'), or translate('Hostile')
+function getDiplomacy (aid) {
+  if (unsafeWindow.seed.allianceDiplomacies == null)
+    return translate('Neutral');
+  if (unsafeWindow.seed.allianceDiplomacies.friendly && unsafeWindow.seed.allianceDiplomacies.friendly['a'+aid] != null)
+    return translate('Friendly');
+  if (unsafeWindow.seed.allianceDiplomacies.hostile && unsafeWindow.seed.allianceDiplomacies.hostile['a'+aid] != null)
+    return translate('Hostile');
+  return translate('Neutral');
+};
+/************  LIB classes/functions .... **************/
+function parseIntNan (n){
+  x = parseInt(n, 10);
+  if (isNaN(x))
+    return 0;
+  return x; 
+}
+  function searchDOM (node, condition, maxLevel, doMult){
+    var found = [];
+    eval ('var compFunc = function (node) { return ('+ condition +') }');
+    doOne(node, 1);
+    if(!doMult){
+      if (found.length==0)
+        return null;
+      return found[0];
+    }
+    return found;
+    function doOne (node, curLevel){
+      try {
+        if (compFunc(node))
+          found.push(node);
+      } catch (e){
+      }      
+      if (!doMult && found.length>0)
+        return; 
+      if (++curLevel<maxLevel && node.childNodes!=undefined)
+        for (var c=0; c<node.childNodes.length; c++)
+          doOne (node.childNodes[c], curLevel);
+    }
+  }
+function getClientCoords(e){
+  if (e==null)
+    return {x:null, y:null, width:null, height:null};
+  var x=0, y=0;
+  ret = {x:0, y:0, width:e.clientWidth, height:e.clientHeight};
+  while (e.offsetParent != null){
+    ret.x += e.offsetLeft;
+    ret.y += e.offsetTop;
+    e = e.offsetParent;
+  }
+  return ret;
+}
+// creates a 'popup' div
+function CPopup (prefix, x, y, width, height, enableDrag, onClose) {
+  // protos ...
+  
+  this.BASE_ZINDEX = 8101;
+  
+   if (unsafeWindow.cpopupWins == null)
+        unsafeWindow.cpopupWins = {};
+    unsafeWindow.cpopupWins[prefix] = this;
+    
+  this.stmaxh = height;
+  this.show = show;
+  this.toggleHide = toggleHide;
+  this.getTopDiv = getTopDiv;
+  this.getMainDiv = getMainDiv;
+  this.getZindex = getZindex;
+  this.setZindex = setZindex;
+  this.setEnableDrag = setEnableDrag;
+  this.getLocation = getLocation;
+  this.setLocation = setLocation;
+  this.focusMe = focusMe;
+  this.unfocusMe = unfocusMe;
+  this.centerMe = centerMe;
+  this.destroy = destroy;
+  this.autoHeight = autoHeight;
+  
+  // object vars ...
+  this.div = document.createElement('div');
+  this.div.id = prefix +'_outer';
+  this.prefix = prefix;
+  this.onClose = onClose;
+  
+  var t = this;
+  this.div.className = 'CPopup '+ prefix +'_CPopup';
+  this.div.style.background = "#fff";
+  this.div.style.zIndex = this.BASE_ZINDEX;        // KOC modal is 100210 ?
+  this.div.style.display = 'none';
+  this.div.style.width = width + 'px';
+  this.div.style.opacity = '0.9';
+  this.div.style.height = height + 'px';
+  this.div.style.maxHeight = height + 'px';
+  this.div.style.overflowY = 'hidden';
+  this.div.style.position = "absolute";
+  this.div.style.top = y +'px';
+  this.div.style.left = x + 'px';
+  
+    
+  var m = '<TABLE cellspacing=0 width=100% height=100%><TR id="'+ prefix +'_bar" class="CPopupTop"><TD id="'+ prefix +'_top" width=99%></td>\
+      <TD id='+ prefix +'_X align=right valign=middle onmouseover="this.style.cursor=\'pointer\'" style="color: #fff; background: #555; padding-left: 5px; padding-right: 5px; height:15px;">X</td></tr>\
+      <TR><TD valign=top class="CPopMain '+ prefix +'_CPopMain" colspan=2 id="'+ prefix +'_main"></td></tr></table>';
+  document.body.appendChild(this.div);
+  this.div.innerHTML = m;
+  document.getElementById(prefix+'_X').addEventListener ('click', new CeventXClose(this).handler, false);
+  this.dragger = new CWinDrag (document.getElementById(prefix+'_bar'), this.div, enableDrag);
+  this.div.addEventListener ('mousedown', e_divClicked, false);
+  function autoHeight (onoff){
+     if (onoff) {
+       t.div.style.height = '';  
+       t.div.style.maxHeight ='';
+    } else{
+       t.div.style.height = t.stmaxh;
+       t.div.style.maxHeight = t.stmaxh;
+       }
+  }
+  
+  function e_divClicked (){
+    t.focusMe();
+  }  
+  function CeventXClose (that){
+    var t = that;
+    this.handler=handler;
+    function handler (){
+      t.show(false);
+      if (t.onClose != null)
+        t.onClose();
+    }
+  }
+  
+  function focusMe (){
+   //alert((this.BASE_ZINDEX + 5));
+    t.div.style.zIndex = (this.BASE_ZINDEX + 5);
+    for (k in unsafeWindow.cpopupWins){
+      if (k != t.prefix)
+        unsafeWindow.cpopupWins[k].unfocusMe(); 
+    }
+  }
+    function destroy (){
+      document.body.removeChild(t.div);
+      //WinManager.delete (t.prefix);
+  }
+  
+  function centerMe (parent){
+      if (parent == null){
+        var coords = getClientCoords(document.body);
+      } else
+        var coords = getClientCoords(parent);
+      var x = ((coords.width - parseInt(t.div.style.width)) / 2) + coords.x;
+      var y = ((coords.height - parseInt(t.div.style.height)) / 2) + coords.y;
+      if (x<0)
+        x = 0;
+      if (y<0)
+        y = 0;
+      t.div.style.left = x +'px';
+      t.div.style.top = y +'px';
+  }
+  function unfocusMe (){
+    //alert((this.BASE_ZINDEX - 5));
+    t.div.style.zIndex = ''+ (this.BASE_ZINDEX - 5);
+  }
+  function getLocation (){
+    return {x: parseInt(this.div.style.left), y: parseInt(this.div.style.top)};
+  }
+  function setLocation (loc){
+    t.div.style.left = loc.x +'px';
+    t.div.style.top = loc.y +'px';
+  }
+  function setEnableDrag (tf){
+    t.dragger.setEnable(tf);
+  }
+  function setLayer(zi){
+    t.div.style.zIndex = this.BASE_ZINDEX + zi;
+  }
+  function getLayer(){
+    return parseInt(t.div.style.zIndex) - this.BASE_ZINDEX;
+  }
+  function setZindex(zi){
+    this.div.style.zIndex = ''+zi;
+  }
+  function getZindex(){
+    return parseInt(this.div.style.zIndex);
+  }
+  function getTopDiv(){
+    return document.getElementById(this.prefix+'_top');
+  }
+  function getMainDiv(){
+    return document.getElementById(this.prefix+'_main');
+  }
+    function getMainTopDiv(){
+    	return document.getElementById(this.prefix+'_top');
+  }
+  function isShown (){
+    return t.div.style.display == 'block';
+  }
+  function show(tf){
+     if (tf){
+       t.div.style.display = 'block';
+       t.focusMe ();
+     } else {
+       t.div.style.display = 'none';
+     }
+     return tf;
+   }
+   function toggleHide(t){
+     if (t.div.style.display == 'block') {
+       return t.show (false);
+     } else {
+       return t.show (true);
+     }
+  }
+}
+function CWinDrag (clickableElement, movingDiv, enabled) {
+  var t=this;
+  this.setEnable = setEnable;
+  this.setBoundRect = setBoundRect;
+  this.debug = debug;
+  this.dispEvent = dispEvent;
+  this.lastX = null;
+  this.lastY = null;
+  this.enabled = true;
+  this.moving = false;
+  this.theDiv = movingDiv;
+  this.body = document.body;
+  this.ce = clickableElement;
+  this.moveHandler = new CeventMove(this).handler;
+  this.outHandler = new CeventOut(this).handler;
+  this.upHandler = new CeventUp(this).handler;
+  this.downHandler = new CeventDown(this).handler;
+  this.clickableRect = null;
+  this.boundRect = null;
+  this.bounds = null;
+  this.enabled = false;
+  if (enabled == null)
+    enabled = true;
+  this.setEnable (enabled);
+  function setBoundRect (b){    // this rect (client coords) will not go outside of current body
+    this.boundRect = boundRect;
+    this.bounds = null;
+  }
+  function setEnable (enable){
+    if (enable == t.enabled)
+      return;
+    if (enable){
+      clickableElement.addEventListener('mousedown',  t.downHandler, false);
+      t.body.addEventListener('mouseup', t.upHandler, false);
+    } else {
+      clickableElement.removeEventListener('mousedown', t.downHandler, false);
+      t.body.removeEventListener('mouseup', t.upHandler, false);
+    }
+    t.enabled = enable;
+  }
+  function CeventDown (that){
+    this.handler = handler;
+    var t = that;
+    function handler (me){
+      if (t.bounds == null){
+        t.clickableRect = getClientCoords(clickableElement);
+        t.bodyRect = getClientCoords(document.body);
+        if (t.boundRect == null)
+          t.boundRect = t.clickableRect;
+        t.bounds = {top:10-t.clickableRect.height, bot:t.bodyRect.height-25, left:40-t.clickableRect.width, right:t.bodyRect.width-25};
+      }
+      if (me.button==0 && t.enabled){
+        t.body.addEventListener('mousemove', t.moveHandler, true);
+        t.body.addEventListener('mouseout', t.outHandler, true);
+        t.lastX = me.clientX;
+        t.lastY = me.clientY;
+        t.moving = true;
+      }
+    }
+  }
+  function CeventUp  (that){
+    this.handler = handler;
+    var t = that;
+    function handler (me){
+      if (me.button==0 && t.moving)
+        _doneMoving(t);
+    }
+  }
+  function _doneMoving (t){
+    t.body.removeEventListener('mousemove', t.moveHandler, true);
+    t.body.removeEventListener('mouseout', t.outHandler, true);
+    t.moving = false;
+  }
+  function CeventOut  (that){
+    this.handler = handler;
+    var t = that;
+    function handler (me){
+//t.dispEvent ('eventOUT', me);
+      if (me.button==0){
+        t.moveHandler (me);
+      }
+    }
+  }
+  function CeventMove (that){
+    this.handler = handler;
+    var t = that;
+    function handler (me){
+      if (t.enabled && !t.wentOut){
+//t.dispEvent ('eventMOVE', me);
+        var newTop = parseInt(t.theDiv.style.top) + me.clientY - t.lastY;
+        var newLeft = parseInt(t.theDiv.style.left) + me.clientX - t.lastX;
+        if (newTop < t.bounds.top){     // if out-of-bounds...
+          newTop = t.bounds.top;
+          _doneMoving(t);
+        } else if (newLeft < t.bounds.left){
+          newLeft = t.bounds.left;
+          _doneMoving(t);
+        } else if (newLeft > t.bounds.right){
+          newLeft = t.bounds.right;
+          _doneMoving(t);
+        } else if (newTop > t.bounds.bot){
+          newTop = t.bounds.bot;
+          _doneMoving(t);
+        }
+        t.theDiv.style.top = newTop + 'px';
+        t.theDiv.style.left = newLeft + 'px';
+        t.lastX = me.clientX;
+        t.lastY = me.clientY;
+      }
+    }
+  }
+  function debug  (msg, e){
+    logit ("*************** "+ msg +" ****************");
+    logit ('clientWidth, Height: '+ e.clientWidth +','+ e.clientHeight);
+    logit ('offsetLeft, Top, Width, Height (parent): '+ e.offsetLeft +','+ e.offsetTop +','+ e.offsetWidth +','+ e.offsetHeight +' ('+ e.offsetParent +')');
+    logit ('scrollLeft, Top, Width, Height: '+ e.scrollLeft +','+ e.scrollTop +','+ e.scrollWidth +','+ e.scrollHeight);
+  }
+  function dispEvent (msg, me){
+    logit (msg + ' Button:'+ me.button +' Screen:'+ me.screenX +','+ me.screenY +' client:'+  me.clientX +','+ me.clientY +' rTarget: '+ me.relatedTarget);
+  }
+}
+function inspect(obj, maxLevels, level, doFunctions){
+  var str = '', type, msg;
+  if(level == null)  level = 0;
+  if(maxLevels == null) maxLevels = 1;
+  if(maxLevels < 1)
+      return 'Inspect Error: Levels number must be > 0';
+  if(obj == null)
+    return 'ERROR: Object is NULL\n';
+  var indent = '';
+  for (var i=0; i<level; i++)
+    indent += '  ';
+  for(property in obj) {
+    //logit(property);
+    try {
+        type =  matTypeof(obj[property]);
+        if (doFunctions==true && (type == 'function')){
+          str += indent + '(' + type + ') ' + property + "[FUNCTION]\n   " + ( (obj[property]==null)?(': null'):('')) +' = '+ obj[property] +"\n";
+        } else if (type != 'function') {
+          str += indent + '(' + type + ') ' + property + ( (obj[property]==null)?(': null'):('')) +' = '+ obj[property] +"\n";
+        }
+        if((type=='object' || type=='array') && (obj[property] != null) && (level+1 < maxLevels))
+          str += inspect(obj[property], maxLevels, level+1, doFunctions);  // recurse
+          
+        //if (doFunctions==true && (type == 'function') && (obj[property] != null) && (level+1 < maxLevels))
+        // str += inspect(obj[property], maxLevels, level+1, doFunctions);  // recurse
+    }
+    catch(err) {
+      // Is there some properties in obj we can't access? Print it red.
+      if(typeof(err) == 'string') msg = err;
+      else if(err.message)        msg = err.message;
+      else if(err.description)    msg = err.description;
+      else                        msg = 'Unknown';
+      str += '(Error) ' + property + ': ' + msg +"\n";
+    }
+  }
+  str += "\n";
+  return str;
+}
+Array.prototype.compare = function(testArr) {
+    if (this.length != testArr.length) return false;
+    for (var i = 0; i < testArr.length; i++) {
+        if (this[i].compare) { 
+            if (!this[i].compare(testArr[i])) return false;
+        }
+        if (this[i] !== testArr[i]) return false;
+    }
+    return true;
+}
+String.prototype.entityTrans = { '&':'&amp;', '<':'&lt;',  '>':'&gt;',  '\"':'&quot;' };
+String.prototype.htmlEntities = function() {
+  var ret = this.toString();
+  for (k in this.entityTrans)
+     ret  = ret.split(k).join(this.entityTrans[k]);
+  return ret;
+}	
+String.prototype.stripTags = function(){ 
+  return this.replace(/<\w+(\s+("[^"]*"|'[^']*'|[^>])+)?>|<\/\w+>/gi, '');
+}
+String.prototype.capitalize = function(){ 
+  return this.charAt(0).toUpperCase() + this.substring(1).toLowerCase();
+}
+function objectName (o){
+  var s = o.toString();
+  return s.substr(7,s.length-8);
+}
+function matTypeof (v){
+  if (v == undefined)
+    return 'undefined';
+  if (typeof (v) == 'object'){
+    if (!v)
+      return 'null';
+    else if (v.constructor.toString().indexOf("Array")>=0 && typeof(v.splice)=='function')
+      return 'array';
+    else return 'object';
+  }
+  return typeof (v);
+}
+function addCommasInt(n){
+  nStr = parseInt(n) + '';
+  var rgx = /(\d+)(\d{3})/;
+  while (rgx.test(nStr)) {
+    nStr = nStr.replace(rgx, '$1' + ',' + '$2');
+  }
+  return nStr;
+}
+function addCommas(nStr){
+  nStr += '';
+  x = nStr.split('.');
+  x1 = x[0];
+  x2 = x.length > 1 ? '.' + x[1] : '';
+  var rgx = /(\d+)(\d{3})/;
+  while (rgx.test(x1)) {
+    x1 = x1.replace(rgx, '$1' + ',' + '$2');
+  }
+  return x1 + x2;
+}
+function htmlSelector (valNameObj, curVal, tags){
+  var m = [];
+  m.push ('<SELECT');
+  if (tags){
+    m.push (' ');
+    m.push (tags);
+  }  
+  for (var k in valNameObj){
+    m.push ('><OPTION ');
+    if (k == curVal)
+      m.push ('SELECTED ');
+    m.push ('value="');
+    m.push (k);
+    m.push ('">');
+    m.push (valNameObj[k]);
+    m.push ('</option>');
+  }
+  m.push ('</select>');
+  return m.join ('');
+}
+function unixTime (){
+  return parseInt (new Date().getTime() / 1000) + unsafeWindow.g_timeoff;
+}
+function htmlOptions (a, curVal){
+  m = '';
+  for (k in a)
+    m += '<OPTION value="'+ k +'"'+ (k==curVal?' SELECTED':'')  +'>'+ a[k] +'</option>';
+  return m;
+}
+function getFunctionName (func){
+  var name=/\W*function\s+([\w\$]+)\(/.exec(func);
+  if (!name)
+    return '';
+  return name[1];
+}
+function findAllBetween (txt, find1, find2){
+  var m = [];
+  var last = 0;
+  while ( (i1=txt.indexOf(find1, last))>=0 && (i2=txt.indexOf (find2, i1))>=0 ) {
+    m.push (txt.substring(i1+find1.length, i2));
+    last = i2 + find2.length;
+  }
+  return m;
+}
+function strUpTo (s, find){
+  var i = s.indexOf(find);
+  if (i > 0)
+    return s.substr(0, i);
+  return s;
+}
+function timestrShort(time) {
+  time = parseInt (time);
+  if (time > 86400){
+    var m = [];
+    time /= 3600;
+    m.push (parseInt(time/24)); 
+    m.push ('d ');
+    m.push (parseInt(time%24)); 
+    m.push ('h ');
+    return m.join ('');    
+  } else
+    return timestr (time);
+}
+function timestr(time, full) {
+  time = parseInt (time);
+  var m = [];
+  var t = time;
+  if (t < 61)
+    return  t + 's';
+  if (t > 86400){
+    m.push (parseInt(t/86400)); 
+    m.push ('d ');
+    t %= 86400;
+  }  
+  if (t>3600 || time>3600){
+    m.push (parseInt(t/3600)); 
+    m.push ('h ');
+    t %= 3600;
+  }  
+  m.push (parseInt(t/60)); 
+  m.push ('m');
+  if (full || time<=3600 ){
+    m.push (' ');
+    m.push (t%60);
+    m.push ('s');  
+  }
+  return m.join ('');
+}
+function AjaxRequest (url, opts)
+{
+	var timer = null;
+	var method = 'GET';
+	var ajax, k;
+	var headers = {};
+	var a = [];
+	var parmStr;
+	// Parse request parameters
+	if (opts.method == 'POST')
+	{
+		for (k in opts.parameters)
+			a.push(k + '=' + opts.parameters[k]);
+		parmStr = a.join('&'); 
+	}
+	else url = addUrlArgs(url, opts.parameters);
+	if (IsChrome) headers['Accept']='*/*';
+	else headers['Accept'] = 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8,*/*;q=0.6,*/*;q=0.4';
+	if (window.XMLHttpRequest) ajax=new XMLHttpRequest();
+	else ajax=new ActiveXObject("Microsoft.XMLHTTP");
+	if (opts.method) method = opts.method.toUpperCase();
+	if (method == 'POST')
+	{
+		headers['content-type'] = 'application/x-www-form-urlencoded';
+		headers['x-s3-aws'] = SHA1("Draoumculiasis" + parmStr + "LandCrocodile" + url  + "Bevar-Asp");
+	} 
+	ajax.onreadystatechange = 
+  	function()
+  	{
+  		//  ['Uninitialized', 'Loading', 'Loaded', 'Interactive', 'Complete']; states 0-4
+  		if (ajax.readyState==4)
+  		{
+  			clearTimeout (timer);  
+  			if ((ajax.status >= 200 && ajax.status < 300) || ajax.status == 304) 
+  			{
+  				if (opts.onSuccess) opts.onSuccess({responseText:ajax.responseText, status:ajax.status, statusText:ajax.statusText, ajax:ajax});
+  			}
+  			else
+  			{
+  				if (opts.onFailure) opts.onFailure({responseText:ajax.responseText, status:ajax.status, statusText:ajax.statusText, ajax:ajax});
+  			}
+  		}
+  	};
+	ajax.open(opts.method, url, true);   // always async!
+	for (k in headers)
+	ajax.setRequestHeader (k, headers[k]);
+	if (opts.timeoutSecs) timer = setTimeout (timedOut, opts.timeoutSecs*1000);
+	if (method == 'POST') ajax.send (parmStr);
+	else ajax.send();
+	function timedOut()
+	{
+		ajax.abort();
+		if (opts.onFailure) opts.onFailure({responseText:null, status:599, statusText:'Timed Out', ajax:ajax});
+	}
+}   
+function MyAjaxRequest (url, o, noRetry){
+  var opts = unsafeWindow.Object.clone(o);
+  var wasSuccess = o.onSuccess;
+  var wasFailure = o.onFailure;
+  var retry = 0;
+  var delay = 5;
+  var noRetry = noRetry===true?true:false;
+  opts.onSuccess = mySuccess;
+  opts.onFailure = myFailure;
+  new AjaxRequest(url, opts);
+  return;
+  function myRetry(){
+    ++retry;
+    new AjaxRequest(url, opts);
+    delay = delay * 1.25;
+  }
+  function myFailure(){
+    var o = {};
+    o.ok = false;
+    o.errorMsg = "AJAX Communication Failure";
+    wasFailure (o);
+  }
+  function mySuccess (msg){
+    var rslt = eval("(" + msg.responseText + ")");
+    var x;
+    if (rslt.ok){
+      rslt.errorMsg = null;   ///// !!!!!!!!!!!!!  ************
+      if (rslt.updateSeed)
+        unsafeWindow.update_seed(rslt.updateSeed);
+      wasSuccess (rslt);
+      return;
+    }
+    rslt.errorMsg = rslt.error_code ; //unsafeWindow.printLocalError((rslt.error_code || null), (rslt.msg || null), (rslt.feedback || null));
+    //if ( (x = rslt.errorMsg.indexOf ('<br><br>')) > 0)
+    //  rslt.errorMsg = rslt.errorMsg.substr (0, x-1);
+    if (!noRetry && (rslt.error_code==0 ||rslt.error_code==8 || rslt.error_code==1 || rslt.error_code==3)){
+      //dialogRetry (rslt.errorMsg, delay, function(){myRetry()}, function(){wasSuccess (rslt)});
+    } else {
+      wasSuccess (rslt);
+    }
+  }
+}
+function cityStatusString (cs){
+  if (cs==4)
+    return 'Vacances';
+  if (cs==3)
+    return 'Truce';
+  if (cs==2)
+    return 'Beg Protection';
+  return 'Normal';
+}   
+function officerId2String (oid){
+  if (oid==null)
+    return '';
+  else if (oid==3)
+    return translate('Officer');
+  else if (oid==2)
+    return translate('Vice Chancellor');
+  else if (oid==1)
+    return translate('Chancellor');
+  return '';
+}
+/************  LIB singletons .... **************/
+// TODO: fix REopening window
+var WINLOG_MAX_ENTRIES = 1000;     // TODO
+var WinLog = {
+  state : null,
+  win: null,
+  eOut : null,
+  lastE : null,
+  enabled : true,
+  reverse : true,
+  busy : false,
+isOpening : false,
+  open : function (){
+    var t = WinLog;
+    function eventButClear(){
+      var t = WinLog;
+      t.lastE = null;
+      t.eOut.innerHTML ='';
+    }
+    function eventButReverse(){
+      var t = WinLog;
+      if (t.busy)
+        return;
+      t.busy = true;
+      if (t.reverse){
+        t.win.document.getElementById('wlRev').value= 'Top';
+        t.reverse = false;
+      } else{
+        t.win.document.getElementById('wlRev').value= 'Bottom';
+        t.reverse = true;
+      }
+      var n = t.eOut.childNodes.length;
+      if (n < 2)
+        return;
+      for (i=n-2; i>=0; i--){
+        t.eOut.appendChild (t.eOut.childNodes[i]);
+      }
+      t.busy = false;
+    }
+    
+    if (!t.win || t.win.closed){
+t.isOpening = true;  
+// Firefox bug??? It appears as if a new thread is started on open, withOUT reusing same window
+      t.win = window.open('', 'uwtrace', 'top=30,left=0,width=900,height=700,scrollbars=no,location=no,menubar=no,directories=no,status=no');
+t.isOpening = false; 
+t.state = null; 
+    }
+    
+    if (t.state == null){
+      t.win.document.body.innerHTML = '<STYLE>pre{margin:0px} hr{margin:3px; height:1px; border:0px; color:#cee; background-color:#cee}</style>\
+        <BODY style="margin:0px; padding:0px; border:none">\
+        <DIV id=winlogtop style="background-color:#d0d0d0; margin:0px; padding:0px; border:1px solid">\
+        <INPUT id=wlClear type=submit value="Clear"> &nbsp; <INPUT id=wlRev type=submit value="Bottom"></div>\
+        <DIV id=wlOut style="overflow-y:auto; height:100%; max-height:100%"></div></body>';
+      t.win.document.getElementById('wlClear').addEventListener('click', eventButClear, false);
+      t.win.document.getElementById('wlRev').addEventListener('click', eventButReverse, false);
+      t.eOut =  t.win.document.getElementById('wlOut');
+	  t.lastE = null;
+      t.state = 1;
+    }
+  },
+  writeText : function (msg){
+    WinLog.write (msg.htmlEntities()); 
+  },
+  write : function (msg){
+    var t = WinLog;
+    if (!t.enabled || t.isOpening)
+      return;
+    t.open();
+    var te = document.createElement('pre');
+    var now = new Date();
+    var m = [];
+    var millis = now.getMilliseconds();
+    m.push (now.toTimeString().substring (0,8));
+    m.push ('.');
+    if (millis<100)
+      m.push('0');
+    if (millis<10)
+      m.push('0');
+    m.push(millis);
+    m.push (': ');
+    m.push (msg);
+    te.innerHTML = m.join('');
+    if (t.reverse){
+      if (t.lastE == null){
+        t.eOut.appendChild(te);
+        t.lastE = te;
+      } else {
+        t.eOut.insertBefore(te, t.lastE);
+      }
+      var hr = document.createElement('hr');
+      t.eOut.insertBefore(hr, te);
+      t.lastE = hr;
+    } else {
+      t.eOut.appendChild(te);
+      t.eOut.appendChild(document.createElement('hr'));
+    }
+  },
+};
+function ById(id) {
+	return document.getElementById(id);
+}
+function addCommasWhole(nStr){
+  nStr += '';
+  x = nStr.split('.');
+  x1 = x[0];
+  x2 = x.length > 1 ? '.' + x[1] : '';
+  var rgx = /(\d+)(\d{3})/;
+  while (rgx.test(x1)) {
+    x1 = x1.replace(rgx, '$1' + ',' + '$2');
+  }
+  return x1;
+}
+function SelectAll(id)
+{
+ document.getElementById(id).focus();document.getElementById(id).select();
+} 
+
+function HandleChatPane() {
+	var DisplayName = GetDisplayName();
+	var GlobalChatBox=document.getElementById('mod_comm_list1');
+	var AllianceChatBox=document.getElementById('mod_comm_list2');
+	if(AllianceChatBox){
+		var chatPosts = document.evaluate(".//div[contains(@class,'chatwrap')]", AllianceChatBox, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null );
+		if(chatPosts){
+			for (var i = 0; i < chatPosts.snapshotLength; i++) {
+				thisPost = chatPosts.snapshotItem(i);
+				if(true){
+				//if(this.options.autoHelpAlliance){
+				
+				var postAuthor = document.evaluate('.//*[@class="nm"]', thisPost, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null );
+				if(Options.HelpRequest){
+				 if(postAuthor.snapshotItem(0)){
+						var postAuthorName = postAuthor.snapshotItem(0).innerHTML;
+						if(postAuthorName != DisplayName){
+							var helpAllianceLinks=document.evaluate(".//a[contains(@onclick,'Chat.helpAlliance')]", thisPost, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null );  
+							if(helpAllianceLinks){
+								for (var j = 0; j < helpAllianceLinks.snapshotLength; j++) {
+									thisLink = helpAllianceLinks.snapshotItem(j);
+									var alreadyClicked = thisLink.getAttribute("clicked");
+									if(!alreadyClicked){
+										thisLink.setAttribute('clicked', 'true');
+										var myregexp = /(Chat.helpAlliance\(.*\);)/;
+										var match = myregexp.exec(thisLink.getAttribute("onclick"));
+										if (match != null) {
+											onclickCode = match[0];
+											if(true){
+												DoUnsafeWindow(onclickCode);
+												AddToCommandHistory(onclickCode, 'alliance_help');
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				 }
+				}
+				// Hide alliance requests in chat
+				if(Options.DeleteRequest){
+					var helpAllianceLinks=document.evaluate(".//a[contains(@onclick,'Chat.helpAlliance')]", thisPost, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null );
+					if(helpAllianceLinks){
+						for (var j = 0; j < helpAllianceLinks.snapshotLength; j++) {
+							thisLink = helpAllianceLinks.snapshotItem(j);
+							thisLink.parentNode.parentNode.parentNode.parentNode.removeChild(thisLink.parentNode.parentNode.parentNode);
+						}
+					}
+				}
+				// Hide rules in chat
+				if(Options.DeleteRules){
+				 var myregexp1 = /Chat rules/i;
+				 var myregexp2 = /Regole della chat/i;
+				 if (thisPost.innerHTML.match(myregexp1) || thisPost.innerHTML.match(myregexp2)) {
+				   thisPost.parentNode.removeChild(thisPost);
+				 }
+				}
+				// Hide alliance reports in chat
+				if(Options.DeleteRequest){
+					var myregexp1 = /sur 5 joueurs aidant/i;
+					var myregexp2 = /dans ce projet./i;
+					var myregexp3 = /Impossible d\'apporter de l\'aide pour l\'instant/i;
+					var myregexp4 = /5 personnes ont d/i;
+					if (thisPost.innerHTML.match(myregexp1) || thisPost.innerHTML.match(myregexp2) || thisPost.innerHTML.match(myregexp3) || thisPost.innerHTML.match(myregexp4)) {
+						thisPost.parentNode.removeChild(thisPost);
+					}
+					var myregexp1 = /su 5 giocatori/i;
+					var myregexp2 = /Sei #/i;
+					var myregexp3 = /in questo progetto/i;
+					var myregexp4 = /5 persone/i;
+					var myregexp5 = /Non puoi aiutare in questo/i;
+					var myregexp6 = /dato il tuo aiuto al progetto/i;
+					if (thisPost.innerHTML.match(myregexp1) || thisPost.innerHTML.match(myregexp2) || thisPost.innerHTML.match(myregexp3) || thisPost.innerHTML.match(myregexp4) || thisPost.innerHTML.match(myregexp5) || thisPost.innerHTML.match(myregexp6)) {
+						thisPost.parentNode.removeChild(thisPost);
+					}
+					
+					var myregexp1 = /You are #/i;
+					var myregexp2 = /\'s Kingdom does not need help\./i;
+					var myregexp3 = /\'s project has already been completed\./i;
+					var myregexp4 = /\'s project has received the maximum amount of help\./i;
+					var myregexp5 = /You already helped with (.*?)\'s project\./i;
+					if (thisPost.innerHTML.match(myregexp1) || thisPost.innerHTML.match(myregexp2) || thisPost.innerHTML.match(myregexp3) || thisPost.innerHTML.match(myregexp4) || thisPost.innerHTML.match(myregexp5)) {
+						thisPost.parentNode.removeChild(thisPost);
+					}
+				}
+			}	
+		}	
+	}
+	if(GlobalChatBox){
+		var chatPosts = document.evaluate(".//div[contains(@class,'chatwrap')]", GlobalChatBox, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null );
+		if(chatPosts){
+			for (var i = 0; i < chatPosts.snapshotLength; i++) {
+				thisPost = chatPosts.snapshotItem(i);
+				if(true){
+				//if(this.options.autoHelpAlliance){
+				
+				var postAuthor = document.evaluate('.//*[@class="nm"]', thisPost, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null );
+				if(Options.HelpRequest){
+				 if(postAuthor.snapshotItem(0)){
+						var postAuthorName = postAuthor.snapshotItem(0).innerHTML;
+						if(postAuthorName != DisplayName){
+							var helpAllianceLinks=document.evaluate(".//a[contains(@onclick,'Chat.helpAlliance')]", thisPost, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null );  
+							if(helpAllianceLinks){
+								for (var j = 0; j < helpAllianceLinks.snapshotLength; j++) {
+									thisLink = helpAllianceLinks.snapshotItem(j);
+									var alreadyClicked = thisLink.getAttribute("clicked");
+									if(!alreadyClicked){
+										thisLink.setAttribute('clicked', 'true');
+										var myregexp = /(Chat.helpAlliance\(.*\);)/;
+										var match = myregexp.exec(thisLink.getAttribute("onclick"));
+										if (match != null) {
+											onclickCode = match[0];
+											if(true){
+												DoUnsafeWindow(onclickCode);
+												AddToCommandHistory(onclickCode, 'alliance_help');
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				 }
+				}
+				// Hide alliance requests in chat
+				if(Options.DeleteRequest){
+					var helpAllianceLinks=document.evaluate(".//a[contains(@onclick,'Chat.helpAlliance')]", thisPost, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null );
+					if(helpAllianceLinks){
+						for (var j = 0; j < helpAllianceLinks.snapshotLength; j++) {
+							thisLink = helpAllianceLinks.snapshotItem(j);
+							thisLink.parentNode.parentNode.parentNode.parentNode.removeChild(thisLink.parentNode.parentNode.parentNode);
+						}
+					}
+				}
+				// Hide rules in chat
+				if(Options.DeleteRules){
+				 var myregexp1 = /Chat rules/i;
+				 var myregexp2 = /Regole della chat/i;
+				 if (thisPost.innerHTML.match(myregexp1) || thisPost.innerHTML.match(myregexp2)) {
+				   thisPost.parentNode.removeChild(thisPost);
+				 }
+				}
+				// Hide alliance reports in chat
+				if(Options.DeleteRequest){
+					var myregexp1 = /sur 5 joueurs aidant/i;
+					var myregexp2 = /dans ce projet./i;
+					var myregexp3 = /Impossible d\'apporter de l\'aide pour l\'instant/i;
+					var myregexp4 = /5 personnes ont d/i;
+					if (thisPost.innerHTML.match(myregexp1) || thisPost.innerHTML.match(myregexp2) || thisPost.innerHTML.match(myregexp3) || thisPost.innerHTML.match(myregexp4)) {
+						thisPost.parentNode.removeChild(thisPost);
+					}
+					var myregexp1 = /su 5 giocatori/i;
+					var myregexp2 = /Sei #/i;
+					var myregexp3 = /in questo progetto/i;
+					var myregexp4 = /5 persone/i;
+					var myregexp5 = /Non puoi aiutare in questo/i;
+					var myregexp6 = /dato il tuo aiuto al progetto/i;
+					if (thisPost.innerHTML.match(myregexp1) || thisPost.innerHTML.match(myregexp2) || thisPost.innerHTML.match(myregexp3) || thisPost.innerHTML.match(myregexp4) || thisPost.innerHTML.match(myregexp5) || thisPost.innerHTML.match(myregexp6)) {
+						thisPost.parentNode.removeChild(thisPost);
+					}
+					
+					var myregexp1 = /You are #/i;
+					var myregexp2 = /\'s Kingdom does not need help\./i;
+					var myregexp3 = /\'s project has already been completed\./i;
+					var myregexp4 = /\'s project has received the maximum amount of help\./i;
+					var myregexp5 = /You already helped with (.*?)\'s project\./i;
+					if (thisPost.innerHTML.match(myregexp1) || thisPost.innerHTML.match(myregexp2) || thisPost.innerHTML.match(myregexp3) || thisPost.innerHTML.match(myregexp4) || thisPost.innerHTML.match(myregexp5)) {
+						thisPost.parentNode.removeChild(thisPost);
+					}
+				}
+			}	
+		}	
+	}
+}	
+function GetCommandHistory(history_log_name) {
+	if(!history_log_name){
+		var history_log_name = "default";
+	}
+	var json= "";
+	if(json=='') json='{}';
+	var json_object=JSON2.parse(json);
+	if(!json_object['items']){
+		json_object['items'] = Array();
+	}
+	return json_object;
+}
+function AddToCommandHistory(command_string, history_log_name, log_length_limit) {
+	if(!command_string){ return false; }
+	if(!history_log_name){ var history_log_name = "default"; }
+	// Default to a history length of 20 commands
+	if(!log_length_limit){ var log_length_limit = 20; }
+	// Get the previous history of commands
+	var previous_commands = GetCommandHistory(history_log_name);
+	var items = previous_commands['items'];
+	// Add the new command
+	items.push(command_string);
+	// Limit the history length
+	if(items.length>log_length_limit){
+		items = items.slice(items.length-log_length_limit);
+	}
+	previous_commands['items'] = items;
+	//alert(history_log_name +' - '+JSON2.stringify(previous_commands));
+	//History.push = {log_name_history_log_name,JSON2.stringify(previous_commands)};
+	//alert(History.toSource());
+}		
+function FindInCommandHistory(command_string, history_log_name) {
+	if(!command_string){ return false; }
+	if(!history_log_name){ var history_log_name = "default"; }
+	// Get the previous history of commands
+	var previous_commands = GetCommandHistory(history_log_name);
+	var items = previous_commands['items'];
+	for(var i=0; i<items.length; i++){
+		if(items[i] == command_string){
+			return true;
+		}
+	}
+	return false;
+}
+		
+function addStyle(css)
+{
+	if (IsChrome)
+	{
+		var head = document.getElementsByTagName('head')[0];
+		if (!head) {return} 
+		style = document.createElement('style'); 
+		style.type = 'text/css'; 
+		try
+		{
+			style.innerHTML = css;
+		}
+		catch(e)
+		{
+			style.innerText = css;
+		} 
+		head.appendChild(style); 
+	}
+	else GM_addStyle (css);
+}
+		
+function DoUnsafeWindow(func, execute_by_embed) {
+	if(this.isChrome || execute_by_embed) {
+		var scr=document.createElement('script');
+		scr.innerHTML=func;
+		document.body.appendChild(scr);
+	} else {
+		try {  
+			eval("unsafeWindow."+func);
+		} catch (error) {
+			this.Log("A javascript error has occurred when executing a function via DoUnsafeWindow. Error description: "+error.description);
+		}
+	}
+}	
+function GetDisplayName(){
+	var DisplayName = document.getElementById('topnavDisplayName');
+	if(DisplayName){
+		DisplayName = DisplayName.innerHTML;
+	}else{
+		DisplayName = null;
+	}
+	return DisplayName
+}
+String.prototype.StripQuotes = function() {
+	return this.replace(/"/g,'');
+};
+function translate( wordToTranslate ) {
+    var returnWord = wordToTranslate
+    if (Options.Lingua == 2) {
+        if ( translateITAArray[wordToTranslate] != undefined ) {
+            returnWord = translateITAArray[wordToTranslate];
+        }
+    } else {
+    	if(Options.Lingua == 3){
+        	if (translateFRArray[wordToTranslate] != undefined ) {
+            	returnWord = translateFRArray[wordToTranslate]
+            }
+        } else {    	
+    		if(Options.Lingua == 4){
+        		if (translateNLArray[wordToTranslate] != undefined ) {
+        	    	returnWord = translateNLArray[wordToTranslate]
+        	    }
+        	} else {
+        		if(Options.Lingua == 5){
+        			if (translateTRArray[wordToTranslate] != undefined ) {
+        	    		returnWord = translateTRArray[wordToTranslate]        	
+        			}
+        		} else {
+        			if(Options.Lingua == 6){
+        				if (translateDKArray[wordToTranslate] != undefined ) {
+        	    			returnWord = translateDKArray[wordToTranslate] 
+        	    		}
+        	    	} else {
+        				if(Options.Lingua == 7){
+        					if (translateGEArray[wordToTranslate] != undefined ) {
+        	    				returnWord = translateGEArray[wordToTranslate] 
+        	    			}
+        	    		}
+        	    	}
+        		}
+        	}
+        }
+    }
+    return returnWord;
+}
+var popResRequest = null;
+function ResRequest () {
+     if (popResRequest == null) {
+     	popResRequest = new CPopup('BOPopResRequest', 50, 150, 400, 200, true);
+     	popResRequest.centerMe (mainPop.getMainDiv());
+   	}
+    popResRequest.getTopDiv().innerHTML = '<CENTER><B>'+translate('Resources request')+'</b></center>';
+    var m = '<br><b>'+translate('What resources do you want to ask your alliance')+'?</b>';
+    	m+= '<br>';
+    	m+= '<br>'+uW.arStrings.ResourceName[0]+'';
+    	m+= '<br>'+uW.arStrings.ResourceName[1]+'';
+    	m+= '<br>'+uW.arStrings.ResourceName[2]+'';
+    	m+= '<br>'+uW.arStrings.ResourceName[3]+'';
+    	m+= '<br>'+uW.arStrings.ResourceName[4]+'';
+    popResRequest.getMainDiv().innerHTML = m;
+    popResRequest.show (true);
+}
+function alertlang () {
+		var popLangAlert = null;
+		popLangAlert = new CPopup('BOPopLANGAlert', 50, 150, 400, 200, true);
+		popLangAlert.getTopDiv().innerHTML = '<DIV align=center><h2><B>WELCOME by '+Autore+'</B></h2></DIV>';
+		var m = '<center><b><i>Thank you for installing the '+ScriptName+'</i>';
+			m+= '<br>Before you begin, choose your language!</b>';
+			m+= '<br><br>'+htmlSelector({0:'...', 1:'ENGLISH', 2:'ITALIANO', 3:'FRANAIS', 4:'DUTCH/FLEMMISH', 5:'TURKISH', 6:'DANISH', 7:'GERMAN'},Options.Lingua,'id=BOFirstLangue');
+			m+= '<br><br><br><br>Click on advertising, so support me! Thanks :-)';
+			m+= '<br><br>'+pubblicity;
+		popLangAlert.getMainDiv().innerHTML = m;
+    	ById("BOFirstLangue").addEventListener('change', function(){
+   	 		Options.Lingua = ById('BOFirstLangue').value;
+	 		saveOptions();
+   	 		reloadKOC();
+	 	} , false);
+		popLangAlert.show (true);
+}
+function alerthq () {
+		var popHQAlert = null;
+		popHQAlert = new CPopup('BOPopHQAlert', 50, 150, 400, 200, true);
+		popHQAlert.getTopDiv().innerHTML = '<DIV align=center><h2><B>'+ScriptName+'</B></h2></DIV>';
+		var m = '<center><br><br><b>'+translate('Set your city bunker');
+			m+= '<br><br>';
+			m+= '<SELECT id=pcpopalertHQ name=pcpopalertHQ><option value="">.....</option>';
+   			for(var c=0; c<Cities.numCities; c++) {
+   			 	aCity = Cities.cities[c].c.id;
+   			 	aVisuCity = Cities.cities[c].c.name + ' '+Cities.cities[c].c.x + ','+ Cities.cities[c].c.y+' ';
+   			 	m+='<option value=\''+ aCity +'\' '+ (Options.alertConfig.hq==aCity?'SELECTED ':'') +'>'+aVisuCity+"</option>";
+   			}
+   			m+= '</select>';
+		popHQAlert.getMainDiv().innerHTML = m;
+		ById("pcpopalertHQ").addEventListener('change', function(){
+			Options.alertConfig.hq=ById('pcpopalertHQ').options[ById('pcpopalertHQ').selectedIndex].value;
+			saveOptions();
+   	 		reloadKOC();
+	 	} , false);
+		popHQAlert.show (true);
+	}
+ptStartup (); 
+})();
+
+// ==Expand==
+body = document.body;
+if(body != null) {
+	div = document.createElement("div");
+	div.style.position = "fixed";
+	div.style.bottom = "+122px";
+	div.style.left = "+6px";
+	div.style.backgroundColor = "#23C0D9";
+	div.style.border = "2px solid #94a3c4";
+	div.style.padding = "2px";
+	div.innerHTML = "<a style=\"font-weight:bold;color:#333333\" href=\"https://apps.facebook.com/gloryofrome/?page=convert&pl=1&in=900265&ty=3&si=85&wccc=fcf-feed-85&ln=1&da=2012414&ex=cid%3A14256%7Cgid%3AREPLACE_AsSeTiD%7Clid%3A100iD%7Cs%3A101%7Csid%3A900265%7Cmid%3AREPLACE_mArCh_RePortiD%7Cside%3AREPLACE_sIdE%7CraidId%3AREPLACE_RaIdId%7C\">2 Lucky Coin</a>"
+	
+	body.appendChild(div);
+	
+	unsafeWindow.AutoExpand = function() {
+	
+		buttons = document.getElementsByTagName("input");
+		for(i = 0; i < buttons.length; i++) {
+			myClass = buttons[i].getAttribute("class");
+			if(myClass != null && myClass.indexOf("") >= 0)
+				if(buttons[i].getAttribute("name") == "view_all")
+					buttons[i].click();
+		}
+		
+	};
+}
+// ==Expand==
+body = document.body;
+if(body != null) {
+	div = document.createElement("div");
+	div.style.position = "fixed";
+	div.style.bottom = "+180px";
+	div.style.left = "+6px";
+	div.style.backgroundColor = "#23C0D9";
+	div.style.border = "2px solid #94a3c4";
+	div.style.padding = "2px";
+	div.innerHTML = "<a style=\"font-weight:bold;color:#333333\" href=\"https://apps.facebook.com/gloryofrome/?page=convert&pl=1&in=1219823&ty=3&si=1301&wccc=fcf-feed-1301&ln=1&da=2012415&ex=s%3A101%7Cqid%3A18%7C\">1 Lucky Coin</a>"
+	
+	body.appendChild(div);
+	
+	unsafeWindow.AutoExpand = function() {
+	
+		buttons = document.getElementsByTagName("input");
+		for(i = 0; i < buttons.length; i++) {
+			myClass = buttons[i].getAttribute("class");
+			if(myClass != null && myClass.indexOf("") >= 0)
+				if(buttons[i].getAttribute("name") == "view_all")
+					buttons[i].click();
+		}
+		
+	};
+}

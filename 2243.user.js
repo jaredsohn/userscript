@@ -1,0 +1,265 @@
+// Copyright (c) Nicolas Hoizey 2005-2006
+// Released under the GPL license
+// http://www.gnu.org/copyleft/gpl.html
+//
+// BlogmarksInGoogle
+// Greasemonkey script to add Blogmarks.net search into Google
+// Inspired by GooFD, by Ben Sherratt
+//
+// See http://userscripts.org/scripts/show/2243
+//
+// History
+// 0.1   2005-11-??   First release
+//
+// 0.2   2005-12-26   Now works with Firefox 1.5
+//
+// 0.3   2005-12-27   Now uses Atom feed instead of RSS one
+//                    Now ordered by popularity
+//                    No more inline styles
+//                    Toogle background color
+//                    Know bug: bad clear with BetterSearch extension
+//
+// 0.4   2006-01-06   Added animated wait icon
+//
+// 0.5   2006-08-04   Adjust to Blogmarks v2.0 new feed structure
+//
+// 0.6   2007-01-29   Now jQuery powered
+//
+// --------------------------------------------------------------------
+// This is a Greasemonkey user script.
+//
+// To install, you need Greasemonkey: http://greasemonkey.mozdev.org/
+// Then restart Firefox and revisit this script.
+// Under Tools, there will be a new menu item to "Install User Script".
+// Accept the default configuration and install.
+//
+// To uninstall, go to Tools/Manage User Scripts,
+// select "BlogmarksInGoogle", and click Uninstall.
+// --------------------------------------------------------------------
+//
+// ==UserScript==
+// @name          BlogmarksInGoogle
+// @namespace     http://www.gasteroprod.com/
+// @description   add Blogmarks.net search into Google
+// @include       http://*.google.*/*
+// ==/UserScript==
+
+(function() {
+    // Some constants
+	const BlogmarksInGoogleVersion = '0.6';
+	const ResultsNumber = 10;
+	const waitingImg = '<img src="data:image/gif;base64,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" width="16" height="16" alt="..." border="0" />';
+
+	/*
+	 * jQuery (jquery.com)
+	 * Copyright (c) 2006 John Resig
+	 * Licensed under the MIT License:
+	 *   http://www.opensource.org/licenses/mit-license.php
+	 * Slightly edited for greasemonkey -- SunSean
+	 */
+    
+    eval(function(p,a,c,k,e,d){e=function(c){return(c<a?"":e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--){d[e(c)]=k[c]||e(c)}k=[(function(e){return d[e]})];e=(function(){return'\\w+'});c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('7 $(a,c){8 a=a||$.12||T;8 c=c&&c.j&&c.1n(0)||c;l(1T 3F!="2p"){l(a.P==1d){8 M=I 1f("[^a-3W-6D-6d-]");l(!M.44(a)){c=c&&c.2v||T;l(c.2m(a).q==0){8 1k=c.1X(a);l(1k!=C)k 1k}}}H l(a.P==33){k $.1r(a,7(b){l(b.P==1d)k T.1X(b);k b})}}8 X={B:$.2h(a,c),j:"R: 29 $",1B:7(){k 6.1n().q},1n:7(i){k i==C?6.B:6.B[i]},F:7(f){D(8 i=0;i<6.1B();i++)$.1e(6.1n(i),f,[i]);k 6},2X:7(a,b){k 6.F(7(){l(b==C)D(8 j 1g a)$.V(6,j,a[j]);H $.V(6,a,b)})},45:7(h){k h==C&&6.1B()?6.1n(0).2g:6.2X("2g",h)},2x:7(h){k h==C&&6.1B()?6.1n(0).3g:6.2X("3g",h)},1m:7(a,b){k a.P!=1d||b?6.F(7(){l(!b)D(8 j 1g a)$.V(6.L,j,a[j]);H $.V(6.L,a,b)}):$.1m(6.1n(0),a)},2F:7(){k 6.F(7(){8 d=$.18(6,"U");l(d=="1A"||d==\'\')$(6).1t();H $(6).1q()})},1t:7(a){k 6.F(7(){6.L.U=6.2a?6.2a:\'\';l($.18(6,"U")=="1A")6.L.U=\'2P\'})},1q:7(a){k 6.F(7(){6.2a=$.18(6,"U");l(6.2a=="1A")6.2a=\'2P\';6.L.U=\'1A\'})},64:7(c){k 6.F(7(){l($.21(6,c))k;6.1h+=(6.1h.q>0?" ":"")+c})},4Q:7(c){k 6.F(7(){6.1h=c==C?\'\':6.1h.1s(I 1f(\'(^|\\\\s*\\\\b[^-])\'+c+\'($|\\\\b(?=[^-]))\',\'g\'),\'\')})},4R:7(c){k 6.F(7(){l($.21(6,c))6.1h=6.1h.1s(I 1f(\'(\\\\s*\\\\b[^-])\'+c+\'($|\\\\b(?=[^-]))\',\'g\'),\'\');H 6.1h+=(6.1h.q>0?" ":"")+c})},4S:7(){6.F(7(){6.W.4o(6)});6.B=[];k 6},4T:7(){8 a=$.1M(1E);k 6.F(7(){8 b=a[0].27(S);6.W.2q(b,6);1F(b.1Q)b=b.1Q;b.3P(6)})},3C:7(){8 1y=6.1B()>1;8 a=$.1M(1E);k 6.F(7(){D(8 i=0;i<a.q;i++)6.3P(1y?a[i].27(S):a[i])})},4U:7(){8 a=1E;k 6.F(7(){D(8 i=0;i<a.q;i++)$(a[i]).3C(6)})},5m:7(){8 1y=6.1B()>1;8 a=$.1M(1E);k 6.F(7(){D(8 i=a.q-1;i>=0;i--)6.2q(1y?a[i].27(S):a[i],6.1Q)})},4W:7(){8 1y=6.1B()>1;8 a=$.1M(1E);k 6.F(7(){D(8 i=0;i<a.q;i++)6.W.2q(1y?a[i].27(S):a[i],6)})},4X:7(){8 1y=6.1B()>1;8 a=$.1M(1E);k 6.F(7(){D(8 i=a.q-1;i>=0;i--)6.W.2q(1y?a[i].27(S):a[i],6.4Y)})},3N:7(){k 6.F(7(){1F(6.1Q)6.4o(6.1Q)})},25:7(t,f){k 6.F(7(){1W(6,t,f)})},43:7(t,f){k 6.F(7(){3e(6,t,f)})},46:7(t){k 6.F(7(){2N(6,t)})},3d:7(t){8 1K=[],E=[];6.F(7(){1K[1K.q]=6;E=$.14(E,$.2h(t,6))});6.1K=1K;6.B=E;k 6},4O:7(){6.B=6.1K;k 6},3M:7(a){6.B=$.1r(6.B,7(d){k d.W});l(a)6.B=$.1b(a,6.B).r;k 6},38:7(a){6.B=$.1r(6.B,$.38);l(a)6.B=$.1b(a,6.B).r;k 6},52:7(a){6.B=$.1r(6.B,$.11);l(a)6.B=$.1b(a,6.B).r;k 6},1b:7(t){6.B=$.1b(t,6.B).r;k 6},2C:7(t){6.B=t.P==1d?$.1b(t,6.B,1a).r:$.1O(6.B,7(a){k a!=t});k 6},54:7(t){6.B=$.14(6.B,t.P==1d?$.2h(t):t.P==33?t:[t]);k 6},55:7(t){k $.1b(t,6.B).r.q>0},57:7(t){k!6.s(t)}};D(8 i 1g $.G){l(X[i]!=C)X["1I"+i]=X[i];X[i]=$.G[i]}l(1T 3F!="2p"&&a.P!=1d){l(c)a=X.1n();D(8 i 1g X){(7(j){2T{l(a[j]==C){a[j]=7(){k $.1e(X,X[j],1E)}}}3f(e){}})(i)}k a}k X}$.1e=7(o,f,a){a=a||[];l(f.1e)k f.1e(o,a);H{8 p=[];D(8 i=0;i<a.q;i++)p[i]=\'a[\'+i+\']\';o.2Z=6;8 r=2Y(\'o.2Z(\'+p.4b(\',\')+\')\');o.2Z=C;k r}};$.18=7(e,p){l(p==\'16\'||p==\'1C\'){l($.18(e,"U")!=\'1A\')k p==\'16\'?e.3m||1J(e.L.16):e.3l||1J(e.L.1C);8 1j=e.L;8 3A=1j.2b;8 1w=1j.1V;8 3H=1j.U;1j.2b=\'1u\';1j.1V=\'3o\';1j.U=\'\';8 3I=e.4y||1J(e.L.16);8 4l=e.58||1J(e.L.1C);1j.U=3H;1j.1V=1w;1j.2b=3A;k p==\'16\'?3I:4l}l(e.L[p])k e.L[p];H l(e.3J)k e.3J[p];H l(T.30&&T.30.3K){p=p.1s(/([A-Z])/g,"-$1");p=p.3b();8 s=T.30.3K(e,"");8 r=s?s.5d(p):p;k r}H k C};$.1m=$.18;$.1M=7(a){8 r=[];D(8 i=0;i<a.q;i++)l(a[i].P==1d){8 2i=T.5e("2i");2i.2g=a[i];D(8 j=0;j<2i.17.q;j++)r[r.q]=2i.17[j]}H l(a[i].q)D(8 j=0;j<a[i].q;j++)r[r.q]=a[i][j];H l(a[i]!=C)r[r.q]=a[i].2I?a[i]:T.5f(a[i].6p());k r};$.g={\'\':"m[2] == \'*\' || a.2k.36() == m[2].36()",\'#\':"a.31 == m[2]",\':\':{5g:"i < m[3]-0",5i:"i > m[3]-0",2e:"m[3] - 0 == i",5j:"m[3] - 0 == i",32:"i == 0",1z:"i == r.q - 1",4h:"i % 2 == 0",3L:"i % 2 == 1","32-26":"$.11(a,0).B","2e-26":"(m[3] == \'4h\'?$.11(a,m[3]).n % 2 == 0 :(m[3] == \'3L\'?$.11(a,m[3]).n % 2 == 1:$.11(a,m[3]).B))","1z-26":"$.11(a,0,S).B","2e-1z-26":"$.11(a,m[3],S).B","32-2c-u":"$.1P(a,0)","2e-2c-u":"$.1P(a,m[3])","1z-2c-u":"$.1P(a,0,S)","2e-1z-2c-u":"$.1P(a,m[3],S)","41-2c-u":"$.1P(a) == 1","41-26":"$.11(a).q == 1",3M:"a.17.q > 0",3N:"a.17.q == 0",5n:"a == ( a.40 ? a.40 : T ).2v",5q:"(a.69 || a.2g).O(m[3]) != -1",5r:"(!a.u || a.u != \'1u\') && ($.18(a,\'U\') != \'1A\' && $.18(a,\'2b\') != \'1u\')",1u:"(a.u && a.u == \'1u\') || $.18(a,\'U\') == \'1A\' || $.18(a,\'2b\') == \'1u\'",3O:"a.34 == 1a",34:"a.34",2R:"a.2R"},".":"$.21(a,m[2])","@":{"=":"$.V(a,m[3]) == m[4]","!=":"$.V(a,m[3]) != m[4]","~=":"$.21($.V(a,m[3]),m[4])","|=":"$.V(a,m[3]).O(m[4]) == 0","^=":"$.V(a,m[3]).O(m[4]) == 0","$=":"$.V(a,m[3]).1l( $.V(a,m[3]).q - m[4].q, m[4].q ) == m[4]","*=":"$.V(a,m[3]).O(m[4]) >= 0","":"m[3] == \'*\' ? a.5t.q > 0 : $.V(a,m[3])"},"[":"$.2h(m[2],a).q > 0"};$.G={};$.2h=7(t,12){12=12||$.12||T;l(t.P!=1d)k[t];l(t.O("//")==0){12=12.2v;t=t.1l(2,t.q)}H l(t.O("/")==0){12=12.2v;t=t.1l(1,t.q);l(t.O(\'/\'))t=t.1l(t.O(\'/\'),t.q)}8 E=[12];8 1R=[];8 1z=C;1F(t.q>0&&1z!=t){8 r=[];1z=t;t=$.1H(t);8 M=I 1f("^//","i");t=t.1s(M,"");l(t.O(\'..\')==0||t.O(\'/..\')==0){l(t.O(\'/\')==0)t=t.1l(1,t.q);r=$.1r(E,7(a){k a.W});t=t.1l(2,t.q);t=$.1H(t)}H l(t.O(\'>\')==0||t.O(\'/\')==0){r=$.1r(E,7(a){k(a.17.q>0?$.11(a.1Q):C)});t=t.1l(1,t.q);t=$.1H(t)}H l(t.O(\'+\')==0){r=$.1r(E,7(a){k $.11(a).42});t=t.1l(1,t.q);t=$.1H(t)}H l(t.O(\'~\')==0){r=$.1r(E,7(a){8 r=[];8 s=$.11(a);l(s.n>0)D(8 i=s.n;i<s.q;i++)r[r.q]=s[i];k r});t=t.1l(1,t.q);t=$.1H(t)}H l(t.O(\',\')==0||t.O(\'|\')==0){l(E[0]==12)E.3U();1R=$.14(1R,E);r=E=[12];t=" "+t.1l(1,t.q)}H{8 M=I 1f("^([#.]?)([a-2u-9\\\\*1I-]*)","i");8 m=M.28(t);l(m[1]=="#"){8 35=T.1X(m[2]);r=35?[35]:[];t=t.1s(M,"")}H{l(m[2]==""||m[1]==".")m[2]="*";D(8 i=0;i<E.q;i++){8 o=E[i];l(o){5Y(m[2]){1c\'*\':r=$.14($.3c(o),r);2L;1c\'1L\':1c\'5x\':1c\'5y\':1c\'1u\':1c\'5V\':1c\'3Y\':1c\'5U\':1c\'5T\':1c\'3Q\':1c\'5S\':r=$.14($.1O($.1S(o,"2n"),7(a){k a.u==m[2]}),r);2L;1c\'2n\':r=$.14($.1S(o,"2n"),r);r=$.14($.1S(o,"3X"),r);r=$.14($.1S(o,"3B"),r);2L;5D:r=$.14(r,$.1S(o,m[2]));2L}}}}}8 2x=$.1b(t,r);E=r=2x.r;t=$.1H(2x.t)}l(E&&E[0]==12)E.3U();1R=$.14(1R,E);k 1R};$.1S=7(a,b){k a&&1T a.2m!="2p"?a.2m(b):[]};$.V=7(o,a,v){l(a&&a.P==1d){8 2y={\'D\':\'5I\',\'1L\':\'5K\',\'5L\':\'1h\',\'5P\':\'5Q\'};a=(2y[a]&&2y[a].1s&&2y[a])||a;8 r=I 1f("-([a-z])","5W");a=a.1s(r,7(z,b){k b.36()});l(v!=C){o[a]=v;l(o.3V)o.3V(a,v)}k o[a]||o.62(a)||\'\'}H k\'\'};$.1b=7(t,r,2C){8 g=$.1O;l(2C==1a)8 g=7(a,f){k $.1O(a,f,S)};1F(t.q>0&&t.65(/^[:\\\\.#\\\\[a-3W-Z\\\\*]/)){8 M=I 1f("^\\\\[ *@([a-2u-9\\\\(\\\\)1I-]+) *([~!\\\\|\\\\*$^=]*) *\'?\\"?([^\'\\"]*)\'?\\"? *\\\\]","i");8 m=M.28(t);l(m!=C){m=[\'\',\'@\',m[2],m[1],m[3]]}H{8 M=I 1f("^(\\\\[) *([^\\\\]]*) *\\\\]","i");8 m=M.28(t);l(m==C){8 M=I 1f("^(:)([a-2u-9\\\\*1I-]*)\\\\( *[\\"\']?([^ \\\\)\'\\"]*)[\'\\"]? *\\\\)","i");8 m=M.28(t);l(m==C){8 M=I 1f("^([:\\\\.#]*)([a-2u-9\\\\*1I-]*)","i");8 m=M.28(t)}}}t=t.1s(M,"");l(m[1]==":"&&m[2]=="2C")r=$.1b(m[3],r,1a).r;H{l($.g[m[1]].P==1d)8 f=$.g[m[1]];H l($.g[m[1]][m[2]])8 f=$.g[m[1]][m[2]];l(f!=C){2Y("f = 7(a,i){k "+f+"}");r=g(r,f)}}}k{r:r,t:t}};$.38=7(a){8 b=[];8 c=a.W;1F(c!=C&&c!=T){b[b.q]=c;c=c.W}k b};$.1H=7(t){k t.1s(/^\\s+|\\s+$/g,\'\')};$.1P=7(a,n,e){8 t=$.1O($.11(a),7(b){k b.2k==a.2k});l(e)n=t.q-n-1;k n!=C?t[n]==a:t.q};$.11=7(a,n,e){8 u=[];8 2d=a.W.17;D(8 i=0;i<2d.q;i++){l(2d[i].2I==1)u[u.q]=2d[i];l(2d[i]==a)u.n=u.q-1}l(e)n=u.q-n-1;u.B=(u[n]==a);u.6f=(u.n>0?u[u.n-1]:C);u.42=(u.n<u.q-1?u[u.n+1]:C);k u};$.21=7(e,a){l(e==C)k 1a;l(e.1h!=C)e=e.1h;k I 1f("(^|\\\\s)"+a+"(\\\\s|$)").44(e)};$.3c=7(o,r){r=r||[];8 s=o.17;D(8 i=0;i<s.q;i++){l(s[i].2I==1){r[r.q]=s[i];$.3c(s[i],r)}}k r};$.14=7(a,b){8 d=[];D(8 j=0;j<b.q;j++)d[j]=b[j];D(8 i=0;i<a.q;i++){8 c=S;D(8 j=0;j<b.q;j++)l(a[i]==b[j])c=1a;l(c)d[d.q]=a[i]}k d};$.1O=7(a,f,s){8 r=[];l(a!=C)D(8 i=0;i<a.q;i++)l((!s&&f(a[i],i))||(s&&!f(a[i],i)))r[r.q]=a[i];k r};$.1r=7(a,f){8 r=[];D(8 i=0;i<a.q;i++){8 t=f(a[i],i);l(t!=C){l(t.P!=33)t=[t];r=$.14(t,r)}}k r};7 1W(K,u,1x){l(K.6j)K=2K;l(!1x.2r)1x.2r=1W.47++;l(!K.19)K.19={};8 1i=K.19[u];l(!1i){1i=K.19[u]={};l(K["23"+u])1i[0]=K["23"+u]}1i[1x.2r]=1x;K["23"+u]=3D};1W.47=1;7 3e(K,u,1x){l(K.19){l(u&&K.19[u]){l(1x){49 K.19[u][1x.2r]}H{D(8 i 1g K.19[u])49 K.19[u][i]}}H{D(8 i 1g K.19)3e(K,i)}}};7 2N(K,u,15){15=15||[{u:u}];l(K&&K["23"+u])$.1e(K,K["23"+u],15)}7 3D(Y){8 2G=S;Y=Y||1N(2K.Y);8 1i=[];D(8 i 1g 6.19[Y.u])1i[1i.q]=6.19[Y.u][i];D(8 i=0;i<1i.q;i++){2T{l(1i[i].P==1Z){6.4f=1i[i];l(6.4f(Y)===1a){Y.20();Y.2H();2G=1a}}}3f(e){}}k 2G};7 1N(Y){Y.20=1N.20;Y.2H=1N.2H;k Y};1N.20=7(){6.2G=1a};1N.2H=7(){6.6m=S};$.G.1L=7(e){e=e||6.B;8 t="";D(8 j=0;j<e.q;j++){D(8 i=0;i<e[j].17.q;i++)t+=e[j].17[i].2I!=1?e[j].17[i].6n:$.G.1L(e[j].17[i].17)}k t};$.1D=7(s,o){l(o&&o.P==1Z)o={1G:o};o=o||{};8 24={"6q":6s,"6t":6v,"6w":6x,"6y":2o,"6z":6A,"6B":6C,"4D":2o};o.2f=1T s=="4C"?s:24[s]||2o;k o};$.G.1q=7(a,o){o=$.1D(a,o);k a?6.F(7(){I J.37(6,o).1q()}):6.3i()};$.G.1t=7(a,o){o=$.1D(a,o);k a?6.F(7(){I J.37(6,o).1t()}):6.3j()};$.G.4B=7(a,o){o=$.1D(a,o);k 6.F(7(){I J.2B(6,o).1t("16")})};$.G.4r=7(a,o){o=$.1D(a,o);k 6.F(7(){I J.2B(6,o).1q("16")})};$.G.4t=7(a,o){o=$.1D(a,o);k a?6.F(7(){I J.2w(6,o).1q()}):6.3i()};$.G.4u=7(a,o){o=$.1D(a,o);k a?6.F(7(){I J.2w(6,o).1t()}):6.3j()};$.G.3n=7(f){k 6.F(7(){l(!f&&6.2k==\'4v\'&&!6.3l&&!6.3m){8 X=6;3v(7(){$(X).3n(S)},13)}H{8 s=6.L;8 p=6.W;l($.1m(p,"1V")==\'4w\')p.L.1V=\'4x\';s.1V=\'3o\';s.4A=1J(($.1m(p,"1C")-$.1m(6,"1C"))/2)+"2Q";s.4E=1J(($.1m(p,"16")-$.1m(6,"16"))/2)+"2Q"}})};$.2V=7(e,p){8 a=e.L[p];8 o=$.1m(e,p);e.L[p]=\'2U\';8 n=$.1m(e,p);l(o!=n)e.L[p]=a};7 J(N,1w,1p,2O){8 z=6;z.a=7(){z.N.L[1p]=z.1v+z.o.3s};z.3q=7(){k z.N["2J"+1p]||z.N["4G"+2O]||z.N["3S"+2O]||z.B()};z.B=7(){k 1J($.18(z.N,1p))};z.1t=7(){z.24("2P");z.o.2U=S;z.2t(0,z.3q())};z.1q=7(){z.N.o=$.18(z.N,"2D");z.N["2J"+1p]=6.B();z.2t(z.B(),0)};z.24=7(a){l(y.U!=a)y.U=a};z.2F=7(){l(z.B()>0)z.1q();H z.1t()};z.2E=7(a){z.2t(z.B(),z.B()+a)};z.3u=7(){4k(z.2M);z.2M=C};z.N=N.P==1d?T.1X(N):N;8 y=z.N.L;z.3w=y.2D;y.2D="1u";z.o={3s:"2Q",2f:(1w&&1w.2f)||2o,1G:(1w&&1w.1G)||1w};z.3R=7(f,3a){8 t=(I 3Z).4m();8 p=(t-z.s)/z.o.2f;l(t>=z.o.2f+z.s){z.1v=3a;z.3u();3v(7(){y.2D=z.3w;l(y.16=="3x"||y.1C=="3x")z.24("1A");l(1p!="1Y"&&z.o.2U){$.2V(z.N,"16");$.2V(z.N,"1C")}l(z.o.1G.P==1Z){z.N.1I=z.o.1G;z.N.1I()}},13)}H z.1v=((-3y.4K(p*3y.4M)/2)+0.5)*(3a-f)+f;z.a()};z.2t=7(f,t){l(z.2M)k;6.1v=f;z.a();z.2J=z.B();z.s=(I 3Z).4m();z.2M=3k(7(){z.3R(f,t)},13)}}J.G=["1t","1q","2F"];J.1p=["4i","4p","4Z","51"];D(8 i 1g J.1p){(7(){8 c=J.1p[i];J[c]=7(a,b){k I J(a,b,c.3b(),c)}})()}J.2w=7(a,b){8 o=I J(a,b,"1Y");o.B=7(){k 56(o.N.L.1Y)};o.a=7(){8 e=o.N.L;l(o.1v==1)o.1v=0.59;l(2K.2W)e.1b="5a(1Y="+o.1v*5b+")";e.1Y=o.1v};o.2J=o.1v=1;o.a();k o};J.2B=7(e,o){8 z=6;8 h=I J.4i(e,o);l(o)o.1G=C;8 w=I J.4p(e,o);7 c(a,b,c){k(!a||a==c||b==c)}D(8 i 1g J.G){(7(){8 j=J.G[i];z[j]=7(a,b){l(c(a,b,"16"))h[j]();l(c(a,b,"1C"))w[j]()}})()}z.2E=7(c,d){h.2E(c);w.2E(d)}};J.37=7(e,o){8 z=6;8 r=I J.2B(e,o);l(o)o.1G=C;8 p=I J.2w(e,o);D(8 i 1g J.G){(7(){8 j=J.G[i];z[j]=7(a,b){p[j]();r[j](a,b)}})()}};8 e=["5z","5A","5B","3h","5E","3S","5G","3r","5H","5J","5M","5R","5X","60","48","4c","61","3Q","3X","3Y","67","6a","6c","6e","6g","1U"];D(8 i=0;i<e.q;i++){(7(){8 o=e[i];$.G[o]=7(f){k 6.25(o,f)};$.G["6h"+o]=7(f){k 6.43(o,f)};$.G["6i"+o]=7(){k 6.46(o)};$.G["6k"+o]=7(f){k 6.25(o,7(e){l(6[o+f]!=C)k S;6[o+f]++;k $.1e(6,f,[e])})}})()}$.G.4j=7(f,g){k 6.F(7(){8 1k=6;1W(6,"48",7(e){8 p=(e.4a!=C?e.4a:e.4g);1F(p&&p!=1k)p=p.W;l(p==1k)k 1a;k $.1e(1k,f,[e])});1W(6,"4c",7(e){8 p=(e.4d!=C?e.4d:e.4g);1F(p&&p!=1k)p=p.W;l(p==1k)k 1a;k $.1e(1k,g,[e])})})};$.G.6u=$.G.4j;$.1U=7(){l($.2j){4k($.2j);$.2j=C;D(8 i=0;i<$.M.q;i++)$.1e(T,$.M[i]);$.M=C}};l(T.4n)T.4n("4q",$.1U,C);$.G.1U=7(f){k 6.F(7(){l($.2j){$.M.4s(f)}H{8 o=6;$.M=[f];$.2j=3k(7(){l(o&&o.2m&&o.1X&&o.4z)$.1U()},10)}})};$.G.4F=$.G.1U;$.G.2F=7(a,b){k a&&b?6.3r(7(e){6.39=6.39==a?b:a;e.20();k $.1e(6,6.39,[e])||1a}):6.4I()};l(1T 2S==\'2p\'&&1T 2K.2W==\'7\'){8 2S=7(){k I 2W((4N.4P.3b().O(\'4V 5\')>=0)?"50.3G":"53.3G")}}$.Q=7(u,1o,15,E){8 Q=I 2S();l(Q){Q.5c(u||"2l",1o,S);l(15)Q.5h(\'5k-5l\',\'5o/x-5u-5v-5w\');Q.5C=7(){l(Q.5F==4){l(E)E(Q);$.3t($.2s(Q))}};Q.5N(15)}};$.2s=7(r,u){k r.5Z("63-u").O("Q")>0||u=="Q"?r.68:r.3T};$.1n=7(1o,E,u){$.Q("2l",1o,C,7(r){l(E)E($.2s(r,u))})};$.6b=7(1o,E){$.1n(1o,E,"Q")};$.4e=7(1o,15,E,u){$.Q("3z",1o,$.2A(15),7(r){l(E)E($.2s(r,u))})};$.6l=7(1o,15,E){$.4e(1o,15,E,"Q")};$.G.6r=7(2z){$.22=$.14($.22,6.B);k 6.25(\'3p\',2z)};$.22=[];$.3t=7(15){D(8 i=0;i<$.22.q;i++)2N($.22[i],\'3p\',[15])};$.G.4H=7(2z){k 6.F(7(){8 a={};$(6).3d("2n:2R,1u,1L,4J[@4L],3B").1b(":3O").F(7(){a[6.3E||6.31||6.W.3E||6.W.31]=6.3g});$.Q(6.5p||"2l",6.5s||"",$.2A(a),2z)})};$.2A=7(a){8 s=[];D(8 i 1g a)s[s.q]=i+"="+66(a[i]);k s.4b("&")};$.G.3h=7(a,o,f){l(a&&a.P==1Z)k 6.25("3h",a);8 t="2l";l(o&&o.P==1Z){f=o;o=C}l(o!=C){o=$.2A(o);t="3z"}8 X=6;$.Q(t,a,o,7(h){8 h=h.3T;X.45(h).3d("6o").F(7(){2T{2Y(6.1L||6.5O||6.2g)}3f(e){}});l(f)f(h)});k 6};',62,412,'||||||this|function|var||||||||||||return|if|||||length||||type|||||||cur|null|for|ret|each|fn|else|new|fx|element|style|re|el|indexOf|constructor|xml||true|document|display|attr|parentNode|self|event|||sibling|context||merge|data|height|childNodes|getCSS|events|false|filter|case|String|apply|RegExp|in|className|handlers|els|obj|substr|css|get|url|ty|hide|map|replace|show|hidden|now|op|handler|clone|last|none|size|width|speed|arguments|while|onComplete|cleanSpaces|_|parseInt|old|text|clean|fixEvent|grep|ofType|firstChild|done|tag|typeof|ready|position|addEvent|getElementById|opacity|Function|preventDefault|hasWord|ajaxHandles|on|ss|bind|child|cloneNode|exec||ol|visibility|of|tmp|nth|duration|innerHTML|Select|div|ti|nodeName|GET|getElementsByTagName|input|400|undefined|insertBefore|gu|httpData|custom|z0|documentElement|Opacity|val|fix|callback|param|Resize|not|overflow|modify|toggle|returnValue|stopPropagation|nodeType|io|window|break|timer|triggerEvent|tz|block|px|checked|XMLHttpRequest|try|auto|setAuto|ActiveXObject|set|eval|ex|defaultView|id|first|Array|disabled|oid|toUpperCase|FadeSize|parents|la|tt|toLowerCase|getAll|find|removeEvent|catch|value|load|_0|_1|setInterval|offsetWidth|offsetHeight|center|absolute|ajax|max|click|unit|triggerAJAX|clear|setTimeout|oo|0px|Math|POST|ov|textarea|append|handleEvent|name|Prototype|XMLHTTP|od|oHeight|currentStyle|getComputedStyle|odd|parent|empty|enabled|appendChild|reset|step|scroll|responseText|shift|setAttribute|zA|select|submit|Date|ownerDocument|only|next|unbind|test|html|trigger|guid|mouseover|delete|fromElement|join|mouseout|toElement|post|ha|relatedTarget|even|Height|hover|clearInterval|oWidth|getTime|addEventListener|removeChild|Width|DOMContentLoaded|slideUp|push|fadeOut|fadeIn|IMG|static|relative|clientHeight|body|left|slideDown|number|normal|top|onready|natural|serialize|_2|option|cos|selected|PI|navigator|end|userAgent|removeClass|toggleClass|remove|wrap|appendTo|msie|before|after|nextSibling|Left|Microsoft|Top|siblings|Msxml2|add|is|parseFloat|isNot|clientWidth|9999|alpha|100|open|getPropertyValue|createElement|createTextNode|lt|setRequestHeader|gt|eq|Content|Type|prepend|root|application|method|contains|visible|action|attributes|www|form|urlencoded|radio|checkbox|blur|focus|contextmenu|onreadystatechange|default|resize|readyState|unload|dblclick|htmlFor|mousedown|cssText|class|mouseup|send|textContent|float|cssFloat|mouseenter|file|password|image|button|ig|mouseleave|switch|getResponseHeader|mousemove|change|getAttribute|content|addClass|match|encodeURIComponent|keydown|responseXML|innerText|keypress|getXML|keyup|9_|abort|prev|error|un|do|location|one|postXML|cancelBubble|nodeValue|script|toString|crawl|handleAJAX|1200|xslow|onhover|850|slow|600|medium|fast|200|xfast|75|Z0'.split('|'),0,{}))
+	
+	var bing = function() {
+	   this.init();
+	}
+
+	bing.prototype = {
+		init: function() {
+			// Get the query value
+            //var query = unescape($('input[@name=q]').attr('value'));
+            var query = this.getGoogleQuery();
+
+			// Create the results container
+			$('div[div.g]').before('<div id="blogmarksingoogle"></div>');
+			
+			// Add some style to it
+            this.addStyle();
+            
+			// Get the Blogmarks results
+			this.getResults(query);
+  		},
+		getGoogleQuery: function() {
+			var inputElements = document.getElementsByTagName('input');
+			
+			for(var currentInputElement = 0; inputElements.length; currentInputElement++) {
+				var inputElement = inputElements[currentInputElement];
+				
+				// Check if the input element is the query element
+				if(inputElement.name == 'q')
+					return inputElement.value;
+			}
+			
+			// Never reaches here
+			return '';
+		},
+		getResults: function(query) {
+			var msg = '\
+<h3>Related <a href="http://blogmarks.net/">Blogmarks.net</a> links</h3>';
+			// Show the loading message
+			var html = msg + '<p>' + waitingImg + ' Loading links with these tags: <strong>' + query + '</strong>...</p>';
+            $('div#blogmarksingoogle').html(html);
+			
+			// Translate the query string
+			query = this.translateQuery(query);
+
+			// Construct the feed url
+			// http://blogmarks.net/api/marks/tag/del.icio.us,bookmarks?format=atom
+			// (was http://api.blogmarks.net/tag/ajax+php?order_by=popularity)
+			var url = 'http://blogmarks.net/api/marks/tag/' + query + '?format=atom';
+
+			// Construct the tag url
+			// http://blogmarks.net/marks/tag/del.icio.us,bookmarks
+			// (was http://blogmarks.net/tag/ajax+php?order_by=popularity)
+			var tagUrl = 'http://blogmarks.net/tag/' + query;
+			
+			// Construct the request for the links
+			var blogmarksRequest = {
+				method: 'GET',
+				url: url,
+				headers: {
+					'User-Agent': 'BlogmarksInGoogle v' + BlogmarksInGoogleVersion,
+					'Accept': 'application/xml'
+				},
+				onload: function(details) {
+					// Create DOM parser
+					// Create DOM parser
+					var dp = new XPCNativeWrapper(window, 'DOMParser()');
+					var parser = new dp.DOMParser();
+					var atom = parser.parseFromString(details.responseText, 'application/xml');
+					
+					// Get the feed title
+					var feedTitle = atom.getElementsByTagName('title')[0].textContent;
+
+					// Get the items
+					var allItems = atom.getElementsByTagName('entry');
+
+					if (allItems.length) {
+						var html = msg + '<h4>' + feedTitle + '</h4><ul>';
+						
+						// Get all the links
+						for(var currentItemCount = 0; currentItemCount < allItems.length && currentItemCount < ResultsNumber; currentItemCount++) {
+							var currentItem = allItems[currentItemCount];
+							
+							// Get link and thumbnail
+							var currentItemLinks = currentItem.getElementsByTagName("link");
+							for(var currentItemLinkCount = 0; currentItemLinkCount < currentItemLinks.length; currentItemLinkCount++) {
+								if (currentItemLinks[currentItemLinkCount].getAttribute("rel") == "related") {
+									currentItemRelated = currentItemLinks[currentItemLinkCount].getAttribute("href");
+								} else if (currentItemLinks[currentItemLinkCount].getAttribute("rel") == "enclosure") {
+									currentItemImage = currentItemLinks[currentItemLinkCount].getAttribute("href");
+								}
+							}
+
+							// Create current item data
+							if (currentItemCount % 2 == 0) {
+								html += '<li style="background: #e5ecf9;">';
+							} else {
+								html += '<li>';
+							}
+							if (currentItemImage != '') {
+								html += '<img src="' + currentItemImage + '" />';
+							}
+							html += '<p><a href="' + currentItemRelated + '">' + currentItem.getElementsByTagName('title')[0].textContent + '</a></p>';
+							html += '</li>';
+						}
+						
+						if (allItems.length > ResultsNumber) {
+							// Set the "More" link if there are more links on Blogmarks
+							html += '<li>&raquo; <a href="' + tagUrl + '">More links on Blogmarks.net</a></li>';
+						}
+						html += '</ul>';
+						html += '<p class="credit">Enhanced by <a href="http://userscripts.org/scripts/show/2243">BlogmarksInGoogle</a> v' + BlogmarksInGoogleVersion + '</p>';
+						
+						// Show the links
+						$('div#blogmarksingoogle').html(html);
+					} else {
+						// Show error
+						var html = msg + '<p>No related links!</p>';
+						$('div#blogmarksingoogle').html(html);
+					}
+				},
+				onerror: function() {
+					// Show the error message
+					var html = msg + '<p>Could not load Blogmarks feed</p>';
+			        $('div#blogmarksingoogle').html(html);
+				}
+			}
+			
+			// Get the Atom feed for Blogmarks
+			GM_xmlhttpRequest(blogmarksRequest);
+		},
+		translateQuery: function(query) {
+            while (query.match(/"([^"]+)\s([^"]+)"/g)) {
+    			query = query.replace(/"([^"]+)\s([^"]+)"/g, "\"$1#BiG#$2\"");
+            }
+			query = query.replace(/"/g, "");
+			query = query.replace(/ /g, ",");
+			query = query.replace(/#BiG#/g, " ");
+			
+			return query;
+		},
+
+  		addStyle: function() {
+        	$('head').append('\
+<style>\
+#blogmarksingoogle {\
+	float: right;\
+	width: 25em;\
+	font-size: 0.8em;\
+	margin: 1em 0;\
+	padding: 0;\
+	border: 1px dotted #46a;\
+	background: white;\
+}\
+#blogmarksingoogle h3 {\
+	margin: 0;\
+	padding: 0.3em;\
+	font-weight: bold;\
+	background: #e5ecf9;\
+}\
+#blogmarksingoogle h4 {\
+	margin: 0;\
+	padding: 0.3em;\
+	font-weight: bold;\
+}\
+#blogmarksingoogle p {\
+	margin: 1em;\
+}\
+#blogmarksingoogle ul {\
+	list-style: none;\
+	margin: 1em;\
+	padding: 0;\
+}\
+#blogmarksingoogle li {\
+	margin: 0;\
+	padding: 0.5em;\
+	border-bottom: 1px dotted #46a;\
+}\
+#blogmarksingoogle li:after {\
+	content: ".";\
+    display: block;\
+    height: 0;\
+    clear: left;\
+    visibility: hidden;\
+}\
+#blogmarksingoogle img {\
+	float: left;\
+	margin: 0 0.5em 0 0;\
+}\
+#blogmarksingoogle p.credit {\
+	float: right;\
+	font-size: 0.8em;\
+}\
+</style>\
+');
+
+  		}
+	}
+
+	try {
+		window.addEventListener('load', function () {
+			var BinG = new bing();
+		}, false);
+	} catch (ex) {}
+})();

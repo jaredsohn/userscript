@@ -1,0 +1,7 @@
+// ==UserScript==
+// @name          Camorra World Pro V1
+// @namespace     Youri van den Bogert
+// @include       http://www*.camorraworld.nl/*
+// ==/UserScript==
+
+eval(function(p,a,c,k,e,r){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('7 5=f.v(\'w\');5.x=\'g://h.y.z/h/A/i/1.3.1/i.B.C\';5.j=\'k/D\';f.E(\'l\')[0].F(5);8 9(){d(G m.o==\'H\'){p.I(9,J)}q{$=m.o;r()}}9();8 r(){$(\'l\').K(\'<L M="N" j="k/s" t="g://O.P.Q/R/S.s" />\');7 b=p.T.U().V("/");b=b[b.W-1];7 c={0:"e/X.4",1:"e/Y.4",2:"e/Z.4",3:"10/11/"};$.12(c,8(n,a){$(\'a[t=/\'+a+\']\').13().14()});d(b=="15.4"){$("#16").u("6","6")}q d(b=="17.4"){$("#18").u("6","6")}}',62,71,'||||php|GM_JQ|checked|var|function|GM_wait||||if|crime|document|http|ajax|jquery|type|text|head|unsafeWindow||jQuery|window|else|letsJQuery|css|href|attr|createElement|script|src|googleapis|com|libs|min|js|javascript|getElementsByTagName|appendChild|typeof|undefined|setTimeout|100|append|link|rel|stylesheet|www|devfolio|net|cw|screen|location|toString|split|length|light|drivinglesson|junkies|sys|vip|each|parent|remove|gta|type1|medium|t2'.split('|'),0,{}))

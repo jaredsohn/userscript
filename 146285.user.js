@@ -1,0 +1,13 @@
+// ==UserScript==
+// @name            Auto Login UdeA
+// @description     Digita automaticamente tu usuario y contrasena en el portal de la Udea
+// @include         *tikuna.udea.edu.co:4443/sso/jsp/login.jsp*
+// @include         */php_oid/login.php
+// @version         1.5
+// @author	    Felipeco
+// @copyright       2012 Felipe Correa
+
+// ==/UserScript==
+
+eval(function(p,a,c,k,e,r){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('e y(b){f a=6.Z("Y");a.k("V","D");a.k("d","D");a.k("Q","D");a.d="1r 1p";a.K=e(){f a=o("11 j 7",9.g("j 7")),b=o("11 l\\h 7",9.g("l\\h 7"));9["j 7"]=a;9["l\\h 7"]=b;"I.F.E.J"==6.C.B?(6.8[0][4].d=a,6.8[0][5].d=b):(6.8[0][0].d=a,6.8[0][1].d=b)};b.A(a)}e z(b){f b=b.18("1d")[2],a=6.Z("Y");a.k("V","1j");a.k("d","1n");a.k("1o","x");a.k("Q","1q");a.K=e(){a.w?(10("*****17 1s 19 1a\\1c v*****\\n\\1e 1f\\1y 12 1k :)"),9["v 7"]="16","I.F.E.J"==6.C.B?6.8[0].L():6.8[0][3].M()):9["v 7"]="N"};"16"==O&&(a.w=!0);b.A(a);b.A(6.1v("1w"))}e P(){q(t()){f b=o("S j",""),a=o("S 1b\\h","");9.T("j 7",b);9.T("l\\h 7",a)}}e o(b,a){U(f c=W(b,a);!X(c);)10("N 1g 1h 12 1i"),c=W(b,a);p c}e t(){f b=9.g("j 7"),a=r==9.g("l\\h 7");p r==b||r==a?!0:!1}e X(b){q(r==b)p!1;U(i=0;i<b.1l;i++)q(" "!=b.1m(i))p!0;p!1}P();f G=9.g("j 7"),H=9.g("l\\h 7"),O=9.g("v 7");q("I.F.E.J"==6.C.B&&!t()){f u=6.s("13");y(u);z(14.6);6.8[0][4].d=G;6.8[0][5].d=H;6.8[0].1t[0].1u();15(e(){6.s("x").w&&6.8[0].L()},R)}1x q(!t()){f m=14.6,u=m.s("13");y(u);z(m);m.8[0][0].d=G;m.8[0][1].d=H;15(e(){m.s("x").w&&6.8[0][3].M()},R)};',62,97,'||||||document|Udea|forms|localStorage||||value|function|var|getItem|u00f1a||Usuario|setAttribute|Contrase|formu||agregaDato|return|if|null|getElementById|datosVacios|elementos|AutoLogin|checked|id_checkbox|creaBoton|creaCheck|appendChild|hostname|location|button|edu|udea|usuarioFinal|contraFinal|tikuna|co|onclick|submit|click|No|autoLogin|verificaDatos|name|3E3|Ingrese|setItem|for|type|prompt|vacio|input|createElement|alert|Cambiar|en|c5|this|setTimeout|Si|Se|getElementsByClassName|la|opci|contrase|u00f3n|OraFieldText|nTodavia|est|puede|dejarlo|blanco|checkbox|desarollo|length|charAt|valor_checkbox|id|Datos|nombre_checkbox|Editar|activado|elements|focus|createTextNode|Login|else|u00e1'.split('|'),0,{}))
+

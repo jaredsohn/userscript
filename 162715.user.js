@@ -1,0 +1,12 @@
+// ==UserScript==
+// @name        Newgrounds ePenis
+// @namespace   https://mattster.newgrounds.com/
+// @include 	http://*.newgrounds.com/stats/medals?compare*
+// @include 	http://*.newgrounds.com/stats/medals/?compare*
+// @include 	http://www.*.newgrounds.com/stats/medals?compare*
+// @include 	http://www.*.newgrounds.com/stats/medals/?compare*
+// @require     http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js
+// @version     1.0
+// ==/UserScript==
+
+$(document).ready(function(){measurePenis()});function measurePenis(){var h=$("#main").find("tbody").children("tr").length;var d="None",c="None";d=$("#main").find("thead").children("tr").eq(0).children("th").eq(1).text();c=$("#main").find("thead").children("tr").eq(0).children("th").eq(2).text();document.title="Comparing "+d+" & "+c+" ePenis'";var n=0,f=0;$("#main").find("tbody").children("tr").each(function(){$(this).children("td").eq(2).children("img").each(function(){n++});$(this).children("td").eq(4).children("img").each(function(){f++})});var e=(n>f)?n:f;var l=n+f;var g=700;var j=50;var a=(n/l)*g;var o=(f/l)*g;if(a<j){a=j;o-=a}if(o<j){o=j;a-=o}var b="";var i="http://www.newgrounds.com/dump/draw/90e523e837b36e38aae8f37b8fe8afe0";var p="http://www.newgrounds.com/dump/draw/30a23694db07eff8036a3f3f590c9a79";var k="http://www.newgrounds.com/dump/draw/a00abf44bd66622dd38ed441895b947d";var m="http://www.newgrounds.com/dump/draw/9a5c770961fb52c5a04e649b4986820c";b+='<div class="three3">';b+='<div class="podtop"><h2 class="users">ePenis Compare - '+d+" vs "+c+"</h2>";b+='<div><a href="http://mattster.newgrounds.com/follow/" target="_blank">Follow Me!</a></div>';b+="</div>";b+='<div class="podcontent">';b+="<table><thead><tr><th>"+d+'</th><th style="text-align:right;">'+c+"</th></tr></thead></table>";b+='<div style="margin:3px;">';b+='<span style="float:left;"><div style="background-image:url(\''+i+"'); width:79px; height:69px; position:absolute;\"></div>";b+="<div style=\"background-image:url('"+k+"'); width: "+(a)+'px; height: 43px; margin-left:79px; margin-right:15px; background-position:right;"></div></span>';b+='<span style="">';b+="<div style=\"float:right; background-image:url('"+m+"'); width:79px; height:69px; \"></div>";b+="<div style=\" float:right; background-image:url('"+p+"'); width: "+(o)+'px; height: 43px; margin-right:0px; margin-left:15px; background-position:left;"></div>';b+="</span></div>";b+='<div class="spacer" style="clear: both;"></div>';b+="</div>";b+='<div class="podbot"></div>';b+="</div></div>";$("#main").children("div").eq(0).after(b)};

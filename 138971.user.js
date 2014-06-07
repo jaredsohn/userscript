@@ -1,0 +1,51 @@
+// ==UserScript==
+// @author         rikuo
+// @name           Pixel Art filter
+// @description	   Convert all website to like Game Boy.
+// @namespace      http://d.hatena.ne.jp/rikuo/
+// @include        http://*
+// ==/UserScript==
+
+var u=self.location.href;
+if(u!=top.location.href)return;
+if(window!=parent)return;
+
+var _doc = document;
+var body = _doc.getElementsByTagName('body')[0];
+var btnValue = GM_getValue( 'PAfilter', 0);
+
+if(btnValue)setFilter();
+
+var btn = c('img');
+btn.id = 'rko_pixelart_btn';
+btn.height = '26';
+btn.width = '19';
+btn.alt = 'Switch to Game Boy mode';
+btn.title = 'Switch to Game Boy mode';
+btn.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAAaBAMAAACncXo3AAAAIVBMVEUAAADMz9wgJyn///9hanqCpkVxmDwrNTicpr2BF0aLIUkR3A+JAAAAAXRSTlMAQObYZgAAAGxJREFUGNNjMIYBAwYjJSgAMgUbBYGgUQjIFHEBAzDTLQ0IwExxt1AggIpSzATb4AhiCkIAmCmuiMpcBba4SAnIngliCikVKUpNhCuQnIihTVDQ0bGxsQnMFBFBiAoKSkgg2aaM8LwxAwMiRAAQvy+L/MnU8wAAAABJRU5ErkJggg==';
+btn.addEventListener('click', function(e){
+	if(btnValue){
+		btnValue = 0;
+		GM_addStyle('html{background-color: transparent;}body{filter:none;}');
+	}else{
+		btnValue = 1;
+		setFilter();
+	}
+	GM_setValue('PAfilter', btnValue);}, false);
+
+body.appendChild(btn);
+
+
+
+
+GM_addStyle('#rko_pixelart_btn{position: fixed;top: 0.5em;left: 1em;max-width: 19px;max-height: 26px;z-index: 9999;border: 0;outline: none;background-image: none;background-color: transparent;padding: 0;margin: 0;cursor: pointer;display: block;filter: none;}');
+
+function setFilter(){
+//	Source:SVG file		http://okiru.net/misc/20120721/pixel_art_filter_lite.svg
+GM_addStyle('body{filter: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiPjxkZWZzPjxmaWx0ZXIgaWQ9IlBBZmlsdGVyX2xpdGUiIHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxmZUNvbG9yTWF0cml4IGluPSJTb3VyY2VHcmFwaGljIiB0eXBlPSJsdW1pbmFuY2VUb0FscGhhIiByZXN1bHQ9IkJXIi8+PGZlQ29tcG9uZW50VHJhbnNmZXIgaW49IkJXIiByZXN1bHQ9ImExIj48ZmVGdW5jQSB0eXBlPSJkaXNjcmV0ZSIgdGFibGVWYWx1ZXM9IjEsMSwxLDEsMSwxLDAsMCIvPjwvZmVDb21wb25lbnRUcmFuc2Zlcj48ZmVDb21wb25lbnRUcmFuc2ZlciBpbj0iQlciIHJlc3VsdD0iYTIiPjxmZUZ1bmNBIHR5cGU9ImRpc2NyZXRlIiB0YWJsZVZhbHVlcz0iMSwxLDEsMSwwLDAsMSwxIi8+PC9mZUNvbXBvbmVudFRyYW5zZmVyPjxmZUNvbXBvbmVudFRyYW5zZmVyIGluPSJCVyIgcmVzdWx0PSJhMyI+PGZlRnVuY0EgdHlwZT0iZGlzY3JldGUiIHRhYmxlVmFsdWVzPSIxLDEsMSwwLDEsMSwxLDEiLz48L2ZlQ29tcG9uZW50VHJhbnNmZXI+PGZlQ29tcG9uZW50VHJhbnNmZXIgaW49IkJXIiByZXN1bHQ9ImE0Ij48ZmVGdW5jQSB0eXBlPSJkaXNjcmV0ZSIgdGFibGVWYWx1ZXM9IjEsMSwwLDEsMSwxLDEsMSIvPjwvZmVDb21wb25lbnRUcmFuc2Zlcj48ZmVDb21wb25lbnRUcmFuc2ZlciBpbj0iQlciIHJlc3VsdD0iYTUiPjxmZUZ1bmNBIHR5cGU9ImRpc2NyZXRlIiB0YWJsZVZhbHVlcz0iMSwwLDEsMSwxLDEsMSwxIi8+PC9mZUNvbXBvbmVudFRyYW5zZmVyPjxmZUNvbXBvbmVudFRyYW5zZmVyIGluPSJCVyIgcmVzdWx0PSJhNiI+PGZlRnVuY0EgdHlwZT0iZGlzY3JldGUiIHRhYmxlVmFsdWVzPSIwLDEsMSwxLDEsMSwxLDEiLz48L2ZlQ29tcG9uZW50VHJhbnNmZXI+PGZlRmxvb2QgeD0iMCIgeT0iMCIgd2lkdGg9IjIiIGhlaWdodD0iMiIgZmxvb2QtY29sb3I9IiNjZGRkNWMiIHJlc3VsdD0iQjEiLz48ZmVGbG9vZCB4PSIwIiB5PSIwIiB3aWR0aD0iMiIgaGVpZ2h0PSIyIiBmbG9vZC1jb2xvcj0iIzkyYTczMCIgcmVzdWx0PSJCMiIvPjxmZUZsb29kIHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZsb29kLWNvbG9yPSIjOTJhNzMwIiByZXN1bHQ9ImQyIi8+PGZlRmxvb2QgeD0iMSIgeT0iMSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmxvb2QtY29sb3I9IiM5MmE3MzAiIHJlc3VsdD0iZDJhIi8+PGZlRmxvb2QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmxvb2QtY29sb3I9IiM2MTY2MWUiIHJlc3VsdD0iZDMiLz48ZmVGbG9vZCB4PSIxIiB5PSIxIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmbG9vZC1jb2xvcj0iIzYxNjYxZSIgcmVzdWx0PSJkM2EiLz48ZmVUaWxlIGluPSJCMSIgcmVzdWx0PSJUMSIvPjxmZVRpbGUgaW49IkIyIiByZXN1bHQ9IlQzIi8+PGZlRmxvb2QgZmxvb2QtY29sb3I9IiM2MTY2MWUiIHJlc3VsdD0iVDUiLz48ZmVGbG9vZCBmbG9vZC1jb2xvcj0iIzJkMzgwYSIgcmVzdWx0PSJUNiIvPjxmZU1lcmdlIHJlc3VsdD0iVDJVbml0Ij48ZmVNZXJnZU5vZGUgaW49IkIxIi8+PGZlTWVyZ2VOb2RlIGluPSJkMiIvPjxmZU1lcmdlTm9kZSBpbj0iZDJhIi8+PC9mZU1lcmdlPjxmZVRpbGUgaW49IlQyVW5pdCIgcmVzdWx0PSJUMiIvPjxmZU1lcmdlIHJlc3VsdD0iVDRVbml0Ij48ZmVNZXJnZU5vZGUgaW49IkIyIi8+PGZlTWVyZ2VOb2RlIGluPSJkMyIvPjxmZU1lcmdlTm9kZSBpbj0iZDNhIi8+PC9mZU1lcmdlPjxmZVRpbGUgaW49IlQ0VW5pdCIgcmVzdWx0PSJUNCIvPjxmZUNvbXBvc2l0ZSBpbj0iVDEiIGluMj0iYTEiIG9wZXJhdG9yPSJvdXQiIHJlc3VsdD0iYjEiLz48ZmVDb21wb3NpdGUgaW49IlQyIiBpbjI9ImEyIiBvcGVyYXRvcj0ib3V0IiByZXN1bHQ9ImIyIi8+PGZlQ29tcG9zaXRlIGluPSJUMyIgaW4yPSJhMyIgb3BlcmF0b3I9Im91dCIgcmVzdWx0PSJiMyIvPjxmZUNvbXBvc2l0ZSBpbj0iVDQiIGluMj0iYTQiIG9wZXJhdG9yPSJvdXQiIHJlc3VsdD0iYjQiLz48ZmVDb21wb3NpdGUgaW49IlQ1IiBpbjI9ImE1IiBvcGVyYXRvcj0ib3V0IiByZXN1bHQ9ImI1Ii8+PGZlQ29tcG9zaXRlIGluPSJUNiIgaW4yPSJhNiIgb3BlcmF0b3I9Im91dCIgcmVzdWx0PSJiNiIvPjxmZU1lcmdlIHJlc3VsdD0iaW1nIj48ZmVNZXJnZU5vZGUgaW49ImIxIi8+PGZlTWVyZ2VOb2RlIGluPSJiMiIvPjxmZU1lcmdlTm9kZSBpbj0iYjMiLz48ZmVNZXJnZU5vZGUgaW49ImI0Ii8+PGZlTWVyZ2VOb2RlIGluPSJiNSIvPjxmZU1lcmdlTm9kZSBpbj0iYjYiLz48L2ZlTWVyZ2U+PGZlQ29tcG9uZW50VHJhbnNmZXIgaW49IlNvdXJjZUFscGhhIiByZXN1bHQ9ImFsIj48ZmVGdW5jQSB0eXBlPSJkaXNjcmV0ZSIgdGFibGVWYWx1ZXM9IjAsMSwxLDEiLz48L2ZlQ29tcG9uZW50VHJhbnNmZXI+PGZlQ29tcG9zaXRlIGluPSJpbWciIGluMj0iYWwiIG9wZXJhdG9yPSJpbiIvPjwvZmlsdGVyPjwvZGVmcz48L3N2Zz4=#PAfilter_lite");}html{background-color: #c2de78;}');
+}
+
+function c(tag_name) {
+	return _doc.createElement(tag_name);
+}
+

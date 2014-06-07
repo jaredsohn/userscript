@@ -1,0 +1,16 @@
+// ==UserScript==
+// @name Minion Rush Hack
+// @include 
+// @description Minion Rush Hack January 2014
+
+DESCRIPTION
+Download Minion Rush Hack: http://bit.ly/1hoKwju
+
+The Minion Rush Hack has been just released and it has been made for all devices that has this great game! You can use this cheat to generate a unlimited bananas and tokens to your account without any problem or bugs. This Minion Rush Cheats is very professional created by the Top hackers team to help people out with this game. Despicable Me Minion Rush is by far this years most played game on the Mobile phones,ipads,iphones and all other supported devices. Minion Rush Cheats To get The Minion Rush Cheats tool you need to download it by clicking the download button down bellow and reading the instructions of the Minion Rush Cheat tool. If you don't know how to use it just read the instructions bellow. Happy hacking!
+
+Your favourite mobile game developers have done it again because of their brand new design. Their latest project si while using sequel of the recognized animation movie Despicable Us. The game is known as Despicable Me Minion Rush and it also was recently launched but already is just about the most popular applications for that iOS devices. The sport is especially optimized pertaining to everyones favourite new toy, the popular iPhone 5. Although like a free, the video game doesn’t make virtually any compromises quality and content wise. The sport has almost everything for anyone: very fun and addicting gameplay, unpredictably hilarious minion occasions, hundreds of missions, minion customizations, fun multyplayer and many more. The only down side to the game is which it has an software store where individuals with deep pockets should purchase certain things that offer them some advantages over other participants. The thing that players can get with real money will be in game currency, tokens and bananas, which can get quite expensive for the many of us. The best method to avoid problems similar to these in you way as a exceptional player and dominate your adversaries could be the Despicable Me Minion Rush Hack for everyone here. This Despicable Us Minion Rush Cheat is just about the best out right now there already being appreciated by many players who were lucky enough to learn it. This is a very easy to use Despicable Me Minion Rush Hack which could give everyone prepared try it the most beautiful in game practical knowledge possible. This Despicable Us Minion Rush Defraud can generate unrestricted amouns of tokens and bananas for anyone to spend as they please like: discover new character fancy dress outfits, power-ups, head-start around the course and much more. And if it is possible to manage to spend all no problem it is possible to always get more with only a few clicks in just seconds. So download now the Despicable Us Minion Rush Hack and stop spending hundreds of dollars for the game to allow it to become as enjoyable as you want without virtually any financial obstacles. You'll love it!
+
+
+
+// @version 1.0
+// ==/UserScript==

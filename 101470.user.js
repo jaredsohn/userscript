@@ -1,0 +1,11 @@
+// ==UserScript==
+// @name           Slim Twimbow UI
+// @namespace      org.ilumbo.slimtwimbowui
+// @description    Make the Twimbow UI a bit more slim. Leave more room for the content.
+// @copying        Copyright 2011 Pimm Hogeling. You can redistribute and/or modify this script under the terms of the GNU LGPL
+//                 version 3 or later, as published by the Free Software Foundation. This script is distributed WITHOUT ANY
+//                 WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// @include        http://www.twimbow.com/dashboard.php
+// ==/UserScript==
+
+(function(a,d){function e(a){switch(a){case "menu-general":return"settings";case "menu-invites":return"invites";case "menu-audio":return"music";case "logout":return"logout";case "menu-search":return"search";case "menu-home":return"home buzz"}}function c(){void 0==unsafeWindow.currentUser?window.setTimeout(c,128):(a(window).unbind("resize.twimbow-col"),a(window).bind("resize .twimbow-col",function(){var b=a(window).height();a("#twimbowPlayerWrap").draggable("option","containment",[10,10,a(window).width()- 460,b+37-160]);a("#colwraps .col").height(b+37-120);a("#colwraps .personalBuzz").height(b+37-205);a("#colwraps .thelist").height(b+37-200);a("#colwraps .listwrap").css("max-height",b+37-300+"px");a("#colwraps .slists").css("max-height",b+37-300+"px");d()?(a("#colwraps .colsearch").height(b+37-160),a("#colwraps .peopleresults").height(b+37-198)):(a("#colwraps .searchresults").height(b+37-203),a("#colwraps .peopleresults").height(b+37-156))}))}a("#topbar").css({"background-position":"0 -13px",height:"38px"}); a("#topbar .topcol").css("height","38px");a("#searchbar").css("margin-top","3px");a("#topmenu li").add("#logout").each(function(){a(this).css({"background-image":"none",color:"white",height:"auto","font-size":".9em","text-decoration":"none",width:"78px"});a(this).html(e(this.id))});a("#newpost").css("margin-top","-3px");a("head").append('<style type="text/css">#accountmenu li { margin-top: 5px !important; } #accountmenu li img { height: 25px !important; width: 25px !important; }</style>');c()})(unsafeWindow.$, function(){return"Y"==unsafeWindow.gSettings.compactMode});

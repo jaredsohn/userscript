@@ -1,0 +1,1 @@
+javascript:var strQ=prompt('Enter MP3 - artist Search term!','eg. The rolling stones');if (strQ) { location.href=%22http://www.google.co.uk/search?hl=en&q=-inurl: (htm|html|asp|cfm|php) intitle:'index of' + 'last modified' + 'parent directory' +description +size +(wma|mp3)\%22%22+strQ+%22\%22%22 }

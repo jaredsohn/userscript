@@ -1,0 +1,107 @@
+// ==UserScript==
+// @name          Orkut Smiles by pradosh/rocky
+// @namespace     pradosh fan club
+// @author	pradosh/rocky
+// @description   miscellaneous Orkut Smiles
+// @include       htt*://*.orkut.*/*
+// @exclude       http://*.orkut.gmodules.*
+// ==/UserScript==
+
+/********************************************************
+//smileys appear below the reply box as well.
+//Made the smileys just for fun and thought to share with you all..!!
+// All credits to Original script writer. I hope u all enjoy the script! ;)
+*********************************************************/
+
+addEventListener('load', function(event) {
+function getTextArea(n) {
+	return document.getElementsByTagName('textarea')[n];
+}
+
+
+function insertSmiley(){
+	var image = this.getElementsByTagName('img')[0].getAttribute("src");
+	getTextArea(this.getAttribute("gult")).focus();
+	getTextArea(this.getAttribute("gult")).value += "<img src="+image+">";
+}
+
+function dip() {
+	var smileyarr = new Array();
+smileyarr["smiley_48"]="http://lh5.ggpht.com/_mkcswd7p9hc/SdGZZnShGLI/AAAAAAAAAa4/_2gRGgK7gVY/smiley_48.gif";
+smileyarr["smiley_47"]="http://lh4.ggpht.com/_mkcswd7p9hc/SdGZaopI_zI/AAAAAAAAAa8/pbJtPOF9N3Y/smiley_47.gif";
+smileyarr["smiley_46"]="http://lh5.ggpht.com/_mkcswd7p9hc/SdGZcckeIqI/AAAAAAAAAbA/9QnvMqCZVeg/smiley_46.gif";
+smileyarr["smiley_45"]="http://lh5.ggpht.com/_mkcswd7p9hc/SdGZdA4_hEI/AAAAAAAAAbE/enj3wIt0Hlg/smiley_45.gif";
+smileyarr["smiley_44"]="http://lh4.ggpht.com/_mkcswd7p9hc/SdGZeH4Wn1I/AAAAAAAAAbI/8AImzSO0FU8/smiley_44.gif";
+smileyarr["smiley_43"]="http://lh3.ggpht.com/_mkcswd7p9hc/SdGZfck0gEI/AAAAAAAAAbM/t9V2DgzUmTM/smiley_43.gif";
+smileyarr["smiley_42"]="http://lh5.ggpht.com/_mkcswd7p9hc/SdGZgljBCuI/AAAAAAAAAbQ/ftGOExIqsHE/smiley_42.gif";
+smileyarr["smiley_41"]="http://lh4.ggpht.com/_mkcswd7p9hc/SdGZhqJMiEI/AAAAAAAAAbU/Plg91rZe4HU/smiley_41.gif";
+smileyarr["smiley_40"]="http://lh3.ggpht.com/_mkcswd7p9hc/SdGZiNWhM8I/AAAAAAAAAbY/nELqWVeah5I/smiley_40.gif";
+smileyarr["smiley_39"]="http://lh6.ggpht.com/_mkcswd7p9hc/SdGZjc9nvII/AAAAAAAAAbc/pzlGuaMtypE/smiley_39.gif";
+smileyarr["smiley_38"]="http://lh3.ggpht.com/_mkcswd7p9hc/SdGZkbHop5I/AAAAAAAAAbg/PkeqlYlekB8/smiley_38.gif";
+smileyarr["smiley_37"]="http://lh3.ggpht.com/_mkcswd7p9hc/SdGZlZdgK8I/AAAAAAAAAbk/Z4thWTlrxLU/smiley_37.gif";
+smileyarr["smiley_36"]="http://lh5.ggpht.com/_mkcswd7p9hc/SdGZmtmByuI/AAAAAAAAAbo/-ZqZ1kvnvzg/smiley_36.gif";
+smileyarr["smiley_35"]="http://lh6.ggpht.com/_mkcswd7p9hc/SdGZn1r12qI/AAAAAAAAAbs/Vm7TwTQ0zxQ/smiley_35.gif";
+smileyarr["smiley_34"]="http://lh5.ggpht.com/_mkcswd7p9hc/SdGZoxkMI6I/AAAAAAAAAbw/I9284CMkgi4/smiley_34.gif";
+smileyarr["smiley_33"]="http://lh6.ggpht.com/_mkcswd7p9hc/SdGZpqWmp2I/AAAAAAAAAb0/LY_q-iesupk/smiley_33.gif";
+smileyarr["smiley_32"]="http://lh3.ggpht.com/_mkcswd7p9hc/SdGZqjWTpsI/AAAAAAAAAb4/6GjTmxNVtrQ/smiley_32.gif";
+smileyarr["smiley_31"]="http://lh4.ggpht.com/_mkcswd7p9hc/SdGZr9ifiWI/AAAAAAAAAb8/MXOwkm2qGxs/smiley_31.gif";
+smileyarr["smiley_30"]="http://lh6.ggpht.com/_mkcswd7p9hc/SdGZtfzrtBI/AAAAAAAAAcA/QciU_OxliNo/smiley_30.gif";
+smileyarr["smiley_29"]="http://lh3.ggpht.com/_mkcswd7p9hc/SdGZuHKtJ3I/AAAAAAAAAcE/moBqa6GReYw/smiley_29.gif";
+smileyarr["smiley_28"]="http://lh4.ggpht.com/_mkcswd7p9hc/SdGZvoBUcHI/AAAAAAAAAcI/MDLUXvRrNu4/smiley_28.gif";
+smileyarr["smiley_27"]="http://lh4.ggpht.com/_mkcswd7p9hc/SdGZwQAN3yI/AAAAAAAAAcM/VRtKaFxUkbI/smiley_27.gif";
+smileyarr["smiley_26"]="http://lh3.ggpht.com/_mkcswd7p9hc/SdGZxXqsxeI/AAAAAAAAAcQ/YfK6ibUnQR0/smiley_26.gif";
+smileyarr["smiley_25"]="http://lh3.ggpht.com/_mkcswd7p9hc/SdGZyfIEKBI/AAAAAAAAAcU/PU-W1-4GWks/smiley_25.gif";
+smileyarr["smiley_24"]="http://lh3.ggpht.com/_mkcswd7p9hc/SdGZzCEN-QI/AAAAAAAAAcY/607AvfK8Bwc/smiley_24.gif";
+smileyarr["smiley_23"]="http://lh6.ggpht.com/_mkcswd7p9hc/SdGZ1ZmrLdI/AAAAAAAAAcc/P0uDryGKdIc/smiley_23.gif";
+smileyarr["smiley_22"]="http://lh5.ggpht.com/_mkcswd7p9hc/SdGZ2wMcRwI/AAAAAAAAAcg/xCQhcKUw7TQ/smiley_22.gif";
+smileyarr["smiley_21"]="http://lh4.ggpht.com/_mkcswd7p9hc/SdGZ4MjeZ9I/AAAAAAAAAck/ji557aLEftU/smiley_21.gif";
+smileyarr["smiley_20"]="http://lh3.ggpht.com/_mkcswd7p9hc/SdGZ5_-OofI/AAAAAAAAAco/4rnEeUCkkmE/smiley_20.gif";
+smileyarr["smiley_19"]="http://lh5.ggpht.com/_mkcswd7p9hc/SdGZ7GJ7m7I/AAAAAAAAAcs/tj7IJSSwruc/smiley_19.gif";
+smileyarr["smiley_18"]="http://lh4.ggpht.com/_mkcswd7p9hc/SdGZ775nl-I/AAAAAAAAAcw/waSNQgdIo0A/smiley_18.gif";
+smileyarr["smiley_17"]="http://lh4.ggpht.com/_mkcswd7p9hc/SdGZ9j-40EI/AAAAAAAAAc0/HhKbaWhHyBI/smiley_17.gif";
+smileyarr["smiley_16"]="http://lh6.ggpht.com/_mkcswd7p9hc/SdGZ_2eJbLI/AAAAAAAAAc4/HXczVVxhdgA/smiley_16.gif";
+smileyarr["smiley_15"]="http://lh5.ggpht.com/_mkcswd7p9hc/SdGaAg2BipI/AAAAAAAAAc8/fXzrT_tXcms/smiley_15.gif";
+smileyarr["smiley_14"]="http://lh5.ggpht.com/_mkcswd7p9hc/SdGaByGggTI/AAAAAAAAAdA/Ycd_W4jT8fg/smiley_14.gif";
+smileyarr["smiley_13"]="http://lh5.ggpht.com/_mkcswd7p9hc/SdGaC-38p3I/AAAAAAAAAdE/99J4P5vms9Q/smiley_13.gif";
+smileyarr["smiley_12"]="http://lh5.ggpht.com/_mkcswd7p9hc/SdGaD2pUjvI/AAAAAAAAAdI/f8DDL5rEn0o/smiley_12.gif";
+smileyarr["smiley_11"]="http://lh4.ggpht.com/_mkcswd7p9hc/SdGaE0nvTlI/AAAAAAAAAdM/cfs_FvyHy8c/smiley_11.gif";
+smileyarr["smiley_10"]="http://lh6.ggpht.com/_mkcswd7p9hc/SdGaF7xBCGI/AAAAAAAAAdQ/cPLAsokr1OA/smiley_10.gif";
+smileyarr["smiley_09"]="http://lh3.ggpht.com/_mkcswd7p9hc/SdGaHHdd3oI/AAAAAAAAAdU/QlyfSaqVzN0/smiley_09.gif";
+smileyarr["smiley_08"]="http://lh4.ggpht.com/_mkcswd7p9hc/SdGaICSG1bI/AAAAAAAAAdY/flLijmRZXt8/smiley_08.gif";
+smileyarr["smiley_07"]="http://lh6.ggpht.com/_mkcswd7p9hc/SdGaIjOWNUI/AAAAAAAAAdc/tyKQwEo0ySg/smiley_07.gif";
+smileyarr["smiley_06"]="http://lh3.ggpht.com/_mkcswd7p9hc/SdGaJdtUxaI/AAAAAAAAAdg/PSp2PUKD-dY/smiley_06.gif";
+smileyarr["smiley_05"]="http://lh5.ggpht.com/_mkcswd7p9hc/SdGaKqZNtoI/AAAAAAAAAdk/BuxogiJRt0I/smiley_05.gif";
+smileyarr["smiley_04"]="http://lh5.ggpht.com/_mkcswd7p9hc/SdGaL0gQ8VI/AAAAAAAAAdo/u9f109WpMM4/smiley_04.gif";
+smileyarr["smiley_03"]="http://lh3.ggpht.com/_mkcswd7p9hc/SdGaMlHz8-I/AAAAAAAAAds/81uCcc3mTf4/smiley_03.gif";
+smileyarr["smiley_02"]="http://lh3.ggpht.com/_mkcswd7p9hc/SdGaN_PGiTI/AAAAAAAAAdw/iT81rp7JwqQ/smiley_02.gif";
+smileyarr["smiley"]="http://lh6.ggpht.com/_mkcswd7p9hc/SdGaPI_kQGI/AAAAAAAAAd0/53nAEZ07I3c/smiley.gif";
+
+
+
+	var tb = document.getElementsByTagName('textarea');
+	for(i=0;i<tb.length;i++){
+		text=tb[i];
+		if (!text) return;
+		c=text.parentNode;
+		d=document.createElement("div");
+		d.className="T";
+		d.style.fontSize="11px";
+		d.align="left";
+		
+	        
+	    d.style.marginTop="10px";
+		c.appendChild(d);
+		
+		for(title in smileyarr){
+			mm=document.createElement("a");
+			mm.href="javascript:;";
+			mm.setAttribute("gult",i);
+
+			mm.innerHTML="<img src='"+smileyarr[title]+"' title='"+title+"'>";
+			mm.addEventListener("click", insertSmiley, true);
+			d.appendChild(mm);
+		}
+	}	
+}
+dip();
+}, false);

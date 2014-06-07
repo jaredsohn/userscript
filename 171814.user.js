@@ -1,0 +1,10 @@
+﻿// ==UserScript==
+// @name        matchSelector
+// @author      ww_start_t
+// @namespace   http://userscripts.org/users/119605
+// @include     *
+// @exclude     *
+// @version     1.0.0
+// ==/UserScript==
+
+(function () { function t(t, n, r) { var i = r || e, s, o = [], u = "*", a = null, f = null, l = null, c = t.indexOf(":@") != -1, h = t.indexOf(":#") != -1, p = "getAttribute"; if (c || h) { if (c) spl = t.split(":@"); else { spl = t.split(":#"); if (spl[1].indexOf("text") != -1) p = "textContent"; else if (spl[1].indexOf("html") != -1) p = "innerHTML" } a = spl[1]; if (spl[0] != "") u = spl[0]; if (a.indexOf("^=") != -1) { l = a.split("^=")[1]; f = "^"; a = a.split("^=")[0] } else if (a.indexOf("$=") != -1) { l = a.split("$=")[1]; f = "$"; a = a.split("$=")[0] } else if (a.indexOf("!=") != -1) { l = a.split("!=")[1]; f = "!"; a = a.split("!=")[0] } else if (a.indexOf("*=") != -1) { l = a.split("*=")[1]; f = "*"; a = a.split("*=")[0] } else { l = a.split("=")[1]; f = "="; a = a.split("=")[0] } } else u = t; var d = 0, v = i.getElementsByTagName(u), m = v.length; while (d < m) { con = !(n === true); if (!v[d]) return undefined; if (c || h) { if (v[d].getAttribute(a) != null || v[d][p]) { if (c) att = v[d].getAttribute(a); else att = v[d][p]; if (l != null) { if (f === "^" && att.indexOf(l) === 0) if (con) return v[d]; else o.push(v[d]); else if (f === "$" && att.indexOf(l) === att.length - l.length) if (con) return v[d]; else o.push(v[d]); else if (f === "!" && att.indexOf(l) === -1) if (con) return v[d]; else o.push(v[d]); else if (f === "*" && att.indexOf(l) != -1) if (con) return v[d]; else o.push(v[d]); else if (f === "=" && att === l) if (con) return v[d]; else o.push(v[d]) } else { if (con) return v[d]; else o.push(v[d]) } } } else { if (con) return v[d]; else o.push(v[d]) } d = d + 1 } return o } var e = document; window.matchSelector = function (e, n, r) { return new t(e, n, r) }; window.Element.prototype.matchSelector = function (e, t) { return new window.matchSelector(e, t, this) } })(window);

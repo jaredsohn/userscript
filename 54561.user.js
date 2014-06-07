@@ -1,0 +1,13 @@
+// ==UserScript==
+// @name           Club Pink
+// @namespace      http://userscripts.org/users/100459
+// @description    Owns faces!
+// @include        http*://*.what.cd/*
+// ==/UserScript==
+
+(function () {
+var tags = document.getElementsByTagName('a');
+for (var key in tags)
+with (tags[key])
+if (getAttribute('href') == 'user.php?id=26694' ||  getAttribute('href') == 'user.php?id=26586' ||  getAttribute('href') == 'user.php?id=124800' ||  getAttribute('href') == 'user.php?id=56385' ||  getAttribute('href') == 'user.php?id=95663' ||  getAttribute('href') == 'user.php?id=100227' ||  getAttribute('href') == 'user.php?id=8658' ||  getAttribute('href') == 'user.php?id=743' ||  getAttribute('href') == 'user.php?id=76856' ||  getAttribute('href') == 'user.php?id=29206' ||  getAttribute('href') == 'user.php?id=94123' ||  getAttribute('href') == 'user.php?id=76409' ||  getAttribute('href') == 'user.php?id=55189' ||  getAttribute('href') == 'user.php?id=68164' ||  getAttribute('href') == 'user.php?id=74532' ||  getAttribute('href') == 'user.php?id=52269' ||  getAttribute('href') == 'user.php?id=78250' ||  getAttribute('href') == 'user.php?id=142871' ||  getAttribute('href') == 'user.php?id=24830' ||  getAttribute('href') == 'user.php?id=94504' ||  getAttribute('href') == 'user.php?id=79621' ||  getAttribute('href') == 'user.php?id=102273' ||  getAttribute('href') == 'user.php?id=107006' ||  getAttribute('href') == 'user.php?id=5056' ||  getAttribute('href') == 'user.php?id=140909' ||  getAttribute('href') == 'user.php?id=76633' ||  getAttribute('href') == 'user.php?id=76129' ||  getAttribute('href') == 'user.php?id=9618' ||  getAttribute('href') == 'user.php?id=29416' ||  getAttribute('href') == 'user.php?id=62203' ||  getAttribute('href') == 'user.php?id=76093' ||  getAttribute('href') == 'user.php?id=141578' ||  getAttribute('href') == 'user.php?id=44550' ||  getAttribute('href') == 'user.php?id=68224' ||  getAttribute('href') == 'user.php?id=25139' ||  getAttribute('href') == 'user.php?id=130940' ||  getAttribute('href') == 'user.php?id=28585' ||  getAttribute('href') == 'user.php?id=78782' ||  getAttribute('href') == 'user.php?id=121848' ||  getAttribute('href') == 'user.php?id=57648' ||  getAttribute('href') == 'user.php?id=60229' ||  getAttribute('href') == 'user.php?id=1330' ||  getAttribute('href') == 'user.php?id=114788' ||  getAttribute('href') == 'user.php?id=83878') style.color = '#FF00CC';
+})();

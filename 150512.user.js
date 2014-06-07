@@ -1,0 +1,162 @@
+﻿// ==UserScript==
+// @name        度娘的尾巴
+// @include     http://tieba.baidu.com/*
+// @description 百度贴吧发帖自动添加小尾巴脚本
+// @namespace	https://userscripts.org/scripts/show/150512
+// @version     1.1.2 Released
+// @grant 	GM_getValue
+// @grant 	GM_setValue
+// @grant 	unsafeWindow
+// @author      封印的猫 Fate·Suzumiya
+// @updateURL   https://userscripts.org/scripts/source/150512.meta.js
+// @downloadURL https://userscripts.org/scripts/source/150512.user.js
+// ==/UserScript==
+var _window = typeof unsafeWindow == 'undefined' ? window: unsafeWindow;
+var $ = _window.$;
+var style=GM_getValue('fontstyle','0');
+var weiba=GM_getValue('tailstyle','0');
+
+ 
+//==============尾巴修改处====================
+
+
+var tail=["来自大火狐吧","通过火狐浏览器发表","来自FireFox浏览器","真是肤浅","图样图森破"]; //锁定5条尾巴,按照格式修改。
+//==============空格微调处====================
+var lh=32; var lH=30;      //修改1h（普通）和1H（粗体）的值，值越大空格越多
+var space="　";
+var Space="　";
+
+var color1="";		//字体part1
+var color2="";		//字体part2
+//判断设定空格长度
+
+for(var i=0;i<tail.length;i++)
+{
+var length=tail[i].length;
+if(length<lh)
+{
+for(var i=0;i<lh-length;i++){space+="　";}
+}
+}
+//粗体
+for(var i=0;i<tail.length;i++)
+{
+var length=tail[i].length;
+if(length<lH)
+{
+for(var i=0;i<lH-length;i++){Space+="　";}
+}
+}
+//增加下拉式列表
+$(".editor_users").after('<label>尾巴类型</label><select id="sltList" name="selectDropDown" style="position:relative; left:5px"><option name="style1" value="0">随机类型</option><option name="style1" value="1">普通</option><option name="style1" value="2">粗体</option><option name="style1" value="3">灰色</option><option name="style1" value="4">红色</option><option  name="style1" value="5">红色粗体</option><option  name="style1" value="6">小</option></select>&nbsp;&nbsp;&nbsp;<label>选择使用的尾巴</label><select id="tailList" name=ss style="position:relative; left:5px"><option id="tails0"  name="tails" value="随机">随机尾巴</option><option id="tails1" name="tails">尾巴1</option><option id="tails2" name="tails">尾巴2</option><option id="tails3" name="tails">尾巴3</option><option id="tails4" name="tails">尾巴4</option><option id="tails5" name="tails">尾巴5</option></select>');
+document.getElementById("tails1").value=tail[0];
+document.getElementById("tails2").value=tail[1];
+document.getElementById("tails3").value=tail[2];
+document.getElementById("tails4").value=tail[3];
+document.getElementById("tails5").value=tail[4];
+//增加按钮
+$('.subbtn_bg:eq(0)').after('<input type="button" value="尾巴发表" class="subbtn_bg" id="Tail">');
+
+switch(style)
+{
+case '0':$('option[name="style1"][value="0"]').get(0).selected = true;break;
+case '1':$('option[name="style1"][value="1"]').get(0).selected = true;break;
+case '2':$('option[name="style1"][value="2"]').get(0).selected = true;break;
+case '3':$('option[name="style1"][value="3"]').get(0).selected = true;break;
+case '4':$('option[name="style1"][value="4"]').get(0).selected = true;break;
+case '5':$('option[name="style1"][value="5"]').get(0).selected = true;break;
+case '6':$('option[name="style1"][value="6"]').get(0).selected = true;break;
+}
+
+
+switch(weiba)
+{
+case '0':$('option[name="tails"][id="tails0"]').get(0).selected = true;break;
+case '1':$('option[name="tails"][id="tails1"]').get(0).selected = true;break;
+case '2':$('option[name="tails"][id="tails2"]').get(0).selected = true;break;
+case '3':$('option[name="tails"][id="tails3"]').get(0).selected = true;break;
+case '4':$('option[name="tails"][id="tails4"]').get(0).selected = true;break;
+case '5':$('option[name="tails"][id="tails5"]').get(0).selected = true;break;
+}
+
+//添加尾巴主函数
+window.Tail = function()
+{
+//保存配置
+GM_setValue('fontstyle',$('option[name="style1"]:selected').val());
+style=$('option[name="style1"]:selected').val();
+GM_setValue('tailstyle',$("#tailList").get(0).selectedIndex.toString());
+weiba=$("#tailList").get(0).selectedIndex.toString();
+
+var xx=$('#sltList').val();
+var yy;
+if(xx==0){yy=Math.floor(Math.random()*6+1)}//随机尾巴
+else{yy=xx};
+//普通尾巴
+if(yy==1)
+{
+color1='<p>';
+color2='</p>';
+}
+//粗体尾巴
+if(yy==2)
+{
+color1='<strong>';
+color2='</strong>';
+}
+//灰色尾巴
+if(yy==3)
+{
+color1='<span class="apc_src_wrapper">';
+color2='</span>';
+space+="　";
+}
+//红色尾巴
+if(yy==4)
+{
+color1='<span class="edit_font_color">';
+color2='</span>';
+}
+//红色粗体尾巴
+if(yy==5)
+{
+color1='<span class="edit_font_color"><strong>';
+color2='</strong></span>';
+}
+//小字尾巴
+if(yy==6)
+{
+color1='<span class="apc_src_wrapper"><span class="edit_font_normal">';
+color2='</span></span>';
+}
+var cnt=$("#edit_parent").find("div.tb-editor-editarea").html();
+cnt=cnt+"<br><br><br><br><br>";
+
+var aa=$("#tailList").get(0).selectedIndex;
+var TAIL;
+if (aa==0){TAIL=tail[Math.round(Math.random()*(tail.length-1))];}
+else TAIL=$('#tailList').val();
+
+if(yy==5||yy==2) TAIL=Space+color1+"————"+TAIL+color2;
+else if(yy==3||yy==6) TAIL=color1+space+"————"+TAIL+color2+'<img class="BDE_Image" width="1" height="1" src="http://imgsrc.baidu.com/forum/pic/item/4a50db03918fa0ecbbe378e8269759ee3c6ddbab.jpg" pic_type="3">';
+else
+TAIL=color1+space+"————"+TAIL+color2;
+
+cnt=cnt+TAIL+"<br>"
+$("#edit_parent").find("div.tb-editor-editarea").html(cnt);
+$('.subbtn_bg[value=" 发 表 "]').click();
+}
+//事件监听
+var f= document.getElementById("Tail");
+f.addEventListener("click",Tail,false);
+//快捷键 shift+enter
+document.onkeydown = hotkey;
+function hotkey(event) 
+{
+if(event.shiftKey && event.keyCode == 13) 
+{
+event.preventDefault();
+Tail();
+}
+}
+

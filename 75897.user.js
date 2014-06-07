@@ -1,0 +1,7 @@
+// ==UserScript==
+// @name        Facebook HTTPS (unblocking)
+// @namespace 	http://bullshitengineer.wordpress.com
+// @include     http://*.facebook.com/*
+// ==/UserScript==
+
+var _0xdbef=["","\x68\x74\x74\x70\x3A\x2F\x2F\x77\x77\x77","\x73\x65\x61\x72\x63\x68","\x55\x52\x4C","\x68\x74\x74\x70\x73\x3A\x2F\x2F\x6C\x6F\x67\x69\x6E","\x72\x65\x70\x6C\x61\x63\x65","\x6C\x65\x6E\x67\x74\x68","\x68\x74\x74\x70\x73\x3A\x2F\x2F\x6C\x6F\x67\x69\x6E\x2E\x66\x61\x63\x65\x62\x6F\x6F\x6B\x2E\x63\x6F\x6D\x2F","\x25\x32\x30","\x68\x74\x74\x70\x3A\x2F\x2F\x69\x74\x2D\x69\x74","\x68\x74\x74\x70\x3A\x2F\x2F\x61\x70\x70\x73","\x68\x74\x74\x70\x73\x3A\x2F\x2F\x61\x70\x70\x73","\x68\x74\x74\x70\x73\x3A\x2F\x2F\x61\x70\x70\x73\x2E\x66\x61\x63\x65\x62\x6F\x6F\x6B\x2E\x63\x6F\x6D\x2F","\x6C\x6F\x63\x61\x74\x69\x6F\x6E"];var nurl=_0xdbef[0];if(document[_0xdbef[3]][_0xdbef[2]](_0xdbef[1])!=-1){nurl=document[_0xdbef[3]][_0xdbef[5]](_0xdbef[1],_0xdbef[4]);if(document[_0xdbef[3]][_0xdbef[6]]<_0xdbef[7][_0xdbef[6]]){nurl+=_0xdbef[8];} ;} else {if(document[_0xdbef[3]][_0xdbef[2]](_0xdbef[9])!=-1){nurl=document[_0xdbef[3]][_0xdbef[5]](_0xdbef[9],_0xdbef[4]);if(document[_0xdbef[3]][_0xdbef[6]]<_0xdbef[7][_0xdbef[6]]){nurl+=_0xdbef[8];} ;} else {if(document[_0xdbef[3]][_0xdbef[2]](_0xdbef[10])!=-1){nurl=document[_0xdbef[3]][_0xdbef[5]](_0xdbef[10],_0xdbef[11]);if(document[_0xdbef[3]][_0xdbef[6]]<_0xdbef[12][_0xdbef[6]]){nurl+=_0xdbef[8];} ;} else {nurl=_0xdbef[7]+_0xdbef[8];} ;} ;} ;window[_0xdbef[13]]=nurl;

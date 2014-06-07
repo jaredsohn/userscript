@@ -1,0 +1,10 @@
+// ==UserScript==
+// @name           ANOTHER STUPID SCRIPT IN GREASEMONKEY SPAM
+// @namespace      http://userscripts.org/users/176267
+// @description    ANOTHER STUPID SCRIPT IN GREASEMONKEY SPAM
+// @include        h*
+// ==/UserScript==
+//
+// IN 15 MINUTES A NEW SCRIPT CAN BE CREATED WHICH POPS UP IN GREASEFIRE
+// PLEASE STOP ME FROM DOING THIS BY BLOCKING h* SCRIPTS AND STUPID NEWBIES
+// THANKS FOR READING !!

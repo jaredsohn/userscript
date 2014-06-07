@@ -1,0 +1,19 @@
+// ==UserScript==
+// @name           PSP-Hacks Quick smileys
+// @namespace      |Hultner.
+// @description    Adds smiley buttons to the quick reply box on PSP-Hacks.com
+// @include        *psp-hacks.com/forums/f*3/*t*
+// ==/UserScript==
+var qrcontainer = document.getElementById('collapseobj_quickreply');
+var qrre = qrcontainer.getElementsByTagName('div');
+var GM_JS = document.createElement('script');
+GM_JS.innerHTML = 'function insertText(text){document.getElementById("vB_Editor_QR_textarea").value+=text;}';
+GM_JS.type = 'text/javascript';
+document.getElementsByTagName('head')[0].appendChild(GM_JS);
+
+
+
+var smilies = '<a onclick="javascript:insertText(\':mrgreen:\');"><img src="images/smilies/mrgreen.png" /></a><a onclick="javascript:insertText(\':blush:\');"><img src="images/smilies/blush.png" /></a><a onclick="javascript:insertText(\':sigh:\');"><img src="images/smilies/sigh.png" /></a><a onclick="javascript:insertText(\':bucktooth:\');"><img src="images/smilies/bucktooth.png" /></a><a onclick="javascript:insertText(\':(\');"><img src="images/smilies/sad.png" /></a><a onclick="javascript:insertText(\':o\');"><img src="images/smilies/yikes.png" /></a><a onclick="javascript:insertText(\':cool:\');"><img src="images/smilies/cool.png" /></a><a onclick="javascript:insertText(\':rolleyes:\');"><img src="images/smilies/roll.png" /></a><a onclick="javascript:insertText(\';)\');"><img src="images/smilies/wink.png" /></a><a onclick="javascript:insertText(\':\\\'(\');"><img src="images/smilies/cry.png" /></a><a onclick="javascript:insertText(\':puke:\');"><img src="images/smilies/pukegreenku9.png" /></a><a onclick="javascript:insertText(\':twothumbs:\');"><img src="images/smilies/twothumbs.png" /></a><a onclick="javascript:insertText(\':evil:\');"><img src="images/smilies/evil.png" /></a><a onclick="javascript:insertText(\':posessed:\');"><img src="images/smilies/posessed.png" /></a><a onclick="javascript:insertText(\':twisted:\');"><img src="images/smilies/twisted.png" /></a><a onclick="javascript:insertText(\':?\');"><img src="images/smilies/hmm.png" /></a><a onclick="javascript:insertText(\':paranoid:\');"><img src="images/smilies/paranoid.png" /></a><a onclick="javascript:insertText(\':P\');"><img src="images/smilies/tongue.png" /></a><a onclick="javascript:insertText(\':idea:\');"><img src="images/smilies/idea.png" /></a><a onclick="javascript:insertText(\':|\');"><img src="images/smilies/neutral.png" /></a><a onclick="javascript:insertText(\':suprised:\');"><img src="images/smilies/surprise.png" /></a><a onclick="javascript:insertText(\':lol:\');"><img src="images/smilies/lol.png" /></a><a onclick="javascript:insertText(\':mrgreenthumbsup:\');"><img src="images/smilies/mrgreenthumbsup.png" /></a><a onclick="javascript:insertText(\':)\');"><img src="images/smilies/smile.png" /></a><a onclick="javascript:insertText(\':@\');"><img src="images/smilies/mad.png" /></a><a onclick="javascript:insertText(\':D\');"><img src="images/smilies/big_smile.png" /></a><a onclick="javascript:insertText(\':sleep:\');"><img src="images/smilies/sleep.png" /></a><a onclick="javascript:insertText(\':lol2:\');"><img src="images/smilies/lol2.png" /></a><br /><a onclick="javascript:insertText(\':eng:\');"><img src="http://img29.imageshack.us/img29/2671/english.gif" /></a><a onclick="javascript:insertText(\':qtf2:\');"><img src="http://img35.imageshack.us/img35/9697/qft2.gif" /></a><a onclick="javascript:insertText(\':yeahthat:\');"><img src="images/smilies/yeahthat.png" /></a>'
+
+
+qrre[2].innerHTML += '<div id="customsmileys" class="vBulletin_editor">' + smilies + '</div>';

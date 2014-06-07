@@ -1,0 +1,10 @@
+// ==UserScript==
+// @name        Freggers-Shops
+// @namespace   freggers.de
+// @description Fügt auf http://www.freggers.de Schnellzugriffe auf die Shops hinzu
+// @include     http://www.freggers.de/sidebar*
+// @version     1.1.4
+// @grant       none
+// ==/UserScript==
+
+document.getElementById('nav-menu').innerHTML +='<li class="menu-spacer"></li><li class="logout"><form><select id="select" style="margin-left: -35px; width: 150px !important;" onchange="parent.document.getElementById(window.name).src=\'http://www.freggers.de/sidebar/shop/index?shop_id=\'+this.options[this.selectedIndex].value;"><option value="0">Wähle einen Shop</option><optgroup label="Geschäfte"><option value="15">Wohlwert</option><option value="43">Fashion Store</option><option value="5">Geschenkeshop</option><option value="35">Wohnen &amp; Essen</option><option value="34">Home &amp; Office</option><option value="37">Schlafzimmer</option><option value="36">Küche &amp; Bad</option><option value="7">Frisuren</option><option value="1">Tote Hose</option><option value="14">Trick 18</option><option value="13">Schneider Magnus</option><option value="40">Haustier Laden</option><option value="41">Beach Fashion</option><option value="19">Cowboys/-girls</option><option value="26">Alles für deine Hochzeit</option><option value="12">Schrumpfkugeln</option></optgroup><optgroup label="EM Spezial"><option value="39">Fußball Fanshop</option></optgroup><optgroup label="Oster Spezial"><option value="33">Osterdeko</option></optgroup><optgroup label="Fasching Spezial"><option value="46">Faschingsdeko</option></optgroup><optgroup label="Helloween Spezial"><option value="16">Halloween Deko</option><option value="17">Halloween Kostüme</option><option value="44">Besenständer</option></optgroup><optgroup label="Weihnachts Spezial"><option value="24">Weihnachtsdeko</option><option value="42">Wintermode</option><option value="23">Weihnachtskekse</option><option value="21">Wunderbarer Weihnachtswagen</option><option value="22">Weihnachtsgetränke</option><option value="20">Maronibrater</option></optgroup></select></form></li>';

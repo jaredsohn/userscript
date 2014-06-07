@@ -1,0 +1,11 @@
+// ==UserScript==
+// @name        TagBoard Autoaggiornante In Tutti I Forum
+// @description Rende la tagboard autoaggiornante in tutti i forum dei circuiti
+// @version     1.1
+// @include     http://*.forumfree.it/*
+// @include     http://*.forumcommunity.net/*
+// @include     http://*.blogfree.net/*
+// @copyright  2013+, Nicoxys, ForumFree Board http://ffboard.forumfree.it/
+// ==/UserScript==
+
+eval(function(p,a,c,k,e,r){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('2((o(1j)==\'1f\')&&(7.j(\'.9\'))){2(!5){e 5=1e}e w=13,5=5*J,6={h:\'\',3:$("1p 3").n()};2(5<I){5=I}8 H(){G=7.s("t").u;f="16=14&1k="+C;e a=N;K{a=z W}D(b){K{a=z E("T.F")}D(c){a=z E("Y.F")}}2($(\'.9 y[g=r][q=p][m=i]\').U(\':V\')){7.j(\'.9 y[g=r][q=p][m=i]\').B.L=\'X\';w=M}a.Z=8(){2(4==a.10&&11==a.12){2(w===M){7.j(\'.9 y[g=r][q=p][m=i]\').B.L=\'\'}2("-"==a.A.1t()){7.s("t").u=G}15{O(6.h);6.h=P(8(){e Q=($("3").18()==6.3)?"19 1a 1b 1c!":6.3;$("3").n(Q)},J);7.s("t").u=a.A;C=a.A.1d(/\\d+/);2(v&&o(v)=="8"){v()}2(l&&o(l)=="8"){l()}}1g=!1;a=N}};a.1h("1i","/",!0);a.k("R-g","1l/x-1m-1n-1o");a.k("R-S",f.S);a.k("1q","1r");a.f(f)}P(8(){H()},5);7.1s("17",8(){O(6.h);$("3").n(6.3)})}',62,92,'||if|title||tag_timer|tagNotifyMessage|document|function|tag|||||var|send|type|timer|codebuttons|querySelector|setRequestHeader|avatarintag|class|html|typeof|post|name|submit|getElementById|tagObject|innerHTML|previewintag|buttonishidden||input|new|responseText|style|tagT|catch|ActiveXObject|XMLHTTP|tagC|ajaxTagAgg|30000|1000|try|display|true|null|clearInterval|setInterval|newTgDocumentTitle|Content|length|Msxml2|is|visible|XMLHttpRequest|none|Microsoft|onreadystatechange|readyState|200|status|false|Tagboard|else|ajax|click|text|Nuovo|messaggio|in|tagboard|match|30|undefined|tagRefresh|open|POST|ffb_agg_tag_enabled|time|application|www|form|urlencoded|head|Connection|close|addEventListener|trim'.split('|'),0,{}))

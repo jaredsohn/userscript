@@ -1,0 +1,8 @@
+// ==UserScript==
+// @name           Trinidad Express Fixer
+// @namespace      #
+// @description    removes adverts and fixes width on Trinidad Express 
+// @version        0.2
+// @include        http://*trinidadexpress.com/*
+// ==/UserScript==
+if(window.location.href.indexOf("news")==-1){document.title="The Trinidad Express | Online";var m=document.evaluate("/html/body/div/table[4]/tbody/tr",document,null,0,null).iterateNext();for(i=2;i<5;i++){m.cells[2].parentNode.removeChild(m.cells[2])}document.evaluate("/html/body/div/table[4]",document,null,0,null).iterateNext().width=949;document.evaluate("/html/body/div/table[4]/tbody/tr/td[2]",document,null,0,null).iterateNext().innerHTML=document.evaluate("/html/body/div/table[4]/tbody/tr/td[2]/table/tbody/tr[4]/td[2]/table/tbody/tr/td/table",document,null,0,null).iterateNext().innerHTML}else{document.title="Trinidad Express | "+document.evaluate("//div[@class='bigheadline']",document,null,0,null).iterateNext().textContent+" == "+document.evaluate("//div[@class='subheadline']",document,null,0,null).iterateNext().textContent;var m=document.evaluate("/html/body/div/table[2]/tbody/tr",document,null,0,null).iterateNext();for(i=2;i<5;i++){m.cells[2].parentNode.removeChild(m.cells[2])}document.evaluate("/html/body/div/table[2]",document,null,0,null).iterateNext().width=949;document.evaluate("/html/body/div/table[2]/tbody/tr/td[2]",document,null,0,null).iterateNext().innerHTML=document.evaluate("/html/body/div/table[2]/tbody/tr/td[2]/table[2]",document,null,0,null).iterateNext().innerHTML}

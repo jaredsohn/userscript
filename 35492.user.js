@@ -1,0 +1,7 @@
+// ==UserScript==
+// @name           Quiver Nuke
+// @namespace      okcupid.com
+// @description    Nukes the OkCupid Quiver
+// @include        http://*.okcupid.com/*
+// ==/UserScript==
+function do_platypus_script() {smart_remove(window.document,document.getElementById('quiver_icon'),null,null,null);smart_remove(window.document,document.evaluate('/HTML[1]/BODY[1]/DIV[3]/DIV[1]/UL[1]/LI[2]/UL[1]/LI[4]/A[1]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE,null).singleNodeValue,null,null,null);}; // Ends do_platypus_scriptwindow.addEventListener("load", function() { do_platypus_script() }, false);var gplatypusBundle = Components.classes["@mozilla.org/intl/stringbundle;1"].getService(Components.interfaces.nsIStringBundleService);var mystrings = gplatypusBundle.createBundle("chrome://platypus/locale/platypusCore.properties");var platypusplatypuscouldntfi1 = mystrings.GetStringFromName("platypusplatypuscouldntfi1");var platypusthisusuallyhappens = mystrings.GetStringFromName("platypusthisusuallyhappens");////  Mon Dec 19 15:59:37 2005 -- Scott R. Turner//  Short, uncommented file containing all the code to implement Platypus//  actions.  Can be "included" into the Platypus script.//// // function smart_remove(doc, node) {    if (node.parentNode.childNodes.length == 1) {smart_remove(doc, node.parentNode);    } else {remove_it(doc, node);    };};function remove_it(doc, node) {  if (doc == null || node == null) return;  if (!node.parentNode) return;  node.style.display = "none";  doc.last_removed_node = node;};

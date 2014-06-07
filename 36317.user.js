@@ -1,0 +1,25 @@
+// ==UserScript==
+// @name          Windows Live Hotmail Labels
+// @namespace     http://userstyles.org
+// @description	  Adds colors to the folder of WLHM just like the labels in Gmail
+// @author        hanns
+// @homepage      http://userstyles.org/styles/11704
+// @include       http://bl104w.blu104.mail.live.com/mail*/*
+// @include       http://bl104w.blu104.mail.live.com/*
+// ==/UserScript==
+(function() {
+var css = "@namespace html url(http://www.w3.org/1999/xhtml); #contentLeft a[title=\"Sony\"] { background: #0084c4 !important; border-color: #00a5f5 !important; color: white !important; } #contentLeft a[title=\"Sony\"]:hover { background: #78ccf5 !important; border-color: #78ccf5 !important; color: black !important; } #contentLeft .FolderItemSelected a[title=\"Sony\"] { background: #105fc6 !important; border-color: #105fc6 !important; color: #ffffff !important; } #contentLeft .FolderItemSelected a:hover[title=\"Sony\"] { background: #0084c4 !important; border-color: #105fc6 !important; color: #ffffff !important; } #contentLeft a[title=\"WU Wien\"] { background: red !important; border-color: red !important; color: black !important; } #contentLeft a[title=\"WU Wien\"]:hover { background: #FF7272 !important; border-color: #FF7272 !important; } #contentLeft .FolderItemSelected a[title=\"WU Wien\"] { background: #d71212 !important; border-color: #d71212 !important; color: white !important; } #contentLeft .FolderItemSelected a:hover[title=\"WU Wien\"] { background: red !important; border-color: #d71212 !important; } #contentLeft a[title=\"Markiert\"] { background: #eae818 !important; border-color: #d3d116 !important; color: black !important; } #contentLeft a[title=\"Markiert\"]:hover { background: #f0ef6f !important; border-color: #f0ef6f !important; } #contentLeft .FolderItemSelected a[title=\"Markiert\"] { background: #c9c700 !important; border-color: #c9c700 !important; color: white !important; } #contentLeft .FolderItemSelected a:hover[title=\"Markiert\"] { background: #eae818 !important; border-color: #c9c700 !important; color: black !important;} #contentLeft .FolderItemSelected { border-color: white !important; }";
+if (typeof GM_addStyle != "undefined") {
+	GM_addStyle(css);
+} else if (typeof addStyle != "undefined") {
+	addStyle(css);
+} else {
+	var heads = document.getElementsByTagName("head");
+	if (heads.length > 0) {
+		var node = document.createElement("style");
+		node.type = "text/css";
+		node.appendChild(document.createTextNode(css));
+		heads[0].appendChild(node); 
+	}
+}
+})();

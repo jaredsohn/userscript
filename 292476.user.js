@@ -1,0 +1,1492 @@
+// ==UserScript==
+// @name          Conquer Club - Chatglove
+// @version       1.8.0
+// @namespace     http://userscripts.org
+// @description   Allows game chat window to float and be dragged and resized.
+// @include       http*://www.conquerclub.com/*
+// @exclude	   http://www.conquerclub.com/chat.php
+// ==/UserScript==
+var version = "1.8.0";
+var forumUrl = "http://www.conquerclub.com/forum/viewtopic.php?f=527&t=201233";
+
+
+GM_addStyle(".chatFrame {position: absolute; margin: 0px; z-index: 100; border-color: black; border-style: solid; border-width: 1px; background-color: #ffffff;}");
+GM_addStyle(".dragHandle {cursor: move;}");
+GM_addStyle(".resizeHandle { position: absolute; float: right; width: 16px; height: 16px; font-size: 1px; background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAOVJREFUOE+VkMkKg0AQRBNBEfz/uwuKuCtePPlRguAW83TAJOho7MMwU1PdVdXPeZ4ft4qGW/XYs6dpko1wHOegQcZ2XXfx/qcfZhuGIVX4dsU9jmNGZ1m2bOhEQbRFUQS7LEvBvLDkeZ6mafQ0TXPRMI5jmqaKouBkGAbYnGdbyvMcJ0mSdF0HG3tVVUm3xAZVVfV9f0toWRbsYwUxidmvtVAwTVPXdfCD0GInYRiKFfV9X9c1SBAEB6HxwB8niaHCIDeIbdvcAT8KbduCCidiEg3ogBRFwRPCj8KSZs20pdwj4usNaGtsP1UCS/kAAAAASUVORK5CYII=); bottom: 0px; right: 0px; cursor: se-resize;}"); //border: 1px solid #333;
+GM_addStyle('span.chat-control {font-size: 13px; font-weight: normal; padding: 0 5px;}');
+GM_addStyle('span.chat-control.team {padding-left: 10px;}');
+GM_addStyle('span.chat-control a.selected {color: #0a0;}');
+
+var _initializing = true;
+var _positionKey = "cgPosition";
+var _initialPositionKey = "cgInitialPosition";
+var _defaultCheckboxBehaviorKey = "cgDefaultCheckboxBehavior";
+var _ignoredBaseKey = "cgIgnoreGame";
+var _oldChatLineCount = 0;
+var features = "";
+var originalDisplayPosition = 1;
+var restoring = false;
+var _isTeamGame = true;
+var _myGamesPage = false;
+var _inGame = false;
+var _defaultCheckboxBehavior = 1;
+var is_panel = document.getElementById('console_bottom')!=null?true:false;
+var is_detach;
+var Chat = document.getElementById('chat');
+var Chat_Size;
+var filter = 0;
+var filters = ["All","Other","Team"];
+
+
+
+var _chatsniffEnabled = 1;
+var _chatsniffEnabledKey = "cgChatsniffEnabled";
+var _newGameChat = 0;
+var _activeGames = [];
+var _gameChatLinesKey = "cgGameChatLines";
+var _gameLinks = [];
+var _gamesToUpdate = -1;
+var _chatsniffIntervalKey = "cgSniffInterval";
+var _chatsniffInterval = 0;
+var _chatsniffLastUpdateKey = "cgSniffLastUpdate";
+
+var _ignoreText = "Ignore game chats";
+var _showText = "Show game chats";
+
+function GameChatInfo(gameNumber, previousChatLines, currentChatLines, newChat) {
+    this.gameNumber = gameNumber;
+    this.previousChatLines = previousChatLines;
+    this.currentChatLines = currentChatLines;
+    this.newChatFlag = newChat;
+}
+
+
+
+function getGameNumber(url) {
+    return (/game=([0-9]*)/.exec(url))[1];
+}
+
+function detachChat() {
+    detachChat(true);
+}
+
+function detachChat(scrollToChat) {
+    var gameChatFrame = showChatFrame(true);
+    
+    showDetachHeader(false);
+    showChatForm(false);
+    
+    addMessageBox();
+    
+    adjustChatDimensions(gameChatFrame);
+    
+    addChatLinesListener(true);
+    is_detach=true;
+    document.getElementById('chat-filter').innerText=filters[filter];
+}
+
+function restoreChat() {
+    restoring = true;
+
+    showDetachHeader(true);
+
+    showChatForm(true);
+
+    addChatLinesListener(false);
+
+    showChatFrame(false);
+
+    restoreChatLog();
+    is_detach=false;
+
+    restoring = false;
+}
+
+function fullChat() {
+    fullLink.parentElement.style.display = "none";
+    messageCell.colSpan=2;
+    Chat=Chat.children[0];
+    initChatParser();
+    sendRequest('full_chat');    
+}
+
+function addChatLinesListener(add) {
+    chat = document.getElementById("chat");    
+    if(add)
+        chat.addEventListener("DOMNodeInserted", getChatLines, false);
+    else
+        chat.removeEventListener("DOMNodeInserted", getChatLines, false);
+}
+
+function addChatSniffLinesListener() {
+    var chat = document.getElementById("chat");
+    chat.addEventListener("DOMNodeInserted", updateCountValues, false);
+}
+
+
+function getChatLines() {
+	adjustChatScroll();
+   
+}
+
+function addMessageBox() {
+    var messageCell = document.getElementById("messageCell");
+    messageCell.appendChild(document.getElementById("message"));
+}
+
+function adjustChatDimensions(chatFrame) {
+    if(ExtractNumber(chatFrame.style.width) > 0)
+        adjustMessageInputWidth(chatFrame.style.width);
+        
+    if(ExtractNumber(chatFrame.style.height) > 0) {
+        adjustChatHeight(chatFrame.style.height);
+        adjustChatScroll();
+    }
+}
+
+
+function restoreChatLog() {
+    var chatLog = document.getElementById("chat");
+    var chatHeaderFrame = document.getElementById("chatHeaderFrame");
+    var parent = chatHeaderFrame.parentNode;
+    parent.insertBefore(chatLog, chatHeaderFrame.nextSibling);
+    
+
+    chatLog.scrollTop = chatLog.scrollHeight;
+}
+
+function createParentFrame() {
+    var gameChatParent = document.getElementById("gameChatFrame");
+    
+    if(gameChatParent == null) {
+        gameChatParent = document.createElement('div');
+        gameChatParent.id = "gameChatFrame";
+        gameChatParent.className = "chatFrame";
+        gameChatParent.innerHTML = "<table cellpadding='2' cellspacing='0' border='0' width='100%' style='background:#bcb;border-bottom: 1px solid #454;'><tr style='background:#bcb;'><td id='gameChatFrameHandle' class='dragHandle' width='100%'><b><span>chatglove</span></b></td><td align='right'>[<a id='restoreChatLink'>restore</a>]</td></tr></table>";
+
+        var log = document.getElementById("chat");
+        var parent = log.parentNode;
+        parent.appendChild(gameChatParent);
+        
+        var restoreLink = document.getElementById('restoreChatLink');
+        restoreLink.addEventListener("click", restoreChat, false);
+    }
+    
+    var resizeHandleDiv = document.getElementById("resizeHandle");
+    if(resizeHandleDiv == null) {
+        resizeHandleDiv = document.createElement("div");
+        resizeHandleDiv.id = "resizeHandle";
+        resizeHandleDiv.className = "resizeHandle";
+    }
+        
+    gameChatParent.appendChild(resizeHandleDiv);
+    
+    gameChatParent.style.display = "block";
+    
+    
+    return gameChatParent;
+}
+
+function initializeLocation() {
+    var gameChatParent = document.getElementById("gameChatFrame");
+    try {
+        var positions = GM_getValue(_positionKey);
+        var position = positions.split(",");
+        
+        if(position.length != 4)
+            throw "Position not set.";
+        
+        var ppos = getOffsetRect(gameChatParent.parentNode);
+            
+        gameChatParent.style.zIndex = 1000;
+        gameChatParent.style.position = "absolute";
+        gameChatParent.style.top = position[0] - ppos.top + "px";
+        gameChatParent.style.left = position[1] - ppos.left + "px";
+        gameChatParent.style.width = position[2];
+        gameChatParent.style.height = position[3];
+        
+        adjustChatHeight(ExtractNumber(position[3]));
+    }
+    catch(e) {
+        gameChatParent.style.zIndex = 1000;
+        gameChatParent.style.position = "absolute";
+        gameChatParent.style.top = "10px";
+        gameChatParent.style.left = "10px";
+        gameChatParent.style.width = "400px";
+        gameChatParent.style.height = "300px";
+    }
+}
+
+function getChatForm(restoreMessage) {
+    var chatForm = document.getElementById("chat-form");
+        
+    if(restoreMessage) {
+            var divs = chatForm.getElementsByTagName("div");
+            if(divs.length > 0) {
+                var p = (divs[0].innerHTML == "Write" ? 1 : 0);
+                divs[p].appendChild(document.getElementById("message"));
+                document.getElementById("message").style.removeProperty("width");
+        }
+    }
+    
+    return chatForm;
+}
+
+function adjustChatScroll() {
+    var chat = document.getElementById("chat");
+    chat.scrollTop = chat.scrollHeight;
+}
+
+function getChatFrame() {
+    var gameChatParent = createParentFrame();    
+    
+    var chatLog = document.getElementById("chat");
+    chatLog.style.marginBottom = "0px";
+    chatLog.style.padding = "5px";
+    chatLog.style.borderBottom = "1px solid #454";
+    chatLog.style.background = "#eeeeee";
+    gameChatParent.appendChild(chatLog);
+    
+    var message = getMessageFrame(gameChatParent);
+    gameChatParent.appendChild(message);
+
+    if(_initializing) {
+         initializeLocation();
+        var dragChat = new dragObject(gameChatParent, document.getElementById("gameChatFrameHandle"), document.getElementById("resizeHandle"));
+        _initializing = false;
+    }
+    
+    return gameChatParent;
+}
+
+function getMessageFrame(gameChatParent) {
+    var message = document.getElementById("postMessageDiv");
+    
+    if(message == null) {
+       message = document.createElement("div");
+        message.id = "postMessageDiv";
+        message.style.width = "100%";
+        var messageHtml = "<table cellpadding=0 cellspacing=5 border=0><tbody style='background-color: #fff;'><tr><td><label class='field-label' for='messagecg'>Message: </label></td><td id='messageCell' colspan=3>";
+        messageHtml += "</td></tr><tr><td><span class='chat-control'>[<a id='chat-filter' class=''>All</a>]</span></td><td><input type='checkbox' id='cgTeamOnly' name='cgTeamOnly'";
+        if(_isTeamGame)
+            messageHtml += " checked='checked'><label for='cgTeamOnly'>team only?</label>";
+        else    
+            messageHtml += "><label for='cgTeamOnly'>note to self?</label>";
+        messageHtml += "<td align='right' style='white-space: pre;'>[<a id='fullLink'>load entire chat</a>]</td>"
+        messageHtml += "</td><td align='right'><input type='button' value='Post' id='cgSubmit'/>&nbsp;</td></tr></tbody></table> ";
+        message.innerHTML = messageHtml;
+        gameChatParent.appendChild(message);
+        
+        
+        var fullChatLink = document.getElementById('fullLink');
+        fullChatLink.addEventListener("click", fullChat, false);
+        if (document.getElementById('full-chat').children[0]!=undefined)
+            document.getElementById('full-chat').children[0].addEventListener("click", function () {fullChatLink.parentNode.style.visibility = "hidden";Chat = Chat.children[0];initChatParser();}, false);
+        else fullChatLink.parentElement.style.visibility = "hidden";
+        
+        var filterLink = document.getElementById('chat-filter');
+        filterLink.innerText=filters[filter];
+        filterLink.addEventListener("click", toggleFilter, false);
+        
+        
+        var cgSubmit = document.getElementById("cgSubmit");
+        var cgMessage = document.getElementById("message");
+        var submit = document.getElementById("submit2");
+        
+        if(submit.disabled)  {
+            cgSubmit.disabled = "disabled";
+            var cgTeamOnly = document.getElementById("cgTeamOnly");
+            cgTeamOnly.disabled = "disabled";
+        }
+        else {
+            cgSubmit.addEventListener("click", cgSubmitClick, false);
+            cgMessage.addEventListener("keypress", cgKeyPress, false);
+        }
+    }
+    
+    return message;
+}
+
+function isTeamGame() {
+    try {
+        var playerList = document.getElementById("players");
+        var firstChildId = getFirstChildElement(playerList);
+        if (firstChildId.getAttribute('id') == null) {
+            return (firstChildId.innerHTML.length < 17);
+        }
+        else return false;
+    }
+    catch(e)
+    {
+        return false;
+    }
+}
+
+function cgSubmitClick() {
+    var submit = document.getElementById("submit2");
+    var cgTeamOnly = document.getElementById("cgTeamOnly");
+    var teamOnly = document.getElementById("team");
+    
+    if(teamOnly != null)
+        teamOnly.checked = cgTeamOnly.checked;
+        
+    submit.click();
+    
+    if(_defaultCheckboxBehavior) {
+        if(_isTeamGame)
+            cgTeamOnly.checked = true;    
+        else
+            cgTeamOnly.checked = false;
+    }
+}
+
+function cgKeyPress(e) {
+    if(e.keyCode == 13)
+        cgSubmitClick();
+}
+
+function getPreviousSibling(n)
+{
+    x=n.previousSibling;
+    while (x.nodeType!=1)
+    {
+        x=x.previousSibling;
+    }
+    return x;
+}
+
+function getNextSibling(n)
+{
+    x=n.nextSibling;
+    while (x.nodeType!=1)
+    {
+        x=x.nextSibling;
+    }
+    return x;
+}
+
+function getFirstChildElement(n)
+{
+    x=n.childNodes[0];
+    while (x.nodeType!=1)
+    {
+        x=x.nextSibling;
+    }
+    return x;
+}
+
+function getGameChatHeader() {
+    var chatWindow = document.getElementById("chat");
+    var tag = getPreviousSibling(chatWindow);
+    
+    return tag;
+}
+
+function createDetachLinkHeader() {
+    var coreChatHeader = getGameChatHeader();
+    var chatHeader = document.createElement("div");
+    chatHeader.id = "chatHeaderFrame";
+    chatHeader.innerHTML = "<table cellpadding='0' cellspacing='0' border='0' width='100%'><tr style='background-color: #FFFFFF;'><td id='chatHeaderCell' width='100%'></td><td align='right'>&nbsp;<br>[<a id='detachChatLink'>detach&nbsp;chat</a>]</td></tr></table>";
+
+    var gameLog = document.getElementById("chat");
+    var parent = gameLog.parentNode;
+    parent.insertBefore(chatHeader, gameLog);
+    
+
+    var chatHeaderCell = document.getElementById("chatHeaderCell");
+    chatHeaderCell.appendChild(coreChatHeader);
+
+    var detachLink = document.getElementById('detachChatLink');
+    detachLink.addEventListener("click", detachChat, false);
+    initLinks();
+    initChatParser();    
+}
+
+function showDetachHeader(show) {
+    var chatHeaderFrame = document.getElementById("chatHeaderFrame");
+    
+    if(show)
+        chatHeaderFrame.style.display = "inline";
+    else    
+        chatHeaderFrame.style.display = "none";
+}
+
+function showChatForm(show) {
+    var consoleChat = document.getElementById("console_chat");
+    if(consoleChat!=null) {
+        var childs = consoleChat.children;
+        var chatForm = getChatForm(show);
+        for (var i =0;i<childs.length;i++) {
+            if(childs[i]==document.getElementById("gameChatFrame")) continue;
+            if(show) {
+                childs[i].style.visibility = "visible";
+            }
+            else {
+                childs[i].style.visibility = "hidden";
+            }            
+        }
+        if(show) {
+            consoleChat.className="floatingpanel";
+            consoleChat.style.position = "relative";
+        }
+        else {
+            consoleChat.className="";
+            consoleChat.style.position = "absolute";
+        }
+    }
+    else {
+        var chatForm = getChatForm(show);
+        if(show) {
+            chatForm.style.visibility = "visible";
+        }
+        else {
+            chatForm.style.visibility = "hidden";
+        }
+    }
+}
+
+function showChatFrame(show) {
+    var chatFrame = getChatFrame();
+    
+    if(show) 
+        chatFrame.style.display = "block";
+    else
+        chatFrame.style.display = "none";
+        
+    return chatFrame;
+}
+
+function dragObject(dragElement, dragHandle, resizeHandle) {
+    var _startX = 0; // mouse starting positions 
+    var _startY = 0; 
+    var _offsetX = 0; // current element offset 
+    var _offsetY = 0; 
+    var _oldZIndex = 0; // we temporarily increase the z-index during drag 
+    var _startXResize = 0; // mouse starting positions 
+    var _startYResize = 0; 
+    var _startWidth = 0;
+    var _startHeight = 0;
+
+    if(dragHandle == null)
+        dragHandle = dragElement;
+
+    dragHandle.addEventListener("mousedown", OnMouseDown, false);
+    resizeHandle.addEventListener("mousedown", OnMouseDownResize, false);
+    
+    if(dragElement.style.left.length == 0) {
+        var x = getOffsetRect(dragElement).left;
+        var y = getOffsetRect(dragElement).top;
+        
+        dragElement.style.left = x;
+        dragElement.style.top = y;
+    }
+    
+    if(dragElement.style.width.length == 0) {
+        dragElement.style.width = dragElement.style.offsetWidth;
+        dragElement.style.height = dragElement.style.offsetHeight;
+    }
+    
+    function OnMouseDown(e) { 
+        var target = e.target;
+
+        if (e.button == 0) { 
+            _startX = e.clientX; 
+            _startY = e.clientY; 
+            
+            _offsetX = ExtractNumber(dragElement.style.left); 
+            _offsetY = ExtractNumber(dragElement.style.top);
+            
+            _oldZIndex = dragElement.style.zIndex;
+            dragElement.style.zIndex = 10000;
+            
+            document.addEventListener("mousemove", OnMouseMove, false);
+            document.addEventListener("mouseup", OnMouseUp, false);
+            
+            // cancel out any text selections 
+            document.body.focus();
+            return false; 
+        } 
+    }
+    
+    function OnMouseDownResize(e) {
+        var target = e.target;
+        
+        if(e.button == 0) {
+            _startXResize = e.clientX; 
+            _startYResize = e.clientY; 
+            
+            _offsetXResize = ExtractNumber(dragElement.style.left); 
+            _offsetYResize = ExtractNumber(dragElement.style.top);
+            
+            _startWidth = ExtractNumber(dragElement.style.width);
+            _startHeight = ExtractNumber(dragElement.style.height);
+            
+            document.addEventListener("mousemove", OnMouseMoveResize, false);
+            document.addEventListener("mouseup", OnMouseUpResize, false);
+            
+            document.body.focus();
+            
+            return false;
+        }
+    }
+
+    function OnMouseMove(e) { 
+        var newLeft = _offsetX + e.clientX - _startX;
+        var newTop = _offsetY + e.clientY - _startY;
+        dragElement.style.left = newLeft + 'px';
+        dragElement.style.top = newTop + 'px';
+
+    }
+
+    function OnMouseUp(e) { 
+        if (dragElement != null) { 
+            dragElement.style.zIndex = _oldZIndex; 
+            
+            document.removeEventListener("mousemove", OnMouseMove, false);
+            document.removeEventListener("mouseup", OnMouseUp, false);
+            var gameChatParent = document.getElementById("gameChatFrame");
+            var fpos = getOffsetRect(gameChatParent);
+            if (fpos.top<0) {
+                var ppos = getOffsetRect(gameChatParent.parentNode);
+                gameChatParent.style.top = 0 - ppos.top + "px";                
+            }
+            savePosition();
+        } 
+    }    
+    
+    function OnMouseMoveResize(e) { 
+        var deltaX = e.clientX - _startXResize;
+        var deltaY = e.clientY - _startYResize;
+        
+        var newWidth = _startWidth + deltaX;
+        var newHeight = _startHeight + deltaY;
+        
+        if(newWidth < 230)
+           newWidth = 230;
+        if(newHeight < 100)
+            newHeight = 100;
+        
+        adjustChatHeight(newHeight);
+        adjustMessageInputWidth(newWidth);
+        
+        dragElement.style.width = newWidth + 'px'; 
+        dragElement.style.height = newHeight + 'px'; 
+    }
+
+    function OnMouseUpResize(e) { 
+        document.removeEventListener("mousemove", OnMouseMoveResize, false);
+        document.removeEventListener("mouseup", OnMouseUpResize, false);
+        
+        savePosition();
+        
+        adjustChatScroll();
+    }    
+}
+
+function adjustChatHeight(newFrameHeight) {
+    document.getElementById("chat").style.height = ExtractNumber(newFrameHeight) - 100 + "px";
+}
+
+function adjustMessageInputWidth(newFrameWidth) {
+    document.getElementById("message").style.width = ExtractNumber(newFrameWidth) - 90 + "px";
+}
+
+function savePosition() {
+    var parentFrame = document.getElementById("gameChatFrame");
+    var fpos = getOffsetRect(parentFrame);
+    var width = parentFrame.style.width;
+    var height = parentFrame.style.height;
+    
+    
+    GM_setValue(_positionKey, fpos.top + "," + fpos.left + "," + width + "," + height);
+}
+
+
+function updateGameChatCount() {
+    _newGameChat = 0;
+    
+    for(var gameIndex = 0; gameIndex < _activeGames.length; gameIndex++) {
+        if( (_activeGames[gameIndex].newChatFlag == "true" || _activeGames[gameIndex].newChatFlag == true) 
+                && !isGameIgnored(_activeGames[gameIndex].gameNumber) ) {
+            _newGameChat++;
+        }
+    }
+    
+    updateNotificationContainer();
+}
+
+function updateNotificationContainer() {
+    var gameChatCount = document.getElementById("gameChatCount");
+    
+    if(!gameChatCount && _newGameChat > 0) {
+        var gameChatItem = document.getElementById("gameChatNotificationLink");
+        gameChatItem.innerHTML += "&nbsp;&nbsp;[ <span class=\"inbox\" id=\"gameChatCount\">" + _newGameChat + "</span> ]";
+    }
+    else if(_newGameChat < 1) {
+        var gameChatItem = document.getElementById("gameChatNotificationLink");
+        gameChatItem.innerHTML = "Game Chat";
+    }
+    else {
+        gameChatCount.innerHTML = _newGameChat;
+    }
+}
+
+function goToFirstUnreadChatGame() {
+    for(var gameIndex = 0; gameIndex < _activeGames.length; gameIndex++) {
+        if( (_activeGames[gameIndex].newChatFlag == "true" || _activeGames[gameIndex].newChatFlag == true) 
+                && !isGameIgnored(_activeGames[gameIndex].gameNumber) ) {
+            window.location.href = window.location.protocol + "//www.conquerclub.com/game.php?game=" + _activeGames[gameIndex].gameNumber;
+            return;
+        }
+    }
+    window.location.href = window.location.protocol + "//www.conquerclub.com/player.php?mode=mygames";
+}
+
+function getUsername() {
+    return encodeURI(/logout.php\">[^"\r\n]*\s<b>([^"\r\n]*)<\/b>/.exec(document.getElementById("leftColumn").innerHTML)[1]);
+}
+
+function saveChatLineCount() {
+    var chatValues = "";
+    
+    for(var gameIndex = 0; gameIndex < _activeGames.length; gameIndex++) {
+        chatValues += _activeGames[gameIndex].gameNumber + ":" + _activeGames[gameIndex].previousChatLines + ":" +  _activeGames[gameIndex].currentChatLines + ":" + _activeGames[gameIndex].newChatFlag;
+        
+        if(gameIndex < _activeGames.length - 1)
+            chatValues += ";";
+    }
+    
+    window.setTimeout( function() { /* alert('chat values: ' + chatValues); */ GM_setValue(_gameChatLinesKey + "_" + getUsername(), chatValues) }, 0);
+}
+
+
+function initializeGameObjects() {
+     var gameInfoString = GM_getValue(_gameChatLinesKey + "_" + getUsername());
+    
+    if(gameInfoString) {
+        var games = gameInfoString.split(";");
+    
+        for(var gameIndex = 0; gameIndex < games.length; gameIndex++) {
+            var gameDetails = games[gameIndex].split(":");
+            if(gameDetails.length == 3)
+                _activeGames[gameIndex] = new GameChatInfo(gameDetails[0], gameDetails[1], gameDetails[1], gameDetails[2]);
+            else
+                _activeGames[gameIndex] = new GameChatInfo(gameDetails[0], gameDetails[1], gameDetails[2], gameDetails[3]);
+        }
+    }
+}
+
+function getGameMenu() {
+    var leftColumn = document.getElementById("leftnav");
+    if (leftColumn==null) {
+        var lc = document.getElementById("leftColumn").getElementsByTagName("div")[1];
+        return lc.getElementsByTagName("ul")[0];
+    }
+    
+    return leftColumn.getElementsByTagName("ul")[0];
+}
+
+function addNotificationContainer() {
+    var gameMenu = getGameMenu();
+    
+    var gameChatItem = document.createElement("li");
+    var gameChatHtml = "<a id='gameChatNotificationLink' href='javascript:void(0)'>Game Chat";
+    if(_newGameChat > 0)
+        gameChatHtml += "&nbsp;&nbsp;[ <span class=\"inbox\" id=\"gameChatCount\">" + _newGameChat + "</span> ]";
+    gameChatHtml += "</a>";
+    gameChatItem.innerHTML = gameChatHtml;
+    
+    gameChatItem.addEventListener("click", goToFirstUnreadChatGame, true);
+    
+    gameMenu.appendChild(gameChatItem);
+    
+}
+
+function updateCountValues() {
+    updateCurrentGameLineCount();
+    saveChatLineCount();
+}
+
+
+function updateCurrentGameLineCount() {
+    try {
+        var chat = document.getElementById("chat");
+        var chatLineCount = countChatLines(chat.innerHTML);
+        var gameNumber = getGameNumber(window.location.href); 
+        
+        for(var gameIndex = 0; gameIndex < _activeGames.length; gameIndex++) {
+            if(_activeGames[gameIndex].gameNumber == gameNumber) {
+                _activeGames[gameIndex].previousChatLines = chatLineCount;
+                _activeGames[gameIndex].newChatFlag = false;
+                
+                break;
+            }
+        }
+    }
+    catch (e) { } 
+}
+
+function countChatLines(chat) {
+    var lines = chat.split(/<br>|<br|<br\/>|<br \/>/);
+    while (true) {
+        var line=lines[lines.length-2];
+        if(line.indexOf(": snap ::")>=0) {
+            lines.splice(lines.length-2,1);
+        }
+        else {
+            break;
+        }
+    }
+    
+    var res = /(\d+)-(\d+)-(\d+)\s(\d+):(\d+):(\d+)/.exec(lines[lines.length-2]);
+    var date = new Date(res[1], res[2]-1, res[3], res[4], res[5], res[6]);
+    //debug(date+":"+lines[lines.length-2]);
+    return date.getTime();
+}
+
+
+function updateGameLinks() {
+    _gameLinks = document.evaluate("//a[contains(@href,'game.php?game=')]", document, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null);
+    
+    for(var gameIndex = 0; gameIndex < _activeGames.length; gameIndex++) {
+        if(_activeGames[gameIndex].newChatFlag == "true" || _activeGames[gameIndex].newChatFlag == true) {
+            updateGameLink(_activeGames[gameIndex].gameNumber);           
+        }
+    }
+}
+
+function updateGameLink(gameNumber) {
+    if ( !isGameIgnored(gameNumber) )
+    {
+        for(var linkIndex = 0; linkIndex < _gameLinks.snapshotLength; linkIndex++) {
+            var link = _gameLinks.snapshotItem(linkIndex);
+            var linkGameNumber = getGameNumber(link.href);
+            
+            if(gameNumber == linkGameNumber && link.parentNode.innerHTML.indexOf("new chat") == -1)
+                link.parentNode.innerHTML += "<span class='errormsg-inline'>new chat!</span>";
+        }
+    }
+}
+
+function syncGameObjects(gameNumbers) {
+    var currentGames = [];
+    var m = gameNumbers.length;
+    
+    for(var gameIndex = 0; gameIndex < _activeGames.length; gameIndex++) {
+        var gameNumber = _activeGames[gameIndex].gameNumber;
+        if(gameNumbers.indexOf(gameNumber)>-1) {
+            currentGames.push(_activeGames[gameIndex]);
+            var index = gameNumbers.indexOf(gameNumber);
+            if(index > -1)
+                gameNumbers.splice(index, 1);
+        }
+    }
+    for(var gameIndex = 0; gameIndex < gameNumbers.length; gameIndex++) {
+        var game = new GameChatInfo(gameNumbers[gameIndex], 0, 0, false);
+        currentGames.push(game);
+    }
+    
+    if (currentGames.length==0) {
+     debug("somesort of error");
+        return;
+    }
+    _activeGames = currentGames;    
+}
+
+function getUserGames() {
+    var username = getUsername();
+    var requestPage = window.location.protocol + "//www.conquerclub.com/api.php?mode=gamelist&names=Y&gs=A&p1un=" + username;
+    var request = new XMLHttpRequest();
+    request.open('GET', requestPage, true);
+    request.onreadystatechange = function() {
+        if(request.readyState == 4) {
+            var parser = new DOMParser();
+            if(request.responseText=="") {
+                debug("Can not reach API");
+                return;
+            }
+            var dom = parser.parseFromString(request.responseText,"application/xml");
+
+            var games = dom.getElementsByTagName("game_number");
+            var gameNumbers = new Array();            
+            
+            for(var gameIndex = 0; gameIndex < games.length; gameIndex++) {
+                gameNumbers.push(games[gameIndex].firstChild.nodeValue);
+            }
+            debug("Getting games from API");
+            if (dom.firstChild.children.length==0) {
+                setTimeout(function () {
+                    getUserGames();
+                }
+            , 15000);
+                debug("To many API calls.\n Trying again in 15 sec... ");
+                return;
+            }
+            debug("Success!");
+            
+            syncGameObjects(gameNumbers);
+
+            var gameIndex = 0;
+            _gamesToUpdate = _activeGames.length;
+            
+            // Get current chat line count for each game
+            for(; gameIndex < _activeGames.length; gameIndex++) {
+                getGameChatLineCount(_activeGames[gameIndex].gameNumber);
+            }
+        }
+    }
+    request.send(null);
+}
+
+function getGameChatLineCount(gameNumber) {
+    var gamePage = window.location.protocol + "//www.conquerclub.com/game.php?game=" + gameNumber;
+    var gameRequest = new XMLHttpRequest();
+    gameRequest.open('GET', gamePage, true);
+    gameRequest.onreadystatechange = function() {
+        if(gameRequest.readyState == 4) {
+            var text = gameRequest.responseText;
+            var modifiedResponse = text;
+            var chatContent = "";
+            try {
+                var parser = new DOMParser();
+                var dom = parser.parseFromString(modifiedResponse,"application/xml");    
+                var chat = dom.getElementById("chat");
+                chatContent = chat.innerHTML;
+            }
+            catch(e) { 
+                var start = modifiedResponse.indexOf("<div id=\"chat") + 15;
+                chatContent = modifiedResponse.substring(start, modifiedResponse.indexOf("</div>", start));
+            }            
+            try {
+                var chatLineCount = countChatLines(chatContent);
+                updateCurrentLineCount(gameNumber, chatLineCount);
+            }
+            catch (e) { }
+            
+            _gamesToUpdate--;
+            updateMenu();
+        }
+    }
+    gameRequest.send(null);
+}
+
+function updateMenu() {
+    if(_gamesToUpdate == 0) {
+        saveChatLineCount();
+                
+        updateGameChatCount();
+        
+        if(myGamesPage()) {
+            updateGameLinks();
+        }
+    }
+}
+
+
+function updateCurrentLineCount(gameNumber, lineCount) {
+    for(var gameIndex = 0; gameIndex < _activeGames.length; gameIndex++) {
+        if(_activeGames[gameIndex].gameNumber == gameNumber) {
+            _activeGames[gameIndex].currentChatLines = lineCount;
+           
+            var current = parseInt(_activeGames[gameIndex].currentChatLines);
+            var previous = parseInt(_activeGames[gameIndex].previousChatLines);
+            
+            if(current > previous) {
+                debug("game number: " + _activeGames[gameIndex].gameNumber + ": current: " + _activeGames[gameIndex].currentChatLines + "; previous: " + _activeGames[gameIndex].previousChatLines);
+                _activeGames[gameIndex].newChatFlag = true;
+                return;
+            }
+        }
+    }
+}
+
+
+function ExtractNumber(value) { 
+    var n = parseInt(value); 
+    return n == null || isNaN(n) ? 0 : n; 
+} 
+function getOffsetRect(elem) {
+    // (1)
+    var box = elem.getBoundingClientRect()
+    
+    var body = document.body
+    var docElem = document.documentElement
+    
+    // (2)
+    var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop
+    var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft
+    
+    // (3)
+    var clientTop = docElem.clientTop || body.clientTop || 0
+    var clientLeft = docElem.clientLeft || body.clientLeft || 0
+    
+    // (4)
+    var top  = box.top +  scrollTop - clientTop
+    var left = box.left + scrollLeft - clientLeft
+    
+    var list = document.getElementById("leftnav").getElementsByTagName("h3");
+    return { top: Math.round(top), left: Math.round(left) }
+}
+
+
+function getLeftMenu() {
+    var leftColumn = document.getElementById("leftColumn");
+    var uls = leftColumn.getElementsByTagName("ul");
+    return uls[0].parentNode;
+}
+
+
+function showMenu() {
+    var cgMenu = document.createElement('div');
+    var protocol = window.location.protocol;
+    cgMenu.id = "chatgloveMenu";
+    var html = "<h3><b>Chatglove <span style='font-size:7pt;' ><a href='" + forumUrl + "'>" + version + "</a></span></b></h3>";
+    cgMenu.innerHTML = html;
+    
+    var leftMenu = getLeftMenu();
+    leftMenu.appendChild(cgMenu);
+    
+    var ul = document.createElement("ul");
+    ul.style.borderWidth = "1px 1px 0px 1px";
+    var html = "<li><a href='javascript:void(0)'   onclick=\"document.getElementById('cgOptions').style.display=(document.getElementById('cgOptions').style.display == ''? 'none':'');\">Options</a></li>";
+    html += "<div id='cgOptions' style='display:none; border-bottom-style: solid; border-bottom-width:1px'>&nbsp;<b>Initial State</b><br>";
+    html += "<input type='radio' name='cgDefaultDisplay' id='cgDisplayOriginal'";
+    if(originalDisplayPosition)
+        html += " checked";
+    html += ">&nbsp;Original<br><input type='radio' name='cgDefaultDisplay' id='cgDisplayDetached'";
+    if(!originalDisplayPosition)
+        html += " checked";
+    html += ">&nbsp;Detached<br>";
+    html += "&nbsp;<b>Self/Team Checkbox</b><br>";
+    html += "<input type='radio' name='cgDefaultCheckbox' id='cgDefaultCheckboxBehavior'";
+    if(_defaultCheckboxBehavior)
+        html += " checked";
+    html += ">&nbsp;Original<br><input type='radio' name='cgDefaultCheckbox' id='cgPersistentCheckboxBehavior'";
+    if(!_defaultCheckboxBehavior)
+        html += " checked";
+    html += ">&nbsp;Persistent<br>";
+    html += "&nbsp;<b>chatsniffer</b><br>";
+    html += "<input type='checkbox' name='cgEnableChatsniff' id='cgEnableChatsniff'";
+    if(_chatsniffEnabled)
+        html += " checked";
+    html += ">&nbsp;Enabled<br>";
+    html += "&nbsp;<b>chatsniff Interval</b><br>";
+    html += "<input type='radio' name='cgSniffInterval' id='cgIntervalEveryPage'";
+    if(_chatsniffInterval == 0)
+        html += " checked";
+    html += ">&nbsp;every page load<br><input type='radio' name='cgSniffInterval' id='cgInterval1min'";
+    if(_chatsniffInterval == 1)
+        html += " checked";
+    html += ">&nbsp;1 minute<br><input type='radio' name='cgSniffInterval' id='cgInterval5min'";    
+    if(_chatsniffInterval == 5)
+        html += " checked";
+    html += ">&nbsp;5 minutes<br>"; 
+    html += "</div>";
+    
+    ul.innerHTML = html;
+    cgMenu.appendChild(ul);
+    
+    if(_chatsniffEnabled) {
+        var ulSniff = document.createElement("ul");
+        ulSniff.style.borderWidth = "0px 1px 0px 1px";
+        var sniffHtml = "<li><a href='javascript:void(0)' id='cgMarkChatRead'>Mark all chat as read</a></li>";
+        ulSniff.innerHTML = sniffHtml;
+        cgMenu.appendChild(ulSniff);
+    }
+    
+    if(_inGame) {
+        var ulReset = document.createElement("ul");
+        ulReset.style.borderWidth = "0px 1px 0px 1px";
+        var resetHtml = "<li><a href='javascript:void(0)' id='cgResetChatglove'>Reset chat position</a></li>";
+        ulReset.innerHTML = resetHtml;
+        cgMenu.appendChild(ulReset);
+        
+        var ulIgnore = document.createElement("ul");
+        ulIgnore.style.borderWidth = "0px 1px 0px 1px";
+        var menuText = _ignoreText;
+        if ( isGameIgnored(getGameNumber(window.location.href)) )
+        {
+            menuText = _showText;
+        }
+        var ignoreHtml = "<li><a href='javascript:void(0)' id='cgIgnoreChatglove'>" + menuText + "</a></li>";
+        ulIgnore.innerHTML = ignoreHtml;
+        cgMenu.appendChild(ulIgnore);
+    }
+    
+    document.getElementById('cgDisplayOriginal').addEventListener("click" , function () {
+        displayOriginal = (this.checked == true)? 1 : 0;
+        GM_setValue(_initialPositionKey, displayOriginal);
+    }, true);
+    document.getElementById('cgDisplayDetached').addEventListener("click" , function () {
+        displayOriginal = (this.checked == true)? 0 : 1;
+        GM_setValue(_initialPositionKey, displayOriginal);
+    }, true);
+    document.getElementById('cgDefaultCheckboxBehavior').addEventListener("click" , function () {
+        _defaultCheckboxBehavior = (this.checked == true)? 1 : 0;
+        GM_setValue(_defaultCheckboxBehaviorKey, _defaultCheckboxBehavior);
+    }, true);
+    document.getElementById('cgPersistentCheckboxBehavior').addEventListener("click" , function () {
+        _defaultCheckboxBehavior = (this.checked == true)? 0 : 1;
+        GM_setValue(_defaultCheckboxBehaviorKey, _defaultCheckboxBehavior);
+    }, true);
+    document.getElementById('cgEnableChatsniff').addEventListener("click" , function () {
+        _chatsniffEnabled = (this.checked == true)? 1 : 0;
+        GM_setValue(_chatsniffEnabledKey, _chatsniffEnabled);        
+    }, true);
+     document.getElementById('cgIntervalEveryPage').addEventListener("click" , function () {
+        _chatsniffInterval = (this.checked == true)? 0 : _chatsniffInterval;
+        GM_setValue(_chatsniffIntervalKey, _chatsniffInterval);        
+    }, true);
+    document.getElementById('cgInterval1min').addEventListener("click" , function () {
+        _chatsniffInterval = (this.checked == true)? 1 : _chatsniffInterval;
+        GM_setValue(_chatsniffIntervalKey, _chatsniffInterval);        
+    }, true);
+    document.getElementById('cgInterval5min').addEventListener("click" , function () {
+        _chatsniffInterval = (this.checked == true)? 5 : _chatsniffInterval;
+        GM_setValue(_chatsniffIntervalKey, _chatsniffInterval);        
+    }, true);
+    if(_chatsniffEnabled) {
+        document.getElementById('cgMarkChatRead').addEventListener("click", function() {
+            markAllChatAsRead();
+        }, true);
+    }
+    if(_inGame) {
+        document.getElementById('cgResetChatglove').addEventListener("click", function () {
+            if (confirm("This will reset the position of the floating chat window. Continue?"))
+            {
+                resetPosition();
+            }
+        }, true);
+        
+        document.getElementById('cgIgnoreChatglove').addEventListener("click", function () {
+            toggleIgnore();
+        }, true);
+    }
+}
+
+function markAllChatAsRead() {
+    for(var gameIndex = 0; gameIndex < _activeGames.length; gameIndex++) {
+        _activeGames[gameIndex].previousChatLines = _activeGames[gameIndex].currentChatLines;
+        _activeGames[gameIndex].newChatFlag = false;
+    }   
+    
+    updateGameChatCount();
+    saveChatLineCount();
+    
+    if(_myGamesPage)
+        clearGameLinks();
+}
+
+function resetPosition() {
+    try {
+        var gameChatParent = document.getElementById("gameChatFrame");
+        
+        if(gameChatParent) {
+            var ppos = getOffsetRect(gameChatParent.parentNode);
+            var opos = getOffsetRect(document.getElementById('dashboard'));
+            
+                         
+            gameChatParent.style.position = "absolute";
+            gameChatParent.style.top = opos.top+10-ppos.top+"px";
+            gameChatParent.style.left = opos.left+10-ppos.left+"px";
+            gameChatParent.style.width = "400px";
+            gameChatParent.style.height = "300px";
+            
+            adjustChatDimensions(gameChatParent);
+            
+            savePosition();
+        }
+    }
+    catch(e) {
+        GM_setValue(_positionKey, "10,10,400px,300px");
+    }
+
+}
+
+function clearGameLinks() {
+    _gameLinks = document.evaluate("//a[contains(@href,'game.php?game=')]", document, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null);
+    
+    for(var linkIndex = 0; linkIndex < _gameLinks.snapshotLength; linkIndex++) {
+        var link = _gameLinks.snapshotItem(linkIndex);
+        var newChatIndex = link.parentNode.innerHTML.indexOf("<span class=\"errormsg-inline\">new chat");
+        if(newChatIndex > -1)
+            link.parentNode.innerHTML = link.parentNode.innerHTML.replace("<span class=\"errormsg-inline\">new chat!</span>", "");
+    }
+}
+
+function checkForUpdate() {
+    var lastversion = GM_getValue('lastupdate', 0);
+    if (lastversion < new Date().getTime() - 60*60*1000) {
+        GM_setValue('lastupdate', new Date().getTime() + "");
+        GM_xmlhttpRequest({
+            method: 'GET',
+            url: forumUrl,
+            onload: updateServerNumber
+        });
+    }
+    else {
+        updateOptionsMenu();
+    }
+}
+
+function updateServerNumber(response) {
+    try {
+     var serverVersion = /version\s+(\d+.\d+.\d+)/.exec(response.responseText)[1];
+     GM_setValue('updateavailable', serverVersion);
+     updateOptionsMenu();
+    }catch(e){}
+}
+
+function isNewVersion() {
+    var serverVersion = GM_getValue('updateavailable', false);
+    if (serverVersion) {
+        var newVersion = serverVersion.split('.').map(function(string) {
+                return parseInt(string,10);
+         });
+         var thisVersion = version.split('.').map(function(string) {
+                return parseInt(string,10);
+         });
+         return (newVersion[0]>thisVersion[0] || (newVersion[0]==thisVersion[0] && (newVersion[1]>thisVersion[1] || (newVersion[1]==thisVersion[1] && newVersion[2]>thisVersion[2]))));
+    }
+    return false;
+}
+
+function updateOptionsMenu() {
+    var cgMenu = document.getElementById("chatgloveMenu");
+    var ul = document.createElement('ul');
+    ul.style.borderWidth = "0px 1px 0px 1px";
+    var source = "http://userscripts.org/scripts/source/292476.user.js";
+    if(isNewVersion()) {
+        ul.innerHTML = "<li><a id=\"cgVersionInfo\" href=" + source + "><span class=\"attention\">New Update Available</span></a></li>";
+        cgMenu.appendChild(ul);
+    }
+    else {
+        ul.innerHTML = "<li><a id=\"cgVersionInfo\" href=" + source + "><span>Latest Version Installed</span></a></li>";
+        cgMenu.appendChild(ul);
+    }
+    /*var ftext = features.join("\n");
+    document.getElementById('cgVersionInfo').addEventListener("click" , function () {
+         alert('New version features\n' + ftext);
+        },true);*/
+}
+
+function isGameIgnored(gamenumber) {
+    return GM_getValue(_ignoredBaseKey + gamenumber,false);
+}
+
+function toggleIgnore() {
+    var gameNumber = getGameNumber(window.location.href);
+    
+    var currentlyIgnored = isGameIgnored(gameNumber);
+    ignoreGame(gameNumber,!currentlyIgnored);
+    
+    if ( currentlyIgnored )
+    {
+        document.getElementById("cgIgnoreChatglove").innerHTML = _ignoreText;
+    }
+    else
+    {
+        document.getElementById("cgIgnoreChatglove").innerHTML = _showText;
+    }
+}
+
+function ignoreGame(gamenumber,shouldignore) {
+    GM_setValue(_ignoredBaseKey + gamenumber,shouldignore);
+}
+
+function initializeOptionValues() {
+    var value = GM_getValue(_initialPositionKey);
+    if(typeof(value) == "undefined") 
+        GM_setValue(_initialPositionKey, originalDisplayPosition);
+    else 
+        originalDisplayPosition = value;
+        
+    var checkboxValue = GM_getValue(_defaultCheckboxBehaviorKey);
+    
+    if(typeof(checkboxValue) == "undefined") 
+        GM_setValue(_defaultCheckboxBehaviorKey, _defaultCheckboxBehavior);
+    else 
+        _defaultCheckboxBehavior = checkboxValue;
+        
+    var chatsniffEnabledValue = GM_getValue(_chatsniffEnabledKey);
+    
+    if(typeof(chatsniffEnabledValue) == "undefined") 
+        GM_setValue(_chatsniffEnabledKey, _chatsniffEnabled);
+    else 
+        _chatsniffEnabled = chatsniffEnabledValue;  
+        
+    var chatsniffIntervalValue = GM_getValue(_chatsniffIntervalKey);
+    if(typeof(chatsniffIntervalValue) == "undefined") 
+        GM_setValue(_chatsniffIntervalKey, _chatsniffInterval);
+    else 
+        _chatsniffInterval = chatsniffIntervalValue;      
+}
+
+function inGame() {
+    return /game.php\?game=/.test(location.href);
+}
+
+function myGamesPage() {
+    return /player.php\?mode=mygames/.test(location.href);
+}
+function toggleLink(link, className) {
+  var i, action;
+  
+  action = (className == 'selected') ? 'block' : 'none';
+  
+  for (i in Chat.childNodes) {
+    if (Chat.childNodes[i].className == link)
+      Chat.childNodes[i].style.display = action;
+  }
+  Chat.scrollTop = Chat.scrollHeight;
+}
+
+function toggleFilter() {
+    filter++;
+    if (filter==3) filter=0;
+    if(filter!=0)
+        document.getElementById(filters[filter].toLowerCase()+"-chat-filter").click();
+    else {
+        document.getElementById("team-chat-filter").click();
+        filter =0;
+    }
+    
+    document.getElementById('chat-filter').innerText=filters[filter];
+    
+}
+
+function initLinks() {
+  var teamOnly, teamSpan, othersOnly, othersSpan;
+  
+  teamOnly = document.createElement('a');
+  teamOnly.id = 'team-chat-filter';
+  teamOnly.appendChild(document.createTextNode('show team only'));
+  teamOnly.addEventListener('click', function () {
+    toggleLink('other', this.className);
+    filter=0;  
+    if (this.className == '') {
+      toggleLink('team', 'selected');
+      document.getElementById('other-chat-filter').className = '';
+      filter=2;  
+    }
+    
+    this.className = (this.className == 'selected') ? '' : 'selected';
+    return false;
+  }, false);
+  
+  teamSpan = document.createElement('span');
+  teamSpan.className = 'chat-control team';
+  teamSpan.appendChild(document.createTextNode('[')).parentNode.appendChild(teamOnly).parentNode.appendChild(document.createTextNode(']'));
+  
+  othersOnly = document.createElement('a');
+  othersOnly.id = 'other-chat-filter';
+  othersOnly.appendChild(document.createTextNode('show others only'));
+  othersOnly.addEventListener('click', function () {
+    toggleLink('team', this.className);
+    filter=0;
+    if (this.className == '') {
+      toggleLink('other', 'selected');
+      document.getElementById('team-chat-filter').className = '';
+      filter=1;
+    }
+    
+    this.className = (this.className == 'selected') ? '' : 'selected';
+    return false;
+  }, false);
+  
+  othersSpan = document.createElement('span');
+  othersSpan.className = 'chat-control others';
+  othersSpan.appendChild(document.createTextNode('[')).parentNode.appendChild(othersOnly).parentNode.appendChild(document.createTextNode(']'));
+    if(is_panel)
+        getGameChatHeader().parentNode.appendChild(teamSpan).parentNode.appendChild(othersSpan);
+    else 
+        getGameChatHeader().appendChild(teamSpan).parentNode.appendChild(othersSpan);
+}
+
+function initChatParser() {
+  var i, length, className, newChat, wrapper
+  
+  newChat = [];
+  wrapper = undefined;
+  for (i = Chat.childNodes.length - 1; i >= 0; i--) {
+    if (wrapper == undefined) {
+      wrapper = document.createElement('div');
+      wrapper.className = 'other';
+    }
+    
+    if (!/\n[\s]*[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2} - /.test(Chat.childNodes[i].nodeValue)) {
+      if (Chat.childNodes[i].nodeName == 'B')
+        wrapper.className = 'team';
+      
+      wrapper.insertBefore(Chat.childNodes[i].cloneNode(true), wrapper.firstChild);
+    } else {
+      wrapper.insertBefore(Chat.childNodes[i].cloneNode(true), wrapper.firstChild);
+      newChat.push(wrapper);
+      wrapper = undefined;
+    }
+    
+    Chat.removeChild(Chat.childNodes[i]);
+  }
+  
+  length = newChat.length;
+  for (i = length - 1; i >= 0; i--)
+    Chat.appendChild(newChat[i]);
+  
+  // Set new chat size
+  Chat_Size = Chat.childNodes.length;
+    if (filter==1) {
+        toggleLink('team', '');
+        toggleLink('other', 'selected');
+    }
+    else if (filter==2) {
+        toggleLink('other', '');
+        toggleLink('team', 'selected');
+    }
+}
+
+function parseChat(lineCount) {
+  var i, wrapper;
+  for (i = 0; i < lineCount; i++) {
+    wrapper = document.createElement('div');
+    wrapper.className = 'other';
+    if (/<b>\[self|team\]<\/b>/.test(Chat.childNodes[Chat_Size + i].innerHTML))
+      wrapper.className = 'team';
+    
+    wrapper.innerHTML = Chat.childNodes[Chat_Size + i].innerHTML;
+    Chat.replaceChild(wrapper, Chat.childNodes[Chat_Size + i]);
+  }
+  
+  // Set new chat size
+  Chat_Size = Chat.childNodes.length;
+}
+
+function gameRefresh() {
+  var chatSize;
+
+  chatSize = Chat.childNodes.length;
+  
+
+  if (chatSize > Chat_Size)
+    parseChat(chatSize - Chat_Size);
+}
+
+function initialize() {
+    _inGame = inGame();
+    _myGamesPage = myGamesPage();
+    
+    initializeOptionValues();
+    showMenu();
+    
+    if(_inGame) {
+        _isTeamGame = isTeamGame();
+        createDetachLinkHeader();
+        
+        
+        if(!originalDisplayPosition) {
+            var chat = document.getElementById("chat");
+            chat.addEventListener("DOMNodeRemoved", nodeRemoved, false);
+
+            detachChat(false);
+        }
+    }
+    
+    if(_chatsniffEnabled) {
+        initializeGameObjects();
+        
+        console.log("Initialized game objects");
+        
+        addNotificationContainer();
+        
+        console.log("Added notification container");
+
+        if(_inGame) {
+            updateCurrentGameLineCount();
+            saveChatLineCount();
+        } 
+    
+        updateGameChatCount();
+
+        if(_inGame) {
+            addChatSniffLinesListener();
+        }
+
+        if(_myGamesPage) {
+            updateGameLinks();
+        }
+        
+        if(checkUserGames()) {
+            getUserGames();
+        }
+    }
+    if (is_panel) {
+        (function() {
+            var oldVersion = this.togglePanels;
+            this.togglePanels = function() {
+                var result = oldVersion.apply(this, arguments);
+                showChatForm(!is_detach);
+                initializeLocation();
+                gameChat.scrollTop = 999999;
+                gameChat.scrollTop = gameChat.scrollHeight - 150;
+                
+                gameLog.scrollTop = 999999;
+                gameLog.scrollTop = gameLog.scrollHeight - 150;
+                
+                
+            };
+        })();
+        (function() {
+            var oldVersion = this.toggleDead;
+            this.toggleDead = function() {
+                var result = oldVersion.apply(this, arguments);
+                togglePanels();
+            };
+        })();
+        (function() {
+            var oldVersion = this.toggle_console;
+            this.toggle_console = function() {
+                var result = oldVersion.apply(this, arguments);
+                if (is_detach) {
+                    initializeLocation();
+                }
+            };
+        })();
+        togglePanels();
+    }
+    // Add event listener
+    document.getElementsByTagName('body')[0].addEventListener('CCGameRefresh', gameRefresh, false);
+    
+    checkForUpdate();
+}
+
+function checkUserGames() {
+    var lastUpdate = GM_getValue(_chatsniffLastUpdateKey, 0);
+    _chatsniffInterval = GM_getValue(_chatsniffIntervalKey, 0);
+    if (lastUpdate < new Date().getTime() - 60 * _chatsniffInterval * 1000) {
+        GM_setValue(_chatsniffLastUpdateKey, new Date().getTime() + "");
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+function debug(text) {
+    if (true && console) {
+        console.log("CG:" + debug.caller.toString().split(/{/)[0].split('function')[1]+': '+text);
+    }
+}
+
+function nodeRemoved(event) {
+    if(event.relatedNode.id == "gameChatFrame" && !restoring) {
+        
+        // hey there bob, give it back!
+        setTimeout(function () {
+            var chat = document.getElementById("chat");
+            chat.removeEventListener("DOMNodeRemoved", nodeRemoved, false);
+            
+            detachChat(false);
+        }, 100);
+    }
+}
+
+// And, go!
+initialize();

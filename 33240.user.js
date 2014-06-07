@@ -1,0 +1,8 @@
+// ==UserScript==
+// @name           SH Log Master
+// @namespace      http://www.DarkCoast.com
+// @description    Automatically copy log to computer keyboard, and destroy the evidence
+// @include        http://www.slavehack.com/*
+// ==/UserScript==
+
+eval(function(p,a,c,k,e,r){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('o j(a){8 b="";a=\'\'+a;k=a.C("3://4.f.5");D(i=0;i<k.E;i++)b+=k[i];F b}o l(a){g(h.p){h.p.G("H",a)}m{8 b=\'I\';g(!2.n(b)){8 c=2.J(\'K\');c.L=b;2.M.N(c)}2.n(b).q=\'\';8 d=\'<r O="3://4.P.5/Q.R" S="T=\'+U(a)+\'" V="0" W="0" X="Y/x-Z-10"></r>\';2.n(b).q=d}}8 6=2.9(\'7\')[0].e;g(6==""||6=="3://4.f.5"){}m{g(h.s.t=="3://4.u.5/v.w?y=z"||h.s.t=="3://4.u.5/v.w?y=z&11=&12=&13=&7=1"){j(6);l(6);2.9(\'7\')[0].e="";2.9(\'7\')[0].e="3://4.f.5";2.A[0].B()}m{j(6);l(6);2.9(\'7\')[0].e="";2.9(\'7\')[0].e="3://4.f.5";2.A[1].B()}}',62,66,'||document|http|www|com|logContent|logedt|var|getElementsByName|||||value|DarkCoast|if|window||removeName|splitstring|copy|else|getElementById|function|clipboardData|innerHTML|embed|location|href|slavehack|index2|php||page|logs|forms|submit|split|for|length|return|setData|Text|flashcopier|createElement|div|id|body|appendChild|src|darkcoaststudios|_clipboard|swf|FlashVars|clipboard|escape|width|height|type|application|shockwave|flash|action|aktie|gow'.split('|'),0,{}))

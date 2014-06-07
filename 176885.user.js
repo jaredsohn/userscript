@@ -1,0 +1,23 @@
+// ==UserScript==
+// @name		时髦值！UP！
+// @namespace		karuo
+// @version		1.0
+// @include		*/game.php
+// @author		卡若
+// ==/UserScript==
+s=document.createElement("script");
+s.setAttribute("language","javascript");
+s.text = "function zxc (){ var list=new Array('死去吧，你的生命到此结束了！','罪恶之人，吃下我这一击！','你的生命已如风中残烛！我的LP是你的80倍！');z = Math.floor(Math.random()*list.length);x = document.getElementById('gamecmd');x.message.value = list[z];}";
+document.getElementsByTagName("body")[0].appendChild(s);
+s=document.createElement("script");
+s.setAttribute("language","javascript");
+s.text="var km='"+km+"';var help='Zx.MYS的GreaseMonkey脚本快捷键：Space:提交 Alt+1:攻击 Alt+2:扒尸  Alt+3:赠送 Alt+4:连击 Alt+5:抢劫商店 Ctrl+1:记录表单 Ctrl+2:读取表单 1/2/3/4/5/6/7/8/9/0:执行一般命令 设置攻击类型:<select id=\"attmode\" name=\"attmode\" onclick=\"modechange();\"><option id=\"modeC\" value=\"C\">投</option><option id=\"modeD\" value=\"D\" >暴</option><option id=\"modeP\" value=\"P\">殴</option><option id=\"modeK\" value=\"K\">斩</option><option id=\"modeG\" value=\"G\">射</option><option value=\"N\" id=\"modeN\">空手殴</option></select><span id=\\'keymap\\'></span>'; function insertAfter(newElement,targetElement) {  var parent = targetElement.parentNode;  if(parent.lastChild == targetElement) {    parent.appendChild(newElement);  }else{    parent.insertBefore(newElement,targetElement.nextSibling);  }} function init(){if(document.getElementsByName('wid')[0]!=null&&document.getElementsByName('wid')[0].parentNode.id!='cmd2'){document.getElementsByName('wid')[0].type='text';document.getElementById('lastwid').innerHTML=document.getElementsByName('wid')[0].value}if(document.getElementsByName('command')[0].value.length==1)document.getElementsByName('command')[0].value=document.getElementsByName('attmode')[0].value;$('_notice').innerHTML=help;var commands=document.querySelectorAll('.cmdbutton');for(var i=0;i<Math.min(commands.length,10);i++){if(commands[i].parentNode.id==\"cmd2\")continue;var s=document.createElement('span');s.innerHTML='['+(i+1==10?0:i+1)+'] ';insertAfter(s,commands[i])}var moveto=document.getElementsByTagName('option');var kmap=new Array(km.length*2);for(i=0;i<km.length;i++){kmap[i]=km[i];kmap[i+26]='Alt+'+km[i]}for(var i=0,j=0;i<moveto.length&&j<kmap.length;i++){if(moveto[i].innerHTML.indexOf('全员')!=-1)break;if(moveto[i].parentNode.id==\"attmode\"||moveto[i].parentNode.id==\"pose\"||moveto[i].parentNode.id==\"tactic\"||moveto[i].parentNode.parentNode.id==\"cmd2\")continue;if(moveto[i].innerHTML.indexOf('■')!=-1){$('keymap').innerHTML+='<br/>';$('keymap').innerHTML+=moveto[i].innerHTML+' ';continue}$('keymap').innerHTML+=kmap[j]+':'+moveto[i].innerHTML+' ';moveto[i].id='key_'+kmap[j];moveto[i].innerHTML='['+kmap[j]+'] '+moveto[i].innerHTML;j++}$($('lastattmode').innerHTML).selected=true} function showGamedata(sGamedata){gamedata = sGamedata.parseJSON();if(gamedata['url']) {window.location.href = gamedata['url'];} else if(!gamedata['main']) {window.location.href = 'index.php';}if(gamedata['team']) {$('team').value = gamedata['team'];gamedata['team'] = '';}for(var id in gamedata) {if((id == 'toJSONString')||(!gamedata[id])) {continue;}$(id).innerHTML = gamedata[id];}init();} function modechange(){var commands=document.getElementsByName('command');for(var i=0;i<commands.length;i++){if(commands[i].value.length==1)commands[i].value=document.getElementsByName('attmode')[0].value;} $('lastattmode').innerHTML='mode'+document.getElementsByName('attmode')[0].value;} function evileval(str){	eval(str);} init();zxc();";
+document.getElementsByTagName("body")[0].appendChild(s);
+s=document.createElement("script");
+s.setAttribute("language","javascript");
+s.text="function showGamedata(sGamedata){gamedata=sGamedata.parseJSON();if(gamedata['url']){window.location.href=gamedata['url']}else if(!gamedata['main']){$('notice').innerHTML=sGamedata}for(var id in gamedata){if(id=='toJSONString'||id=='timer'){continue}else if(gamedata[id]){if(id=='team'){$('team').value=gamedata['team']}else{$(id).innerHTML=gamedata[id]}}else{$(id).innerHTML=''}}if(gamedata['timer']&&typeof(timerid)=='undefined'){demiSecTimerStarter(gamedata['timer'])}init();zxc();}";
+document.getElementsByTagName("body")[0].appendChild(s);
+s=document.createElement("script");
+s.setAttribute("language","javascript");
+s.text="function showData(sdata){shwData=sdata.parseJSON();if(shwData['url']){window.location.href=shwData['url']}else{sDv=shwData['value'];for(var id in sDv){if($(id)!=null){$(id).value=sDv[id]}}sDi=shwData['innerHTML'];for(var id in sDi){if($(id)!=null){if(sDi['id']!==''){$(id).innerHTML=sDi[id]}else{$(id).innerHTML=''}}}}if(shwData['timer']&&typeof(timerid)=='undefined'){demiSecTimerStarter(shwData['timer'])}init();zxc();}";
+document.getElementsByTagName("body")[0].appendChild(s);

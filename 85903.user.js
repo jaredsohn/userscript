@@ -1,0 +1,9 @@
+// ==UserScript==
+// @name           Respect Tracker
+// @namespace      http://www.torn.com
+// @include        http://www.torn.com/factions.php?step=your&action=members
+// @require        http://code.jquery.com/jquery-1.4.2.min.js
+// ==/UserScript==
+// Created by Hello71 [1427196]
+$("table[width=90%]").before('<div id="counterContainer"><label for="counter">Manage counter: </label><input type="text" id="counter"></div><input type="button" value="Show respect gained and store total respect for new members" id="showAndUpdateRespects"><br><hr width="40%">');var enableCounters=GM_getValue("||enableCounters");if(enableCounters===undefined){GM_setValue("||enableCounters",true);enableCounters=true}if(!enableCounters){$("#counterContainer").css("display","none")}$("#showAndUpdateRespects").click(function(){var b=[];var a=$("table[width]=90% > tbody > tr > td[width=10%] > a > font > b");(function(e){var c=$("#counter").val();if(b.length>0){for(var d=0;d<b.length;d=d+1){e(a[d],b[a[d]],c)}return}else{if(!confirm("This action may take a while, especially on a dial-up or phone connection. Are you sure you want to do this?")){return}else{a.each(function(g,i){var j=this;var f=$(this).parent().parent().attr("href");var h="http://www.torn.com/personalstats.php?ID="+f.substring(f.indexOf("XID=")+4,f.length);$.get(h,function(m){var k=m.indexOf("Total respect gained",m.indexOf("Total respect gained")+500)+57;var l=m.substring(k,m.indexOf("</font>",k)).replace(",","");b[j]=l;e(j,l,c)})})}}}(function(h,e,d){var g=h.parentNode.parentNode.parentNode;var c=(function(){var i;if(d){i=GM_getValue(h.innerHTML+"|"+d)}else{i=GM_getValue(h.innerHTML)}if(i===undefined){GM_setValue(h.innerHTML,e)}return i}());var f=function(i){if(d){g.innerHTML+=i.replace("|"," for counter "+d)}else{g.innerHTML+=i.replace("|","")}};if(c===undefined){GM_setValue(h.innerHTML,e);f(" Current respect| set to: "+e)}else{f(" Respect gained|: "+(e.replace(",","")-c))}}))});
+

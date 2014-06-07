@@ -1,0 +1,25 @@
+// ==UserScript==
+// @name        Scorpion Tumblr Dash
+// @namespace   http://www.consultingcommunist.tumblr.com
+// @description Devil's Carnival Scorpion
+// @include     http://www.tumblr.com/*
+// @version     1
+// ==/UserScript==
+(function() {
+var css = "body {\n    background: url('http://25.media.tumblr.com/tumblr_mdqssgA2Nb1qgf7h6o1_1280.png') #000000 repeat fixed  }\n\n\nol#posts li blockquote,\n\nbody.mceContentBody blockquote {\n\nmargin-left: 0 !important;\n\nmargin-right: 0 !important;\n\npadding-left: 10px !important;\n\nborder-width: 4px !important;\n\nborder-color: #a8bccf !important;\n\n}\n\nol#posts li blockquote blockquote,\n\nbody.mceContentBody blockquote blockquote {\n\nborder-color: #839aaf !important;\n\n}\n\nol#posts li blockquote blockquote blockquote,\n\nbody.mceContentBody blockquote blockquote blockquote {\n\nborder-color: #6b7d8f !important;\n\n}\n\nol#posts li blockquote blockquote blockquote blockquote,\n\nbody.mceContentBody blockquote blockquote blockquote blockquote {\n\nborder-color: #4c5e6f !important;\n\n}\n\nol#posts li blockquote blockquote blockquote blockquote blockquote,\n\nbody.mceContentBody blockquote blockquote blockquote blockquote blockquote {\n\nborder-color: #36434f !important;\n\n}\n\n#dashboard_index #content {\n    background: rgba(50,0,0,0.5) !important;\n  }\n\n#content {\n    background: rgba(50,0,0,0.5) !important;\n    -webkit-border-radius: 20px;\n    -moz-border-radius: 20px;\n    border-radius: 20px;\n    margin: auto;\n    padding: 20px 20px;\n  }\n\nh1 {\ncolor: #333333;\ntext-shadow: 0 0 3px #ffffff;\n}\n\n.no_posts_found, h1.dashboard_header {\ncolor: #666666;\n}\n\nimg#content_top, img#content_bottom {\ndisplay: none;\n}\n\n#right_column a#dashboard_switch_blog_menu_current #dashboard_switch_blog_arrow_current {\n    background: url(http://o.imm.io/Gys.png);\n  }\n\n#right_column .dashboard_nav_item {\n    background: url(http://o.imm.io/GyC.png) repeat-x;\n    background-attachment: initial;\n    background-position-x: 50%;\n    background-position-y: 100%;\n    background-origin: initial;\n    background-clip: initial;\n    background-color: initial;\n}\n\n#right_column .dashboard_nav_item #hide_radar {\nbackground-image: url(http://o.imm.io/GyG.png);\nbackground-repeat-x: no-repeat;\nbackground-repeat-y: repeat;\nbackground-attachment: initial;\nbackground-position-x: 0%;\nbackground-position-y: 0%;\nbackground-origin: initial;\nbackground-clip: initial;\nbackground-color: transparent;\n}\n\n#right_column .dashboard_nav_item .dashboard_controls_radar_media.photo, #right_column .dashboard_nav_item .dashboard_controls_radar_media.photoset, #right_column .dashboard_nav_item .dashboard_controls_radar_media.video {\nbackground: rgba(0,0,0,0.5);\n}\n\n#nav .nav_item.active {\n    background: rgba(50,0,0,0.5) !important;\n  }\n\n#nav .nav_item .nav_item_nipple .nav_item_nipple_pixel {\n    background: rgba(50,0,0,0.5) !important;\n  }\n\nol#posts li.notification.alt {\n    background-color: rgba(0,0,0,0.5);\n}\n\nol#posts li.notification.first_notification {\n    background-color: rgba(0,0,0,0.8);\n}\n\nol#posts li.notification {\n    background-color: rgba(0,0,0,0.8);\n    border-bottom: 1px solid #000000;\n}\n\nol#posts li.notification.last_notification {\n    border-bottom: 1px solid #000000;\n}\n\nol#posts li.post .permalink {\n    background: rgba(50,0,0,0.9);\n}\n\n#right_column .dashboard_nav_item #dashboard_controls_suggested_blogs {\nbackground: rgba(0,0,0,0.8);\nborder: solid #000000;\n}\n\nol#posts li.post .post_avatar{\nborder-bottom: 0px solid #0A2939;\n}\n\n#right_column .dashboard_nav_item #dashboard_controls_suggested_blogs .dashboard_controls_suggested_blog {\nborder-top: 1px solid #000000;\nborder-bottom: 1px solid #000000;\n}\n\n#right_column a#dashboard_switch_blog_menu_current:hover {\nbackground: url(http://o.imm.io/Gzl.png);\n}\n\n#right_column a#dashboard_switch_blog_menu_current:hover #dashboard_switch_blog_arrow_current {\nbackground: url(http://o.imm.io/Gzm.png);\n}\n\nform.dashboard_options_form {\nbackground-color: rgba(0,0,0,0.7);\nborder-bottom: 1px solid #000000;\nborder-bottom-left-radius: 10px 10px;\nborder-bottom-left-radius: 10px 10px;\nborder-bottom-right-radius: 10px 10px;\nborder-bottom-right-radius: 10px 10px;\nborder-top-left-radius: 10px 10px;\nborder-top-left-radius: 10px 10px;\nborder-top-right-radius: 10px 10px;\nborder-top-right-radius: 10px 10px;\ncolor: #cccccc;\ndisplay: block;\nfont-size: 13px;\nmargin-bottom: 25px;\npadding: 15px 22px;\n}\n\nform.dashboard_options_form .option_container {\nborder-top: 1px solid #000000;\n}\n\n.no_posts_found, h1.dashboard_header {\ncolor: #333333;\n}";
+if (typeof GM_addStyle != "undefined") {
+	GM_addStyle(css);
+} else if (typeof PRO_addStyle != "undefined") {
+	PRO_addStyle(css);
+} else if (typeof addStyle != "undefined") {
+	addStyle(css);
+} else {
+	var heads = document.getElementsByTagName("head");
+	if (heads.length > 0) {
+		var node = document.createElement("style");
+		node.type = "text/css";
+		node.appendChild(document.createTextNode(css));
+		heads[0].appendChild(node); 
+	}
+}
+})();

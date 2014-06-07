@@ -1,0 +1,468 @@
+// ==UserScript==
+// @name           c0oL 0rkuT smileyS! - B3NIP4L
+// @namespace     http://www.orkut.co.in/Main#Profile?uid=10466599411570734343
+// @author	B3N1P4L
+// @description   Hand picked co0l emoticons! for Yaho0!
+// @include       htt*://*.orkut.*/*
+// @exclude       http://*.orkut.gmodules.*
+// ==/UserScript==
+
+/********************************************************
+//smileys appear below the reply box as well.
+//Original Base script by B3N1P4L
+//Made the smileys just for fun and thought to share with you all..!!
+// All credits to Original script writer. I hope u all enjoy the script! ;)
+*********************************************************/
+
+addEventListener('load', function(event) {
+function getTextArea(n) {
+	return document.getElementsByTagName('textarea')[n];
+}
+
+
+function insertSmiley(){
+	var image = this.getElementsByTagName('img')[0].getAttribute("src");
+	getTextArea(this.getAttribute("gult")).focus();
+	getTextArea(this.getAttribute("gult")).value += "<img src="+image+">";
+}
+
+function dip() {
+	var smileyarr = new Array();
+
+var smileyarr = new Array();	
+
+smileyarr["smiley_306"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vobzio29I/AAAAAAAABSk/D3mGQfjTVbU/sign0163.gif";
+smileyarr["smiley_305"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vobjBxe7I/AAAAAAAABSg/xuPycbSDi2Y/sign0162.gif";
+smileyarr["smiley_304"]="http://lh4.ggpht.com/_PrM5VcwpZio/S1vobhnSe7I/AAAAAAAABSc/082UF_gcL50/sign0153.gif";
+smileyarr["smiley_303"]="http://lh5.ggpht.com/_PrM5VcwpZio/S1vobV8Ic3I/AAAAAAAABSY/DQJzXNlRhYw/sign0151.gif";
+smileyarr["smiley_302"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vobYDSrJI/AAAAAAAABSU/Xs13_nB0Ki8/sign0150.gif";
+smileyarr["smiley_301"]="http://lh5.ggpht.com/_PrM5VcwpZio/S1voSRfUeAI/AAAAAAAABSQ/ihgRWoHjo0M/sign0144.gif";
+smileyarr["smiley_300"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1voSdEmIjI/AAAAAAAABSI/3l9bWpGyRpg/sign0142.gif";
+smileyarr["smiley_299"]="http://lh4.ggpht.com/_PrM5VcwpZio/S1voRyWdpPI/AAAAAAAABSE/hIrUYzbcxp4/sign0140.gif";
+smileyarr["smiley_298"]="http://lh4.ggpht.com/_PrM5VcwpZio/S1voR6Q5sII/AAAAAAAABSA/Ky4SdJArgLo/sign0103.gif";
+smileyarr["smiley_293"]="http://lh6.ggpht.com/_PrM5VcwpZio/S1voH_b_XII/AAAAAAAABR8/NcisyRJdprw/sign0098.gif";
+smileyarr["smiley_292"]="http://lh4.ggpht.com/_PrM5VcwpZio/S1voH52hH3I/AAAAAAAABR4/rHz5E7KWbuA/sign0097.gif";
+smileyarr["smiley_291"]="http://lh5.ggpht.com/_PrM5VcwpZio/S1voHpGHbjI/AAAAAAAABRw/gzA2eaFFWas/sign0091.gif";
+smileyarr["smiley_290"]="http://lh5.ggpht.com/_PrM5VcwpZio/S1voHm3XjeI/AAAAAAAABRs/mhDLdRdX-ug/sign0089.gif";
+smileyarr["smiley_289"]="http://lh4.ggpht.com/_PrM5VcwpZio/S1vn_GqEseI/AAAAAAAABRo/lq7ayl2z_dk/sign0087.gif";
+smileyarr["smiley_288"]="http://lh6.ggpht.com/_PrM5VcwpZio/S1vn-2STfcI/AAAAAAAABRk/aBTysLZJLqA/sign0085.gif";
+smileyarr["smiley_287"]="http://lh6.ggpht.com/_PrM5VcwpZio/S1vn-25TNbI/AAAAAAAABRg/GeVNP8Sxq6Q/sign0081.gif";
+smileyarr["smiley_286"]="http://lh6.ggpht.com/_PrM5VcwpZio/S1vn-v60UxI/AAAAAAAABRc/F2uEbzi8dHM/sign0027.gif";
+smileyarr["smiley_285"]="http://lh6.ggpht.com/_PrM5VcwpZio/S1vn-ltc_UI/AAAAAAAABRY/r6SjErnkGp8/sign0011.gif";
+smileyarr["smiley_284"]="http://lh5.ggpht.com/_PrM5VcwpZio/S1vnz6dmh_I/AAAAAAAABRU/vRBYtPBP_Dc/sign0008.gif";
+smileyarr["smiley_283"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vnz-y0UTI/AAAAAAAABRQ/bx0qsq-I1OE/sad-049.gif";
+smileyarr["smiley_282"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vnzp71mxI/AAAAAAAABRM/lRl-LoCFwIA/redface-oops-6.gif";
+smileyarr["smiley_281"]="http://lh4.ggpht.com/_PrM5VcwpZio/S1vnzf-_4kI/AAAAAAAABRE/6AOtNyAr7jQ/mini-elephant.gif";
+smileyarr["smiley_280"]="http://lh5.ggpht.com/_PrM5VcwpZio/S1vns6zGiYI/AAAAAAAABRA/unmO9YLqS2Y/mad0218.gif";
+smileyarr["smiley_279"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vnss4tF6I/AAAAAAAABQ4/gH-gEsV99pc/love0076.gif";
+smileyarr["smiley_278"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vnsmrxJpI/AAAAAAAABQ0/fdMw8Jb57fQ/lol-034.gif";
+smileyarr["smiley_277"]="http://lh5.ggpht.com/_PrM5VcwpZio/S1vnspcLa7I/AAAAAAAABQw/I9Av-u25nJg/ivory-coast-flag-20.gif";
+smileyarr["smiley_276"]="http://lh6.ggpht.com/_PrM5VcwpZio/S1vncpg4UjI/AAAAAAAABQs/HaOFaaFAuow/happy0192.gif";
+smileyarr["smiley_275"]="http://lh4.ggpht.com/_PrM5VcwpZio/S1vnctn6zFI/AAAAAAAABQo/FCdfBOeTWKo/happy0170.gif";
+smileyarr["smiley_274"]="http://lh6.ggpht.com/_WUkykBFkZ3Y/SY1xWYmT-XI/AAAAAAAAAMY/f0LaCSoyekM/angry.gif";
+smileyarr["smiley_272"]="http://lh5.ggpht.com/_PrM5VcwpZio/S1vnb2tuQPI/AAAAAAAABQc/UTe8ER9GpaA/fantasy-mnster-25.gif";
+smileyarr["smiley_271"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vnLe8uXEI/AAAAAAAABQY/n3jc5vs90W8/evilgrin0041.gif";
+smileyarr["smiley_270"]="http://lh5.ggpht.com/_PrM5VcwpZio/S1vnLO4dPEI/AAAAAAAABQQ/HHFqkcx19M0/evilgrin0031.gif";
+smileyarr["smiley_269"]="http://lh6.ggpht.com/_PrM5VcwpZio/S1vnK8XvIpI/AAAAAAAABQM/_Hr0HDcjico/drinking-60.gif";
+smileyarr["smiley_268"]="http://lh6.ggpht.com/_PrM5VcwpZio/S1vnK5jvFlI/AAAAAAAABQI/WCOoyqYHC0w/computer-22.gif";
+smileyarr["smiley_267"]="http://lh4.ggpht.com/_PrM5VcwpZio/S1vm7HqAeEI/AAAAAAAABQE/iXNkX7TIG6I/character0114.gif";
+smileyarr["smiley_266"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vm7Gvf0yI/AAAAAAAABQA/kgS7JHQzbqY/character0113.gif";
+smileyarr["smiley_265"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vm6zncVwI/AAAAAAAABP8/MbtD2oXyTaY/character0110.gif";
+smileyarr["smiley_264"]="http://lh4.ggpht.com/_PrM5VcwpZio/S1vm69KB66I/AAAAAAAABP4/w3MZdv3NZhw/character0031.gif";
+smileyarr["smiley_263"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vm6ruhfvI/AAAAAAAABP0/x-W8YWtV3FQ/ashamed0002.gif";
+smileyarr["smiley_262"]="http://lh4.ggpht.com/_PrM5VcwpZio/S1vZeuXGooI/AAAAAAAABPs/y3smPc3Yjf8/smiley-vault-misc-164.gif";
+smileyarr["smiley_261"]="http://lh5.ggpht.com/_PrM5VcwpZio/S1vZZt0LRoI/AAAAAAAABPo/ZyNLs9Odl7E/smiley-laughing014%5B1%5D.gif";
+smileyarr["smiley_260"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vZZQ8mtQI/AAAAAAAABPk/ySNJn_fGCy8/doh8.gif";
+smileyarr["smiley_259"]="http://lh6.ggpht.com/_PrM5VcwpZio/S1vZZRPxxhI/AAAAAAAABPg/xN2wtXmQE6U/Applaus.gif";
+smileyarr["smiley_258"]="http://lh5.ggpht.com/_PrM5VcwpZio/S1vZZD2hTCI/AAAAAAAABPc/pX9koUQHkwI/Aggressive.gif";
+smileyarr["smiley_257"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vZY0C4MkI/AAAAAAAABPY/MeQf4t4FYM0/26.gif";
+smileyarr["smiley_256"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vWX-X0eWI/AAAAAAAABPQ/rhMAgRlFD20/Yow%21.gif";
+smileyarr["smiley_255"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vV46JkppI/AAAAAAAABPI/af4RIQD_fYk/red_heart.png";
+smileyarr["smiley_254"]="http://lh6.ggpht.com/_PrM5VcwpZio/S1vV43IXgmI/AAAAAAAABPE/6sMSC1Bf1Nc/d_bubble.gif";
+smileyarr["smiley_253"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vVVOAvdjI/AAAAAAAABO4/ACD82P887h4/reading%20book.gif";
+smileyarr["smiley_252"]="http://lh6.ggpht.com/_PrM5VcwpZio/S1vVU5CXjII/AAAAAAAABO0/w0LcsGbbn5I/studying.gif";
+smileyarr["smiley_251"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vVH8KMa3I/AAAAAAAABOw/RZgwZzVNPjk/listening%20music.gif";
+smileyarr["smiley_250"]="http://lh5.ggpht.com/_PrM5VcwpZio/S1vVH88-pjI/AAAAAAAABOs/tksCKPhMrtY/happy%20birthday1.gif";
+smileyarr["smiley_249"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vVHsVRZnI/AAAAAAAABOo/cJMK03aHKT8/happy%20birthday.gif";
+smileyarr["smiley_248"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vVHTiKtsI/AAAAAAAABOk/8Cuv4dx5888/eyebrow.gif";
+smileyarr["smiley_247"]="http://lh5.ggpht.com/_PrM5VcwpZio/S1vVHYYcc3I/AAAAAAAABOg/9uX6N1lKnIU/cool%20smile.gif";
+smileyarr["smiley_246"]="http://lh5.ggpht.com/_PrM5VcwpZio/S1vU26OCjwI/AAAAAAAABOc/hwCYms2bUys/WTF.gif";
+smileyarr["smiley_245"]="http://lh6.ggpht.com/_WUkykBFkZ3Y/SZ7ReIjvsoI/AAAAAAAAAVU/rldkO-R7uvQ/sm2.gif";
+smileyarr["smiley_244"]="http://lh3.ggpht.com/_WUkykBFkZ3Y/Sj4nRjui6zI/AAAAAAAAAtU/42KcoiqGcUw/taz.gif";
+smileyarr["smiley_243"]="http://lh4.ggpht.com/_WUkykBFkZ3Y/Sa1mPKduAUI/AAAAAAAAAog/NM3Afa2ychU/yawn.gif";
+smileyarr["smiley_242"]="http://lh6.ggpht.com/_WUkykBFkZ3Y/Sa1lxcdbxDI/AAAAAAAAAnA/drPkXOzFTPg/helpsmilie.gif";
+smileyarr["smiley_241"]="http://lh5.ggpht.com/_WUkykBFkZ3Y/Sxd0hgabPLI/AAAAAAAABC0/foY8T5ly3-4/couple.gif";
+smileyarr["smiley_240"]="http://lh5.ggpht.com/_WUkykBFkZ3Y/Sa1eks29RbI/AAAAAAAAAlQ/r1EhtWkSn6A/49.gif";
+smileyarr["smiley_239"]="http://lh5.ggpht.com/_WUkykBFkZ3Y/Sa1ej6eI8jI/AAAAAAAAAkw/ZzeDZpCvGmY/18.gif";
+smileyarr["smiley_238"]="http://lh3.ggpht.com/_WUkykBFkZ3Y/Sa1lK71-K0I/AAAAAAAAAmQ/DblhRzalY5s/beee.gif";
+smileyarr["smiley_237"]="http://lh4.ggpht.com/_WUkykBFkZ3Y/Sxd1MN8YyVI/AAAAAAAABDo/T3BdMczUFJk/girlie.gif";
+smileyarr["smiley_236"]="http://lh3.ggpht.com/_WUkykBFkZ3Y/Sxd1MHrLe0I/AAAAAAAABDk/ykQbxj1lZCA/fallenangel.gif";
+smileyarr["smiley_235"]="http://lh3.ggpht.com/_WUkykBFkZ3Y/Sxd0hW0eWpI/AAAAAAAABCs/hv8-VvuHtYs/artist.gif";
+smileyarr["smiley_234"]="http://lh6.ggpht.com/_WUkykBFkZ3Y/SY1zslk-75I/AAAAAAAAANg/9FwQ82VVH4c/wallbash1.gif";
+smileyarr["smiley_233"]="http://lh3.ggpht.com/_WUkykBFkZ3Y/SZ7So1sx2gI/AAAAAAAAAWU/Eq670sGKk1g/sm12.gif";
+smileyarr["smiley_232"]="http://lh6.ggpht.com/_WUkykBFkZ3Y/SY1xWYmT-XI/AAAAAAAAAMY/f0LaCSoyekM/angry.gi";
+smileyarr["smiley_232"]="http://lh5.ggpht.com/_WUkykBFkZ3Y/Sxd1Y7GuV-I/AAAAAAAABEA/WfsDUM7rqMM/vibrate.gif";
+smileyarr["smiley_231"]="http://lh4.ggpht.com/_WUkykBFkZ3Y/Sxd1YvwO4GI/AAAAAAAABD4/0X160RW0KAo/thumbup1.gif";
+smileyarr["smiley_230"]="http://lh3.ggpht.com/_WUkykBFkZ3Y/Sxd1ZBMfpjI/AAAAAAAABEE/R0OhIfFpqhY/weight_lift.gif";
+smileyarr["smiley_229"]="http://lh6.ggpht.com/_WUkykBFkZ3Y/Sxd0hkYA-2I/AAAAAAAABC4/Beh9ETTBYFA/drvita.gif";
+smileyarr["smiley_228"]="http://lh5.ggpht.com/_WUkykBFkZ3Y/SYhrSu7yMmI/AAAAAAAAAJM/40m-cBN1fDQ/lol.gif";
+smileyarr["smiley_227"]="http://lh6.ggpht.com/_WUkykBFkZ3Y/SYhq5OBxbMI/AAAAAAAAAJE/Nwoe_IMzaUQ/icon_rolleyes.gif";
+smileyarr["smiley_226"]="http://lh4.ggpht.com/_WUkykBFkZ3Y/SYhqnOJLceI/AAAAAAAAAIc/x38wTP46Ksw/clap2.gif";
+smileyarr["smiley_225"]="http://lh6.ggpht.com/_WUkykBFkZ3Y/SYXNiTYnxEI/AAAAAAAAAGs/3f30npkuW24/hide1.gif";
+smileyarr["smiley_224"]="http://lh6.ggpht.com/_mkcswd7p9hc/SdEGitgu8YI/AAAAAAAAAQ4/OkqEMr9R75o/fighting0091.gif";
+smileyarr["smiley_223"]="http://lh5.ggpht.com/_mkcswd7p9hc/SdDRhQgbz9I/AAAAAAAAAQE/VLevKJpvRaY/sFi_snowfight.gif";
+smileyarr["smiley_222"]="http://lh3.ggpht.com/_mkcswd7p9hc/SdDPg_PbPtI/AAAAAAAAANo/TIbWq6yCtFU/sFi_meteor.gif";
+smileyarr["smiley_221"]="http://lh3.ggpht.com/_mkcswd7p9hc/SdDPeqoEovI/AAAAAAAAANc/act3yDQ26dI/sFi_pistols.gi";
+smileyarr["smiley_220"]="http://lh3.ggpht.com/_mkcswd7p9hc/SdDPbZxtnqI/AAAAAAAAANQ/zjDxe2AJ2BQ/sFi_punch.gif";
+smileyarr["smiley_219"]="http://lh6.ggpht.com/_mkcswd7p9hc/SdDPImkLhPI/AAAAAAAAAMI/wKDMH9TLfuI/sFi_stopbullets.gif";
+smileyarr["smiley_218"]="http://lh5.ggpht.com/_mkcswd7p9hc/SdDO92jVUKI/AAAAAAAAALU/8Q_aI39rVvA/sFi_vikingax.gif";
+smileyarr["smiley_217"]="http://lh5.ggpht.com/_mkcswd7p9hc/SdDO5SObvEI/AAAAAAAAALA/Tr3vgIPv-sA/sFi_wwe.gif";
+smileyarr["smiley_216"]="http://lh5.ggpht.com/_PrM5VcwpZio/SwLZejKUHZI/AAAAAAAAAYo/EmKdB_Ys82o/protest.gif";
+smileyarr["smiley_215"]="http://lh6.ggpht.com/_PrM5VcwpZio/SwLYLLb_EsI/AAAAAAAAAWY/TqoIfm0rpls/banned%203.gif";
+smileyarr["smiley_214"]="http://lh5.ggpht.com/_PrM5VcwpZio/SwLZHvaEEpI/AAAAAAAAAYM/pa5PB67bAyg/nospam.gif";
+smileyarr["smiley_213"]="http://lh6.ggpht.com/_PrM5VcwpZio/SwLZ1Q-aZpI/AAAAAAAAAZQ/cCac9kDazM0/star1.gif";
+smileyarr["smiley_212"]="http://lh3.ggpht.com/_PrM5VcwpZio/SwLZegq2PPI/AAAAAAAAAYk/ZTt1rlt_ECE/popcorn2.gif";
+smileyarr["smiley_211"]="http://lh6.ggpht.com/_PrM5VcwpZio/SwLZ1Cb3gSI/AAAAAAAAAZM/IKGgY0Gr9-g/snore.gif";
+smileyarr["smiley_210"]="http://lh4.ggpht.com/_PrM5VcwpZio/SwLZelSXfFI/AAAAAAAAAYs/CXGw4nTSQmc/rollball.gif";
+smileyarr["smiley_209"]="http://lh4.ggpht.com/_PrM5VcwpZio/SwLZewqOpGI/AAAAAAAAAYw/eYqagXxprDo/rose.gif";
+smileyarr["smiley_208"]="http://lh3.ggpht.com/_PrM5VcwpZio/SwLZHrFOeWI/AAAAAAAAAYI/sUknIkzCFh0/nope.gif";
+smileyarr["smiley_207"]="http://lh6.ggpht.com/_PrM5VcwpZio/SwLZHAhH1fI/AAAAAAAAAX8/_C3gjwF4Vsk/locked.gif";
+smileyarr["smiley_206"]="http://lh6.ggpht.com/_PrM5VcwpZio/SwLZHocNmfI/AAAAAAAAAYE/l3GSQAKiX-s/makeup.gif";
+smileyarr["smiley_205"]="http://lh6.ggpht.com/_PrM5VcwpZio/SwLY7WfWfXI/AAAAAAAAAXs/aHy6xN4kSdg/hot.gif";
+smileyarr["smiley_204"]="http://lh4.ggpht.com/_PrM5VcwpZio/SwLYvPnJhkI/AAAAAAAAAXk/BHp1Iv-UCaw/google.gif";
+smileyarr["smiley_203"]="http://lh5.ggpht.com/_PrM5VcwpZio/SwLYvA5eqFI/AAAAAAAAAXg/bAIUArsPmhY/fool.gif";
+smileyarr["smiley_202"]="http://lh5.ggpht.com/_PrM5VcwpZio/SwLYu5uzk7I/AAAAAAAAAXc/6LLi32JwykE/don.gif";
+smileyarr["smiley_201"]="http://lh5.ggpht.com/_PrM5VcwpZio/SwLYjPseG7I/AAAAAAAAAXA/Fj6jhyh73c8/cough.gif";
+smileyarr["smiley_200"]="http://lh3.ggpht.com/_PrM5VcwpZio/SwLYYMRE41I/AAAAAAAAAWw/8wVVugVeRu8/calling.gif";
+smileyarr["smiley_199"]="http://lh6.ggpht.com/_PrM5VcwpZio/SwLYLF67-HI/AAAAAAAAAWc/8dnAWOIQYmQ/bigboss.gif";
+smileyarr["smiley_198"]="http://lh6.ggpht.com/_PrM5VcwpZio/SwLZq10k_mI/AAAAAAAAAY8/Pvs9kAvmLUc/singer.gif";
+smileyarr["smiley_196"]="http://lh5.ggpht.com/_PrM5VcwpZio/SwLY7ldgYqI/AAAAAAAAAX0/gt1nxKomtK8/kiss.gif";
+smileyarr["smiley_195"]="http://lh5.ggpht.com/_PrM5VcwpZio/SwLYYauhUGI/AAAAAAAAAW4/t4zhr1YW5Jo/closed.gif";
+smileyarr["smiley_194"]="http://lh6.ggpht.com/_PrM5VcwpZio/SwLZ1ij1ERI/AAAAAAAAAZc/Bw4iY3mB3rQ/superb.gif";
+smileyarr["smiley_193"]="http://lh6.ggpht.com/_PrM5VcwpZio/SwLZ-3uEazI/AAAAAAAAAZk/9l4bzYNSkeA/thanks.gif";
+smileyarr["smiley_192"]="http://lh5.ggpht.com/_PrM5VcwpZio/SwLZ_AhiABI/AAAAAAAAAZo/LJkzuVRLO5s/thrasher.gif";
+smileyarr["smiley_191"]="http://lh4.ggpht.com/_PrM5VcwpZio/SwLZ_HNlZ1I/AAAAAAAAAZs/LANGkStzxqg/verysad.gif";
+smileyarr["smiley_190"]="http://lh4.ggpht.com/_PrM5VcwpZio/SwLaIiTPSzI/AAAAAAAAAZ0/NPIDQoipaPM/wave.gif";
+smileyarr["smiley_189"]="http://lh5.ggpht.com/_PrM5VcwpZio/SwLaI4Qr5eI/AAAAAAAAAaE/2FtDoGnRq7g/yo.gif";
+smileyarr["smiley_188"]="http://lh4.ggpht.com/_zam2DdYJLxc/S0RD2mSdQRI/AAAAAAAAAIY/KanEmkPrySU/smiling23.gif";
+smileyarr["smiley_187"]="http://lh5.ggpht.com/_zam2DdYJLxc/S0RD2UDTT5I/AAAAAAAAAIU/PG3RD7qLB_c/smiling18.gif";
+smileyarr["smiley_186"]="http://lh5.ggpht.com/_zam2DdYJLxc/S0RDwHqQMDI/AAAAAAAAAIQ/sLDVN7ue2F8/smiling6.gif";
+smileyarr["smiley_185"]="http://lh6.ggpht.com/_zam2DdYJLxc/S0RDv4su7cI/AAAAAAAAAII/-apDeAEnn9Q/sad15.gif";
+smileyarr["smiley_184"]="http://lh5.ggpht.com/_zam2DdYJLxc/S0RDv1aJ8DI/AAAAAAAAAIE/5fnRf0t-u3w/sad9.gif";
+smileyarr["smiley_183"]="http://lh4.ggpht.com/_zam2DdYJLxc/S0RDvjYFe_I/AAAAAAAAAIA/Fq3I2H2LdqM/sad7.gif";
+smileyarr["smiley_182"]="http://lh3.ggpht.com/_zam2DdYJLxc/S0RDmlNkBCI/AAAAAAAAAH8/C4OrtfSDrqY/character91.gif";
+smileyarr["smiley_181"]="http://lh3.ggpht.com/_zam2DdYJLxc/S0RDmaBxuBI/AAAAAAAAAH4/FnKNgppxBOk/character78.gif";
+smileyarr["smiley_180"]="http://lh3.ggpht.com/_zam2DdYJLxc/S0RDmSDJX7I/AAAAAAAAAH0/XVM2H8gkOHU/sad6.gif";
+smileyarr["smiley_179"]="http://lh3.ggpht.com/_zam2DdYJLxc/S0RDmNGW9_I/AAAAAAAAAHw/M753x5sHbnE/character77.gif";
+smileyarr["smiley_178"]="http://lh6.ggpht.com/_zam2DdYJLxc/S0RDlZNUsuI/AAAAAAAAAHs/ZfuoxveCk4M/character69.gif";
+smileyarr["smiley_177"]="http://lh4.ggpht.com/_zam2DdYJLxc/S0RDeQwuUYI/AAAAAAAAAHo/Qq08Vf-F76w/character64.gif";
+smileyarr["smiley_176"]="http://lh5.ggpht.com/_zam2DdYJLxc/S0RDdjXe-tI/AAAAAAAAAHg/hsMTcToItNI/character59.gif";
+smileyarr["smiley_175"]="http://lh4.ggpht.com/_zam2DdYJLxc/S0RDdh-VDqI/AAAAAAAAAHc/GqxTVIynpRY/character53.gif";
+smileyarr["smiley_174"]="http://lh5.ggpht.com/_zam2DdYJLxc/S0RDdRW7kBI/AAAAAAAAAHY/JIHVEQP8wMM/character52.gif";
+smileyarr["smiley_173"]="http://lh4.ggpht.com/_zam2DdYJLxc/S0RDNcaywgI/AAAAAAAAAHU/CTHt0C4XR7c/character51.gif";
+smileyarr["smiley_172"]="http://lh3.ggpht.com/_zam2DdYJLxc/S0RDNBfmFKI/AAAAAAAAAHQ/jjfRhdjeSfw/character48.gif";
+smileyarr["smiley_171"]="http://lh4.ggpht.com/_zam2DdYJLxc/S0RDM9OcSGI/AAAAAAAAAHM/V3wOVUeGBQk/character44.gif";
+smileyarr["smiley_170"]="http://lh6.ggpht.com/_zam2DdYJLxc/S0RDMmqD28I/AAAAAAAAAHI/-Bt_svOCEzo/character43.gif";
+smileyarr["smiley_169"]="http://lh4.ggpht.com/_zam2DdYJLxc/S0RC-1dcKpI/AAAAAAAAAHA/w2H6-PaSCOQ/character40.gif";
+smileyarr["smiley_168"]="http://lh5.ggpht.com/_zam2DdYJLxc/S0RC-w6N-YI/AAAAAAAAAG8/ty7qkaO-cCo/character35.gif";
+smileyarr["smiley_167"]="http://lh3.ggpht.com/_zam2DdYJLxc/S0RC-iZ0ZdI/AAAAAAAAAG0/7p00ygIiAV8/character28.gif";
+smileyarr["smiley_166"]="http://lh5.ggpht.com/_zam2DdYJLxc/S0RC37A5_eI/AAAAAAAAAGs/l4mW_aJS9NQ/character21.gif";
+smileyarr["smiley_165"]="http://lh6.ggpht.com/_zam2DdYJLxc/S0RC3UfoPoI/AAAAAAAAAGk/hZAYwv52ar4/character18.gif";
+smileyarr["smiley_164"]="http://lh4.ggpht.com/_zam2DdYJLxc/S0RCpS4u7ZI/AAAAAAAAAGY/2jdLB7D5mOY/character14.gif";
+smileyarr["smiley_163"]="http://lh3.ggpht.com/_zam2DdYJLxc/S0RCpEM2B-I/AAAAAAAAAGQ/zuIZUA_eiYM/character11.gif";
+smileyarr["smiley_162"]="http://lh5.ggpht.com/_zam2DdYJLxc/S0RCo6wFI9I/AAAAAAAAAGI/S1o48Cj4qpg/character0.gif";
+smileyarr["smiley_161"]="http://lh5.ggpht.com/_zam2DdYJLxc/S0RCiMloaKI/AAAAAAAAAGE/dUkliIG-lsQ/yaping%20dog.gif";
+smileyarr["smiley_160"]="http://lh6.ggpht.com/_zam2DdYJLxc/S0RCXAPZH5I/AAAAAAAAAF4/i5v1tJDP2DI/world%20cup%20trophee.gif";
+smileyarr["smiley_157"]="http://lh3.ggpht.com/_zam2DdYJLxc/S0RCLSTVsOI/AAAAAAAAAFo/Ze4An7gbfHE/transforming.gif";
+smileyarr["smiley_155"]="http://lh6.ggpht.com/_zam2DdYJLxc/S0RCLJMZVrI/AAAAAAAAAFc/inrR268d_aY/respect.gif";
+smileyarr["smiley_153"]="http://lh3.ggpht.com/_zam2DdYJLxc/S0RB8w4X_5I/AAAAAAAAAFU/uoL7K5NPqik/pizza.gif";
+smileyarr["smiley_152"]="http://lh6.ggpht.com/_zam2DdYJLxc/S0RB8qkvHyI/AAAAAAAAAFM/DxS213IAeWM/penguin%20dance.gif";
+smileyarr["smiley_149"]="http://lh6.ggpht.com/_zam2DdYJLxc/S0RBxeNkSEI/AAAAAAAAAFA/_YywzUbZYQw/mirror.gif";
+smileyarr["smiley_146"]="http://lh3.ggpht.com/_zam2DdYJLxc/S0RBw4EL3ZI/AAAAAAAAAE0/vWaszIkpFgU/hotornot.gif";
+smileyarr["smiley_145"]="http://lh4.ggpht.com/_zam2DdYJLxc/S0RBw0vUlxI/AAAAAAAAAEw/xw0yUNDtlis/happy%20dance%20penguin.gif";
+smileyarr["smiley_144"]="http://lh4.ggpht.com/_zam2DdYJLxc/S0RBneSWMTI/AAAAAAAAAEs/dQb1oMDngeY/happy%20dance.gif";
+smileyarr["smiley_143"]="http://lh5.ggpht.com/_zam2DdYJLxc/S0RBnIVoz4I/AAAAAAAAAEo/7Y4hZyRE1Uk/ha%20ha%20ha.gif";
+smileyarr["smiley_142"]="http://lh5.ggpht.com/_zam2DdYJLxc/S0RBnP4kUxI/AAAAAAAAAEk/Xu5oZ36iZHc/go%20arrow.gif";
+smileyarr["smiley_141"]="http://lh6.ggpht.com/_zam2DdYJLxc/S0RBm92yYqI/AAAAAAAAAEg/95YYuHapZ4g/gleam.gif";
+smileyarr["smiley_140"]="http://lh6.ggpht.com/_zam2DdYJLxc/S0RBmsujsSI/AAAAAAAAAEc/A1H1UxZn-ng/flowers%20for%20you.gif";
+smileyarr["smiley_139"]="http://lh4.ggpht.com/_zam2DdYJLxc/S0RBdNd7kgI/AAAAAAAAAEU/dVuNgh1uTSQ/face%20lol.gif";
+smileyarr["smiley_138"]="http://lh6.ggpht.com/_zam2DdYJLxc/S0RBc0NW_xI/AAAAAAAAAEQ/sGhtI9cKNs0/emoticon%20lol.gif";
+smileyarr["smiley_137"]="http://lh5.ggpht.com/_zam2DdYJLxc/S0RBc6Px8lI/AAAAAAAAAEM/c01ejCviGxQ/cool.gif";
+smileyarr["smiley_136"]="http://lh3.ggpht.com/_zam2DdYJLxc/S0RBclsgtzI/AAAAAAAAAEI/JtETzvr5Qe8/claping%20hands.gif";
+smileyarr["smiley_135"]="http://lh6.ggpht.com/_zam2DdYJLxc/S0RBH976rwI/AAAAAAAAAEE/z_0Sq-agYFY/cheekkiss.gif";
+smileyarr["smiley_134"]="http://lh6.ggpht.com/_zam2DdYJLxc/S0RBHs0TV8I/AAAAAAAAAEA/mhdvSt7q_PA/bye.gif";
+smileyarr["smiley_132"]="http://lh5.ggpht.com/_zam2DdYJLxc/S0RBHPYYxFI/AAAAAAAAAD4/d3tATNlQfW0/bulb.gif";
+smileyarr["smiley_131"]="http://lh4.ggpht.com/_zam2DdYJLxc/S0RA_AAfioI/AAAAAAAAADw/KP76exJSDsE/buddy%20beer.gif";
+smileyarr["smiley_128"]="http://lh4.ggpht.com/_zam2DdYJLxc/S0RA-k91KnI/AAAAAAAAADk/xnFcZ5zNG1c/boxing.gif";
+smileyarr["smiley_126"]="http://lh4.ggpht.com/_zam2DdYJLxc/S0RAymVRdhI/AAAAAAAAADc/bKPJ0-OaBbI/blushing.gif";
+smileyarr["smiley_125"]="http://lh6.ggpht.com/_zam2DdYJLxc/S0RAybRckuI/AAAAAAAAADY/5LZrpu0euQc/blow.gif";
+smileyarr["smiley_124"]="http://lh4.ggpht.com/_zam2DdYJLxc/S0RAyLsPd3I/AAAAAAAAADU/ShgxSYaoEqU/bat.gif";
+smileyarr["smiley_122"]="http://lh5.ggpht.com/_zam2DdYJLxc/S0RAxja2gvI/AAAAAAAAADM/5cNNuSTXXlo/icon_cry.gif";
+smileyarr["smiley_121"]="http://lh5.ggpht.com/_zam2DdYJLxc/S0RAZn_ie4I/AAAAAAAAADI/e4_Q_ouljhs/cry.gif";
+smileyarr["smiley_120"]="http://lh6.ggpht.com/_zam2DdYJLxc/S0RAR4_O77I/AAAAAAAAADE/S9NZQTZwltI/secret.gif";
+smileyarr["smiley_119"]="http://lh5.ggpht.com/_WUkykBFkZ3Y/SZ7ReVdxz6I/AAAAAAAAAVk/oqU4IA4PwbE/sm6.gif";
+smileyarr["smiley_118"]="http://lh6.ggpht.com/_WUkykBFkZ3Y/SZ7RepbNFfI/AAAAAAAAAVs/xc5Y0CkhRXc/sm10.gif";
+smileyarr["smiley_117"]="http://lh3.ggpht.com/_PrM5VcwpZio/SwLY7SQjT_I/AAAAAAAAAXo/6RHcZbfLLCk/happy.gif";
+smileyarr["smiley_116"]="http://lh4.ggpht.com/_WUkykBFkZ3Y/Sa1lbNmCU5I/AAAAAAAAAmw/9gyGXlZmi6w/fight.gif";
+smileyarr["smiley_115"]="http://lh4.ggpht.com/_WUkykBFkZ3Y/SYhrhqghdNI/AAAAAAAAAKE/yh-jcjADTIQ/wallbash.gif";
+smileyarr["smiley_114"]="http://lh5.ggpht.com/_WUkykBFkZ3Y/SZ7SpCSinxI/AAAAAAAAAWc/Envjv3CWgsU/sm28.gif";
+smileyarr["smiley_113"]="http://lh3.ggpht.com/_WUkykBFkZ3Y/SYhrUzPTPkI/AAAAAAAAAJk/xc4cN1VDpgs/sagar.gif";
+smileyarr["smiley_112"]="http://lh6.ggpht.com/_WUkykBFkZ3Y/SYhqm00an1I/AAAAAAAAAIM/zIUyZtILodM/book5.gif";
+smileyarr["smiley_111"]="http://lh5.ggpht.com/_PrM5VcwpZio/SwLZ1TuVDxI/AAAAAAAAAZY/F3XqvpG5HB0/suicide.gif";
+smileyarr["smiley_110"]="http://lh6.ggpht.com/_PrM5VcwpZio/SwLYjfSe5rI/AAAAAAAAAXI/KSoxdk2GHZI/declare.gif";
+smileyarr["smiley_109"]="http://lh5.ggpht.com/_PrM5VcwpZio/SwLYjMRKakI/AAAAAAAAAXE/NosT1oQVJAU/daru.gif";
+smileyarr["smiley_108"]="http://lh6.ggpht.com/_PrM5VcwpZio/SwLX-ENnywI/AAAAAAAAAWM/8SvmCUqXyO4/avatar22403_1.gif";
+smileyarr["smiley_107"]="http://lh3.ggpht.com/_PrM5VcwpZio/SwLZ-z9dOyI/AAAAAAAAAZg/3iBhNLcwoT4/superhero2.gif";
+smileyarr["smiley_106"]="http://lh6.ggpht.com/_PrM5VcwpZio/SwLX95w0S_I/AAAAAAAAAWA/297V4HQVqZU/Blushing.gif";
+smileyarr["smiley_105"]="http://lh4.ggpht.com/_PrM5VcwpZio/SwLZ_TNoN9I/AAAAAAAAAZw/TlFG6g_yNnE/victory.gif";
+smileyarr["smiley_104"]="http://lh6.ggpht.com/_WUkykBFkZ3Y/SYhrUirj_4I/AAAAAAAAAJc/uw1X2_jXIGs/no.gif";
+smileyarr["smiley_103"]="http://lh4.ggpht.com/_PrM5VcwpZio/SwLZrDrpGVI/AAAAAAAAAZA/_xvERm3pKKE/slap.gif";
+smileyarr["smiley_102"]="http://lh5.ggpht.com/_PrM5VcwpZio/SwLaI59nMbI/AAAAAAAAAaA/XtUMbyIcSCI/yesss.gif";
+smileyarr["smiley_101"]="http://lh5.ggpht.com/_PrM5VcwpZio/SwLZrFwGvsI/AAAAAAAAAZE/q1N5-fLSInE/smarty.gif";
+smileyarr["smiley_100"]="http://lh6.ggpht.com/_PrM5VcwpZio/SwLYXx-gnQI/AAAAAAAAAWo/KIYvBJmnq-g/brb.gif";
+smileyarr["smiley_99"]="http://lh3.ggpht.com/_PrM5VcwpZio/SwLZHRSHUCI/AAAAAAAAAYA/yYf23x1KYgQ/lotpot.gif";
+smileyarr["smiley_98"]="http://lh4.ggpht.com/_PrM5VcwpZio/SwLYYCfNMzI/AAAAAAAAAW0/dvOlgi6O0as/chummi.gif";
+smileyarr["smiley_97"]="http://lh5.ggpht.com/_PrM5VcwpZio/SwLZHvaEEpI/AAAAAAAAAYM/pa5PB67bAyg/nospam.gif";
+smileyarr["smiley_96"]="http://lh5.ggpht.com/_PrM5VcwpZio/SwLX9-kncAI/AAAAAAAAAWE/xgUSJNZxmSM/admin.gif";
+smileyarr["smiley_95"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9V81tTRzI/AAAAAAAAAuw/LjlAT04ffNo/violent8.gif";
+smileyarr["smiley_94"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9V8yNnyGI/AAAAAAAAAus/bEqSdSVdvaY/tv8.gif";
+smileyarr["smiley_93"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9V8jYfsOI/AAAAAAAAAuk/703NFMp6InE/sporty82.gif";
+smileyarr["smiley_92"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9V8f-quFI/AAAAAAAAAug/BoecUsrHkIU/sporty62.gif";
+smileyarr["smiley_91"]="http://lh4.ggpht.com/_PrM5VcwpZio/Sx9VtP44fCI/AAAAAAAAAuE/scJmPkLuW8o/sporty50.gif";
+smileyarr["smiley_90"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9VsxPUSiI/AAAAAAAAAt8/i7CLIIOVjUw/sporty37.gif";
+smileyarr["smiley_89"]="http://lh4.ggpht.com/_PrM5VcwpZio/Sx9VslFOaFI/AAAAAAAAAt4/qYM8usnmxCU/sporty18.gif";
+smileyarr["smiley_88"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9VhB-eiaI/AAAAAAAAAtg/8Qmfp71nmjc/sporty0.gif";
+smileyarr["smiley_87"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9Vg8VGCwI/AAAAAAAAAtc/mnKcttnK8p0/smiling19.gif";
+smileyarr["smiley_86"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9VgtrfmxI/AAAAAAAAAtQ/AjM84dzTbRw/smiling0.gif";
+smileyarr["smiley_85"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9VUuWg10I/AAAAAAAAAs4/0uHXUvtTB2g/signsandflags43.gif";
+smileyarr["smiley_84"]="http://lh4.ggpht.com/_PrM5VcwpZio/Sx9VUrji3wI/AAAAAAAAAs0/17BMS0fG9qk/signsandflags42.gif";
+smileyarr["smiley_83"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9VUTjC7VI/AAAAAAAAAsw/8YyXf02BgI8/signsandflags36.gif";
+smileyarr["smiley_82"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9VUQLgQuI/AAAAAAAAAss/sb71vaf2Fr4/signsandflags35.gif";
+smileyarr["smiley_81"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9VUffQrUI/AAAAAAAAAso/2pEyk22wzGM/signsandflags34.gif";
+smileyarr["smiley_80"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9VLsVptmI/AAAAAAAAAsQ/A0VflFtVSdA/signsandflags28.gif";
+smileyarr["smiley_79"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9VLtV5k6I/AAAAAAAAAsM/yhYpDWRbtrw/signsandflags20.gif";
+smileyarr["smiley_78"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9VLYgYXwI/AAAAAAAAAsE/Qx49qKpbOzE/signsandflags16.gif";
+smileyarr["smiley_77"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9U8uNla4I/AAAAAAAAAro/8tUXMO16eEE/signsandflags14.gif";
+smileyarr["smiley_76"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9U8UwccBI/AAAAAAAAArk/0WcGx_uShvI/scared10.gif";
+smileyarr["smiley_75"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9U8EpncLI/AAAAAAAAArg/30KQVwvs2cc/scared4.gif";
+smileyarr["smiley_74"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9U8O-_-fI/AAAAAAAAArc/_h0HgEIkUdw/scared2.gif";
+smileyarr["smiley_73"]="http://lh4.ggpht.com/_PrM5VcwpZio/Sx9U8KTA7yI/AAAAAAAAArY/Y1Wj0h_Tl4w/sad21.gif";
+smileyarr["smiley_72"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9UxZouLtI/AAAAAAAAArA/pQ5ZR9CCwzQ/sad17.gif";
+smileyarr["smiley_71"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9UxAbr5sI/AAAAAAAAAq8/nVIOwi-Db_A/sad3.gif";
+smileyarr["smiley_70"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9Uw_jqHCI/AAAAAAAAAq0/dTrlUibB4bY/music24.gif";
+smileyarr["smiley_69"]="http://lh4.ggpht.com/_PrM5VcwpZio/Sx9UhrH6hdI/AAAAAAAAAqY/6ONPr0-To-Y/music20.gif";
+smileyarr["smiley_68"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9Uw9pLufI/AAAAAAAAAq4/aMFj6rxNigY/sad2.gif";
+smileyarr["smiley_67"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9UhqHB9SI/AAAAAAAAAqU/6RlpfOeTdDE/music1.gif";
+smileyarr["smiley_66"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9UhSryXVI/AAAAAAAAAqQ/D4fBsI_bDjk/love43.gif";
+smileyarr["smiley_65"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9UhAWxznI/AAAAAAAAAqI/z8nKLncyRuM/love42.gif";
+smileyarr["smiley_64"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9UVvywDVI/AAAAAAAAApw/qCkxjEd3hrI/love28.gif";
+smileyarr["smiley_63"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9UVnbYEdI/AAAAAAAAAps/2TBbWybhNgc/love27.gif";
+smileyarr["smiley_62"]="http://lh4.ggpht.com/_PrM5VcwpZio/Sx9UVcKrsJI/AAAAAAAAApo/BWx-cUyCI8s/love21.gif";
+smileyarr["smiley_61"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9UVPZHJ0I/AAAAAAAAApg/kYOqxlnkx8Q/love3.gif";
+smileyarr["smiley_60"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9ULoghZvI/AAAAAAAAApI/W04z0e0FsHc/love2.gif";
+smileyarr["smiley_59"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9SPA1vVuI/AAAAAAAAAhU/FhfGlSvVKIM/agreement0.gif";
+smileyarr["smiley_58"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9SPPsFO-I/AAAAAAAAAhY/PkYhLt_xkkY/agreement2.gif";
+smileyarr["smiley_57"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9SPQ8UxhI/AAAAAAAAAhc/2hNQ7yem8wY/alien4.gif";
+smileyarr["smiley_56"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9SPcSs51I/AAAAAAAAAhg/dP3YtFN4LYE/aloofandbored0.gif";
+smileyarr["smiley_55"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9SP55vJ7I/AAAAAAAAAhk/O55jIUCcH8c/aloofandbored10.gif";
+smileyarr["smiley_54"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9SmRM13VI/AAAAAAAAAiA/eKYdmEZ86_8/aloofandbored12.gif";
+smileyarr["smiley_53"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9Smg48r5I/AAAAAAAAAiE/j7hfkqiVImc/angel3.gif";
+smileyarr["smiley_52"]="http://lh4.ggpht.com/_PrM5VcwpZio/Sx9SmvkG_vI/AAAAAAAAAiI/I_UI0O5bcdc/angel5.gif";
+smileyarr["smiley_51"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9Smx-vJHI/AAAAAAAAAiM/rUFdNsRiY8I/angel9.gif";
+smileyarr["smiley_50"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9SnHObYmI/AAAAAAAAAiQ/VSPPTuCbVVE/angry0.gif";
+smileyarr["smiley_49"]="http://lh4.ggpht.com/_PrM5VcwpZio/Sx9Syi_6PDI/AAAAAAAAAio/lWgA2LuYN2U/angry14.gif";
+smileyarr["smiley_48"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9Syoll4WI/AAAAAAAAAis/705fUdNX7tg/angry16.gif";
+smileyarr["smiley_47"]="http://lh4.ggpht.com/_PrM5VcwpZio/Sx9Sy-xlkDI/AAAAAAAAAiw/XGFfHGB40jo/angry17.gif";
+smileyarr["smiley_46"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9SzMyNOLI/AAAAAAAAAi0/I6fH1XOK-FA/angry19.gif";
+smileyarr["smiley_45"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9SzIRvZCI/AAAAAAAAAi4/os8JhgbHj7E/angry21.gif";
+smileyarr["smiley_44"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9S40GzYJI/AAAAAAAAAjQ/Qmp7Xa2pKSY/badtaste23.gif";
+smileyarr["smiley_43"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9S4xoIlyI/AAAAAAAAAjU/F2aup8Wx23I/badtaste25.gif";
+smileyarr["smiley_42"]="http://lh4.ggpht.com/_PrM5VcwpZio/Sx9S5PmwxJI/AAAAAAAAAjY/YZ3zHeFR6_M/celebrate4.gif";
+smileyarr["smiley_41"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9S5IAeheI/AAAAAAAAAjc/RDxZNCeEhTo/celebrate8.gif";
+smileyarr["smiley_40"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9S5bl2fuI/AAAAAAAAAjg/TwfNsxJYT8w/celebrate11.gif";
+smileyarr["smiley_39"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9TEq0Ex1I/AAAAAAAAAj4/7gTmBTUr1Qw/celebrate13.gif";
+smileyarr["smiley_38"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9TEyOWYmI/AAAAAAAAAj8/MNzZU9Ucd88/celebrate16.gif";
+smileyarr["smiley_37"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9TE2oQBJI/AAAAAAAAAkA/iffigv7Hz28/celebrate17.gif";
+smileyarr["smiley_36"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9TFCPKFEI/AAAAAAAAAkE/dn4dtfmYWdc/character19.gif";
+smileyarr["smiley_35"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9TFV5-mTI/AAAAAAAAAkI/zG7l5W6w9SA/character25.gif";
+smileyarr["smiley_34"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9TLusE0NI/AAAAAAAAAkg/BLoKu4hjDc0/character32.gif";
+smileyarr["smiley_33"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9TL8koPUI/AAAAAAAAAkk/mVfjqTDsk6Q/character49.gif";
+smileyarr["smiley_32"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9TL6mAhFI/AAAAAAAAAko/xAsw-sRfnPs/character90.gif";
+smileyarr["smiley_31"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9TMH4OzZI/AAAAAAAAAks/Uz6aqLppt3k/confused1.gif";
+smileyarr["smiley_30"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9TMKvZuhI/AAAAAAAAAkw/70-yG0YVDHM/confused11.gif";
+smileyarr["smiley_29"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9TSo-h0II/AAAAAAAAAlI/jPMOGn7Izow/confused13.gif";
+smileyarr["smiley_28"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9TS5Q0NcI/AAAAAAAAAlM/xlxyqk2L4IM/disdain6.gif";
+smileyarr["smiley_27"]="http://lh4.ggpht.com/_PrM5VcwpZio/Sx9TS_mNj-I/AAAAAAAAAlQ/ZZw3Z20Gp7U/doh7.gif";
+smileyarr["smiley_26"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9TTGZ5O_I/AAAAAAAAAlU/-PLH9cjFpYg/doh24.gif";
+smileyarr["smiley_25"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9TTCU76GI/AAAAAAAAAlY/EPcwhVT_OdE/evil11.gif";
+smileyarr["smiley_24"]="http://lh4.ggpht.com/_PrM5VcwpZio/Sx9TZPF49uI/AAAAAAAAAlw/jnpUxv3nZG8/evil13.gif";
+smileyarr["smiley_23"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9TZZG0d0I/AAAAAAAAAl0/vILM1oio1xE/fighting4.gif";
+smileyarr["smiley_22"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9TZWeAz4I/AAAAAAAAAl4/-Y3A4r6owvE/fighting12.gif";
+smileyarr["smiley_21"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9TZuqEW4I/AAAAAAAAAl8/3HwnTjosLH0/foodanddrink0.gif";
+smileyarr["smiley_20"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9TZkZk-HI/AAAAAAAAAmA/wBUEQUzeqPo/foodanddrink7.gif";
+smileyarr["smiley_19"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9Te5iz3dI/AAAAAAAAAmY/0FuDGjDvHFg/foodanddrink25.gif";
+smileyarr["smiley_18"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9TfOWpbsI/AAAAAAAAAmc/GX4-TvNEAM4/glasses0.gif";
+smileyarr["smiley_17"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9TfI3XmtI/AAAAAAAAAmg/smG3SIS88xA/greetings2.gif";
+smileyarr["smiley_16"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9Tfc82zrI/AAAAAAAAAmk/-ztFXdiH5q8/greetings8.gif";
+smileyarr["smiley_15"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9Tff1EfAI/AAAAAAAAAmo/0bpO5maWC-o/greetings10.gif";
+smileyarr["smiley_14"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9TrYRGY6I/AAAAAAAAAnQ/KE-ev2ci-sc/guns2.gif";
+smileyarr["smiley_13"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9TyotzIhI/AAAAAAAAAno/sH3V5jzK0T4/headgear26.gif";
+smileyarr["smiley_12"]="http://lh4.ggpht.com/_PrM5VcwpZio/Sx9Ty2UhuQI/AAAAAAAAAns/Jznzx5l4pBw/headgear94.gif";
+smileyarr["smiley_11"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9Ty0RO75I/AAAAAAAAAnw/hcsI2D0XYTg/headgear95.gif";
+smileyarr["smiley_10"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9TzJ__UgI/AAAAAAAAAn0/vRoUY61LWQ0/ill0.gif";
+smileyarr["smiley_09"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9TzIc1BtI/AAAAAAAAAn4/DASVlpsbBhQ/infomilies20.gif";
+smileyarr["smiley_08"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9UCZIdAgI/AAAAAAAAAoQ/Vqe0mTl-0Mo/infomilies21.gif";
+smileyarr["smiley_07"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9UCep8LVI/AAAAAAAAAoU/lAdyIIky35Y/infomilies37.gif";
+smileyarr["smiley_06"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9UCnz4RPI/AAAAAAAAAoY/So_XA1vznU8/infomilies38.gif";
+smileyarr["smiley_05"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9UC8oXSpI/AAAAAAAAAog/tJyol5c6gPU/infomilies41.gif";
+smileyarr["smiley_04"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9ULLorFSI/AAAAAAAAAo4/USPm4x_mKdk/laughing1.gif";
+smileyarr["smiley_03"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9ULP8r1WI/AAAAAAAAAo8/W3UjOYTRKQM/laughing8.gif";
+smileyarr["smiley_02"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9ULd3pueI/AAAAAAAAApA/Tdj_3psanlk/laughing19.gif";
+smileyarr["smiley"]="http://lh4.ggpht.com/_PrM5VcwpZio/Sx9ULljufwI/AAAAAAAAApE/AUIaPNZ09p0/lostit4.gif";
+
+	smileyarr["CoolAnim"]="http://lh4.ggpht.com/_Ajoc8AujQC0/SvAqJZpO4iI/AAAAAAAAAN4/8M9dSIgWfA8/s400/i_cool.png";
+	smileyarr["SadAnim"]="http://lh6.ggpht.com/_Ajoc8AujQC0/St1qhOu8rRI/AAAAAAAAAKQ/pcvCiQrAFvs/s400/i_sad.png";
+	smileyarr["AngryAnim"]="http://lh6.ggpht.com/_Ajoc8AujQC0/St1viCDcCKI/AAAAAAAAAKY/ZIEuF_qdqvo/s400/i_angry.png";
+	smileyarr["SmileAnim"]="http://lh6.ggpht.com/_Ajoc8AujQC0/St2LOwuB5QI/AAAAAAAAALw/miyNfnfvj-U/s400/i_smile.png";
+	smileyarr["WinkAnim"]="http://lh6.ggpht.com/_Ajoc8AujQC0/SvAx7TnUWMI/AAAAAAAAAOI/69ETthREJFo/s400/i_wink.png";
+	smileyarr["Big SmileAnim"]="http://lh5.ggpht.com/_Ajoc8AujQC0/SvAiPxQ1n_I/AAAAAAAAANw/IVp5-BIj18Y/s400/i_bigsmile.png";
+
+smileyarr["hehe"]="http://lh6.google.com/fenil.rulez/SCKffqghQvI/AAAAAAAAAF0/UYVeu8yK6AY/0.gif";
+	smileyarr["smile"]="http://lh6.google.com/fenil.rulez/SCKffqghQwI/AAAAAAAAAF8/OF26gKUCd_U/1.gif";
+	smileyarr["sad"]="http://lh6.google.com/fenil.rulez/SCKffqghQxI/AAAAAAAAAGE/RrOvlLjQ2j4/2.gif";
+	smileyarr["wink"]="http://lh3.google.com/fenil.rulez/SCKff6ghQyI/AAAAAAAAAGM/fNm7w9DW95w/3.gif";
+	smileyarr["grin"]="http://lh3.google.com/fenil.rulez/SCKff6ghQzI/AAAAAAAAAGU/HPQQ4jyNqf8/4.gif";
+	smileyarr["batting eyelashes"]="http://lh5.google.com/fenil.rulez/SCKfmaghQ0I/AAAAAAAAAGc/AgaNXqqXGbo/5.gif";
+	smileyarr["hug"]="http://lh5.google.com/fenil.rulez/SCKfmaghQ1I/AAAAAAAAAGk/4Qa-FNOLtCY/6.gif";
+	smileyarr["confuse"]="http://lh5.google.com/fenil.rulez/SCKfmaghQ2I/AAAAAAAAAGs/PtzYfpMGMxM/7.gif";
+	smileyarr["love struck"]="http://lh5.google.com/fenil.rulez/SCKfmaghQ3I/AAAAAAAAAG0/MQkeAyScx4k/8.gif";
+	smileyarr["blush"]="http://lh5.google.com/fenil.rulez/SCKfmaghQ4I/AAAAAAAAAG8/_LD2CzWH4dg/9.gif";
+	smileyarr["funny"]="http://lh4.google.com/fenil.rulez/SCKf2KghQ5I/AAAAAAAAAHE/Jw2dObqME8c/10.gif";
+	smileyarr["kiss"]="http://lh5.google.com/fenil.rulez/SCKf2aghQ6I/AAAAAAAAAHM/6MhueuDt_Es/11.gif";
+	smileyarr["broken heart"]="http://lh5.google.com/fenil.rulez/SCKf2aghQ7I/AAAAAAAAAHU/BTYYh16WnW0/12.gif";
+	smileyarr["surprise"]="http://lh6.google.com/fenil.rulez/SCKf2qghQ8I/AAAAAAAAAHc/LO22pD6pJxM/13.gif";
+	smileyarr["angry"]="http://lh6.google.com/fenil.rulez/SCKf2qghQ9I/AAAAAAAAAHk/2RzHLFyzD1o/14.gif";
+	smileyarr["smug"]="http://lh6.google.com/fenil.rulez/SCKf8qghQ-I/AAAAAAAAAHs/5eawzApIf1Q/15.gif";
+	smileyarr["cool"]="http://lh6.google.com/fenil.rulez/SCKf8qghQ_I/AAAAAAAAAH0/JLRMTa_-Z8E/16.gif";
+	smileyarr["worried"]="http://lh3.google.com/fenil.rulez/SCKf86ghRAI/AAAAAAAAAH8/dDF9fAkyOWs/17.gif";
+	smileyarr["whew"]="http://lh3.google.com/fenil.rulez/SCKf86ghRBI/AAAAAAAAAIE/p0YlwTd1NZQ/18.gif";
+	smileyarr["devil"]="http://lh3.google.com/fenil.rulez/SCKf86ghRCI/AAAAAAAAAIM/gt9_-w4PEHo/19.gif";
+	smileyarr["cry"]="http://lh6.google.com/fenil.rulez/SCKgSqghRDI/AAAAAAAAAIU/UD4poyt8IA0/20.gif";
+	smileyarr["laugh"]="http://lh6.google.com/fenil.rulez/SCKgSqghREI/AAAAAAAAAIc/uDBr8ILYSac/21.gif";
+	smileyarr["straight face"]="http://lh6.google.com/fenil.rulez/SCKgSqghRFI/AAAAAAAAAIk/_yv_bISAVTg/22.gif";
+	smileyarr["^ eyebrow"]="http://lh6.google.com/fenil.rulez/SCKgSqghRGI/AAAAAAAAAIs/hcOQnPcKTEc/23.gif";
+	smileyarr["laughin on floor"]="http://lh6.google.com/fenil.rulez/SCKgSqghRHI/AAAAAAAAAI0/rswbPIMWhdI/24.gif";
+	smileyarr["angel"]="http://lh6.google.com/fenil.rulez/SCKgeqghRII/AAAAAAAAAI8/bZydrIWQdmo/25.gif";
+	smileyarr["nerd"]="http://lh3.google.com/fenil.rulez/SCKge6ghRJI/AAAAAAAAAJE/JkANsPSF-wc/26.gif";
+	smileyarr["tlk 2 hand"]="http://lh4.google.com/fenil.rulez/SCKgfKghRKI/AAAAAAAAAJM/qXdz1dAhxlw/27.gif";
+	smileyarr["sleep"]="http://lh4.google.com/fenil.rulez/SCKgfKghRLI/AAAAAAAAAJU/MDQVCTa75Mk/28.gif";
+	smileyarr["rolling eyes"]="http://lh4.google.com/fenil.rulez/SCKgfKghRMI/AAAAAAAAAJc/v-Kmy0eC-Xw/29.gif";
+	smileyarr["loser"]="http://lh3.google.com/fenil.rulez/SCKgt6ghRNI/AAAAAAAAAJk/jjHTzc_e_qA/30.gif";
+	smileyarr["sick"]="http://lh3.google.com/fenil.rulez/SCKgt6ghROI/AAAAAAAAAJs/EUM87MtkPcw/31.gif";
+	smileyarr["secret"]="http://lh3.google.com/fenil.rulez/SCKgt6ghRPI/AAAAAAAAAJ0/kESMqGEH3Aw/32.gif";
+	smileyarr["not tlking"]="http://lh4.google.com/fenil.rulez/SCKguKghRQI/AAAAAAAAAJ8/RahDhhvSfqU/33.gif";
+	smileyarr["clown"]="http://lh4.google.com/fenil.rulez/SCKguKghRRI/AAAAAAAAAKE/qR8khSq_IDI/34.gif";
+	smileyarr["crazy"]="http://lh4.google.com/fenil.rulez/SCKg0KghRSI/AAAAAAAAAKM/U3wnnFYbK68/35.gif";
+	smileyarr["party"]="http://lh4.google.com/fenil.rulez/SCKg0KghRTI/AAAAAAAAAKU/QmD2xZqsiO4/36.gif";
+	smileyarr["yawn"]="http://lh6.google.com/fenil.rulez/SCKg0qghRUI/AAAAAAAAAKc/CyvdJ2EN6zE/37.gif";
+	smileyarr["droolin"]="http://lh6.google.com/fenil.rulez/SCKg0qghRVI/AAAAAAAAAKk/uP4Zw96zIDM/38.gif";
+	smileyarr["thinking"]="http://lh6.google.com/fenil.rulez/SCKg0qghRWI/AAAAAAAAAKs/YX47RqhdSJM/39.gif";
+	smileyarr["doh"]="http://lh4.google.com/fenil.rulez/SCKg5KghRXI/AAAAAAAAAK0/cKkTi1jPq24/40.gif";
+	smileyarr["applause"]="http://lh4.google.com/fenil.rulez/SCKg5KghRYI/AAAAAAAAAK8/vtOMcxyMuJg/41.gif";
+	smileyarr["very worried"]="http://lh4.google.com/fenil.rulez/SCKg5KghRZI/AAAAAAAAALE/tVxhLY_BZ3M/42.gif";
+	smileyarr["hypno"]="http://lh5.google.com/fenil.rulez/SCKg5aghRaI/AAAAAAAAALM/iEuJuemA07U/43.gif";
+	smileyarr["liar"]="http://lh5.google.com/fenil.rulez/SCKg5aghRbI/AAAAAAAAALU/dbfTALWwiT0/44.gif";
+	smileyarr["waiting"]="http://lh6.google.com/fenil.rulez/SCKhSqghRcI/AAAAAAAAALc/8gnITHRPong/45.gif";
+	smileyarr["sigh"]="http://lh6.google.com/fenil.rulez/SCKhSqghRdI/AAAAAAAAALk/EK6qB1q8Uy0/46.gif";
+	smileyarr["phbbt"]="http://lh6.google.com/fenil.rulez/SCKhSqghReI/AAAAAAAAALs/1lfHD5RCXU4/47.gif";
+	smileyarr["cowboy"]="http://lh6.google.com/fenil.rulez/SCKhSqghRfI/AAAAAAAAAL0/gPof1Tpjfuc/48.gif";
+	smileyarr["on call"]="http://lh6.google.com/fenil.rulez/SCKhSqghRgI/AAAAAAAAAL8/1GAtlnCiQWk/100.gif";
+	smileyarr["call me"]="http://lh3.google.com/fenil.rulez/SCKha6ghRhI/AAAAAAAAAME/LPvQj4kHnOo/101.gif";
+	smileyarr["irritated"]="http://lh3.google.com/fenil.rulez/SCKha6ghRiI/AAAAAAAAAMM/bwvltzLcjT8/102.gif";
+	smileyarr["bye"]="http://lh3.google.com/fenil.rulez/SCKha6ghRjI/AAAAAAAAAMU/Alz7wy5Xu04/103.gif";
+	smileyarr["time up"]="http://lh3.google.com/fenil.rulez/SCKha6ghRkI/AAAAAAAAAMc/esXzY4CYEHI/104.gif";
+	smileyarr["day dreaming"]="http://lh4.google.com/fenil.rulez/SCKhbKghRlI/AAAAAAAAAMk/z0lmJ3l6DGc/105.gif";
+	smileyarr["dun wanna see"]="http://lh5.google.com/fenil.rulez/SCKhraghRmI/AAAAAAAAAMs/Fwrq_98xe1Q/109.gif";
+	smileyarr["hurry up"]="http://lh5.google.com/fenil.rulez/SCKhraghRnI/AAAAAAAAAM0/4tlsUt1H15E/110.gif";
+	smileyarr["rock on"]="http://lh5.google.com/fenil.rulez/SCKhraghRoI/AAAAAAAAAM8/jWTex2apZzA/111.gif";
+	smileyarr["thumbs down"]="http://lh5.google.com/fenil.rulez/SCKhraghRpI/AAAAAAAAANE/wMusLZLd9Wo/112.gif";
+	smileyarr["thumbs up"]="http://lh5.google.com/fenil.rulez/SCKhraghRqI/AAAAAAAAANM/X4VuXKdVZP4/113.gif";
+	smileyarr["i dunno"]="http://lh4.google.com/fenil.rulez/SCKh3KghRrI/AAAAAAAAANU/HKXemLzafrM/114.gif";
+	smileyarr["bow"]="http://lh4.google.com/fenil.rulez/SCKh3KghRsI/AAAAAAAAANc/BjLIjfIk_zE/77.gif";
+	smileyarr["chatterbox"]="http://lh5.google.com/fenil.rulez/SCKh3aghRtI/AAAAAAAAANk/r0_gLsT6MDs/76.gif";
+	smileyarr["bring it on"]="http://lh5.google.com/fenil.rulez/SCKh3aghRuI/AAAAAAAAANs/yNwr8jdeMw8/70.gif";
+	smileyarr["whistling"]="http://lh3.google.com/fenil.rulez/SCKiA6ghRvI/AAAAAAAAAN0/O3ukMSdjbj8/65.gif";
+	smileyarr["money eyes"]="http://lh3.google.com/fenil.rulez/SCKiA6ghRwI/AAAAAAAAAN8/UAHgEDYtTWw/64.gif";
+	smileyarr["pray"]="http://lh3.google.com/fenil.rulez/SCKiA6ghRxI/AAAAAAAAAOE/38xlLa3ILqM/63.gif";
+	smileyarr["frustated"]="http://lh4.google.com/fenil.rulez/SCKiBKghRyI/AAAAAAAAAOM/Q1yj6LxCP0I/62.gif";
+	smileyarr["dancing"]="http://lh4.google.com/fenil.rulez/SCKiBKghRzI/AAAAAAAAAOU/SYJMOwMAH_c/69.gif";
+	smileyarr["not listening"]="http://lh5.google.com/fenil.rulez/SCKiNaghR0I/AAAAAAAAAOc/m7RffpUIJpk/107.gif";
+	smileyarr["shame on u"]="http://lh5.google.com/fenil.rulez/SCKiNaghR1I/AAAAAAAAAOk/eVg86YsoBSU/68.gif";
+	smileyarr["oh cum on"]="http://lh6.google.com/fenil.rulez/SCKiNqghR2I/AAAAAAAAAOs/iHZJL67ip7M/78.gif";
+	smileyarr["no idea"]="http://lh6.google.com/fenil.rulez/SCKiNqghR3I/AAAAAAAAAO0/dUXWpcCbpOE/106.gif";
+	smileyarr["feelin beat up"]="http://lh6.google.com/fenil.rulez/SCKiNqghR4I/AAAAAAAAAO8/Wdr6l6Amf_o/66.gif";
+	smileyarr["bug"]="http://lh5.google.com/fenil.rulez/SCKiaaghR5I/AAAAAAAAAPE/YYuluyCX5UY/60.gif";
+	smileyarr["skul"]="http://lh5.google.com/fenil.rulez/SCKiaaghR6I/AAAAAAAAAPM/EXs0tfktP1w/59.gif";
+	smileyarr["idea"]="http://lh5.google.com/fenil.rulez/SCKiaaghR7I/AAAAAAAAAPU/5WeIQHQnrbU/58.gif";
+	smileyarr["goodluck"]="http://lh5.google.com/fenil.rulez/SCKiaaghR8I/AAAAAAAAAPc/yUzmMqalQCQ/54.gif";
+	smileyarr["rose"]="http://lh6.google.com/fenil.rulez/SCKiaqghR9I/AAAAAAAAAPk/YWmvdaDqu_k/53.gif";
+	smileyarr["chic"]="http://lh6.google.com/fenil.rulez/SCKijqghR-I/AAAAAAAAAPs/tCSQaPDPR8U/52.gif";
+	smileyarr["monkey"]="http://lh6.google.com/fenil.rulez/SCKijqghR_I/AAAAAAAAAP0/e_0FWxWoC1A/51.gif";
+	smileyarr["cow"]="http://lh3.google.com/fenil.rulez/SCKij6ghSAI/AAAAAAAAAP8/w6YHjrbX7bc/50.gif";
+	smileyarr["pig"]="http://lh3.google.com/fenil.rulez/SCKij6ghSBI/AAAAAAAAAQE/XsU2AA0wf_o/49.gif";
+	smileyarr["dog"]="http://lh3.google.com/fenil.rulez/SCKij6ghSCI/AAAAAAAAAQM/_JxH2hvgM1s/108.gif";
+	smileyarr["star"]="http://lh5.google.com/fenil.rulez/SCKiuaghSDI/AAAAAAAAAQU/iBH0R9P2HAk/79.gif";
+	smileyarr["OD"]="http://lh5.google.com/fenil.rulez/SCKiuaghSEI/AAAAAAAAAQc/43VMyQoVtQc/72.gif";
+	smileyarr["FENIL"]="http://lh6.google.com/fenil.rulez/SCKiuqghSFI/AAAAAAAAAQk/hKMJpiqV0a8/73.gif";
+	smileyarr["NIYATI"]="http://lh6.google.com/fenil.rulez/SCKiuqghSGI/AAAAAAAAAQs/FSLkAll9vgg/74.gif";
+	smileyarr["pirate"]="http://lh6.google.com/fenil.rulez/SCKizqghSHI/AAAAAAAAAQ0/xuO3al_YRfg/pirate_2.gif";
+	smileyarr["transformer"]="http://lh6.google.com/fenil.rulez/SCKizqghSII/AAAAAAAAAQ8/kby9xg6pFoI/transformer.gif";
+	smileyarr["alien"]="http://lh5.google.com/fenil.rulez/SCKjRaghSJI/AAAAAAAAARE/u68DVv1I9ks/61.gif";
+	smileyarr["bee"]="http://lh6.google.com/fenil.rulez/SCKjRqghSKI/AAAAAAAAARM/cyg71VQRdaQ/115.gif";
+	smileyarr["pumpkin"]="http://lh6.google.com/fenil.rulez/SCKjRqghSLI/AAAAAAAAARU/iyJGgK_dpnA/56.gif";
+	smileyarr["tea"]="http://lh6.google.com/fenil.rulez/SCKjRqghSMI/AAAAAAAAARc/xxhTMrfSAqM/57.gif";
+	smileyarr["FF rulez"]="http://lh4.google.com/fenil.rulez/SCMiK6ghThI/AAAAAAAAAcI/656o_XLJlVQ/infomilies14.gif";
+
+smileyarr["Cool"]="http://img1.orkut.com/img/i_cool.gif";
+	smileyarr["Sad"]="http://img1.orkut.com/img/i_sad.gif";
+	smileyarr["Angry"]="http://img1.orkut.com/img/i_angry.gif";
+	smileyarr["Smile"]="http://img1.orkut.com/img/i_smile.gif";
+	smileyarr["Wink"]="http://img1.orkut.com/img/i_wink.gif";
+	smileyarr["Big Smile"]="http://img1.orkut.com/img/i_bigsmile.gif";
+	smileyarr["Surprise"]="http://img1.orkut.com/img/i_surprise.gif";
+	smileyarr["Funny"]="http://img1.orkut.com/img/i_funny.gif";
+	smileyarr["Confuse"]="http://img1.orkut.com/img/i_confuse.gif";
+smileyarr["Lol"]="http://lh6.ggpht.com/_UDJ56KWhcrQ/S58fHkzoTRI/AAAAAAAAA_o/yCpmHNIscRo/s800/face%20lol.gif";
+	
+
+
+
+	var tb = document.getElementsByTagName('textarea');
+	for(i=0;i<tb.length;i++){
+		text=tb[i];
+		if (!text) return;
+		c=text.parentNode;
+		d=document.createElement("div");
+		d.className="T";
+		d.style.fontSize="11px";
+		d.align="left";
+		
+	        
+	    d.style.marginTop="10px";
+		c.appendChild(d);
+		
+		for(title in smileyarr){
+			mm=document.createElement("a");
+			mm.href="javascript:;";
+			mm.setAttribute("gult",i);
+
+			mm.innerHTML="<img src='"+smileyarr[title]+"' title='"+title+"'>";
+			mm.addEventListener("click", insertSmiley, true);
+			d.appendChild(mm);
+		}
+	}	
+}
+dip();
+}, false);
+
+// B3N1P4L's script

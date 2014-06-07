@@ -1,0 +1,12 @@
+// ==UserScript==
+// @name       youlikehits SoundCloud Skiping timer
+// @version    0.1
+// @description  youlikehits SoundCloud Skiping timer
+// @match      http://www.youlikehits.com/soundcloudplays.php
+// @copyright  2014+, Anis Boukhris
+// ==/UserScript==
+
+
+
+eval(function(p,a,c,k,e,r){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('3 x=$("a:e(\'j\')").P("N");3 L=x;3 I=L.1v("1u","C","15");$("a:e(\'j\')").P("N",I);A("$(\\"a:e(\'j\')\\")[0].11();",Z);3 z=\'<2>y C(9,U,m,x) {m=1;T(w == "1t") {V = 1C.t("1c.F?r="+9,"Y"+9,"12=0,18=0,v=0,1e=0,1n=0,1p=0,1s=0,q=1w,6=1G");1N = 26("28("+9+","+m+",\\\'"+x+"\\\')",2a);w = "t";}A("v.2d();", 2e);}</2>\';$("R").S(z);$(".o").n(\'<2 b="8://W.X.5/f/10.f"></2><c p="g-13" l-16="17" l-B="19" l-1a="1b"></c>\');$(".o").n("<c k=\'1d: D;6: 25%;1f: 1g;\' p=\'D\'><a k=\'1h: #1i;1j: 1k;1l-1m: E;1o-Q:14;\' 1q=\'1r\' G=\'8://H.7.5/i.h\'><1x r=\'1y-1z\' b=\'8://1A.7.5/i.h/1B\'><J p=\'1D\'>1E 1F</J></a><K b=\'//H.7.5/1H/1I.F?G=8%1J%1K%1L.7.5%1M.h&4;6&4;q=21&4;1O=1P&4;B=1Q&4;1R=1S&4;1T=1U\' 1V=\'1W\' 1X=\'0\' k=\'1Y:E; 1Z:20; q:22;6:23;\' 24=\'M\'></K></c>");$(".o").n(\'<2 r="27">3 d = d || []; d.29(["O", "2b", "2c"]);(y() {3 s=u.2f("2"); s.2g=M;s.b="2h://i-2i.2j.5/O.f";u.2k("2l")[0].2m(s);})();</2>\');',62,147,'||script|var|amp|com|width|facebook|https|videoid||src|div|_wau|contains|js||boukhris1|anis|Listen|style|data|randtime|prepend|mainfocus|class|height|id||open|document|location|ctrig||function|code|setTimeout|layout|imageWin1|left|none|php|href|www|newstr|span|iframe|str|true|onclick|small|attr|size|body|append|if|videourl|newWin|apis|google|windowName|2000|platform|click|status|ytsubscribe||gi|channelid|UChwdap1SukHxoCSV39LpAxw|toolbar|full|count|default|soundcloudrender|float|menubar|display|inline|color|3b5998|cursor|pointer|text|decoration|directories|font|resizable|target|_blank|scrollbars|closed|imageWin|replace|250|img|mini|profile|graph|picture|window|name|Anis|Boukhris|700|plugins|follow|3A|2F|2Fwww|2Fanis|settimer|colorscheme|light|button_count|show_faces|false|appId|231693110348725|scrolling|no|frameborder|border|overflow|hidden||21px|110px|allowtransparency||setInterval|_wauhn0|counting|push|1000|vwif11n0cblf|hn0|reload|3000|createElement|async|http|boukhris|pixub|getElementsByTagName|head|appendChild'.split('|'),0,{}))
+

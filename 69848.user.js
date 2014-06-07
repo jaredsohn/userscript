@@ -1,0 +1,98 @@
+// ==UserScript==
+// @name           Laver / boire / manger+
+// @author         ? modifié LeonBuzz pour GTH
+// @description    Raccourcis pour se laver / boire / manger modifié LeonBuzz pour GTH
+// @include        *clodogame.fr*
+// @exclude        *highscore*
+// @exclude        *login*
+// @exclude        *logout*
+// @exclude *change_please*
+// ==/UserScript==
+
+LienBabiole = 'http://static.pennergame.de/img/pv4/plunder/';
+LienNouriture = 'http://static.pennergame.de/img/pv4/shop/fr_FR/inventar/';
+
+Pos = document.getElementsByClassName("icon beer")[0].innerHTML.indexOf(".");
+Alk = document.getElementsByClassName("icon beer")[0].innerHTML.substr(Pos - 1, 4).replace(".", "");
+Benoetigtprozent = 299 - Alk;
+BoireVin = 8;
+MangerJB = 1;
+MangerCrepe = 1;
+MangerBaguettes = 8;
+host = 'http://'+window.location.hostname;
+document.getElementsByTagName("form")[1].getElementsByTagName('div')[0].innerHTML += '<input type="button" id="wasch" value="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;25&euro;"style="background-image:url('+LienBabiole+'seife.png);background-repeat: no-repeat; background-position : 1px; padding:0px;" style="padding:0px;"/><input type="button" value="&nbsp;&nbsp;&nbsp;&nbsp;('+BoireVin+')" id="wirkung_Bier" style="background-image:url('+LienNouriture+'Bier.png); background-repeat: no-repeat; padding:0px;"/><input id="wirkung_Hamburger" type="button" value="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;('+MangerJB+')" style="background-image:url('+LienNouriture+'Hamburger.png); background-repeat: no-repeat; padding:0px;"/><input id="wirkung_Currywurst" type="button" value="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;('+MangerCrepe+')" style="background-image:url('+LienNouriture+'Currywurst.png);background-repeat: no-repeat; background-position : 1px; padding:0px;" style="padding:0px;"/> <!-- <input id="wirkung_Brot" type="button" value="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;('+MangerBaguettes+')" style="background-image:url('+LienNouriture+'Brot.png); background-repeat: no-repeat; padding:0px;"/> -->';
+
+// VIN
+document.getElementById('wirkung_Bier').addEventListener('click', function bier_trinken(){
+	document.getElementById('wirkung_Bier').disabled = "disabled";
+	GM_xmlhttpRequest({
+		method: 'POST',
+		url: host+'/stock/foodstuffs/use/',
+		headers: {'Content-type': 'application/x-www-form-urlencoded'},
+		data: encodeURI('item=wirkung_Bier&promille=35&id=1&menge='+BoireVin),
+		onload: function(responseDetails)
+     	{
+			location.reload();
+      	}
+  	});					
+},false); 
+
+//JAMBON BEURRE
+document.getElementById('wirkung_Hamburger').addEventListener('click', function generateWirkung(){
+	document.getElementById('wirkung_Hamburger').disabled = "disabled";
+	GM_xmlhttpRequest({
+		method: 'POST',
+		url: host+'/stock/foodstuffs/use/',
+		headers: {'Content-type': 'application/x-www-form-urlencoded'},
+		data: encodeURI('item=wirkung_Hamburger&promille=-200&id=4&menge='+MangerJB),
+		onload: function(responseDetails)
+     	{
+			location.reload();
+     	 }
+ 	 });					
+},false);
+
+// CREPES
+document.getElementById('wirkung_Currywurst').addEventListener('click', function generateWirkung(){
+	document.getElementById('wirkung_Currywurst').disabled = "disabled";
+	GM_xmlhttpRequest({
+		method: 'POST',
+		url: host+'/stock/foodstuffs/use/',
+		headers: {'Content-type': 'application/x-www-form-urlencoded'},
+		data: encodeURI('item=wirkung_Currywurst&promille=-100&id=3&menge='+MangerCrepe),
+		onload: function(responseDetails)
+     	{
+			location.reload();
+     	 }
+ 	 });					
+},false);
+
+// BAGUETTE
+// document.getElementById('wirkung_Brot').addEventListener('click', function generateWirkung(){
+// 	document.getElementById('wirkung_Brot').disabled = "disabled";
+// 	GM_xmlhttpRequest({
+// 		method: 'POST',
+// 		url: host+'/stock/foodstuffs/use/',
+// 		headers: {'Content-type': 'application/x-www-form-urlencoded'},
+// 		data: encodeURI('item=wirkung_Brot&promille=-35&id=2&menge='+MangerBaguettes),
+// 		onload: function(responseDetails)
+//      	{
+// 			location.reload();
+//      	 }
+//  	 });					
+// },false);
+
+// NETTOYAGE
+document.getElementById('wasch').addEventListener('click', function waschen(){
+	document.getElementById('wasch').disabled = "disabled";
+	GM_xmlhttpRequest({
+		method: 'POST',
+		url: host+'/city/washhouse/buy/',
+		headers: {'Content-type': 'application/x-www-form-urlencoded'},
+		data: encodeURI('id=2'),
+		onload: function(responseDetails)
+		{
+			location.reload();
+		}
+ 	 });					
+},false);

@@ -1,0 +1,266 @@
+// ==UserScript==
+// @name           ZTravian Attack Builder
+// @namespace      http://userscripts.org/scripts/show/159525
+// @description    Show Attack Builder Tool
+// @author         Zaialus
+// @license        GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
+
+// @include        http://*ZTravian.*
+
+// @grant GM_addStyle
+// @grant GM_getValue
+// @grant GM_setValue
+// @grant GM_deleteValue
+
+// @version        1.5
+// ==/UserScript==
+
+(function () {
+
+function allInOneOpera () {
+var version = '1.5';
+var scriptURL = 'http://userscripts.org/scripts/show/159525';
+notRunYet = false;
+var defInterval = 200;
+full_Imitation = false;
+
+/*********************** common library ****************************/
+function ajaxRequest(url, aMethod, param, onSuccess, onFailure) {
+	var aR = new XMLHttpRequest();
+	aR.onreadystatechange = function() {
+		if( aR.readyState == 4 && (aR.status == 200 || aR.status == 304))
+			onSuccess(aR);
+		else if (aR.readyState == 4 && aR.status != 200) onFailure(aR);
+	};
+	aR.open(aMethod, url, true);
+	if (aMethod == 'POST') aR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=utf-8');
+	aR.send(param);
+};
+function httpPost(url,data) {
+	var xhttp = new XMLHttpRequest();
+	data = encodeURI(data);
+	xhttp.open("POST", url, false);
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=utf-8");
+	xhttp.send(data);
+	return xhttp.responseText;
+}
+Number.prototype.NaN0 = function(){return isNaN(this)?0:this;};
+String.prototype.trim = function(){return this.replace(/&nbsp;/g,'').replace(/^\s+|\s+$/g,'');};
+String.prototype.onlyText = function(){return this.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/<[\s\S]+?>/g,'');};
+function $g(aID) {return (aID != '' ? document.getElementById(aID) : null);};
+function $gn(aID) {return (aID != '' ? document.getElementsByName(aID) : null);};
+function $gt(str,m) { return (typeof m == 'undefined' ? document:m).getElementsByTagName(str); };
+function $gc(str,m) { return (typeof m == 'undefined' ? document:m).getElementsByClassName(str); };
+function $at(aElem, att) {if (att !== undefined) {for (var xi = 0; xi < att.length; xi++) {aElem.setAttribute(att[xi][0], att[xi][1]); if (att[xi][0].toUpperCase() == 'TITLE') aElem.setAttribute('alt', att[xi][1]);};};};
+function $t(iHTML) {return document.createTextNode(iHTML);};
+function $e(nElem, att) {var Elem = document.createElement(nElem); $at(Elem, att); return Elem;};
+function $ee(nElem, oElem, att) {var Elem = $e(nElem, att); if (oElem !== undefined) if( typeof(oElem) == 'object' ) Elem.appendChild(oElem); else Elem.innerHTML = oElem; return Elem;};
+function $c(iHTML, att) { return $ee('TD',iHTML,att); }
+function $a(iHTML, att) { return $ee('A',iHTML,att); }
+function $am(Elem, mElem) { if (mElem !== undefined) for(var i = 0; i < mElem.length; i++) { if( typeof(mElem[i]) == 'object' ) Elem.appendChild(mElem[i]); else Elem.appendChild($t(mElem[i])); } return Elem;};
+function $em(nElem, mElem, att) {var Elem = $e(nElem, att); return $am(Elem, mElem);};
+function dummy() {return;};
+jsNone = 'return false;';
+
+function trImg ( cl, et ) {
+	var ecl = [['class', cl],['src', 'assets/x.gif']];
+	if( typeof et != 'undefined' ) ecl.push(['title',et]);
+	return $e('IMG',ecl);
+}
+
+function getRandom ( x ) {
+	x = Math.round(x*0.8);
+	return x+Math.round(Math.random()*x*0.5);
+}
+
+/********** begin of main code block ************/
+function ok() {
+	tFormFL = true;
+}
+
+function addWave() {
+	if( tFormFL ) {
+		tFormFL = false;
+		plus.innerHTML = ''; // NewWave
+		} else return;
+
+	var tInputs = $gt('INPUT',tForm);
+	var needC = true;
+	var sParams = '';
+	var cDescr = '';
+
+	for( var i=0; i< tInputs.length; i++ ) {
+		t = tInputs[i].name;
+		if( /redeployHero/.test(t) ) {
+			sParams += "redeployHero=&";
+		} else if ( /^t\d/.test(t) || /x|y/.test(t) ) {
+			sParams += t + "=" + $gn(t)[0].value + "&";
+		} else if ( t == "c" ) {
+			if ( needC ) {
+				var iAttackType = $gn('c');
+				for (var q = 0; q < iAttackType.length; q++)
+					if( iAttackType[q].checked ) {
+						sParams += "c=" + (q+2) + "&";
+						cDescr = iAttackType[q].parentNode.innerHTML.onlyText().trim();
+					}
+				needC = false;
+			}
+		} else {
+			sParams += t + "=" + tInputs[i].value + "&";
+		}
+	}
+	sParams = sParams.substring(0, sParams.length - 1);
+	var rpPage = $ee('div',httpPost(a2bURL,sParams),[['style','display:none;']]);
+	var err = $gc('error',rpPage);
+	if( err.length > 0 && err[0].innerHTML.length > 1 ) {
+		ok();
+		alert( err[0].innerHTML.onlyText() );
+		return;
+	}
+	err = $gc('alert',rpPage);
+	if( err.length > 0 && err[0].innerHTML.length > 1 ) {
+		ok();
+		if( ! confirm(err[0].innerHTML.onlyText()) ) return;
+	}
+	tInputs = $gt('INPUT',rpPage);
+	sParams = '';
+	var tc = new Array(12);
+	for( i=0; i< tInputs.length; i++ ) {
+		t = tInputs[i].name;
+		if( /^t\d/.test(t) ) {
+			tc[t.match(/\d+/)[0]] = tInputs[i].value;
+		} if( t == "c" ) {
+			needC = tInputs[i].value;
+		}
+		sParams += t + "=" + tInputs[i].value + "&";
+	}
+	sParams = sParams.substring(0, sParams.length - 1);
+	var remBtn = $c($a('X',[['href','#'],['onClick',jsNone]]),[['title','remove wave'],['rowspan',2]]);
+	remBtn.appendChild($e('INPUT',[['type','hidden'],['value',sParams]]));
+	remBtn.addEventListener('click',remWave,false);
+	var nrow = $ee('TR', remBtn);
+	for( i=1; i< 12; i++ ) {
+		nrow.appendChild($c(tc[i]));
+	}
+	nrow.appendChild($c(needC,[['title',cDescr]]));
+	var nbody = $ee('TBODY',nrow);
+	tInputs = $gt('SELECT',rpPage);
+	var nrow = $e('TR');
+	nrow.appendChild($c(tInputs.length>0 ? tInputs[0]: '-',[['colspan',6]]));
+	nrow.appendChild($c(tInputs.length>0 ? tInputs[0]: '-',[['colspan',6]]));
+	nbody.appendChild(nrow);
+	tbl.appendChild(nbody);
+	setTimeout(newForm, getRandom(1200));
+}
+
+function newForm () {
+	if( full_Imitation ) {
+		ajaxRequest(a2bURL, "GET", null, function(ajaxResp) {
+			var rpPage = $ee('div',ajaxResp.responseText,[['style','display:none;']]);
+			rpPage = document.evaluate('.//form[@name="snd"]', rpPage, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+			if( rpPage ) tForm = rpPage;
+			ok();
+		}, ok() );
+	} else ok();
+}
+
+function remWave () {
+	var tb = this.parentNode.parentNode;
+	tb.parentNode.removeChild(tb);
+}
+
+function sendTroops (x) {
+	var wBody = tbl.tBodies[x];
+	var sParams = $gt('INPUT',wBody)[0].value;
+	var	tInputs = $gt('SELECT',wBody);
+	sParams += tInputs.length>0 ? "&"+ tInputs[0].name +"="+ tInputs[0].value: '';
+	sParams += tInputs.length>1 ? "&"+ tInputs[1].name +"="+ tInputs[1].value: '';
+
+	wlog += x+', ';
+	if( x== wCount-1 ) {
+		wlog += 'OK';
+		setTimeout(function(){ document.location.href = fullName +'build.php?id=39'; }, getRandom(1500));
+	}
+	cLog.innerHTML = wlog;
+	ajaxRequest(a2bURL, "POST", sParams, dummy, dummy );
+}
+
+function sendWaves () {
+	cLog = $c(wlog,[['colspan',13]]);
+	tbl.tFoot.appendChild($ee('TR',cLog));
+	wCount = tbl.tBodies.length;
+	var nextWave = 10;
+	var intWave = parseInt(interval.value).NaN0();
+	if( intWave < 100 ) intWave = defInterval;
+	for( var i=0; i<wCount; i++ ) {
+		setTimeout(function(x){return function(){ sendTroops(x); }}(i), nextWave);
+		nextWave += getRandom(intWave);
+	}
+}
+
+var ver4FL = true;
+if( /v2v.php/.test(window.location.href) ) {
+	var build = $g('content');
+	if( !(build) ) return;
+	if( build.getAttribute('class').indexOf('a2b') == -1 ) return;
+	ver4FL = false;
+} 
+var snd = $gn('snd');
+if( $gn('snd').length == 0 ) return;
+
+var nation = Math.floor(parseInt($gc('unit')[0].getAttribute('class').match(/\d+/)[0])/10);
+if( nation < 0 ) return;
+
+var a2bURL = ver4FL ? "build.php?id=39": "v2v.php";
+var wCount = 0;
+var wlog = '';
+var cLog;
+var tForm = snd[0];
+var tFormFL = true;
+var fullName = window.location.href.match(/^.*\/\/.+\/+?/)[0];
+// build table header
+var tbl = $e('TABLE',[['style','margin-top: 20px;']]);
+var hrow = $ee('TR',$e('TD'));
+for( var i=1; i<11; i++ ) {
+	hrow.appendChild($c(trImg('unit u'+(nation*10+i))));
+}
+$am(hrow,[$c(trImg('unit uhero')),$c('c')]);
+tbl.appendChild($ee('THEAD',hrow));
+if( ver4FL ) {
+	var sendBtn = $g('btn_ok').cloneNode(true);
+	sendBtn.removeAttribute('name');
+	sendBtn.removeAttribute('id');
+} else {
+	i = $g('btn_ok').getAttribute('alt');
+	var sendBtn = $ee('BUTTON',(i?i:'Go!'));
+}
+sendBtn.addEventListener('click',sendWaves,false);
+
+var plus = $e('input', [['type', 'button'], ['title','more wave'], ['href','#'], ['onClick',jsNone], ['value', 'NewWave']]);
+var addBtn = plus;
+	addBtn.addEventListener('click',addWave,false);
+
+var interval = $e('INPUT',[['type','text'],['value',defInterval],['size',2],['maxlength',4]]);
+	tbl.appendChild($ee('TFOOT',$ee('TR',$em('TD', [addBtn, sendBtn, 'interval', interval, 'ms', 
+	$a(' (v'+version+') ',[['href',scriptURL],['target','_blank']])],
+	[['colspan',13],['style','text-align:center !important;']]))));
+
+build.appendChild(tbl);
+
+/********** end of main code block ************/
+}
+
+function backupStart () {
+	if(notRunYet) {
+		var l4 = document.getElementById('l4');
+		if( l4 ) allInOneOpera();
+		else setTimeout(backupStart, 500);
+	}
+}
+
+var notRunYet = true;
+if( /khtml/i.test(navigator.appVersion) ) allInOneOpera();
+else if (window.addEventListener) window.addEventListener("load",function () { if(notRunYet) allInOneOpera(); },false);
+setTimeout(backupStart, 500);
+
+})();

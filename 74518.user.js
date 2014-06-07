@@ -1,0 +1,7 @@
+// ==UserScript==
+// @name           Safari Input Style
+// @namespace      Webnick.UI
+// @description    Let Google Chrome display input style like Apple Safari.
+// @include        *
+// ==/UserScript==
+(function(){var o=document.createElement("style");o.innerHTML ="input:focus, select:focus, textarea:focus{outline:none;border:1px #6091c6;box-shadow:1px 1px 4px #6ea1da, -1px 1px 4px #6ea1da, 1px -1px 4px #6ea1da, -1px -1px 4px #6ea1da;-moz-box-shadow:1px 1px 4px #6ea1da, -1px 1px 4px #6ea1da, 1px -1px 4px #6ea1da, -1px -1px 4px #6ea1da;-webkit-box-shadow:1px 1px 4px #6ea1da, -1px 1px 4px #6ea1da, 1px -1px 4px #6ea1da, -1px -1px 4px #6ea1da}input[type=\"button\"], input[type=\"submit\"], input[type=\"reset\"]{background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(white), to(#EFEFEF));background:-moz-linear-gradient(0% 100% 90deg, #EFEFEF, #fff);border: 1px solid #CCC;border-radius:3px 3px}input[type=\"button\"]:hover, input[type=\"submit\"]:hover, input[type=\"reset\"]:hover{-webkit-box-shadow:#999 0px 0px 3px;-moz-box-shadow:#999 0px 0px 3px;background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(white), to(#EBEBEB));background:-moz-linear-gradient(0% 100% 90deg, #EBEBEB, #fff);border: 1px solid #999}input[type=\"button\"]:active, input[type=\"submit\"]:active, input[type=\"reset\"]:active{border-color:#999;background:-moz-linear-gradient(top,#cccccc,#ffffff);background:-webkit-gradient(linear,left top,left bottom,from(#cccccc),to(#ffffff))}";document.body.appendChild(o);})();

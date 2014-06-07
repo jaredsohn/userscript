@@ -1,0 +1,10 @@
+// ==UserScript==
+// @name       众划算账单导出
+// @namespace  http://use.i.E.your.homepage/
+// @version    0.1
+// @description  enter something useful
+// @match      http://buyer.zhonghuasuan.com/order/*
+// @copyright  2014+, Duke Wang
+// ==/UserScript==
+javascript:(function(){if(location.href.substr(0,36)!='http://buyer.zhonghuasuan.com/order/'){alert('抱歉，请在众划算中我的订单页使用——http://buyer.zhonghuasuan.com/order/')};var xmlHttp;var temp=[];var OrderName=[];var createXMLHttpRequest=function(){if(window.XMLHttpRequest){xmlHttp=new XMLHttpRequest()}else if(window.ActiveXObject){xmlHttp=new ActiveXObject('Microsoft.XMLHTTP')}};var getSource=function(url){createXMLHttpRequest();xmlHttp.open('GET',url,false);xmlHttp.send();console.log(xmlHttp.status);console.log(xmlHttp.readyState);var txt=new String(xmlHttp.responseText);Tempp=txt.match(/title=.+(?=" target="_blank"><img)/g);for(i=0;i<10;i++){temp[i]=new String(Tempp[i]);OrderName[i]=temp[i].substr(7);qiangID=txt.match(/(\d{7})(?=\<\/td\>\n\s+<td\s)/g);OrderID=txt.match(/\d{15}(?=<\/td>)/g);OrderMn=txt.match(/\d+\.\d\d(?=<\/p><\/td>)/g);OrderPrice=txt.match(/\d+\.\d\d(?=<\/p><p>)/g);OrderState=txt.match(/[\u4e00-\u9fa5]+(?=<\/p>)/g)}};var PutOut=function(){myWindow=window.open('','ThePrint');var mytb=myWindow.document.createElement('table');var mybd=myWindow.document.getElementsByTagName('body');myWindow.document.write('<html><body>');myWindow.document.write('<table border=\"1\">');myWindow.document.write('<tr>');myWindow.document.write('<th>商品标题</th><th>抢购编号</th><th>下单价</th><th>填写的订单号</th><th>待返还划算金</th><th>划算价</th><th>进度状态</th>');myWindow.document.write('</tr>');var j=1;do{var x=new String(j);getSource('http://buyer.zhonghuasuan.com/order/?p='+x[0]);for(i=0;i<Tempp.length;i++){myWindow.document.write('<tr>','<td>',OrderName[i],'</td>','<td>',qiangID[i],'</td>','<td>',OrderMn[i],'</td>','<td>',OrderID[i],'</td>','<td>',(OrderMn[i]-OrderPrice[i]).toFixed(2),'</td>','<td>',OrderPrice[i],'</td>','<td>',OrderState[i],'</td>','</tr>')}j++}while(Tempp.length===10);myWindow.document.write('</table></body></html>');myWindow.document.close()};PutOut()})();
+

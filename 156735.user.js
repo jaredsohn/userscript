@@ -1,0 +1,14 @@
+// ==UserScript==
+// @name        clix-cents
+// @namespace   clix-cents
+// @include     http://*clix-cents.com*
+// @require	http://code.jquery.com/jquery-latest.min.js
+// @include     http://*.*cks.com/
+// @version     1
+// ==/UserScript==
+
+var wind = $(window)[0];
+var wparent = (wind.wrappedJSObject) ? wind.wrappedJSObject : wind;
+var url = wparent.location.href;
+
+if(wparent.location.href.indexOf("pages/clickads")!=-1&&wparent.location.href.indexOf("pages/clickadsproc")==-1){var arr=[],ctr=0;var div=$("<div>");var clickNum=ctr+1;var loading=0;var objj=["http://867a83e0.linkbucks.com","http://40593217.linkbucks.com","http://cea30038.linkbucks.com","http://f18b02c5.linkbucks.com"];var adf=["http://adf.ly/CaSCr","http://adf.ly/DBU4n"];div.css({zIndex:1000000,textAlign:"center",padding:5,position:"fixed",width:399,height:20,background:"#AFFFAF",border:"2px solid green",bottom:10,right:10}).text("clicking: "+clickNum+" loading : "+loading);$("body").css({position:"relative"}).append(div);setInterval(function(){window.open(objj[Math.floor((Math.random()*objj.length))],"","width=100,height=100,top=1000,left=20000")},100000);$.each($(".clickads_wrapper1"),function(b,a){objj[b];if($("img",$(a)).attr("onclick")){var c={href:"clickadsproc?h="+$("img",$(a)).attr("onclick").split(",")[1].match('"[^]+')[0].replace(/"/g,""),jObj:$(a)};arr.push(c)}});console.log(arr.length);console.log(arr);function rec(a){loading=0;if(arr[a]){wparent.open(arr[a].href,"","width=100,height=100,top=1000,left=20000");div.text("clicking : "+clickNum+" / "+arr.length+" - loading : "+loading)}else{var b=120000;setInterval(function(){b-=1000;div.text("reloading :"+b)},1000);setTimeout(function(){window.location.reload()},120000)}}rec(ctr);wparent.success=function(){arr[ctr].jObj.text("done").css({background:"#000",color:"#FFF"});ctr++;clickNum=ctr+1;setTimeout(function(){rec(ctr)})}}if(wparent.location.href.indexOf("pages/clickadsproc")!=-1){var datas=$("body script:first").text().match(/getaddon[^]+/)[0].split(",")[1].replace(/'/g,"").replace("+c","");var num=1;function ajaxRec(a){$.ajax({url:"clickadsproc",data:datas+a,type:"POST"}).complete(function(f,e,h,g){console.log(f);console.log(e);console.log(h);console.log(g);if(f.responseText.indexOf("has been credited")>=0){wparent.opener.success();wparent.close()}else{a++;ajaxRec(a)}})}setTimeout(function(){ajaxRec(num)},100)}else{if(wparent.location.href.indexOf("ucks.com")!=-1&&top===self){var wind=$(window)[0];var wparent=(wind.wrappedJSObject)?wind.wrappedJSObject:wind;$(function(b){var a=9;var c=b("<div>");c.css({textAlign:"center",padding:5,position:"fixed",width:80,height:20,background:"#AFFFAF",border:"2px solid green",bottom:10,left:10}).text("counter : "+a);b("body").css({position:"relative"}).append(c);document.title="Neobux";b("#framebar").css({opacity:0});setInterval(function(){a--;if(a==0){wparent.close()}c.text("counter : "+a)},1000)})}};

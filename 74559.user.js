@@ -1,0 +1,436 @@
+// ==UserScript==
+// @name          Favorite animated smiley for Orkut by Rajeev Raj.D
+// @namespace     http://www.orkut.co.in/Main#Home
+// @author		  Rajeev Raj.D
+// @description   Favorite animated smiley for Orkut. Just Made for Fun.
+// @include       htt*://*.orkut.*/*
+// @exclude       http://*.orkut.*/Main#*
+// @exclude       http://*.orkut.gmodules.*
+// ==/UserScript==
+
+/********************************************************
+//smileys appear below the reply box as well.
+//Made the smileys just for fun and thought to share with you all..!!
+// All credits to Original script writer. I hope u all enjoy the script! ;)
+*********************************************************/
+
+addEventListener('load', function(event) {
+function getTextArea(n) {
+	return document.getElementsByTagName('textarea')[n];
+}
+
+
+function insertSmiley(){
+	var image = this.getElementsByTagName('img')[0].getAttribute("src");
+	getTextArea(this.getAttribute("gult")).focus();
+	getTextArea(this.getAttribute("gult")).value += "<img src="+image+">";
+}
+
+function dip() {
+	var smileyarr = new Array();
+
+smileyarr["Rajeev_1"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2l7-RR5_rI/AAAAAAAABps/_CDDS0BebRc/MG_204.gif";
+smileyarr["Rajeev_2"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2kgzvE4ODI/AAAAAAAABXg/gWaTrTp6ApY/acute.gif";
+smileyarr["Rajeev_3"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2kgz1lxYvI/AAAAAAAABXk/0f3jnrqY-Ac/aggressive.gif";
+smileyarr["Rajeev_4"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2kg0NXGCAI/AAAAAAAABXs/J3jXp5McxVQ/air_kiss.gif";
+smileyarr["Rajeev_5"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2kg0T3febI/AAAAAAAABXw/rAYXcvpleXQ/assassin.gif";
+smileyarr["Rajeev_6"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2khHfUT56I/AAAAAAAABX4/z6cS4SQ59aY/black_eye.gif";
+smileyarr["Rajeev_7"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2khHzIU5UI/AAAAAAAABYE/kVCMQ9-3_Io/boredom.gif";
+smileyarr["Rajeev_8"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2khbIZjb9I/AAAAAAAABYI/6IYTlpNb91M/bye.gif";
+smileyarr["Rajeev_9"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2khbWOxehI/AAAAAAAABYM/hC6vGIoxvoc/cava.gif";
+smileyarr["Rajeev_10"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2khbVUhCHI/AAAAAAAABYQ/ive8gicqkSo/comando.gif";
+smileyarr["Rajeev_11"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2khbndJ4YI/AAAAAAAABYU/4F2P_FSTdPc/connie_3.gif";
+smileyarr["Rajeev_12"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2khb-rZBhI/AAAAAAAABYY/0ml0eBGRqE8/connie_08.gif";
+smileyarr["Rajeev_13"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2khwpOwvhI/AAAAAAAABYg/CW0XARIuT7U/connie_27.gif";
+smileyarr["Rajeev_14"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2khw-BK1zI/AAAAAAAABYo/y2MefX_SGeE/connie_36.gif";
+smileyarr["Rajeev_15"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2khwzedc4I/AAAAAAAABYs/c7YOwG9K8VQ/connie_40.gif";
+smileyarr["Rajeev_16"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2kiBBYxkqI/AAAAAAAABY8/9lkSqZl1c_Q/crazy_pilot.gif";
+smileyarr["Rajeev_17"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2kiKvAFjaI/AAAAAAAABZE/wfMmwQvZhAg/d_birthday.gif";
+smileyarr["Rajeev_18"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2kiK4nHjVI/AAAAAAAABZI/UIfXnA1IwyA/d_book.gif";
+smileyarr["Rajeev_19"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2kiLAcmD5I/AAAAAAAABZM/pIOc5t791So/d_canon.gif";
+smileyarr["Rajeev_20"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2kiLDXYSoI/AAAAAAAABZQ/rGPbOTuxFgQ/d_clock.gif";
+smileyarr["Rajeev_21"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2kiLZjCDOI/AAAAAAAABZU/fMQEr04Xo-Q/d_dance.gif";
+smileyarr["Rajeev_22"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2kihbMHltI/AAAAAAAABZc/q445zvcMlEo/d_girl_kiss.gif";
+smileyarr["Rajeev_23"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2kihu1wv5I/AAAAAAAABZg/j4UDUghSuWQ/d_guess.gif";
+smileyarr["Rajeev_24"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2kihlMnNCI/AAAAAAAABZk/uRi4Ai-zfSg/d_kiss.gif";
+smileyarr["Rajeev_25"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2kih2U4OeI/AAAAAAAABZo/jOh25i7mkNw/d_martini.gif";
+smileyarr["Rajeev_26"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2kiyddOQjI/AAAAAAAABZw/eHogPBISWk0/d_turn.gif";
+smileyarr["Rajeev_27"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2kiyu1CDpI/AAAAAAAABZ4/7_FL36PHZtI/d_wash.gif";
+smileyarr["Rajeev_28"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2kiy6Y4NlI/AAAAAAAABaA/r0d6FkeIhZs/dance4.gif";
+smileyarr["Rajeev_29"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2ki-h5vRuI/AAAAAAAABaQ/U4r-BQ6JrbA/dirol.gif";
+smileyarr["Rajeev_30"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2kjKdKJmbI/AAAAAAAABaY/lNf7BTTdh74/don-t_mention.gif";
+smileyarr["Rajeev_31"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2kjKRtpGkI/AAAAAAAABac/O6gMJfC2PVU/drag.gif";
+smileyarr["Rajeev_32"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2kjKggb7JI/AAAAAAAABag/PEBbrRIFBBc/drinks.gif";
+smileyarr["Rajeev_33"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2kjXNOrFcI/AAAAAAAABaw/n7vvn7EMKmo/focus.gif";
+smileyarr["Rajeev_34"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2kjXPFzCQI/AAAAAAAABa0/FIJ8LAv8gBs/friends.gif";
+smileyarr["Rajeev_35"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2kjXffNDdI/AAAAAAAABa4/JMfgNia8jN8/gamer1.gif";
+smileyarr["Rajeev_36"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2kj4STueGI/AAAAAAAABbY/mLtuP29mhiU/give_heart2.gif";
+smileyarr["Rajeev_37"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2kj4vvw63I/AAAAAAAABbg/erUjTfiXo4I/good3.gif";
+smileyarr["Rajeev_38"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2kkERf6HDI/AAAAAAAABbw/hfQARKji-rU/hi.gif";
+smileyarr["Rajeev_39"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2kkEh7GGLI/AAAAAAAABb4/y17zLuNgYE8/ireful1.gif";
+smileyarr["Rajeev_40"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2kkTZ1wZOI/AAAAAAAABb8/MvS97OGslq4/ireful3.gif";
+smileyarr["Rajeev_41"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2kkTv52HjI/AAAAAAAABcA/OJ28ETaiLAg/JC_burp.gif";
+smileyarr["Rajeev_42"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2kkT3R0mvI/AAAAAAAABcE/T_HzhXHFSbQ/JC_cupidboy.gif";
+smileyarr["Rajeev_43"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2kkUDHZAGI/AAAAAAAABcM/N-SvM_leeoY/JC_fan.gif";
+smileyarr["Rajeev_44"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2kkqLoN7dI/AAAAAAAABcQ/DJ4RaHVBQBI/JC_fever.gif";
+smileyarr["Rajeev_45"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2kkqnNlB6I/AAAAAAAABcY/rBKdni6Hf2Y/JC_gimmefive.gif";
+smileyarr["Rajeev_46"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2kk7Za9tdI/AAAAAAAABc0/XKeTBIXILfc/JC_nix.gif";
+smileyarr["Rajeev_47"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2klIoLanVI/AAAAAAAABdA/nW72gaweVGI/JC_parents-boy.gif";
+smileyarr["Rajeev_48"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2klIypM_hI/AAAAAAAABdI/whBf856f1pI/JC_rockin.gif";
+smileyarr["Rajeev_49"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2klV5Kok6I/AAAAAAAABdM/B68JgJbG9kA/JC_run.gif";
+smileyarr["Rajeev_50"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2klWEtZe4I/AAAAAAAABdQ/myLztET7I04/JC_shakehead.gif";
+smileyarr["Rajeev_51"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2klWTJrGgI/AAAAAAAABdc/9LhFvnTOvKo/JC_thinking.gif";
+smileyarr["Rajeev_52"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2klltZ0ZyI/AAAAAAAABdg/SGGgKfTZ96g/JC_veryhappy.gif";
+smileyarr["Rajeev_53"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2kmLokN-VI/AAAAAAAABd0/yTaOtg7i_aI/l_kiss_hand.gif";
+smileyarr["Rajeev_54"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2kmMPQiIsI/AAAAAAAABeA/7nGVBIFxLG0/l_surprize.gif";
+smileyarr["Rajeev_55"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2kmMSfNhsI/AAAAAAAABeE/CBnr-QdFYJs/Laie_2.gif";
+smileyarr["Rajeev_56"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2kmdG8w6wI/AAAAAAAABeI/Ra399DTFgMQ/Laie_3.gif";
+smileyarr["Rajeev_57"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2kmdVY-Y5I/AAAAAAAABeM/rK2i-wPhU-g/Laie_4.gif";
+smileyarr["Rajeev_58"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2kmdePaFQI/AAAAAAAABeQ/SUMa7hVn3A4/Laie_15.gif";
+smileyarr["Rajeev_59"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2kmd7BZGEI/AAAAAAAABeU/jCliggsFopI/Laie_26.gif";
+smileyarr["Rajeev_60"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2kmd80EYCI/AAAAAAAABeY/aIW5XYwKfpE/Laie_29.gif";
+smileyarr["Rajeev_61"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2lGTM8080I/AAAAAAAABe4/wcW57qoj260/Laie_31.gif";
+smileyarr["Rajeev_62"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2lGTeKKpYI/AAAAAAAABe8/f3AgWOwQ9mM/Laie_33.gif";
+smileyarr["Rajeev_63"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2lGTg-mZiI/AAAAAAAABfA/kLLQ5k4iMMQ/Laie_34.gif";
+smileyarr["Rajeev_64"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2lGTxwrswI/AAAAAAAABfE/NEX-F4-4yiU/Laie_37.gif";
+smileyarr["Rajeev_65"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2lGT64_uVI/AAAAAAAABfI/JOnH1YyhX-M/Laie_38.gif";
+smileyarr["Rajeev_66"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2lGqv4OzYI/AAAAAAAABfM/PNzc3cQcRpg/Laie_39.gif";
+smileyarr["Rajeev_67"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2lGq64YpiI/AAAAAAAABfQ/A6NvLuOJZlw/Laie_44.gif";
+smileyarr["Rajeev_68"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2lGq0wifhI/AAAAAAAABfU/XrfsxFpoE0E/Laie_48.gif";
+smileyarr["Rajeev_69"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2lGrWfE1fI/AAAAAAAABfc/ycVGuSI2uCc/Laie_51.gif";
+smileyarr["Rajeev_70"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2lG6pJoThI/AAAAAAAABfk/n_Cjx6Qe-38/Laie_53.gif";
+smileyarr["Rajeev_71"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2lG7CHrXbI/AAAAAAAABfs/rbCGB_nG-k8/Laie_57.gif";
+smileyarr["Rajeev_72"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2lG7ZyD6_I/AAAAAAAABfw/A7v3oK-XmSY/Laie_59.gif";
+smileyarr["Rajeev_73"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2lHUSWKUYI/AAAAAAAABf0/0RL0AthpQ3g/Laie_63B.gif";
+smileyarr["Rajeev_74"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2lHUXwcyXI/AAAAAAAABf4/KZd3NxkaQV0/Laie_69.gif";
+smileyarr["Rajeev_75"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2lHUoELEmI/AAAAAAAABf8/kLfkserv168/Laie_70.gif";
+smileyarr["Rajeev_76"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2kjpjC2DVI/AAAAAAAABbQ/v0SStMIJ1Wg/girl_werewolf.gif";
+smileyarr["Rajeev_77"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2lHkStCJmI/AAAAAAAABgI/uk_DNvXXFVo/Laie_81.gif";
+smileyarr["Rajeev_78"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2lHkR1S2hI/AAAAAAAABgM/XOjkPhD6MLs/Laie_87A.gif";
+smileyarr["Rajeev_79"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2lHkx34w9I/AAAAAAAABgU/V5kSKLYA-nk/Laie_93.gif";
+smileyarr["Rajeev_80"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2lHkty5NqI/AAAAAAAABgQ/zmpg92F9T4M/Laie_91B.gif";
+smileyarr["Rajeev_81"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2lHkytyhMI/AAAAAAAABgY/YIAKTGhNqhI/Laie_99.gif";
+smileyarr["Rajeev_82"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2lH9pqi7XI/AAAAAAAABgs/wtur_w3AqaU/meeting.gif";
+smileyarr["Rajeev_83"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2lIKwalkRI/AAAAAAAABgw/JuUWJRuXj5g/mosking.gif";
+smileyarr["Rajeev_84"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2lILETTX8I/AAAAAAAABg4/bX-C46TMmsk/negative.gif";
+smileyarr["Rajeev_85"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2lIXS8ejjI/AAAAAAAABhE/o2tI0bPqpQ8/not_i.gif";
+smileyarr["Rajeev_86"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2lIXa4YZhI/AAAAAAAABhI/9GScaChY9Us/offtopic.gif";
+smileyarr["Rajeev_87"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2lIXt5n-dI/AAAAAAAABhM/TWKcizXbibM/ok.gif";
+smileyarr["Rajeev_88"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2lIX9eaBWI/AAAAAAAABhQ/mcSvbDlVKqg/on_the_quiet2.gif";
+smileyarr["Rajeev_89"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2lIpnwZLCI/AAAAAAAABhk/avZ79He16ac/party.gif";
+smileyarr["Rajeev_90"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2lI4nq9KgI/AAAAAAAABh0/F44B1hbNzY0/polling.gif";
+smileyarr["Rajeev_91"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2lJHZw4wJI/AAAAAAAABiM/7MFxozzxi6k/rofl.gif";
+smileyarr["Rajeev_91"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2lJ92GKnFI/AAAAAAAABio/sLxbzKIVlqM/scenic.gif";
+smileyarr["Rajeev_92"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2lKi93LkxI/AAAAAAAABiw/yhsO7bogNY0/scratch_one-s_head.gif";
+smileyarr["Rajeev_93"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2lKjUn_gcI/AAAAAAAABi8/6tPXRbL7lKs/SHABLON_padonak_04.gif";
+smileyarr["Rajeev_94"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2lLALKGSZI/AAAAAAAABjI/WTajMNNuyT0/smile3.gif";
+smileyarr["Rajeev_95"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2lLATg1inI/AAAAAAAABjQ/WlrN3GxK2SY/sorry2.gif";
+smileyarr["Rajeev_96"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2lLYEj57TI/AAAAAAAABjk/FnHNXvmOECc/suicide2.gifq";
+smileyarr["Rajeev_97"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2lMpRzvbbI/AAAAAAAABjs/-KFuBzRb6fg/superman2.gif";
+smileyarr["Rajeev_98"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2lMpXvA9_I/AAAAAAAABjw/D4FSAgc63Z8/swoon.gif";
+smileyarr["Rajeev_99"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2lMqPLFzEI/AAAAAAAABj8/hFs3L9qPWiM/thank_you.gif";
+smileyarr["Rajeev_100"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2lM1OIHeeI/AAAAAAAABkM/V-A2h3fmhbc/to_become_senile.gif";
+smileyarr["Rajeev_101"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2lM-jsnhZI/AAAAAAAABkU/ezFqHsaBXvQ/to_keep_order.gif";
+smileyarr["Rajeev_102"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2lNL_lY92I/AAAAAAAABkk/pa8eooSOEa4/vampire.gif";
+smileyarr["Rajeev_103"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2lNVOJMBBI/AAAAAAAABk4/VvMR2MYjuTw/wizard.gif";
+smileyarr["Rajeev_104"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2lNVm37GyI/AAAAAAAABlA/dErejqUxB9o/yes3.gif";
+smileyarr["Rajeev_105"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2l4nmdN8TI/AAAAAAAABlk/7IjHr24Ph1g/Alex_03.gif";
+smileyarr["Rajeev_106"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2l41UtM6EI/AAAAAAAABl0/lSxikQruq54/cards.gif";
+smileyarr["Rajeev_107"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2l41ywnwFI/AAAAAAAABmA/raFG88JSKbg/connie_29.gif";
+smileyarr["Rajeev_108"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2l42J3ctaI/AAAAAAAABmE/vImnOlu5lWk/connie_31.gif";
+smileyarr["Rajeev_109"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2l4_z1LKCI/AAAAAAAABmI/dbJXcIOfCm0/connie_45.gif";
+smileyarr["Rajeev_110"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2l5bp3ZsjI/AAAAAAAABmc/oUMXKycRp0w/connie_eatfishy.gif";
+smileyarr["Rajeev_111"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2l5bw0EiZI/AAAAAAAABmg/sqNNqnKwIpQ/connie_hidinginwall.gif";
+smileyarr["Rajeev_112"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2l5b68SHVI/AAAAAAAABmk/3BktYtGG_jg/connie_jail.gif";
+smileyarr["Rajeev_113"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2l5cL5YRKI/AAAAAAAABmo/JWXUk59Gnlo/connie_radioplane.gif";
+smileyarr["Rajeev_114"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2l5sCkLXXI/AAAAAAAABm0/SGF02x9WryU/connie_runner.gif";
+smileyarr["Rajeev_115"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2l51WEH2tI/AAAAAAAABnE/FWmFTfPviDY/connie_waterbonsai.gif";
+smileyarr["Rajeev_116"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2l51hMwFlI/AAAAAAAABnM/hLpkA_TzhVA/connie_yoyo.gif";
+smileyarr["Rajeev_117"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2l6N3QsOVI/AAAAAAAABn8/F9L2GgZoSDg/kez_12.gif";
+smileyarr["Rajeev_118"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2l6WQ6XDEI/AAAAAAAABoE/WT9Ec2S0QJM/koo-koo.gif";
+smileyarr["Rajeev_119"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2l6WlNLj3I/AAAAAAAABoI/zeVrCmPuDCg/kuzya_02.gif";
+smileyarr["Rajeev_120"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2l6WwhnhgI/AAAAAAAABoM/0rYB76St-XQ/Laie_11.gif";
+smileyarr["Rajeev_121"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2l6neaA90I/AAAAAAAABog/zvyF0r8BfjA/mafia.gif";
+smileyarr["Rajeev_122"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2l6ncji3EI/AAAAAAAABok/i5BKbWtZfJk/Mauridia_22.gif";
+smileyarr["Rajeev_123"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2l62PzB0_I/AAAAAAAABo4/ODQUtWW9N6Q/MG_80.gif";
+smileyarr["Rajeev_124"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2l8MzAVd_I/AAAAAAAABqI/TZCBx7Hj79U/mr47_01.gif";
+smileyarr["Rajeev_125"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2l8ZOKodoI/AAAAAAAABqU/kSPyWP56TeQ/nosok_02.gif";
+smileyarr["Rajeev_126"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2l8ZLOMpSI/AAAAAAAABqY/wvWA7nzri-Q/pepper.gif";
+smileyarr["Rajeev_127"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2l8ZTJahGI/AAAAAAAABqk/YtBeXUXqgeE/Rulezzz_08.gif";
+smileyarr["Rajeev_128"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2l8ozWxMtI/AAAAAAAABqo/3aLKorgyVSo/Rulezzz_09.gif";
+smileyarr["Rajeev_129"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2l8pUooqDI/AAAAAAAABqs/plZnAw_ZJVA/Vala_11.gif";
+smileyarr["Rajeev_130"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2l80-VkdwI/AAAAAAAABrA/eqz8s1V0SdM/viannen_08.gif";
+smileyarr["Rajeev_131"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2l81aMlwOI/AAAAAAAABrE/9ugGvkOQWEI/viannen_16.gif";
+smileyarr["Rajeev_132"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2l81_cjZJI/AAAAAAAABrM/FU7jdu2J2jw/viannen_41.gif";
+smileyarr["Rajeev_133"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2l9HpuQ0kI/AAAAAAAABrY/hjBAgW71zoQ/viannen_62.gif";
+smileyarr["Rajeev_134"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2l9HiSi7tI/AAAAAAAABrg/lUxFiEDDlBY/viannen_77.gif";
+smileyarr["Rajeev_135"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2l9XX0H0dI/AAAAAAAABrk/lueGHB1zIW8/viannen_96.gif";
+smileyarr["Rajeev_136"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2l9XgDoqsI/AAAAAAAABrs/wuKr2bN0RdU/viannen_98.gif";
+smileyarr["Rajeev_137"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2l9Xma6lwI/AAAAAAAABr0/8pqQQn8tFV0/viannen_104.gif";
+smileyarr["Rajeev_138"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2l9psir1sI/AAAAAAAABr8/3hjCq4N5VXc/viannen_109.gif";
+smileyarr["Rajeev_139"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2l9p5lSuBI/AAAAAAAABsE/cLHNS3fnSPA/viannen_114.gif";
+smileyarr["Rajeev_140"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2l9qDclvVI/AAAAAAAABsM/RDGfpMWcCoE/zagruz.gif";
+smileyarr["Rajeev_141"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2l9vjJ99II/AAAAAAAABsQ/qhcSG9RPPkA/zomby.gif";
+smileyarr["Rajeev_142"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9TzJ__UgI/AAAAAAAAAn0/vRoUY61LWQ0/ill0.gif";
+smileyarr["Rajeev_143"]="http://lh4.ggpht.com/_PrM5VcwpZio/Sx9Ty2UhuQI/AAAAAAAAAns/Jznzx5l4pBw/headgear94.gif";
+smileyarr["Rajeev_144"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9TZuqEW4I/AAAAAAAAAl8/3HwnTjosLH0/foodanddrink0.gif";
+smileyarr["Rajeev_145"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9TZWeAz4I/AAAAAAAAAl4/-Y3A4r6owvE/fighting12.gif";
+smileyarr["Rajeev_146"]="http://lh4.ggpht.com/_PrM5VcwpZio/Sx9TS_mNj-I/AAAAAAAAAlQ/ZZw3Z20Gp7U/doh7.gif";
+smileyarr["Rajeev_147"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9TS5Q0NcI/AAAAAAAAAlM/xlxyqk2L4IM/disdain6.gif";
+smileyarr["Rajeev_148"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9TFV5-mTI/AAAAAAAAAkI/zG7l5W6w9SA/character25.gif";
+smileyarr["Rajeev_149"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9TEyOWYmI/AAAAAAAAAj8/MNzZU9Ucd88/celebrate16.gif";
+smileyarr["Rajeev_150"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9TEq0Ex1I/AAAAAAAAAj4/7gTmBTUr1Qw/celebrate13.gif";
+smileyarr["Rajeev_151"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9S5IAeheI/AAAAAAAAAjc/RDxZNCeEhTo/celebrate8.gif";
+smileyarr["Rajeev_152"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9S4xoIlyI/AAAAAAAAAjU/F2aup8Wx23I/badtaste25.gif";
+smileyarr["Rajeev_153"]="http://lh4.ggpht.com/_PrM5VcwpZio/Sx9Sy-xlkDI/AAAAAAAAAiw/XGFfHGB40jo/angry17.gif";
+smileyarr["Rajeev_154"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9Syoll4WI/AAAAAAAAAis/705fUdNX7tg/angry16.gif";
+smileyarr["Rajeev_155"]="http://lh4.ggpht.com/_PrM5VcwpZio/Sx9Syi_6PDI/AAAAAAAAAio/lWgA2LuYN2U/angry14.gif";
+smileyarr["Rajeev_156"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9SnHObYmI/AAAAAAAAAiQ/VSPPTuCbVVE/angry0.gif";
+smileyarr["Rajeev_157"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9Smx-vJHI/AAAAAAAAAiM/rUFdNsRiY8I/angel9.gif";
+smileyarr["Rajeev_158"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9SPcSs51I/AAAAAAAAAhg/dP3YtFN4LYE/aloofandbored0.gif";
+smileyarr["Rajeev_159"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9ULoghZvI/AAAAAAAAApI/W04z0e0FsHc/love2.gi";
+smileyarr["Rajeev_160"]="http://lh4.ggpht.com/_PrM5VcwpZio/Sx9UVcKrsJI/AAAAAAAAApo/BWx-cUyCI8s/love21.gif";
+smileyarr["Rajeev_161"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9UhAWxznI/AAAAAAAAAqI/z8nKLncyRuM/love42.gif";
+smileyarr["Rajeev_162"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9Uw9pLufI/AAAAAAAAAq4/aMFj6rxNigY/sad2.gif";
+smileyarr["Rajeev_162"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9Uw_jqHCI/AAAAAAAAAq0/dTrlUibB4bY/music24.gif";
+smileyarr["Rajeev_163"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9UxZouLtI/AAAAAAAAArA/pQ5ZR9CCwzQ/sad17.gif";
+smileyarr["Rajeev_164"]="http://lh4.ggpht.com/_PrM5VcwpZio/Sx9U8KTA7yI/AAAAAAAAArY/Y1Wj0h_Tl4w/sad21.gif";
+smileyarr["Rajeev_165"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9VsxPUSiI/AAAAAAAAAt8/i7CLIIOVjUw/sporty37.gif";
+smileyarr["Rajeev_166"]="http://lh3.ggpht.com/_PrM5VcwpZio/Sx9V8f-quFI/AAAAAAAAAug/BoecUsrHkIU/sporty62.gif";
+smileyarr["Rajeev_167"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9V8jYfsOI/AAAAAAAAAuk/703NFMp6InE/sporty82.gif";
+smileyarr["Rajeev_168"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9V8yNnyGI/AAAAAAAAAus/bEqSdSVdvaY/tv8.gif";
+smileyarr["Rajeev_169"]="http://lh3.ggpht.com/_PrM5VcwpZio/SwLZHRSHUCI/AAAAAAAAAYA/yYf23x1KYgQ/lotpot.gif";
+smileyarr["Rajeev_170"]="http://lh6.ggpht.com/_PrM5VcwpZio/SwLYXx-gnQI/AAAAAAAAAWo/KIYvBJmnq-g/brb.gif";
+smileyarr["Rajeev_171"]="http://lh5.ggpht.com/_PrM5VcwpZio/SwLZrFwGvsI/AAAAAAAAAZE/q1N5-fLSInE/smarty.gif";
+smileyarr["Rajeev_172"]="http://lh5.ggpht.com/_PrM5VcwpZio/SwLaI59nMbI/AAAAAAAAAaA/XtUMbyIcSCI/yesss.gif";
+smileyarr["Rajeev_173"]="http://lh4.ggpht.com/_PrM5VcwpZio/SwLZrDrpGVI/AAAAAAAAAZA/_xvERm3pKKE/slap.gif";
+smileyarr["Rajeev_174"]="http://lh6.ggpht.com/_WUkykBFkZ3Y/SYhrUirj_4I/AAAAAAAAAJc/uw1X2_jXIGs/no.gif";
+smileyarr["Rajeev_175"]="http://lh4.ggpht.com/_PrM5VcwpZio/SwLZ_TNoN9I/AAAAAAAAAZw/TlFG6g_yNnE/victory.gif";
+smileyarr["Rajeev_176"]="http://lh6.ggpht.com/_PrM5VcwpZio/SwLX-ENnywI/AAAAAAAAAWM/8SvmCUqXyO4/avatar22403_1.gif";
+smileyarr["Rajeev_177"]="http://lh5.ggpht.com/_PrM5VcwpZio/SwLYjMRKakI/AAAAAAAAAXE/NosT1oQVJAU/daru.gif";
+smileyarr["Rajeev_178"]="http://lh6.ggpht.com/_PrM5VcwpZio/SwLYjfSe5rI/AAAAAAAAAXI/KSoxdk2GHZI/declare.gif";
+smileyarr["Rajeev_179"]="http://lh3.ggpht.com/_WUkykBFkZ3Y/SYhrUzPTPkI/AAAAAAAAAJk/xc4cN1VDpgs/sagar.gif";
+smileyarr["Rajeev_180"]="http://lh5.ggpht.com/_WUkykBFkZ3Y/SZ7SpCSinxI/AAAAAAAAAWc/Envjv3CWgsU/sm28.gif";
+smileyarr["Rajeev_181"]="http://lh4.ggpht.com/_WUkykBFkZ3Y/SYhrhqghdNI/AAAAAAAAAKE/yh-jcjADTIQ/wallbash.gif";
+smileyarr["Rajeev_182"]="http://lh3.ggpht.com/_PrM5VcwpZio/SwLY7SQjT_I/AAAAAAAAAXo/6RHcZbfLLCk/happy.gif";
+smileyarr["Rajeev_183"]="http://lh5.ggpht.com/_WUkykBFkZ3Y/SZ7ReVdxz6I/AAAAAAAAAVk/oqU4IA4PwbE/sm6.gif";
+smileyarr["Rajeev_184"]="http://lh6.ggpht.com/_zam2DdYJLxc/S0RAR4_O77I/AAAAAAAAADE/S9NZQTZwltI/secret.gif";
+smileyarr["Rajeev_185"]="http://lh5.ggpht.com/_zam2DdYJLxc/S0RAZn_ie4I/AAAAAAAAADI/e4_Q_ouljhs/cry.gif";
+smileyarr["Rajeev_186"]="http://lh5.ggpht.com/_zam2DdYJLxc/S0RAxja2gvI/AAAAAAAAADM/5cNNuSTXXlo/icon_cry.gif";
+smileyarr["Rajeev_187"]="http://lh6.ggpht.com/_zam2DdYJLxc/S0RAybRckuI/AAAAAAAAADY/5LZrpu0euQc/blow.gif";
+smileyarr["Rajeev_188"]="http://lh4.ggpht.com/_zam2DdYJLxc/S0RAymVRdhI/AAAAAAAAADc/bKPJ0-OaBbI/blushing.gif";
+smileyarr["Rajeev_189"]="http://lh6.ggpht.com/_zam2DdYJLxc/S0RBHs0TV8I/AAAAAAAAAEA/mhdvSt7q_PA/bye.gif";
+smileyarr["Rajeev_190"]="http://lh6.ggpht.com/_zam2DdYJLxc/S0RBc0NW_xI/AAAAAAAAAEQ/sGhtI9cKNs0/emoticon%20lol.gif";
+smileyarr["Rajeev_191"]="http://lh4.ggpht.com/_zam2DdYJLxc/S0RBdNd7kgI/AAAAAAAAAEU/dVuNgh1uTSQ/face%20lol.gif";
+smileyarr["Rajeev_192"]="http://lh6.ggpht.com/_zam2DdYJLxc/S0RBmsujsSI/AAAAAAAAAEc/A1H1UxZn-ng/flowers%20for%20you.gif";
+smileyarr["Rajeev_193"]="http://lh5.ggpht.com/_zam2DdYJLxc/S0RBnIVoz4I/AAAAAAAAAEo/7Y4hZyRE1Uk/ha%20ha%20ha.gif";
+smileyarr["Rajeev_194"]="http://lh3.ggpht.com/_zam2DdYJLxc/S0RB8w4X_5I/AAAAAAAAAFU/uoL7K5NPqik/pizza.gif";
+smileyarr["Rajeev_195"]="http://lh3.ggpht.com/_zam2DdYJLxc/S0RCLSTVsOI/AAAAAAAAAFo/Ze4An7gbfHE/transforming.gif";
+smileyarr["Rajeev_196"]="http://lh5.ggpht.com/_zam2DdYJLxc/S0RCiMloaKI/AAAAAAAAAGE/dUkliIG-lsQ/yaping%20dog.gif";
+smileyarr["Rajeev_197"]="http://lh3.ggpht.com/_zam2DdYJLxc/S0RCpEM2B-I/AAAAAAAAAGQ/zuIZUA_eiYM/character11.gif";
+smileyarr["Rajeev_198"]="http://lh6.ggpht.com/_zam2DdYJLxc/S0RDv4su7cI/AAAAAAAAAII/-apDeAEnn9Q/sad15.gif";
+smileyarr["Rajeev_199"]="http://lh5.ggpht.com/_PrM5VcwpZio/SwLaI4Qr5eI/AAAAAAAAAaE/2FtDoGnRq7g/yo.gif";
+smileyarr["Rajeev_200"]="http://lh4.ggpht.com/_PrM5VcwpZio/SwLaIiTPSzI/AAAAAAAAAZ0/NPIDQoipaPM/wave.gif";
+smileyarr["Rajeev_201"]="http://lh4.ggpht.com/_PrM5VcwpZio/SwLZ_HNlZ1I/AAAAAAAAAZs/LANGkStzxqg/verysad.gif";
+smileyarr["Rajeev_202"]="http://lh5.ggpht.com/_PrM5VcwpZio/SwLYYauhUGI/AAAAAAAAAW4/t4zhr1YW5Jo/closed.gif";
+smileyarr["Rajeev_203"]="http://lh5.ggpht.com/_PrM5VcwpZio/SwLY7ldgYqI/AAAAAAAAAX0/gt1nxKomtK8/kiss.gif";
+smileyarr["Rajeev_204"]="http://lh6.ggpht.com/_PrM5VcwpZio/SwLYLF67-HI/AAAAAAAAAWc/8dnAWOIQYmQ/bigboss.gif";
+smileyarr["Rajeev_205"]="http://lh3.ggpht.com/_PrM5VcwpZio/SwLYYMRE41I/AAAAAAAAAWw/8wVVugVeRu8/calling.gif";
+smileyarr["Rajeev_206"]="http://lh5.ggpht.com/_PrM5VcwpZio/SwLYu5uzk7I/AAAAAAAAAXc/6LLi32JwykE/don.gif";
+smileyarr["Rajeev_207"]="http://lh5.ggpht.com/_PrM5VcwpZio/SwLYvA5eqFI/AAAAAAAAAXg/bAIUArsPmhY/fool.gif";
+smileyarr["Rajeev_208"]="http://lh4.ggpht.com/_PrM5VcwpZio/SwLZewqOpGI/AAAAAAAAAYw/eYqagXxprDo/rose.gif";
+smileyarr["Rajeev_209"]="http://lh3.ggpht.com/_PrM5VcwpZio/SwLZHrFOeWI/AAAAAAAAAYI/sUknIkzCFh0/nope.gif";
+smileyarr["Rajeev_210"]="http://lh6.ggpht.com/_PrM5VcwpZio/SwLZ1Cb3gSI/AAAAAAAAAZM/IKGgY0Gr9-g/snore.gif";
+smileyarr["Rajeev_211"]="http://lh3.ggpht.com/_PrM5VcwpZio/SwLZegq2PPI/AAAAAAAAAYk/ZTt1rlt_ECE/popcorn2.gif";
+smileyarr["Rajeev_212"]="http://lh5.ggpht.com/_mkcswd7p9hc/SdDO5SObvEI/AAAAAAAAALA/Tr3vgIPv-sA/sFi_wwe.gif";
+smileyarr["Rajeev_213"]="http://lh4.ggpht.com/_WUkykBFkZ3Y/SYhqnOJLceI/AAAAAAAAAIc/x38wTP46Ksw/clap2.gif";
+smileyarr["Rajeev_214"]="http://lh6.ggpht.com/_WUkykBFkZ3Y/SYhq5OBxbMI/AAAAAAAAAJE/Nwoe_IMzaUQ/icon_rolleyes.gif";
+smileyarr["Rajeev_215"]="http://lh5.ggpht.com/_WUkykBFkZ3Y/SYhrSu7yMmI/AAAAAAAAAJM/40m-cBN1fDQ/lol.gif";
+smileyarr["Rajeev_216"]="http://lh3.ggpht.com/_WUkykBFkZ3Y/Sxd1MHrLe0I/AAAAAAAABDk/ykQbxj1lZCA/fallenangel.gif";
+smileyarr["Rajeev_217"]="http://lh3.ggpht.com/_WUkykBFkZ3Y/Sa1lK71-K0I/AAAAAAAAAmQ/DblhRzalY5s/beee.gif";
+smileyarr["Rajeev_218"]="http://lh5.ggpht.com/_WUkykBFkZ3Y/Sa1ej6eI8jI/AAAAAAAAAkw/ZzeDZpCvGmY/18.gif";
+smileyarr["Rajeev_219"]="http://lh5.ggpht.com/_WUkykBFkZ3Y/Sa1eks29RbI/AAAAAAAAAlQ/r1EhtWkSn6A/49.gif";
+smileyarr["Rajeev_220"]="http://lh5.ggpht.com/_WUkykBFkZ3Y/Sxd0hgabPLI/AAAAAAAABC0/foY8T5ly3-4/couple.gif";
+smileyarr["Rajeev_221"]="http://lh4.ggpht.com/_WUkykBFkZ3Y/Sa1mPKduAUI/AAAAAAAAAog/NM3Afa2ychU/yawn.gif";
+smileyarr["Rajeev_222"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vVHTiKtsI/AAAAAAAABOk/8Cuv4dx5888/eyebrow.gif";
+smileyarr["Rajeev_223"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vVH8KMa3I/AAAAAAAABOw/RZgwZzVNPjk/listening%20music.gif";
+smileyarr["Rajeev_224"]="http://lh6.ggpht.com/_PrM5VcwpZio/S1vVU5CXjII/AAAAAAAABO0/w0LcsGbbn5I/studying.gif";
+smileyarr["Rajeev_225"]="http://lh6.ggpht.com/_PrM5VcwpZio/S1vV43IXgmI/AAAAAAAABPE/6sMSC1Bf1Nc/d_bubble.gif";
+smileyarr["Rajeev_226"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vWX-X0eWI/AAAAAAAABPQ/rhMAgRlFD20/Yow%21.gif";
+smileyarr["Rajeev_227"]="http://lh6.ggpht.com/_PrM5VcwpZio/S1vZZRPxxhI/AAAAAAAABPg/xN2wtXmQE6U/Applaus.gif";
+smileyarr["Rajeev_228"]="http://lh5.ggpht.com/_PrM5VcwpZio/S1vZZt0LRoI/AAAAAAAABPo/ZyNLs9Odl7E/smiley-laughing014%5B1%5D.gif";
+smileyarr["Rajeev_229"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vm6zncVwI/AAAAAAAABP8/MbtD2oXyTaY/character0110.gif";
+smileyarr["Rajeev_230"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vm7Gvf0yI/AAAAAAAABQA/kgS7JHQzbqY/character0113.gif";
+smileyarr["Rajeev_231"]="http://lh4.ggpht.com/_PrM5VcwpZio/S1vm7HqAeEI/AAAAAAAABQE/iXNkX7TIG6I/character0114.gif";
+smileyarr["Rajeev_232"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2kk7cHCziI/AAAAAAAABcs/b1fwbOUJ6bE/JC_link.gif";
+smileyarr["Rajeev_233"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2kkq5ZvQaI/AAAAAAAABcc/r7UU4MSvuZo/JC_goodpost.gif";
+smileyarr["Rajeev_234"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2kllndsQFI/AAAAAAAABdk/LAtBsrgGfag/JC_you_rock.gif";
+smileyarr["Rajeev_235"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2klWEgyfJI/AAAAAAAABdY/B6dkpFn63mM/JC_ThankYou.gif";
+smileyarr["Rajeev_236"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2l6DH1kLII/AAAAAAAABnY/7vD9kvdp20M/crigon_03.gif";
+smileyarr["Rajeev_237"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2l6DWsKD8I/AAAAAAAABnc/73SO4JW2-hk/crigon_04.gif";
+smileyarr["Rajeev_238"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2l8pjlv01I/AAAAAAAABq0/mUIn7WeRaXo/viannen_01.gif";
+smileyarr["Rajeev_239"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9VLYgYXwI/AAAAAAAAAsE/Qx49qKpbOzE/signsandflags16.gif";
+smileyarr["Rajeev_240"]="http://lh5.ggpht.com/_PrM5VcwpZio/Sx9VUQLgQuI/AAAAAAAAAss/sb71vaf2Fr4/signsandflags35.gif";
+smileyarr["Rajeev_241"]="http://lh6.ggpht.com/_PrM5VcwpZio/Sx9VUuWg10I/AAAAAAAAAs4/0uHXUvtTB2g/signsandflags43.gif";
+smileyarr["Rajeev_242"]="http://lh5.ggpht.com/_PrM5VcwpZio/S1vU26OCjwI/AAAAAAAABOc/hwCYms2bUys/WTF.gif";
+smileyarr["Rajeev_243"]="http://lh5.ggpht.com/_PrM5VcwpZio/S1vnz6dmh_I/AAAAAAAABRU/vRBYtPBP_Dc/sign0008.gif";
+smileyarr["Rajeev_244"]="http://lh6.ggpht.com/_PrM5VcwpZio/S1vn-25TNbI/AAAAAAAABRg/GeVNP8Sxq6Q/sign0081.gif";
+smileyarr["Rajeev_245"]="http://lh5.ggpht.com/_PrM5VcwpZio/S1voHm3XjeI/AAAAAAAABRs/mhDLdRdX-ug/sign0089.gif";
+smileyarr["Rajeev_246"]="http://lh5.ggpht.com/_PrM5VcwpZio/S1voHpGHbjI/AAAAAAAABRw/gzA2eaFFWas/sign0091.gif";
+smileyarr["Rajeev_247"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1voSdEmIjI/AAAAAAAABSI/3l9bWpGyRpg/sign0142.gif";
+smileyarr["Rajeev_248"]="http://lh5.ggpht.com/_PrM5VcwpZio/S1voSRfUeAI/AAAAAAAABSQ/ihgRWoHjo0M/sign0144.gif";
+smileyarr["Rajeev_249"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vobYDSrJI/AAAAAAAABSU/Xs13_nB0Ki8/sign0150.gif";
+smileyarr["Rajeev_250"]="http://lh3.ggpht.com/_PrM5VcwpZio/S1vobzio29I/AAAAAAAABSk/D3mGQfjTVbU/sign0163.gif";
+
+//--------------------------
+
+smileyarr["Rajeev_251"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2l9p1_UWhI/AAAAAAAABsI/ynAXen5D2p8/whatever_02.gif";
+smileyarr["Rajeev_252"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2l9pyOrTwI/AAAAAAAABsA/VQN3CAfEg1w/viannen_111.gif";
+smileyarr["Rajeev_253"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2l9XWPxXMI/AAAAAAAABro/8pNBwyE21fU/viannen_87.gif";
+smileyarr["Rajeev_254"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2l9HnDryKI/AAAAAAAABrc/I9SQNRPiobs/viannen_74.gif";
+smileyarr["Rajeev_255"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2l9HfWIYAI/AAAAAAAABrU/R4Gwpsn_jwM/viannen_43.gif";
+smileyarr["Rajeev_256"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2l8pkBWELI/AAAAAAAABq4/0c0R-4XJ8RM/viannen_06.gif";
+smileyarr["Rajeev_257"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2l8pWGShmI/AAAAAAAABqw/WFhkcj6X54k/Vala_24.gif";
+smileyarr["Rajeev_258"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2l8ZN8f0HI/AAAAAAAABqc/0zkrzWnY6XY/phil_25.gif";
+smileyarr["Rajeev_259"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2l8NZsO1HI/AAAAAAAABqQ/oa2QsxPyh68/mr47_05.gif";
+smileyarr["Rajeev_260"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2l8MpPJ3QI/AAAAAAAABqE/LYqp9F4LviA/moto.gif";
+smileyarr["Rajeev_261"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2l8MYVwUAI/AAAAAAAABqA/_fLIYFk3ilE/moderator.gif";
+smileyarr["Rajeev_261"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2l7-kP0thI/AAAAAAAABp0/rcjPNj6rM_Y/MG_218.gif";
+smileyarr["Rajeev_262"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2l7-pmbj7I/AAAAAAAABpw/Epy9lC17Nvs/MG_216.gif";
+smileyarr["Rajeev_263"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2l7sj9CaRI/AAAAAAAABpk/5eVqWbnwF_M/MG_192.gif";
+smileyarr["Rajeev_264"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2l7sZUNAdI/AAAAAAAABpc/R3iekq7LFkE/MG_181.gif";
+smileyarr["Rajeev_265"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2l7QiZb6DI/AAAAAAAABpE/JxXWAtB4cNw/MG_137.gif";
+smileyarr["Rajeev_266"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2l62GImFzI/AAAAAAAABo0/54E5gxYAkqg/MG_45.gif";
+smileyarr["Rajeev_267"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2l61pKE9fI/AAAAAAAABos/eyXtCj_3oZU/mebiro_01.gif";
+smileyarr["Rajeev_268"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2l61R9lY1I/AAAAAAAABoo/i-fc0ucpdoE/MG_18.gif";
+smileyarr["Rajeev_269"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2l6m2F_QfI/AAAAAAAABoY/HKymw7WlYMg/Laie_95.gif";
+smileyarr["Rajeev_270"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2l6m4VvuxI/AAAAAAAABoU/xKRGZIYM8o4/Laie_92A.gif";
+smileyarr["Rajeev_271"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2l6W6_oygI/AAAAAAAABoQ/DUgvzyhNSbM/laie_14.gif";
+smileyarr["Rajeev_272"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2l6WYpfsII/AAAAAAAABoA/DbNp_iRLWiI/kez_13.gif";
+smileyarr["Rajeev_273"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2l6N34JtUI/AAAAAAAABn4/SozsTMGsQpk/kez_11.gif";
+smileyarr["Rajeev_274"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2l6NoU4pSI/AAAAAAAABn0/93o0HcM_rOU/kez_03.gif";
+smileyarr["Rajeev_275"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2l6NWdZ9cI/AAAAAAAABns/OZWNco_hCf8/Gigakach_02.gif";
+smileyarr["Rajeev_276"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2l6Dnf1pMI/AAAAAAAABno/jsJoAHEAH_0/German.gif";
+smileyarr["Rajeev_277"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2l6DazaySI/AAAAAAAABnk/z8B9PDRgDGg/drag_03.gif";
+smileyarr["Rajeev_278"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2l6DQLPCTI/AAAAAAAABng/6bvRBrUG2Pw/disobedient.gif";
+smileyarr["Rajeev_279"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2l51t0BMCI/AAAAAAAABnU/LFskPoLiWBo/crigon_02.gif";
+smileyarr["Rajeev_280"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2l51vpPZ2I/AAAAAAAABnQ/OuVNzUGZPf8/cook.gif";
+smileyarr["Rajeev_281"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2l5sUXV7qI/AAAAAAAABnA/WjRRnhc8Av8/connie_twiddle.gif";
+smileyarr["Rajeev_282"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2l5sV6xinI/AAAAAAAABm8/3hpEamVgXQI/connie_testwall.gif";
+smileyarr["Rajeev_283"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2l5sF20UqI/AAAAAAAABm4/GeUlD6M28uU/connie_smelly.gif";
+smileyarr["Rajeev_284"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2l5cF1MrAI/AAAAAAAABms/YM2fQtEAT-M/connie_redx.gif";
+smileyarr["Rajeev_285"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2l5AN7nmbI/AAAAAAAABmU/TjIxsHPexgA/connie_crazyperson.gif";
+smileyarr["Rajeev_286"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2l5AJr9cWI/AAAAAAAABmQ/Emu8oHk-mO0/connie_babyincrib.gif";
+smileyarr["Rajeev_287"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2l41hkI1GI/AAAAAAAABl8/aaLHFQ7JJWA/connie_20.gif";
+smileyarr["Rajeev_288"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2l41qKN8fI/AAAAAAAABl4/pCBOJNEnxcY/connie_17.gif";
+smileyarr["Rajeev_289"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2l4oEdbQTI/AAAAAAAABlw/oyshygbgsak/astronomer2.gif";
+smileyarr["Rajeev_290"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2l4n6TR2xI/AAAAAAAABls/cUZh5yNJ2QM/Archie_07.gif";
+smileyarr["Rajeev_291"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2l4nhcJo5I/AAAAAAAABlg/NTyDtE9ap_E/Alex_02.gif";
+smileyarr["Rajeev_292"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2lNMoLCgcI/AAAAAAAABk0/EREobw3LKcM/wink3.gif";
+smileyarr["Rajeev_293"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2lNMJ6pF4I/AAAAAAAABks/xUR0V_CPWcI/wild.gif";
+smileyarr["Rajeev_294"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2lM-8nt3sI/AAAAAAAABkg/occeuMWqRy4/umnik2.gif";
+smileyarr["Rajeev_295"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2lM-29UVmI/AAAAAAAABkc/UAeiDxyLQzQ/tommy.gif";
+smileyarr["Rajeev_296"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2lM1XLBynI/AAAAAAAABkQ/W4VTftZJLzM/to_clue.gif";
+smileyarr["Rajeev_297"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2lM0wXV-YI/AAAAAAAABkI/YbLYnhdLTQk/threaten.gif";
+smileyarr["Rajeev_298"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2lM0o4y12I/AAAAAAAABkA/cT83hWwiSNM/this.gif";
+smileyarr["Rajeev_299"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2lMp10SONI/AAAAAAAABj4/qoeINwKFWMw/tease.gif";
+smileyarr["Rajeev_300"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2lMpv5Ys8I/AAAAAAAABj0/Ltlk_zHf93I/taunt.gif";
+smileyarr["Rajeev_301"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2lLYEj57TI/AAAAAAAABjk/FnHNXvmOECc/suicide2.gif";
+smileyarr["Rajeev_302"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2lLYCUH9DI/AAAAAAAABjg/hi8U_gRPMv4/stop.gif";
+smileyarr["Rajeev_303"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2lLX-FPKpI/AAAAAAAABjc/ui2PNUdN4Vk/stinker.gif";
+smileyarr["Rajeev_304"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2lLXZbz3tI/AAAAAAAABjU/tv93n0rMm38/spam_light_en.gif";
+smileyarr["Rajeev_305"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2lLAJ0y23I/AAAAAAAABjM/IyFWvUV9dCE/smoke.gif";
+smileyarr["Rajeev_306"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2lK_x62KKI/AAAAAAAABjE/1CDlKud7wc4/slow_en.gif";
+smileyarr["Rajeev_307"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2lK_oQLKoI/AAAAAAAABjA/pU8Wgtb-E7Q/skull.gif";
+smileyarr["Rajeev_308"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2lKjHrPY_I/AAAAAAAABi4/BeIWFV6eKes/shablon_03.gif";
+smileyarr["Rajeev_309"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2lKjHRQUbI/AAAAAAAABi0/yg7eqq4SPDM/search.gif";
+smileyarr["Rajeev_310"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2lJ9mFXaYI/AAAAAAAABik/zlVLStBrZgU/scare2.gif";
+smileyarr["Rajeev_311"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2lJ9UWxcRI/AAAAAAAABig/eP2b-XgsfH8/sarcastic_hand.gif";
+smileyarr["Rajeev_312"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2lJHtT5F-I/AAAAAAAABiQ/Pw7C_B24taQ/rtfm.gif";
+smileyarr["Rajeev_313"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2lJHBwGU_I/AAAAAAAABiI/aJpxVeRrCho/resent.gif";
+smileyarr["Rajeev_314"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2lJG1HvouI/AAAAAAAABiE/luBXrHGXCQk/read.gif";
+smileyarr["Rajeev_315"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2lJG3ntWFI/AAAAAAAABiA/huNyFyCV1Zc/queen.gif";
+smileyarr["Rajeev_316"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2lI49DyYBI/AAAAAAAABh4/yfOYsGCtZrs/preved.gif";
+smileyarr["Rajeev_317"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2lI4a3a-GI/AAAAAAAABhw/gm2jEuoFIQo/pleasantry.gif";
+smileyarr["Rajeev_318"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2lI4Cy7cDI/AAAAAAAABhs/47q2X_tc0kk/pioneer.gif";
+smileyarr["Rajeev_319"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2lIptHdBoI/AAAAAAAABho/BMqvS1UW5l4/pilot.gif";
+smileyarr["Rajeev_320"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2lIpFq0ZqI/AAAAAAAABhc/P8gUU3VNof4/pardon.gif";
+smileyarr["Rajeev_321"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2lIpAYG7FI/AAAAAAAABhY/A1SrUWuNXf4/paint2.gif";
+smileyarr["Rajeev_322"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2lIYMdJ8PI/AAAAAAAABhU/VyWOraBzQBA/orc.gif";
+smileyarr["Rajeev_323"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2lILTD-faI/AAAAAAAABhA/vVCZcA0bchU/no2.gif";
+smileyarr["Rajeev_324"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2lH9u-8tgI/AAAAAAAABgo/qqc5SpJldPM/mda.gif";
+smileyarr["Rajeev_325"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2lH9exbqNI/AAAAAAAABgk/J0UKigBHbIs/man_in_love.gif";
+smileyarr["Rajeev_326"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2lH9BrRjyI/AAAAAAAABgg/TRpXaEB-qw4/mail1.gif";
+smileyarr["Rajeev_327"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2lHU_hnOBI/AAAAAAAABgE/1oS2y83U3G8/Laie_75A.gif";
+smileyarr["Rajeev_328"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2kjpc034JI/AAAAAAAABbI/zOL3ilYJ6ZQ/girl_mad.gif";
+smileyarr["Rajeev_329"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2lHUlerpEI/AAAAAAAABgA/KZIajn8Wkxk/Laie_78.gif";
+smileyarr["Rajeev_330"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2lG6_Qw_vI/AAAAAAAABfo/5S2NfkQ8w_Y/Laie_55.gif";
+smileyarr["Rajeev_331"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2lG6QH-DWI/AAAAAAAABfg/2-w-2UpgpXk/Laie_52.gif";
+smileyarr["Rajeev_332"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2lGrMLyIrI/AAAAAAAABfY/A0aqDeRzIf8/Laie_49.gif";
+smileyarr["Rajeev_333"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2kmMMHUU1I/AAAAAAAABd8/iqyz7gYYUeI/l_sparrow.gif";
+smileyarr["Rajeev_334"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2kmL1-uF_I/AAAAAAAABd4/Sh5XKwuD8XA/l_Pocket_PC.gif";
+smileyarr["Rajeev_335"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2kll7_HoRI/AAAAAAAABdw/NwqFD0YYFSQ/JC-ROFL.gif";
+smileyarr["Rajeev_336"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2kll7IONaI/AAAAAAAABds/AenJOHc80HU/JC-LOL.gif";
+smileyarr["Rajeev_337"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2klljibAUI/AAAAAAAABdo/RljWZhxfka4/JC-goalie.gif";
+smileyarr["Rajeev_338"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2klWPzFagI/AAAAAAAABdU/nzHqUIcBLyo/JC_stupid.gif";
+smileyarr["Rajeev_339"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2klIh-TQaI/AAAAAAAABdE/NULYZqweflA/JC_pokerface.gif";
+smileyarr["Rajeev_340"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2klIehH0FI/AAAAAAAABc8/GK14YDdeyHw/JC_OMG_sign.gif";
+smileyarr["Rajeev_341"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2klIXFmD_I/AAAAAAAABc4/GJOgG7TG2SE/JC_ohboy.gif";
+smileyarr["Rajeev_342"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2kk7LFhyPI/AAAAAAAABco/LYJigjgRDm0/JC_idea.gif";
+smileyarr["Rajeev_343"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2kk7LYm1HI/AAAAAAAABck/YIpdBCyXtC8/JC_howdy.gif";
+smileyarr["Rajeev_344"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2kkq98DAhI/AAAAAAAABcg/bTAh_nsr74s/JC_hmmm.gif";
+smileyarr["Rajeev_345"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2kkqWIrv7I/AAAAAAAABcU/S5_XfyJruzM/JC_flirt.gif";
+smileyarr["Rajeev_346"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2kkT-SjSkI/AAAAAAAABcI/XkovmkcINfk/JC_doubleup.gif";
+smileyarr["Rajeev_347"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2kkEuUF3yI/AAAAAAAABb0/xK8lXWSvpt8/hunter.gif";
+smileyarr["Rajeev_348"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2kkEQmyMmI/AAAAAAAABbs/XdfzG_TTxQQ/help.gif";
+smileyarr["Rajeev_349"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2kkEC2DFTI/AAAAAAAABbo/D4tCw9iA9Y0/heart.gif";
+smileyarr["Rajeev_350"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2kj4qbgXXI/AAAAAAAABbk/7Y8RrBk9vIs/hang1.gif";
+smileyarr["Rajeev_351"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2kj4Tk_bdI/AAAAAAAABbc/GWIqVCzf4k4/good.gif";
+smileyarr["Rajeev_352"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2kjXdI1QuI/AAAAAAAABa8/o-NGw16vsAc/gamer4.gif";
+smileyarr["Rajeev_353"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2kjW2zfmZI/AAAAAAAABas/r5kI0bRoF5o/flood.gif";
+smileyarr["Rajeev_354"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2kjKyXypeI/AAAAAAAABak/0hoqsO3d848/fan_1.gif";
+smileyarr["Rajeev_355"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2ki-TrZa9I/AAAAAAAABaM/Jkib6SPlMj4/derisive.gif";
+smileyarr["Rajeev_356"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2ki-fQXhmI/AAAAAAAABaI/1LtoOGo8zgw/ded_moroz.gif";
+smileyarr["Rajeev_357"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2ki-fx4lEI/AAAAAAAABaE/7M9XXbqCIns/dash1.gif";
+smileyarr["Rajeev_358"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2kiylKnSVI/AAAAAAAABZ0/wXmqiS0bmaI/d_upset.gif";
+smileyarr["Rajeev_359"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2kih51rK9I/AAAAAAAABZs/Gm99apxeLko/d_training.gif";
+smileyarr["Rajeev_360"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2kiA4F0UfI/AAAAAAAABY4/WM5rT_1I_EE/crazy.gif";
+smileyarr["Rajeev_361"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2kiAqYqxdI/AAAAAAAABY0/iQ1xhYSO7ZQ/connie_43b.gif";
+smileyarr["Rajeev_362"]="http://lh5.ggpht.com/_PrM5VcwpZio/S2kiAmw5bUI/AAAAAAAABYw/phTRLkT_FPw/connie_43.gif";
+smileyarr["Rajeev_363"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2khwtPqqzI/AAAAAAAABYk/GMkxG211Rfs/connie_33.gif";
+smileyarr["Rajeev_364"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2khHkbAuPI/AAAAAAAABYA/WCKxhTM-lho/bomb.gif";
+smileyarr["Rajeev_365"]="http://lh6.ggpht.com/_PrM5VcwpZio/S2khHQc7gTI/AAAAAAAABX8/fVH4XwwbyMY/blind.gif";
+smileyarr["Rajeev_366"]="http://lh4.ggpht.com/_PrM5VcwpZio/S2khHDwe9CI/AAAAAAAABX0/EzVT6frWecA/bad.gif";
+smileyarr["Rajeev_367"]="http://lh3.ggpht.com/_PrM5VcwpZio/S2kg0Dg1NSI/AAAAAAAABXo/qnEYc2cESIk/agree.gif";
+
+//========================================
+
+	var tb = document.getElementsByTagName('textarea');
+	for(i=0;i<tb.length;i++){
+		text=tb[i];
+		if (!text) return;
+		c=text.parentNode;
+		d=document.createElement("div");
+		d.className="T";
+		d.style.fontSize="11px";
+		d.align="left";
+		
+	        
+	    d.style.marginTop="10px";
+		c.appendChild(d);
+		
+		for(title in smileyarr){
+			mm=document.createElement("a");
+			mm.href="javascript:;";
+			mm.setAttribute("gult",i);
+
+			mm.innerHTML="<img src='"+smileyarr[title]+"' title='"+title+"'>";
+			mm.addEventListener("click", insertSmiley, true);
+			d.appendChild(mm);
+		}
+	}	
+}
+dip();
+}, false);
+
+// Rajeev's script

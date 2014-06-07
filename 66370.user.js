@@ -1,0 +1,9 @@
+// ==UserScript==
+// @name           Goalll Extended hoardercheck
+// @namespace      Made by X_choice
+// @description    Checkt of een speler een hoarder is
+// @version        1.3
+// @include        http://*goalll.nl/index.php?a=teamoverzicht*
+// ==/UserScript==
+
+url =  "" + window.location + "";spliturl = url.split("?");if(spliturl[1]){splitparam = spliturl[1].split("&");var param = new Array();for(var i in splitparam){tmp = splitparam[i].split("=");param[tmp[0]] = tmp[1];}}if(param['team_id']){if (document.getElementsByClassName('speler_row hover').length > 100) { document.getElementsByClassName('uitleg')[0].innerHTML = document.getElementsByClassName('uitleg')[0].innerHTML + '<br /><b>Dit team bestaat uit ' + document.getElementsByClassName('speler_row hover').length + ' spelers, en is dus een hoarder!</b> -10%: ' + Math.round(document.getElementsByClassName('speler_row hover').length * 0.90) + ' spelers, -25%: ' + Math.round(document.getElementsByClassName('speler_row hover').length * 0.75) + ' spelers'; } else { document.getElementsByClassName('uitleg')[0].innerHTML = document.getElementsByClassName('uitleg')[0].innerHTML + '<br />Dit team bestaat uit ' + document.getElementsByClassName('speler_row hover').length + ' spelers.'; }}else{if (document.getElementsByClassName('speler_row hover').length > 100) { document.getElementsByClassName('uitleg')[0].innerHTML = document.getElementsByClassName('uitleg')[0].innerHTML + '<br /><b style="color:red;">Jouw team bestaat uit ' + document.getElementsByClassName('speler_row hover').length + ' spelers, en je bent dus een hoarder!</b> Verkoop snel wat spelers en zorg dat je er minder dan 100 hebt.'; } else { document.getElementsByClassName('uitleg')[0].innerHTML = document.getElementsByClassName('uitleg')[0].innerHTML + '<br />Jouw team bestaat uit ' + document.getElementsByClassName('speler_row hover').length + ' spelers.'; }}

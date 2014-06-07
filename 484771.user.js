@@ -1,0 +1,33 @@
+// ==UserScript==
+// @name          The Volafile Blues
+// @namespace     http://userstyles.org
+// @description	  keystrokes for required description
+// @author        fggt
+// @homepage      http://userstyles.org/styles/100248
+// @include       http://volafile.io/*
+// @include       https://volafile.io/*
+// @include       http://*.volafile.io/*
+// @include       https://*.volafile.io/*
+// @run-at        document-start
+// ==/UserScript==
+(function() {
+var css = "#overlay.visible {\n    background: rgb(0,2,5);\n}\n\n#room_name, #room_name_container{\n\n    text-align: center;\n\n    background: rgb(0,10,25);\n\n    color: rgb(200,200,200);\n\n}\n\n#header_row1.header_row {\n\n    background: rgb(0,10,25);\n\n}\n\n.fa {\n  \n    color: rgb(200,200,200)!important;\n    \n}\n\n.chat_message {\n\n    background: rgb(15,20,30);\n\n    color: rgb(200,200,200);\n\n}\n\n.chat_message.user .username {\n\n    color: rgb(120,140,200);\n\n}\n\n.chat_message.admin .username {\n\n    color: rgb(200,120,140);\n\n}\n\n.chat_message.admin {\n\n    background: rgb(18,22,30);\n\n}\n\n.chat_message.rank .username {\n\n    color: rgb(80,100,180);\n\n}\n\n.chat_message .username {\n\n    color: rgb(180,190,200);\n\n}\n\n.chat_message.highlight, .chat_message.highlight.admin {\n\n    background: rgb(25,35,50);\n\n    border-color: rgb(200,120,140);\n\n    border-width: 4px    \n\n}\n\n.chat_file {\n\n    border-radius: 1px;\n\n    background: rgb(30,40,50);\n  \n    border-color: rgb(40,52,78);\n  \n    color: rgb(200,200,200);\n\n}\n\n.nano > .pane > .slider {\n\n    border-radius: 1px;\n\n    background: rgb(50,70,90);\n\n}\n\n.nano > .pane > .slider:hover {\n\n    background: rgb(50,70,100)\n\n}\n\n.nano:hover > .pane, .pane.active, .pane.flashed {\n\n    background: rgb(20,30,50);\n\n    opacity: 1\n\n}\n\n.nano > .pane.active > .slider {\n\n    background: rgb(120,140,170);\n\n}\n\n#chat_hbar, #header_row2.header_row {\n\n    background: rgb(25,30,40);\n\n    color: rgb(200,200,200);\n\n}\n\n#chat_name, #chat_input {\n\n    background: rgb(10,15,25);\n\n    color: rgb(200,200,200);\n\n}\n\na:hover {\n\n    color: rgb(120,140,200);\n\n}\n\ntextarea.defaultValue {\n\n    color: rgb(200,200,200);\n\n}\n\n#header_row_container a i.green-icon {\n\n    color: rgb(200,120,140)!important;\n\n}\n\n#header_row_container a:hover i.green-icon {\n\n    color: rgb(200,140,160)!important;\n\n}\n\n#header_row_container a:active i.green-icon {\n\n    color: rgb(200,140,160)!important;\n\n}\n\n#search.defaultValue {\n\n    background: rgb(40,50,70);\n\n    color: white;\n\n}\n\ninput#search {\n\n    background: rgb(45,55,75);\n\n}\n\n.toggle > i {\n    \n    color: rgb(200,200,200);\n    \n}\n\n.toggle.enabled > i {\n\n    color: rgb(120,140,200)!important;\n    \n}\n\n.button, input[type=\"submit\"] {\n\n    background: rgb(25,30,40);\n\n    color: rgb(120,140,200);\n\n    margin-right: 10px;\n\n}\n\n#uploadButton {\n\n    border-radius: 0px;\n\n}\n\n#uploadButton:hover {\n\n    color: rgb(140,160,200);\n\n    background: rgb(40,45,55)\n\n}\n\n#uploadButton:active {\n\n    background: rgb(40,45,55);\n\n    color: rgb(200,120,140)\n\n}\n\n#filter_reminder {\n\n    background: rgb(30,50,70);\n\n}\n\n#filter_reminder:hover {\n\n    background: rgb(40,60,80);\n\n}\n\n.file_uploading {\n\n    background: rgb(40,60,80)!important;\n    \n}\n\n#file_list.uneven .filelist_file:nth-child(2n+1) {\n    background: rgb(15,20,30);\n    color: rgb(200,200,200);\n}\n\n#file_list.even .filelist_file:nth-child(2n) {\n\n    background: rgb(15,20,30);\n    \n    color: rgb(200,200,200);\n    \n}\n\n.filelist_file {\n\n    background: rgb(0,10,15);\n    \n    color: rgb(200,200,200);\n    \n}\n\n.file_icon.filetype.music_playing {\n\n    color: rgb(100,120,180);\n    \n}\n\n.gallery_button {\n  \n    border-radius: 1px;\n  \n    border-color: rgb(40,52,76);\n  \n    color: rgb(200,200,200);\n    \n}\n\n.ui_frame {\n  \n    background: rgb(0,10,15);\n    \n    border-color: rgb(50,70,90);\n    \n    border-radius: 1px;\n    \n}\n\na.file_name {\n  \n  color: rgb(200,200,200);\n  \n}\n\na.file_name:visited {\n  \n  color: rgb(200,120,140);\n  \n}\n\na.file_name:visited:hover {\n  \n  color: rgb(100,120,180);\n  \n}\n\n#a:-webkit-any-link:visited {\n  \n  color: rgb(200,120,140);\n  \n}\n\na:hover {\n  \n  color: rgb(100,120,180);\n  \n}\n\n.file_control_icon.clickable {\n  \n      color: rgb(200,200,200);\n      \n}\n    \n.file_control_icon.clickable:hover {\n  \n      color: rgb(180,180,180);\n            \n}\n          \n.file_icon {\n        \n      color: rgb(200,200,200);\n              \n}\n\nhtml {\n\n    background: rgb(0,10,15);\n    \n}\n\n#main_logo {\n\n    color: rgb(60,80,130);\n    \n}\n\n#main_logo_suffix {\n\n    color: rgb(100,120,180);\n    \n}\n\n.button:hover {\n\n    background: rgb(25,35,45);\n    \n}\n\n.Button:active {\n\n    background: rgb(40,45,60)!important;\n    \n}\n\n#main_discover_button {\n\n    background: rgb(0,10,25);\n    \n    color: rgb(200,120,140);\n    \n}\n\npre {\n  \n  color: rgb(200,200,200);\n  \n}";
+if (typeof GM_addStyle != "undefined") {
+	GM_addStyle(css);
+} else if (typeof PRO_addStyle != "undefined") {
+	PRO_addStyle(css);
+} else if (typeof addStyle != "undefined") {
+	addStyle(css);
+} else {
+	var node = document.createElement("style");
+	node.type = "text/css";
+	node.appendChild(document.createTextNode(css));
+	var heads = document.getElementsByTagName("head");
+	if (heads.length > 0) {
+		heads[0].appendChild(node); 
+	} else {
+		// no head yet, stick it whereever
+		document.documentElement.appendChild(node);
+	}
+}
+})();

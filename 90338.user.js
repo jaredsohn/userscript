@@ -1,0 +1,3077 @@
+// Author: Cordazar (contact: cordazar (at) gmail (dot) com)
+// Released under the GPL license
+// http://www.gnu.org/copyleft/gpl.html
+//
+// Based on: (lots of creds to the original creators)
+// http://userscripts.org/scripts/show/67059 - Grepolis Beyond
+// http://userscripts.org/scripts/show/71277 - Grepo Farmer
+// http://userscripts.org/scripts/show/72226 - Grepolis Resources Calculator
+// http://userscripts.org/scripts/show/71132 - Grepolis Tools
+//
+// With: (thanks to PhasmaExMachina)
+// http://userscripts.org/scripts/show/57756 - Script Updater
+// http://userscripts.org/scripts/show/62718 - Script Options Tool
+//
+// This is a Greasemonkey user script.
+//
+// To install, you need Greasemonkey: http://greasemonkey.mozdev.org/
+// Then restart Firefox and revisit this script.
+// Under Tools, there will be a new menu item to "Install User Script".
+// Accept the default configuration and install.
+//
+// To uninstall, go to Tools/Manage User Scripts,
+// select "Grepolis Extended", and click Uninstall.
+//
+// --------------------------------------------------------------------
+//
+// Planned functionality: (priority from 1 to 5 with 5 as most important)
+//		- Rewrite Res Calc-code to use existing functions and arrays (1)
+//		
+// --------------------------------------------------------------------
+// ==UserScript==
+// @name			Grepolis Extended
+// @namespace		Opendia
+// @description		Extra functions for a game I play
+// @include			http://*.grepolis.*/*
+// @exclude			http://forum.*.grepolis.*/*
+// @require			http://userscripts.org/scripts/source/57756.user.js
+// @require			http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js
+// @require			http://userscripts.org/scripts/source/62718.user.js
+// @version			0.5.4
+// @history			0.5.4	Fixed a changed form-name. More updates will come in the near future (I hope) to make the script get officially approved at grepolis.org
+// @history			0.5.3	A few minor bug-fixes that showed up after the last update
+// @history			0.5.2	Added Ctrl+arrow to switch between cities, Updated GrepoFarmer to work with the new "Select all units"-feature, Updated Island-msg to not show above chat-window
+// @history			0.5.1	Added French, thanks to randalph. 
+// @history			0.5.0	First public release. Added English as both new and default language. Fixed a few small things as well.
+// @history			0.4.4	A couple of bug-fixes
+// @history			0.4.3	Removed a few functions and rewrote/redesigned a couple of others. Preparing for 0.5.0 which will be first public release. Report bugs to me if and when you find any.
+// @history			0.4.2	Update to fix a few bugs that popped up with update 1.12 of Grepolis
+// @history			0.4.1	Added new and removed obsolete functions, adjusted script for new GM-version and cleaned out some bugs.
+// @history			0.4.0	Added configuration options, added code from Grepolis Resources Calculator, changed cr formatting code, added a few new functions and removed a few bugs.
+// @history			0.3.10	Added code from GrepoFarmer, added a small array of new functions, changed the design of the quickmenu and cleaned out a few bugs.
+// @history			0.3.9	Added functionality for older versions of Firefox lacking native JSON support
+// @history			0.3.8	Bugfixes and minor changes.
+// @history			0.3.7	Modified the main-menu.
+// @history			0.3.6	Bugfix.
+// @history			0.3.5	Added Script Updater.
+// @history			0.3.4	Redesigned quickbar and Spy-formatter.
+// @history			0.3.3	Added Island-PM functionality, to everyone/to alliance.
+// @history			0.3.2	Bugfixes.
+// ==/UserScript==
+var scriptId = 71056;
+var scriptName = "Grepolis Extended";
+var scriptVersion = "0.5.4";
+var scriptWright = "Cordazar";
+var scriptWrightEmail = "cordazar (at) gmail (dot) com";
+ScriptUpdater.check(scriptId, scriptVersion);
+
+// START of JSON
+	(function() {
+	if(!this.JSON){this.JSON={};}
+	(function(){function f(n){return n<10?'0'+n:n;}
+	if(typeof Date.prototype.toJSON!=='function'){Date.prototype.toJSON=function(key){return isFinite(this.valueOf())?this.getUTCFullYear()+'-'+
+	f(this.getUTCMonth()+1)+'-'+
+	f(this.getUTCDate())+'T'+
+	f(this.getUTCHours())+':'+
+	f(this.getUTCMinutes())+':'+
+	f(this.getUTCSeconds())+'Z':null;};String.prototype.toJSON=Number.prototype.toJSON=Boolean.prototype.toJSON=function(key){return this.valueOf();};}
+	var cx=/[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,escapable=/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,gap,indent,meta={'\b':'\\b','\t':'\\t','\n':'\\n','\f':'\\f','\r':'\\r','"':'\\"','\\':'\\\\'},rep;function quote(string){escapable.lastIndex=0;return escapable.test(string)?'"'+string.replace(escapable,function(a){var c=meta[a];return typeof c==='string'?c:'\\u'+('0000'+a.charCodeAt(0).toString(16)).slice(-4);})+'"':'"'+string+'"';}
+	function str(key,holder){var i,k,v,length,mind=gap,partial,value=holder[key];if(value&&typeof value==='object'&&typeof value.toJSON==='function'){value=value.toJSON(key);}
+	if(typeof rep==='function'){value=rep.call(holder,key,value);}
+	switch(typeof value){case'string':return quote(value);case'number':return isFinite(value)?String(value):'null';case'boolean':case'null':return String(value);case'object':if(!value){return'null';}
+	gap+=indent;partial=[];if(Object.prototype.toString.apply(value)==='[object Array]'){length=value.length;for(i=0;i<length;i+=1){partial[i]=str(i,value)||'null';}
+	v=partial.length===0?'[]':gap?'[\n'+gap+
+	partial.join(',\n'+gap)+'\n'+
+	mind+']':'['+partial.join(',')+']';gap=mind;return v;}
+	if(rep&&typeof rep==='object'){length=rep.length;for(i=0;i<length;i+=1){k=rep[i];if(typeof k==='string'){v=str(k,value);if(v){partial.push(quote(k)+(gap?': ':':')+v);}}}}else{for(k in value){if(Object.hasOwnProperty.call(value,k)){v=str(k,value);if(v){partial.push(quote(k)+(gap?': ':':')+v);}}}}
+	v=partial.length===0?'{}':gap?'{\n'+gap+partial.join(',\n'+gap)+'\n'+
+	mind+'}':'{'+partial.join(',')+'}';gap=mind;return v;}}
+	if(typeof JSON.stringify!=='function'){JSON.stringify=function(value,replacer,space){var i;gap='';indent='';if(typeof space==='number'){for(i=0;i<space;i+=1){indent+=' ';}}else if(typeof space==='string'){indent=space;}
+	rep=replacer;if(replacer&&typeof replacer!=='function'&&(typeof replacer!=='object'||typeof replacer.length!=='number')){throw new Error('JSON.stringify');}
+	return str('',{'':value});};}
+	if(typeof JSON.parse!=='function'){JSON.parse=function(text,reviver){var j;function walk(holder,key){var k,v,value=holder[key];if(value&&typeof value==='object'){for(k in value){if(Object.hasOwnProperty.call(value,k)){v=walk(value,k);if(v!==undefined){value[k]=v;}else{delete value[k];}}}}
+	return reviver.call(holder,key,value);}
+	cx.lastIndex=0;if(cx.test(text)){text=text.replace(cx,function(a){return'\\u'+
+	('0000'+a.charCodeAt(0).toString(16)).slice(-4);});}
+	if(/^[\],:{}\s]*$/.test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,'@').replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,']').replace(/(?:^|:|,)(?:\s*\[)+/g,''))){j=eval('('+text+')');return typeof reviver==='function'?walk({'':j},''):j;}
+	throw new SyntaxError('JSON.parse');};}}());
+	})();
+// END of JSON
+
+// var start = new Date().getMilliseconds();
+
+	// START of FUNCTIONS & VARIABLES
+
+	// Variables
+	var ES = {};
+	ES.location = window.location.href;
+	ES.counters = [];
+	var uW = unsafeWindow;
+	var $ = uW.jQuery;
+	var jsVoid = 'javaScript:void(0);';
+	ES.Server = /http\:\/\/(\w+)\.grepolis\..*/.exec( uW.document.URL );
+	ES.GameData = uW.GameData;
+	ES.Game	= uW.Game;
+	ES.Layout = uW.Layout;
+	ES.time = Number(ES.Game.server_time) + 1;
+	ES.Buildings = [];
+	ES.Builds = [];
+	ES.Positions = [];
+	ES.Debug = false;
+	ES.L = [];
+	ES.Lang = [];
+	ES.Units = [];
+
+	ES.Server[2] = ES.Server[1].substr(0,2);
+	ES.Server[3] = ES.Server[1].substr(2,5);
+	
+	if (ES.Game.townId == undefined) { return; }
+
+	var imP = 'data:image/gif;base64,';
+	var imPNG = 'data:image/png;base64,';
+	//base64 coded images
+	var image = {
+		"bMsg": imP + 'iVBORw0KGgoAAAANSUhEUgAAAAwAAAAJCAYAAAAGuM1UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAVVJREFUeNpMUE1Lw0AUnN1N0rSobSHWGJqKFlRQ1IMgiB93f4U/w7N/p2cP/QOih9Z6aMHSCoXooYfSJmmS2qQxb0FwYFne25md94Y9Ptw39nasM38+5/FyCUKyWiFNU6ySBHGcgHOGn2Ucvry2usrF+cnN9dVlhYiKoiDJSP9BvTiOEYYhBIfBBWfrvu9jNBpBzZchhJBHVVXoawaU4iEGgwEmkwlqNXuDB0GQbm5tg0T9XhtqwZBkkSsCahkf7SeMx2OYpkmGKQ8yK2gV1Ot1+dDtPAOFXSBnotdqwnEc+aZpGlbZbgrNRoiiCJZlwXVd9DtNMMawWCxg27bci2q5U5YMQ/QtU6lWq/KmeQl/NTnTh5mIKY7z5U+n0zxZUpNzjlKpJAVEJhiGAc/zMBx+ztjd7UHj+Gj/VNf1LByRCk4pcTkCy8QEzlg6c73w7b3b+xVgAFkfms3iRzimAAAAAElFTkSuQmCC',
+		"bPopup": imP + 'iVBORw0KGgoAAAANSUhEUgAAABkAAAATCAYAAABlcqYFAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAnRJREFUeNqkVb2PElEQn10ecHwcJJBLtoOCxgIrE02wglDR0WhBKCxsTK6k81+guJoWC41iAxWNBYkJzcUW5CMEWIwccnggy5czm8fK7rEIOskv+97befOb+b23s8Jms4Fde/n8ye7UinAhfAgvwoEQ4bCtETPEGHGDuGOGoEazEUEwGLyy2+0JOMHm83mx1Wpd4nDB/uJLlXitVmsiGo2C3+8/imA4HEK5XKakXlM1RCIgGM+aglr4GqzXax9CQgBmBY1G4ygSURRpL3B5LYwT7NUdHb3L5TJAGwaDARjPz8wEQdiSUBxhW4EvHo9feTwene6z2QxGoxF0u11Ip9OnHAlks1ltzLa6u93uBBKBaHVqL+9uh9Dv9yGfz0O73T6JZLVa/ZGPn4GDFinz92/z8HP8HT68ewOTyQRKpRKgZBAIBODB42cgSRIsFgt1vG9OSblcLnXPLgkdskgk9CIWi6lPuk30jEQiuqw6nQ5Uq1XTOZksy7o92hWmgLVaTec8nU7V67i74eHTlAqzORlVZ0ryKPpCL+ztF+j1elCpVLSlUfuTmv02sHFudiaqka73LzxTr+N/yEX3eKOr5D7JGdhsNo1kKn+GUCikgsZkxrlBLuphK3awEosTnE4nhMNhyGQyJ11h/HCLvEkuDlfCPOA4v4BUKgXJZBIURdF99blcDur1+ivGWBsxNunCCpHQrvV+uewAdgkcWJHjfIpev8hTe01VYvAm9qqvPCDweKQVSaNQ/owvzEjDxvVHwJZ+bCsnAoKM02/YqX+Y+TLOOMavvVgoFE76Z6B8mu6H/Bgv6abZbF7y/v8vfz/lkPNvAQYANS5S08jAjgMAAAAASUVORK5CYII=',
+		"bGStats": imPNG + 'iVBORw0KGgoAAAANSUhEUgAAAA0AAAAMCAYAAAC5tzfZAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAM5JREFUeNqEkr0Ng0AMhe8kWqqbIxNkgEyQKnNkhLTZIlIqmrQZIBOkpqW4giv4EXAXPUsPchCIJUvGz59tDDqEoNbsmV1HEXXee3U4nnWi/pgxRooBFUUhuU2obVvVNI1AwzAo59wEvV93WYMdYbv9Sfd9L8VwaF3XTRASaZoqxmVZSowigguIIidhrV8Q4mgSnVeaNwMYQexEAM+Evt+J+QU0n0SNHq1nrR0hXhDr5Hk+FtP01h+xZsnjdgm4Vl3X8iGrqlo4NOqo/QgwAJiJC8adQxVlAAAAAElFTkSuQmCC',
+		"bClose": imPNG + 'iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA+xJREFUeNpsVFtoXFUUXXfmztyZuUk6aRObhGZMatokVVDrI6AIRSkkAdsUijQNpSUltP2oFi340Q8VIpTaj0JBRVEChSqIaOmHrehPwVellND6kdRKQtLJTCeTzCPzuvNy7dO5lzF4YHPea6+99zpHe/PILkhzuVzQdV0Zx6bb7R7keMjr9e7weDytnJcrlcpiLpe7XSgUvq9Wq7/QUC6XUSqVIGNpOtY1bowS6D2/399LMMcJQREIBHq5/hoBT8/Pz19PJBJnNE27VX/fPfBMlz3WyeKiaZpnDcNoEY/iuVgsKsvn81hbW0M6nYY4CoVCPbwztrq6+oD9tANiU6Wnj+l9QsZkoFJgG0NVvTQJMRqNIh6Po7293eR8am5ursj9yyp1woJ2lKwmBNyyrBqjnLosYGL2WO3T5N7CwgIYEYLB4Cck0Sf3BHATQ50UBnJYLgabm9GzrR/l0qNwbVBx0tDQgO4ntktIak2YErCJGB+IExcXDzDhbTKpkES+l8HuoQMYf+s8Rt44ilKxoECz2Qza2jpw+MT7OHhsEq2tm5mavJNj02zYx75PEvO6xK4Aya4KDXenf5V6Y+fLe7H/4HHks2nmqwNjE2ewYdMWxML38DASlswrlpJzn8/wcGFQZ6j9sujoSPfg5m83YDZ+hH1jp/HsS3vgNfxo79yGxuYOxCP3cemzSaTSKUrJ6+SWIcv153VONtQDKi0R9KdrVxhuCSOjp/Dkc7vVenjuL1z6fBLx5RUYPp8CqylEGdtmXVVQAGk1YT+SSrmC+7N3YBWy8BgBtReLziOyFCbjgANWD6jkxdwlq+ukIQUIPd6F42+fg9nUgnQiQgcWnh4Yxtj4KadQ9nnpZU6VRNz9WzcOUvk9tjfZ2NIZwsl3zyPY0omHD+7hwocnEVv6B0/tfAUdoR0INpm4M/2HKopEJOzkXjKZ/FIYXhX9yYaqWD6L4T2jrGYnooszuHjuHSxFIvj5x6v4ZuosQSoY2LWfTrsd8UtLpVIWsa65+7qb/ybQIb6URlUYeiuXi1iNLeKrqQvqmRmGj1XUMTtzl05mkYiHKa0/ycpycre8vPwt73+qjby6VdiN8wV8wbesmJZUfkpMvk/9MnbipVlWgZWr0IkfLkpF9mOxWDKbzb7IYs66e7uCAnKbYT9GLb0gX5XGKrul17T/yEnGwlRMIpGz/MIk3CMEu6H2BbB2+Ad+URsJMiBebbD1gLIuspLxyspKmmATJHLZ0bANWGsCOsOn1CsiFfXXiVb18kQzmYyAydlDPHPd3v/fH5ubXzP872jDHA8xrH4yapXnzoqGabfI7grXfrf/yPr2rwADAL/FaxnBTkjkAAAAAElFTkSuQmCC',
+		"islandPME": imPNG + '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',
+		"islandPMA": imPNG + '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',
+		'booty':  imPNG + 'iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABGdBTUEAALGPC/xhBQAAABd0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYyLjW8h8n+AAAEvElEQVRIS+2WX0hbVxzHhe1tD2kHPhZZKZTtoZeVrWxOOLDWwgrhbqCV6cYtxkZrpVkD0Tobg4raGWNi/hpjamKSRmNMY82azc3q/nQPG3RMKLJWYfggfdlg9KkP47fzPXKypHag256GgR+/c3Mu93N+3+/vnHvLyvZ/+woUKbC1taXb3NxUNjY22OrqKltaWmLT09NKOBzW/SdCeTwjOq/PrQRDE+x6NMEiU0kWS6TY0vJXGofT+vo6ra2t0crKCnEoedwuNRKJ/Hv4iN2mcDiNjU8QB1I4Ehd5Jp2lm/M5yuU/FxnzLYazxKGIClS9uLioS6fTyuTkJAuFQsqeFuQb7mADXQbSq+/R6ycqRWBcV6/ROYORPjKbKOyxUjabJQ6i5MSgM+01q2nneZYIWDX8Nzo6Khbkcw0ou7Lhi0+jutSUQ7s9bRcgCZb5THUlDfc209JkC+WCF+izmIVuhc2UGWkSMeO7SJfOVdPJ44eox1xDA13n2a7AC3NBhcPJH/DtAAOKykcunyFL/QlqqzkmshzL69eOvECIjlaVOtve3R04Gnaw+HW7kBSg4koBbao/JcCAFIMB726sEoFqEXsCu4e7WF9fd4m/T8NlxRKELMGY0791RISQ2tqqocHy+TyiAvmZ0gfsJiXqbBGVNaiVZG9UyN96XES+/xilLeUUMR0ik/6wqBjQ/ovVBTDGsmJ4jQYb87s115BV41BKTgWe3Wzf3mit+O6G0fboThut375AIYtCdu1FEb11B0S06w+KLAHIDSdfEgs11laJMfLksIHi8bgIFHLtSh35nTYtlUqV76iaAxVAf7troif3BwW8t+Eo6V99nt6vfI6Mp3QlYMAQvqtnRfUDxjeFApAcGXJDdjQbFOBQRGnDbd216h59064BzMf06/c99Pielcatp+ntV7bBiPqqA2IBCCk5QNJr2em4xoIAhipF4NpCxYD+snxFBfD3e3YBRX583yd8xopRNaCQerT5sPB7rOWguDaePlrwWYJR8dPgubk54ifbNpjLqdtctgjoD6lmujNeRw++tNFPCx2iWkvNy+QyVVLq4zeE52guBHyW0gsVuK+AIWTHF4MNBgMBzIOV8YeX/5w3q/ASYAkHCA9Dxhw8Rzy8qQnPMScDFUNKSFoss1wE5nAmOBwOHKUqB5eX/Zi9zFAZgPBTNhWqxnYBVHY4xrhnZvCdEtnhP6zAw1E1OhgBT5Hbm6oF1NZ9VeV5ex9/HWuphbzwFADZUPgPHYrrYjjAWJRsLrGVeFd3dnZSIBCgWCwmO7eQ5+fnye9x/AUFOOttrI0PNhSqxYP/eOCkBade+PTkYVAsCBJLNTAHmeXphHdyf59Nc7vdLBqN4uOAYcsgZmdnWSaTUTi89MRKuZvZ3NglWnB/KKqD5KgI2wTVBK81if2MwIJgCyyArKgymUxSaMyt7vkrhEPLM/5WFXAc6uLk4dLBH3/fB+L0wYmDOXiFecwNDQ0RJOQVqhz+z74+OFQ3FehBt5HX6y14hbM1MfGJDQD4hwbhcgofMcdlVHdIuKuXb9FNHKrjZ6rCP1dYMBhkiUSC8S8MJZfLVeCDDv+7XC7m8/kYB4u5v33T7BW+f///UoE/AYTAXK4rQPb3AAAAAElFTkSuQmCC',
+		'mood_drop':  imPNG + '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',
+		'strength_drop':  imPNG + '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',
+		'strength':  imPNG + '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',
+		'strength_prev':  imPNG + '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',
+		'strength_now':  imPNG + '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',
+		'strength_total':  imPNG + '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',
+		'ge_button':	imPNG + 'iVBORw0KGgoAAAANSUhEUgAAAHgAAABQCAIAAABd+SbeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAxNJREFUeNrsnE1rE1EUhu98pNPUj0TFLGxxoSC6cqc7F/oL4qo/ofgHRETEleimOxHcicvQrIqlmy5FRKlUsIgbEYmM7dA05mNm7tzxznSi5QwKhpyhDe9Dcrnka/HmcHLnPpkRAhSCoe/bK/Nm+bSII2GW1MDTj8ThrupvWcfPKd+zyjW584nM//GCqO8e6reM8Mn75yrsWjM1w3JU0DGdqur/0E9VrtxLwnab11FxfOy+faxHW9/NqYoeHz5dQihj587CTf/bWha0MCw9vGgsIxcOnLkbQrxMgla9lh49z0MoHJjTJ7OKNpyqHmUYIhQO2q/uDnu0k0QeyQChcOC2VRa0XoIkoxwgFA7mzl8WYjVtHaWZZO0cRQiFg6jbyiraOXNNiCURxwiFA/vEJSE2kqBj2d+LHqFwEIedrKJl+3PygELQLPS+rw8PWNIdj2SvAzAwXZkVomUiiII6dXoEPpVWtEIcLD1adrOg4zTi9tf3CIWD0im9jv64d2RY3VquJz+OZsmwy2nTtq2js1Hni57oL8SuXsjP//YCwz5yqN8ywifvn1vlmnXsbLK28Hf0ck7fsoYBAAD/D5whnOGkQJ1h87WLUMZO/WqNOsPFZw3kwgF1hq6LimaBOsMw8BEKB9QZygAqiwXqDGXQQygc5J0hLDgLeWeIbVIWqDM0YFh4yDtDiVA4yDlDhb+EsQBnWGynFn+cIXo0T49OnWGCt7aAOPjYXpn/fWQIZwhnCAA4iMAZwhlOCtQZbrpNhDJ2Ltbq1Bk+bywiFw7gDAuCOkPfx6YSC9QZ+gNsk7JAnaHfQ9AsUGcoA5z+xgJ1hgrKkAfqDFVkIBQOqDOM0KJ5oM4wwuqOBzjDYju1GDpDnKHM1aPhDIsBzhDOEABw0IEzhDOcFKgzfHD7FkIZO/cfPaHO8M27D8iFA+oMOz9xshAL1BkqnMPCA3WGSsGwsJC7NikUCw/UGSJoJnLOENcm5YE6wxhB80CdISqaCeoMUdFMwBkW26nF0Bmiorl6NLk26frGJkLhANcmhTMEYGR+CTAAIricGO1N/3gAAAAASUVORK5CYII=',
+		'ge_button2':	imPNG + 'iVBORw0KGgoAAAANSUhEUgAAAIoAAABkCAIAAADWqz/BAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAg9JREFUeNrsnL1OwmAYRovxIrwJvQ9HTRjkItwdmBjcvQgcSJTN2RswKgu7IUqQgYIgbb9WExJJutEQciTnJCSwPifv90OfNIoETO33c3TcNAggH71WpB4mKymHf79Pzq4NBcLr/dXqy1pPlHyaC421nkX8bhxcPdPZ3Di4evIQjIOrJ4TMOMjTkxgHV08RUuMA68lz4+DqifLCOMB6IqdHPVJRT6Ee9N7jtRS9uHk0wHFgBP9l73F6XNykmp7J24txQPVYNxARkZ1hDZGLNUQu5Rpio9kxFAjtVr1874mnFqnA19LhaGwcXD1xPDEOrp6Q2XND67HnRtaTqoesJyyNg6vHlihaj1UQth6flpL11Oy5oaencHFD7z1eS50e2QRriJ7cZBuLmyc3sJ7BU9c4oHqsG4iIyM6whsjFGiKXcg3xptMwFAiX9Xb53jObx+bCvZaOxkPj4OqJJ04PWE+W+UABrCdN1APWk6gHvbgt1UPWk/o4DqzHFiJaj6/UYevJa8bh4iaV9PgSeKdHNsMaoic32cbJzTTAeh67A+OA6rFuICIiO8MaIhdriFzKNcSL81NDgXB791C+9yRLX3kEvpbOvhbGwdXz7fSQ9eT+6UbWU/iXNXp6HB729OjHxU2qLm5OD3l6DMPFTdSzl3uPYZD12KQCYg3RvUecnj2fnude3zigeqwbiMh+8SPAAP8EwUDq5HyqAAAAAElFTkSuQmCC',
+		'crButton':		imPNG + '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',
+		'crButton2':	imPNG + 'iVBORw0KGgoAAAANSUhEUgAAAAUAAABkCAYAAABOx/oaAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAVBJREFUeNrskk9Kw0AUh2cmE1NSgmIotKDVXQUJXXkGD6HSO3Thzo3exit4BUFQQVQQdGFFabVNTfNnJlFnWl/jy8KFuMqsfvMlM+895qNZlpGfi9a9gxztnR9SfrZ/TChjhJoOaR9tqw+ssXdN6jtXueNsabWtglFtAAyHT7MI8LsitwEurnj6uLMGMBg8qJDJCUAZ64307wHyiqNTmgBkBtcsHgFMJsNpofU5GI71n0EPoOXUpo0aANNEVzddD2A0HqgQP58CpJSqcHdzOdcSt1Ro1jieyG7tAhSRbikTMDvvn3SI6F8Q8Xb7ud3ScLPb/Lox/5pFT8xIwSqEpQylDH8mg7thYxmCl+SXMrgtG8vgP0ZYBhGmWIaFqlEgg0mxDLEvC2R4l1iGyrKJZZBRimUIXwWWgejieRm4xbAMs4lyMiSBLGUoZfhfGT4EGABtayHg/V2EvgAAAABJRU5ErkJggg==',
+		'iconFavor':	imPNG + 'iVBORw0KGgoAAAANSUhEUgAAABYAAAAQCAYAAAAS7Y8mAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAABIBJREFUeNpsVFlMXFUY/u4yM3eGGWZjuDBsZceBQuk0MB0qFoXUQqm1ahd9oInRovXBWBPXN2tiTB+MNWmjaUxNH4xR8UGpRcBK2YpFipV9LdsMMJQZGBhmufd6ZqBEEk/y3Zyc/z/f+e53/v8AZyVs4zWJwomBHAAsAYXKm8CbEouapSRYXg+vbY7qW4CxAHipD3glYIGpyLC1Z3vQEIIA4dwGzRZBYdxMDHmBjZAKgv8QVidiI2uF7wPqZAZLvUD/t4BCZobPoScxZpuVtxNiMQAIG5sIhTQUyx2Aik8gYRnuvAMsDbOE2Iygd3Mt7QWQOR0hYBXhbyKUfMwOxbE2bCZIAgGRG9jI3sVripFyvAxyvRqeUXKYLw4yTS7k2rjIZr8bEIUYMHJiR75eyaAayUftUBiiI1yWs4AmhSRyUWZiQRwtSJas+EDNkT1ReT/S588/YGiV4OyoB8OlsgpVbkgWnU5saoffBXAGHrnvaZVpVW+Yo8RyR+6LOesSK6Dv4ldEkA+iSHyhuGw87K9gVMbT9pxo+5kSie0c8Ssdyv02kUtIZFnw8bypeGWufwHxj4tIO5nLqE3PxWfYnz9okVV/WEVrNTqDySXyGW7tAROMVi1kSobBbNMcpn7+W3T1Dg56M5PbF5LS79282ie2v3UDEz80MruqLLbCjD2T0841ceXBFOZvc6w+47DKe0+xJmn4fTka7v7QzPr0rAMrywtKab4jAO+kn4G5jMKedwUMXXWSy3B61QWlUs/HLawmrk/xxOWDVmth6WmbQr8s6vULLr+PcrW2IaG81NN9uXFxbn65X7Jldra2uBZH/xySei7UYar+NubbRik820UR79IR8j9FyTXWM4fSTnaP+ySdXk/vTqE0x/KB8mxglFh76RePd3B2zWOMMRr/GnIsjk17FkLKpFRMN8xgqfsOgp5mzDS2ktJ0sqgrClfvOGRRDyWd5W699rrNPdLg8q89DLRwaYbho8/s1Z/SMJ/8tCJ8f+WzIfl6e5f52LUTrvv106G+736D5dW9GL0+ibnmZnCmAVKaa4RPfFR51FYdKlHZ9AU0qefI/BBBGZ6urzt6RZJU5V+OgVFcIF1QoqqZGKaSKz8n8VLYL52DYfdxMk8lkG81Ck1vEYdVh0AxPgje21if6yJn3UX6qd+ZgUsfDY4ueLmJr9ugy+tlqm8U782OjWbi7UqwUW6sz96AQkd6G4vg9wcQUyiEFTP/7W/kvx3upiC51VXYLnLIeblA4ktKQnJDSUCdK4+21j5pL953uLaMNY35ks3BuPKUDfVjvKTLUyGpUgZd1ipcPUH4nBK1gzjiiMRGWpeWiYgtUlPa7ExFQe2nwY4POinO6EViRZbVXnGkp+mb+4HZ9hasjreRS3OQpliGb36J7PURCOxO4rAjxBISgEgeJ2ebW3LdG95IqmzAdFM3+cNJCFJCL29ND07+2krUtSC09g/JJ68VAtt7CRGN/x+P3joBFL1KCHvAyEYi1eO41bLhdv4huYc6t0jnCDxbSoOP1P0rwAAkf9GQOT3AIQAAAABJRU5ErkJggg=='
+	};
+
+	function L_en() {
+		var t = [];
+		t["SCRIPTNAME"] = "Script name";
+		t["SCRIPTVER"] = "Script version";
+		t["SCRIPTWRIGHT"] = "Script creator";
+		t["SETTINGS"] = "ES Settings";
+		t["SETTINGS_TEXT"] = "Choose the extensions you want.";
+		t["SETTINGS_FOOTER"] = "Note: You may need to refresh the page to see changes.";
+		t["OPTFORMATTER"] = "Report formatter";
+		t["OPTQUICKBAR"] = "Extended Quickbar";
+		t["OPTPRODINFO"] = "Productioninfo";
+		t["OPTFARMERHELP"] = "Farmhelp";
+		t["OPTISLANDPM"] = "Island-msg (ally/all)";
+		t["OPTMESSAESLINK"] = "Msg-Popup";
+		t["OPTREPORTLINK"] = "Report-Popup";
+		t["OPTBUILDINGPNTS"] = "Show buildingpoints in the senate";
+		t["OPTUSERLINKS"] = "Playerlinks to Grepo-world";
+		t["OPTALLYLINKS"] = "Allylinks to Grepo-world";
+		t["OPTREDIRECTCLEANER"] = "Remove redirect from external links";
+		t["OPTRESCALC"] = "Show resourcetables in Wall & Simulator";
+		t["OPTARROWCNTRL"] = "Jump report with right/left keys";
+		t["OPTSWCITYCNTRL"] = "Switch city with ctrl + right or left key";
+		t["OPTWALLSTATS"] = "Formatter for wallstatistics";
+		t["OPTQUICKCAST"] = "Open casting-window by clicking on current God";
+		t["ABOUT"] = "About";
+		t["NONE"] = "None";
+		t["IN"] = "in";
+		t["ATTACKR"] = "Attacker";
+		t["DEFENDR"] = "Defender";
+		t["CBPNTS"] = "Combat points";
+		t["APNTS"] = "Attacker points";
+		t["DPNTS"] = "Defender points";
+		t["UBBC"] = "BB-code";
+		t["TXTC"] = "Pure text";
+		t["FROM"] = "from";	
+		t["ATK"] = "attacks";
+		t["CITB"] = "Combat bonus";
+		t["OF_WHICH"] = "of which";
+		t["WITH"] = "with";
+		t["LOST"] = "Lost";
+		t["LOOT"] = "Loot";
+		t["NOLOOT"] = "Nothing";
+		t["NON"] = "no units";
+		t["Wood"] = "Wood";
+		t["Stone"] = "Rock";
+		t["Iron"] = "Silver coins";
+		t["Favor"] = "Favor";
+		t["BH"] = "Population";
+		t["RESOURCES"] = "Resources";
+		t["SPYCOST"] = "Spy cost";
+		t["SPY"] = "spy at";
+		t["UNITS"] = "Units";
+		t["BUILDINGS"] = "Buildings";
+		t["MENU_EXTRAS"] = "External links";
+		t["HOUR"] = "h";
+		t["RESCNTR"] = "Time until full";
+		t["NOTEMPLE"] = "No Temple";
+		t["islandPME"] = "Send message to all players on island";
+		t["islandPMA"] = "Send message to allymembers on island";
+		t["TILX_RES"] = "Maximum loot for the current attack";
+		t["TILX_MOOD_DROP"] = "Reduction of mood for the current attack (if full loot)";
+		t["TILX_STR_DROP"] = "Reduction of strength for the current attack (if full loot)";
+		t["TILX_STR"] = "Increased strength for the current attack";
+		t["TILX_STR_PREV"] = "Increased strength for previous attacks";
+		t["TILX_STR_NOW"] = "Current strength for farm village";
+		t["TILX_STR_TOTAL"] = "New Strength";
+		t["TILX_TOWN_ID"] = "This ID links to the town with the following bb-code: ";
+		t["GREPO_FARM_NOT_COMPATIBLE"] = "The extension Farm Help is not compatibel with this version of Grepolis";
+		t["OPENINPOPUP"] = "Open link in popup-window";
+		t["CLICKNCOPY"] = "Click once and copy (ctrl+c)";
+		t["NOMILITIA"] = "<em>'Militia'</em> doesn't count";
+		t["RCATT_LOST"] = "Total losses for Attacker";
+		t["RCDEF_LOST"] = "Total losses for Defender";
+		t["OPENRESBOX"] = "Open resource window";
+		t["CLOSERESBOX"] = "Close resource window";
+		t["WALLYOURCOSTS"] = "Your expenses";
+		t["WALLFOECOSTS"] = "Your opponents expenses";
+		t["RAWMATSINCL"] = "Used resources";
+		t["RESTABLE"] = "Resource table";
+		t["QuickCastText"] = "The image depicts the God<br /> this city worships.<br /><br />By clicking it <br />you can open the power window<br />for the current city.";
+		t["MYCOSTS"] = "My expenses";
+		t["FOECOSTS"] = "Opponents expenses";
+		t["SIMSTATS"] = "Simulator statistics";
+		t["STATS"] = "Statistic";
+		t["WALLSTATS1"] = "Beaten as attacker: ";
+		t["WALLSTATS2"] = "Beaten as defender: ";
+		t["WALLSTATS3"] = "Lost as attacker: ";
+		t["WALLSTATS4"] = "Lost as defender: ";
+		t["militia"] = "Militia";
+		t["sword"] = "Swordsman";
+		t["slinger"] = "Slinger";
+		t["archer"] = "Archer";
+		t["hoplite"] = "Hoplite";
+		t["rider"] = "Rider";
+		t["chariot"] = "Chariot";
+		t["catapult"] = "Catapult";
+		t["big_transporter"] = "Transport boat";
+		t["bireme"] = "Bireme";
+		t["attack_ship"] = "Light ship";
+		t["demolition_ship"] = "Fire ship";
+		t["small_transporter"] = "Fast transport ship";
+		t["trireme"] = "Trireme";
+		t["colonize_ship"] = "Colony ship";
+		t["minotaur"] = "Minotaur";
+		t["manticore"] = "Manticore";
+		t["zyklop"] = "Cyclop";
+		t["sea_monster"] = "Hydra";
+		t["harpy"] = "Harpy";
+		t["medusa"] = "Medusa";
+		t["centaur"] = "Centaur";
+		t["pegasus"] = "Pegasus";
+		t["academy"] = "Academy";
+		t["barracks"] = "Barracks";
+		t["docks"] = "Docks";
+		t["farm"] = "Farm";
+		t["hide"] = "Hide";
+		t["ironer"] = "Silver mine";
+		t["lumber"] = "Timber camp";
+		t["stoner"] = "Quarry";
+		t["main"] = "Senate";
+		t["market"] = "Market";
+		t["storage"] = "Warehouse";
+		t["temple"] = "Temple";
+		t["wall"] = "City wall";
+		t["place"] = "Agora";
+		t["theater"] = "Theater";
+		t["thermal"] = "Thermal bats";
+		t["library"] = "Library";
+		t["lighthouse"] = "Lighthouse";
+		t["tower"] = "Tower";
+		t["statue"] = "Divine statue";
+		t["oracle"] = "Oracle";
+		t["trade_office"] = "Merchant's shop";
+		t["GWLanguage"] = "english";
+		//t[""] = "";
+		ES.Lang['en'] = t;
+	};
+	L_en();
+
+	function L_se() {
+		var t = [];
+		t["SCRIPTNAME"] = "Scriptets namn";
+		t["SCRIPTVER"] = "Scriptets version";
+		t["SCRIPTWRIGHT"] = "Scriptets skapare";
+		t["SETTINGS"] = "ES Inställningar";
+		t["SETTINGS_TEXT"] = "Välj de tillägg du vill använda.";
+		t["SETTINGS_FOOTER"] = "Notera: Du kan behöva uppdatera sidan för att se ändringarna.";
+		t["OPTFORMATTER"] = "Rapportformatterare";
+		t["OPTQUICKBAR"] = "Snabbmeny";
+		t["OPTPRODINFO"] = "Produktionsinfo";
+		t["OPTFARMERHELP"] = "Farmhjälp";
+		t["OPTISLANDPM"] = "Ö-meddelande (allians/alla)";
+		t["OPTMESSAESLINK"] = "Meddelande-Popup";
+		t["OPTREPORTLINK"] = "Rapport-Popup";
+		t["OPTBUILDINGPNTS"] = "Visa byggnadspoäng i senaten";
+		t["OPTUSERLINKS"] = "Spelarlänkar till Grepostats";
+		t["OPTALLYLINKS"] = "Allianslänkar till Grepostats";
+		t["OPTREDIRECTCLEANER"] = "Ta bort ompekning från externa länkar";
+		t["OPTRESCALC"] = "Visa resurstabeller i Muren & Simulatorn";
+		t["OPTARROWCNTRL"] = "Bläddra rapporter med höger/vänster ";
+		t["OPTSWCITYCNTRL"] = "Byt stad med ctrl + höger eller vänster";
+		t["OPTWALLSTATS"] = "Formatterare för murens statistik";
+		t["OPTQUICKCAST"] = "Gudabilden öppnar fönstret för gudakrafter";
+		t["ABOUT"] = "Om";
+		t["NONE"] = "Ingen";
+		t["IN"] = "i";
+		t["ATTACKR"] = "Anfallare";
+		t["DEFENDR"] = "Försvarare";
+		t["CBPNTS"] = "Krigspoäng";
+		t["APNTS"] = "Anfallspoäng";
+		t["DPNTS"] = "Försvarspoäng";
+		t["UBBC"] = "BB-kod";
+		t["TXTC"] = "Ren Text";
+		t["FROM"] = "från";	
+		t["ATK"] = "anfaller";
+		t["CITB"] = "Stridsbonus";
+		t["OF_WHICH"] = "varav";
+		t["WITH"] = "med";
+		t["LOST"] = "Förlorade";
+		t["LOOT"] = "Byte";
+		t["NOLOOT"] = "Inget";
+		t["NON"] = "inga trupper";
+		t["Wood"] = "Trä";
+		t["Stone"] = "Sten";
+		t["Iron"] = "Silver";
+		t["Favor"] = "Gunst";
+		t["BH"] = "Befolkning";
+		t["RESOURCES"] = "Råvaror";
+		t["SPYCOST"] = "Spionkostnad";
+		t["SPY"] = "spionerar på";
+		t["UNITS"] = "Enheter";
+		t["BUILDINGS"] = "Byggnader";
+		t["MENU_EXTRAS"] = "Externa länkar";
+		t["HOUR"] = "h";
+		t["RESCNTR"] = "Tid tills fullt lager";
+		t["NOTEMPLE"] = "Inget Tempel";
+		t["islandPME"] = "Skicka meddelande till alla spelare på ön";
+		t["islandPMA"] = "Skicka meddelande till allianskamrater på ön";
+		t["TILX_RES"] = "Maximalt byte för det aktuella anfallet";
+		t["TILX_MOOD_DROP"] = "Sänkning av stämning för det aktuella anfallet (vid fullt byte)";
+		t["TILX_STR_DROP"] = "Sänkning av styrkan för det aktuella anfallet (vid fullt byte)";
+		t["TILX_STR"] = "Ökad styrka för det aktuella anfallet";
+		t["TILX_STR_PREV"] = "Ökad styrka för föregående anfall";
+		t["TILX_STR_NOW"] = "Aktuell styrka för bondbyn";
+		t["TILX_STR_TOTAL"] = "Ny Styrka";
+		t["TILX_TOWN_ID"] = "Detta ID länkar till staden med följande bb-kod: ";
+		t["GREPO_FARM_NOT_COMPATIBLE"] = "Funktionen Farmhjälp är inte kompatibel med denna version av Grepolis.";
+		t["OPENINPOPUP"] = "Öppna länk i popup-fönster.";
+		t["CLICKNCOPY"] = "Klicka en gång och kopiera sen (ctrl+c).";
+		t["NOMILITIA"] = "<em>'Milismän'</em> räknas inte.";
+		t["RCATT_LOST"] = "Totala förluster för Anfallaren";
+		t["RCDEF_LOST"] = "Totala förluster för Försvararen";
+		t["OPENRESBOX"] = "Öppna resursfönster";
+		t["CLOSERESBOX"] = "Stäng resursfönster";
+		t["WALLYOURCOSTS"] = "Dina kostnader";
+		t["WALLFOECOSTS"] = "Din motståndares kostnader";
+		t["RAWMATSINCL"] = "Använda resurser";
+		t["RESTABLE"] = "Resurstabell";
+		t["QuickCastText"] = "Bilden visar Guden<br /> som den här staden tillber.<br /><br />Om du klickar på den<br />så kan du öppna magifönstret<br />för den aktuella staden.";
+		t["MYCOSTS"] = "Mina kostnader";
+		t["FOECOSTS"] = "Motståndarens kostnader";
+		t["SIMSTATS"] = "Simulatorstatistik";
+		t["STATS"] = "Statistik";
+		t["WALLSTATS1"] = "Besegrat som anfallare: ";
+		t["WALLSTATS2"] = "Besegrat som försvarare: ";
+		t["WALLSTATS3"] = "Förlorat som anfallare: ";
+		t["WALLSTATS4"] = "Förlorat som försvarare: ";
+		t["militia"] = "Milisman";
+		t["sword"] = "Svärdsman";
+		t["slinger"] = "Slungare";
+		t["archer"] = "Bågskytt";
+		t["hoplite"] = "Hoplit";
+		t["rider"] = "Ryttare";
+		t["chariot"] = "Stridsvagn";
+		t["catapult"] = "Katapult";
+		t["big_transporter"] = "Transportskepp";
+		t["bireme"] = "Birem";
+		t["attack_ship"] = "Brandskepp";
+		t["demolition_ship"] = "Brännare";
+		t["small_transporter"] = "Snabbt transportskepp";
+		t["trireme"] = "Trirem";
+		t["colonize_ship"] = "Koloniskepp";
+		t["minotaur"] = "Minotaur";
+		t["manticore"] = "Mantikora";
+		t["zyklop"] = "Cyklop";
+		t["sea_monster"] = "Hydra";
+		t["harpy"] = "Harpya";
+		t["medusa"] = "Medusa";
+		t["centaur"] = "Kentaur";
+		t["pegasus"] = "Pegasus";
+		t["academy"] = "Akademi";
+		t["barracks"] = "Kasern";
+		t["docks"] = "Hamn";
+		t["farm"] = "Bondgård";
+		t["hide"] = "Grotta";
+		t["ironer"] = "Silvergruva";
+		t["lumber"] = "Sågverk";
+		t["stoner"] = "Stenbrott";
+		t["main"] = "Senat";
+		t["market"] = "Marknad";
+		t["storage"] = "Lager";
+		t["temple"] = "Tempel";
+		t["wall"] = "Stadsmur";
+		t["place"] = "Torg";
+		t["theater"] = "Teater";
+		t["thermal"] = "Termer";
+		t["library"] = "Bibliotek";
+		t["lighthouse"] = "Fyr";
+		t["tower"] = "Torn";
+		t["statue"] = "Gudastaty";
+		t["oracle"] = "Orakel";
+		t["trade_office"] = "Handelskontor";
+		t["GWLanguage"] = "swedish";
+		//t[""] = "";
+		ES.Lang['se'] = t;
+	};
+	L_se();
+
+	function L_de() {
+		var t = [];
+		t["SCRIPTNAME"] = "Scriptets namn";
+		t["SCRIPTVER"] = "Scriptets version";
+		t["SCRIPTWRIGHT"] = "Scriptets skapare";
+		t["SETTINGS"] = "ES Inställningar";
+		t["SETTINGS_TEXT"] = "Välj de funktioner du vill använda.";
+		t["SETTINGS_FOOTER"] = "Note: You may need to refresh the page to see changes.";
+		t["OPTFORMATTER"] = "Rapportformatterare";
+		t["OPTQUICKBAR"] = "Snabbmeny";
+		t["OPTPRODINFO"] = "Produktionsinfo";
+		t["OPTFARMERHELP"] = "Farmhjälp";
+		t["OPTISLANDPM"] = "Ö-meddelande (allians/alla)";
+		t["OPTMESSAESLINK"] = "Meddelande-Popup";
+		t["OPTREPORTLINK"] = "Rapport-Popup";
+		t["OPTBUILDINGPNTS"] = "Visa byggnadspoäng i senaten";
+		t["OPTUSERLINKS"] = "Spelarlänkar till Grepostats";
+		t["OPTALLYLINKS"] = "Allianslänkar till Grepostats";
+		t["OPTREDIRECTCLEANER"] = "Ta bort ompekning från externa länkar";
+		t["OPTRESCALC"] = "Visa resurstabeller i Muren & Simulatorn";
+		t["OPTARROWCNTRL"] = "Bläddra rapporter med höger/vänster ";
+		t["OPTSWCITYCNTRL"] = "Switch city with right/left keys";
+		t["OPTWALLSTATS"] = "Formatterare för murens statistik";
+		t["OPTQUICKCAST"] = "Gudabilden öppnar fönstret för gudakrafter";
+		t["ABOUT"] = "Ob";
+		t["NONE"] = "Kein";
+		t["IN"] = "im";
+		t["ATTACKR"] = "Angriffer";
+		t["DEFENDR"] = "Verteidiger";
+		t["CBPNTS"] = "Kampfpunkte";
+		t["APNTS"] = "Angriffspunkte";
+		t["DPNTS"] = "Verteidegepunkte";
+		t["UBBC"] = "BB-Code";
+		t["TXTC"] = "Reiner Text";
+		t["FROM"] = "von";	
+		t["ATK"] = "anfaller";
+		t["CITB"] = "Kampfbonus";
+		t["OF_WHICH"] = "varav";
+		t["WITH"] = "mit";
+		t["LOST"] = "Förlorade";
+		t["LOOT"] = "Beute";
+		t["NOLOOT"] = "Kein";
+		t["NON"] = "keine einheiten";
+		t["Wood"] = "Holz";
+		t["Stone"] = "Stein";
+		t["Iron"] = "Silber";
+		t["Favor"] = "Gunst";
+		t["BH"] = "Bevölkerung";
+		t["RESOURCES"] = "Rohstoffe";
+		t["SPYCOST"] = "Spionkostnad";
+		t["SPY"] = "spionerar på";
+		t["UNITS"] = "Einheiten";
+		t["BUILDINGS"] = "Gebäude";
+		t["MENU_EXTRAS"] = "Externa länkar";
+		t["HOUR"] = "Std.";
+		t["RESCNTR"] = "Tid tills fullt lager";
+		t["NOTEMPLE"] = "Inget Tempel";
+		t["islandPME"] = "Skicka meddelande till alla spelare på ön";
+		t["islandPMA"] = "Skicka meddelande till alla allianskamrater på ön";
+		t["TILX_RES"] = "Maximalt byte för det aktuella anfallet";
+		t["TILX_MOOD_DROP"] = "Sänkning av stämning för det aktuella anfallet (vid fullt byte)";
+		t["TILX_STR_DROP"] = "Sänkning av styrkan för det aktuella anfallet (vid fullt byte)";
+		t["TILX_STR"] = "Ökad styrka för det aktuella anfallet";
+		t["TILX_STR_PREV"] = "Ökad styrka för föregående anfall";
+		t["TILX_STR_NOW"] = "Aktuell styrka för bondbyn";
+		t["TILX_STR_TOTAL"] = "Ny Totalstyrka";
+		t["TILX_TOWN_ID"] = "Detta ID länkar till staden med följande bb-kod: ";
+		t["GREPO_FARM_NOT_COMPATIBLE"] = "Funktionen Farmhjälp är inte kompatibel med denna version av Grepolis.";
+		t["OPENINPOPUP"] = "Öppna länk i popup-fönster.";
+		t["CLICKNCOPY"] = "Klicka en gång och kopiera sen (ctrl+c).";
+		t["NOMILITIA"] = "<em>'Milismän'</em> räknas inte.";
+		t["RCATT_LOST"] = "Totala förluster för Anfallaren";
+		t["RCDEF_LOST"] = "Totala förluster för Försvararen";
+		t["OPENRESBOX"] = "Öppna resursfönster";
+		t["CLOSERESBOX"] = "Stäng resursfönster";
+		t["WALLYOURCOSTS"] = "Dina kostnader";
+		t["WALLFOECOSTS"] = "Din motståndares kostnader";
+		t["RAWMATSINCL"] = "Använda resurser";
+		t["RESTABLE"] = "Resurstabell";
+		t["QuickCastText"] = "Bilden visar Guden<br /> som den här staden tillber.<br /><br />Om du klickar på den<br />så kan du öppna magifönstret<br />för den aktuella staden.";
+		t["MYCOSTS"] = "Mina kostnader";
+		t["FOECOSTS"] = "Motståndarens kostnader";
+		t["SIMSTATS"] = "Simulatorstatistik";
+		t["STATS"] = "Statistik";
+		t["WALLSTATS1"] = "Besegrat som anfallare: ";
+		t["WALLSTATS2"] = "Besegrat som försvarare: ";
+		t["WALLSTATS3"] = "Förlorat som anfallare: ";
+		t["WALLSTATS4"] = "Förlorat som försvarare: ";
+		t["militia"] = "Miliz";
+		t["sword"] = "Schwertkämpfer";
+		t["slinger"] = "Schleuderer";
+		t["archer"] = "Bogenschütze";
+		t["hoplite"] = "Hoplit";
+		t["rider"] = "Reiter";
+		t["chariot"] = "Streitwagen";
+		t["catapult"] = "Katapult";
+		t["big_transporter"] = "Transportboot";
+		t["bireme"] = "Bireme";
+		t["attack_ship"] = "Feuerschiff";
+		t["demolition_ship"] = "Brander";
+		t["small_transporter"] = "Schnelles transportschiff";
+		t["trireme"] = "Trireme";
+		t["colonize_ship"] = "Kolonieschiff";
+		t["minotaur"] = "Minotaurus";
+		t["manticore"] = "Mantikor";
+		t["zyklop"] = "Zyklop";
+		t["sea_monster"] = "Hydra";
+		t["harpy"] = "Harpie";
+		t["medusa"] = "Medusa";
+		t["centaur"] = "Zentaure";
+		t["pegasus"] = "Pegasus";
+		t["academy"] = "Akademie";
+		t["barracks"] = "Kaserne";
+		t["docks"] = "Hafen";
+		t["farm"] = "Bauernhof";
+		t["hide"] = "Höhle";
+		t["ironer"] = "Silbermine";
+		t["lumber"] = "Holzfäller";
+		t["stoner"] = "Steinbruch";
+		t["main"] = "Senat";
+		t["market"] = "Marktplatz";
+		t["storage"] = "Lager";
+		t["temple"] = "Tempel";
+		t["wall"] = "Stadtmauer";
+		t["place"] = "Agora";
+		t["theater"] = "Theater";
+		t["thermal"] = "Therme";
+		t["library"] = "Bibliothek";
+		t["lighthouse"] = "Leuchtturm";
+		t["tower"] = "Turm";
+		t["statue"] = "Götterstatue";
+		t["oracle"] = "Orakel";
+		t["trade_office"] = "Handelskontor";
+		t["GWLanguage"] = "german";
+		//t[""] = "";
+		ES.Lang['de'] = t;
+	};
+	// L_de();
+
+	function L_fr() {
+		var t = [];
+		t["SCRIPTNAME"] = "Nom du script";
+		t["SCRIPTVER"] = "Version du script";
+		t["SCRIPTWRIGHT"] = "Auteur";
+		t["SETTINGS"] = "Options ES";
+		t["SETTINGS_TEXT"] = "Cochez les options souhaités.";
+		t["SETTINGS_FOOTER"] = "Note: You may need to refresh the page to see changes."; // Needs translating
+		t["OPTFORMATTER"] = "Convertir";
+		t["OPTQUICKBAR"] = "Barre rapide";
+		t["OPTPRODINFO"] = "Barre de production";
+		t["OPTFARMERHELP"] = "Grepo-Farmer";
+		t["OPTISLANDPM"] = "MSG-île (ally/tous)";
+		t["OPTMESSAESLINK"] = "MSG-Pop-up";
+		t["OPTREPORTLINK"] = "Rapport-Pop-up";
+		t["OPTBUILDINGPNTS"] = "Afficher les points des bâtiments dans le sénat";
+		t["OPTUSERLINKS"] = "Profil joueur vers grepo world";
+		t["OPTALLYLINKS"] = "Profil alliance vers Grepo world";
+		t["OPTREDIRECTCLEANER"] = "Supprimer la redirection des liens externe";
+		t["OPTRESCALC"] = "Afficher les ressources Mur & Simulateur";
+		t["OPTARROWCNTRL"] = "Flèches gauche/droite pour parcourir les rapports";
+		t["OPTSWCITYCNTRL"] = "Ctrl + flèches gauche/droite pour parcourir vos villes"; // Might need correcting
+		t["OPTWALLSTATS"] = "Convertir les stats du mur";
+		t["OPTQUICKCAST"] = "Lancer les sorts divin par pop-up";
+		t["ABOUT"] = "A propos";
+		t["NONE"] = "Rien";
+		t["IN"] = "de";
+		t["ATTACKR"] = "Attaquant";
+		t["DEFENDR"] = "Défenseur";
+		t["CBPNTS"] = "Points de combat";
+		t["APNTS"] = "Points d'attaque";
+		t["DPNTS"] = "Points de défense";
+		t["UBBC"] = "BB-code";
+		t["TXTC"] = "Texte";
+		t["FROM"] = "de";
+		t["ATK"] = "Attaque";
+		t["CITB"] = "Bonus de combat";
+		t["OF_WHICH"] = "pour";
+		t["WITH"] = "avec";
+		t["LOST"] = "Perdu";
+		t["LOOT"] = "Pillage";
+		t["NOLOOT"] = "Aucun";
+		t["NON"] = "Pas d'unités";
+		t["Wood"] = "Bois";
+		t["Stone"] = "Pierre";
+		t["Iron"] = "Pièces d'argent";
+		t["Favor"] = "Faveur";
+		t["BH"] = "Population";
+		t["RESOURCES"] = "Ressources";
+		t["SPYCOST"] = "Coût de la mission";
+		t["SPY"] = "espionne";
+		t["UNITS"] = "Unités";
+		t["BUILDINGS"] = "Bâtiments";
+		t["MENU_EXTRAS"] = "Lien externe";
+		t["HOUR"] = "h";
+		t["RESCNTR"] = "Temps restant avant max.";
+		t["NOTEMPLE"] = "Pas de Temple";
+		t["islandPME"] = "Envoyer un message à tous les joueurs de l'île";
+		t["islandPMA"] = "Envoyer un message à tous les membres de l'alliance sur l'île";
+		t["TILX_RES"] = "Pillage max.";
+		t["TILX_MOOD_DROP"] = "Humeur après l'attaque (si pillage)";
+		t["TILX_STR_DROP"] = "Force après l'attaque (si pillage)";
+		t["TILX_STR"] = "Force par attaque";
+		t["TILX_STR_PREV"] = "Force avant";
+		t["TILX_STR_NOW"] = "Force du village";
+		t["TILX_STR_TOTAL"] = "Total après attaque";
+		t["TILX_TOWN_ID"] = "Lien vers la ville avec le BBcode: ";
+		t["GREPO_FARM_NOT_COMPATIBLE"] = "L'option GrepoFarmer n'est pas compatible avec cette version de grepolis";
+		t["OPENINPOPUP"] = "Ouvrir dans une Pop-up";
+		t["CLICKNCOPY"] = "Cliquez et copiez (ctrl+c)";
+		t["NOMILITIA"] = "<em>'Milice'</em> ne compte pas";
+		t["RCATT_LOST"] = "Pertes totale pour l'attaquant";
+		t["RCDEF_LOST"] = "Pertes totale pour le défenseur";
+		t["OPENRESBOX"] = "Ouvrir";
+		t["CLOSERESBOX"] = "Fermer";
+		t["WALLYOURCOSTS"] = "Coût de vos pertes";
+		t["WALLFOECOSTS"] = "Coût des pertes adverse";
+		t["RAWMATSINCL"] = "Ressources utilisées";
+		t["RESTABLE"] = "Table ressources";
+		t["QuickCastText"] = "Affiche la divinité vénéré par la ville.<br /><br />Cliquez et lancez les forces divine<br />de votre choix sur la ville.";
+		t["MYCOSTS"] = "Total de vos pertes";
+		t["FOECOSTS"] = "Total des pertes adverse";
+		t["SIMSTATS"] = "Statistiques du simulateur";
+		t["STATS"] = "Statistiques";
+		t["WALLSTATS1"] = "Vainqueur en attaque : ";
+		t["WALLSTATS2"] = "Vainqueur en défense : ";
+		t["WALLSTATS3"] = "Vaincu en attaque : ";
+		t["WALLSTATS4"] = "Vaincu en défense : ";
+		t["militia"] = "Milicien";
+		t["sword"] = "Combattant à l'épée";
+		t["slinger"] = "Frondeur";
+		t["archer"] = "Archer";
+		t["hoplite"] = "Hoplite";
+		t["rider"] = "Cavalier";
+		t["chariot"] = "Char";
+		t["catapult"] = "Catapulte";
+		t["big_transporter"] = "Navire de transport";
+		t["bireme"] = "Birème";
+		t["attack_ship"] = "Bateau-feu";
+		t["demolition_ship"] = "Brûlot";
+		t["small_transporter"] = "Navire de transport rapide";
+		t["trireme"] = "Trirème";
+		t["colonize_ship"] = "Navire de colonisation";
+		t["minotaur"] = "Minotaure";
+		t["manticore"] = "Manticore";
+		t["zyklop"] = "Cyclope";
+		t["sea_monster"] = "Hydre";
+		t["harpy"] = "Harpie";
+		t["medusa"] = "Méduse";
+		t["centaur"] = "Centaure";
+		t["pegasus"] = "Pégase";
+		t["academy"] = "Académie";
+		t["barracks"] = "Caserne";
+		t["docks"] = "Port";
+		t["farm"] = "Ferme";
+		t["hide"] = "Grotte";
+		t["ironer"] = "Mine d'argent";
+		t["lumber"] = "Scierie";
+		t["stoner"] = "Carrière";
+		t["main"] = "Sénat";
+		t["market"] = "Marché";
+		t["storage"] = "Entrepôt";
+		t["temple"] = "Temple";
+		t["wall"] = "Rempart";
+		t["place"] = "Agora";
+		t["theater"] = "Théâtre";
+		t["thermal"] = "Thermes";
+		t["library"] = "Bibliothèque";
+		t["lighthouse"] = "Phare";
+		t["tower"] = "Tour";
+		t["statue"] = "Statue divine";
+		t["oracle"] = "Oracle";
+		t["trade_office"] = "Comptoir commercial";
+		t["GWLanguage"] = "french";
+		//t[""] = "";
+		ES.Lang['fr'] = t;
+	};
+	L_fr(); // Thanks to randalph
+
+	
+	switch (ES.Server[2]) {
+		case 'se':
+			ES.L = ES.Lang['se'];break;
+		case 'en':
+			ES.L = ES.Lang['en'];break;
+		// case 'de':
+			// ES.L = ES.Lang['de'];break;
+		// case 'nl':
+			// ES.L = ES.Lang['nl'];break;
+		// case 'gr':
+			// ES.L = ES.Lang['gr'];break;
+		case 'fr':
+			ES.L = ES.Lang['fr'];break;
+		default:
+			ES.L = ES.Lang['en'];break;
+	}
+
+	var unitCosts = {
+		//Wood, Stone, Iron, FoodPoints, Favor, Name, Booty
+		'militia': [0, 0, 0, 0, 0, 0, L('militia'), 0],
+		'sword': [95, 0, 85, 1, 0, 16, L('sword'), 16],
+		'slinger': [55, 100, 40, 1, 0, 8, L('slinger'), 8],
+		'archer': [120, 0, 75, 1, 0, 24, L('archer'), 24],
+		'hoplite': [0, 75, 150, 1, 0, 8, L('hoplite'), 8],
+		'rider': [240, 120, 360, 3, 0, 72, L('rider'), 72],
+		'chariot': [200, 440, 320, 4, 0, 64, L('chariot'), 64],
+		'catapult': [1200, 1200, 1200, 15, 0, 400, L('catapult'), 400],
+
+		'big_transporter': [500, 500, 400, 7, 0, 20, L('big_transporter'), 0],
+		'bireme': [800, 700, 180, 8, 0, 0, L('bireme'), 0], 
+		'attack_ship': [1300, 300, 800, 10, 0, 0, L('attack_ship'), 0], 
+		'demolition_ship': [500, 750, 150, 8, 0, 0, L('demolition_ship'), 0], 
+		'small_transporter': [800, 0, 400, 5, 0, 10, L('small_transporter'), 0], 
+		'trireme': [2000, 1300, 900, 16, 0, 0, L('trireme'), 0],
+		'colonize_ship': [10000, 10000, 10000, 170, 0, 0, L('colonize_ship'), 0],
+
+		'minotaur': [1400, 600, 3100, 30, 202, 480, L('minotaur'), 480],
+		'manticore': [4400, 3000, 3400, 45, 405, 360, L('manticore'), 360],
+		'zyklop': [2000, 4200, 3360, 40, 360, 320, L('zyklop'), 320],
+		'sea_monster': [5400, 2800, 3800, 50, 400, 0, L('sea_monster'), 0],
+		'harpy': [1600, 400, 1360, 14, 130, 340, L('harpy'), 340],
+		'medusa': [1500, 3800, 2200, 18, 210, 400, L('medusa'), 400],
+		'centaur': [1740, 300, 700, 12, 100, 200, L('centaur'), 200],
+		'pegasus': [2800, 360, 80, 20, 180, 160, L('pegasus'), 160] 
+	};
+
+	ES.buildingStats = [];
+	ES.buildingStats["academy"] = [L('academy'),"67","8","9","10","11","13","14","16","18","20","22","25","28","31","35","39","44","49","55","62","69","77","87","97","109","122","136","153","171","192"];
+	ES.buildingStats["barracks"] = [L('barracks'),"33","4","4","5","5","6","7","7","8","9","10","11","13","14","16","17","19","22","24","27","30","33","37","42","46","52","58","64","72","80"];
+	ES.buildingStats["docks"] = [L('docks'),"66","7","7","8","9","10","11","12","13","14","16","17","19","21","23","25","28","31","34","37","41","45","49","54","60","66","72","80","88","96"];
+	ES.buildingStats["farm"] = [L('farm'),"17","2","2","3","3","3","4","4","5","5","6","6","7","8","9","10","11","12","14","16","18","20","22","25","28","31","35","39","44","49","55","62","69","77","87","97","109","122","136","153"];
+	ES.buildingStats["hide"] = [L('hide'),"21","6","8","11","14","18","23","30","39","51"];
+	ES.buildingStats["ironer"] = [L('ironer'),"22","2","2","3","3","3","4","4","4","5","5","6","6","7","8","8","9","10","11","12","13","15","16","18","20","22","24","26","29","32","35","38","42","46","51","56","62","68","75","82"];
+	ES.buildingStats["lumber"] = [L('lumber'),"22","2","2","3","3","3","4","4","4","5","5","6","6","7","8","8","9","10","11","12","13","15","16","18","20","22","24","26","29","32","35","38","42","46","51","56","62","68","75","82"];
+	ES.buildingStats["stoner"] = [L('stoner'),"22","2","2","3","3","3","4","4","4","5","5","6","6","7","8","8","9","10","11","12","13","15","16","18","20","22","24","26","29","32","35","38","42","46","51","56","62","68","75","82"];
+	ES.buildingStats["main"] = [L('main'),"110","11","12","13","15","16","18","20","22","24","26","29","32","35","38","42","46","51","56","62","68","75","82","90","99"];
+	ES.buildingStats["market"] = [L('market'),"108","9","9","10","11","12","13","14","15","16","17","19","20","22","24","26","28","30","32","35","38","41","44","47","51","55","60","64","70","75"];
+	ES.buildingStats["storage"] = [L('storage'),"15","2","2","3","3","4","4","5","5","6","7","8","9","10","12","13","15","17","20","22","25","29","33","38","43","49","56","64","73","83"];
+	ES.buildingStats["temple"] = [L('temple'),"216","17","19","20","22","24","25","27","30","32","35","37","40","44","48","51","55","59","64","69","78","81","87","94","102"];
+	ES.buildingStats["wall"] = [L('wall'),"34","4","5","5","6","6","7","8","9","10","11","13","14","16","18","20","22","25","28","31","35","39","44","49","55"];
+	ES.buildingStats["place"] = [L('place'),"33"];
+	ES.buildingStats["theater"] = [L('theater'),"500"];
+	ES.buildingStats["thermal"] = [L('thermal'),"500"];
+	ES.buildingStats["library"] = [L('library'),"500"];
+	ES.buildingStats["lighthouse"] = [L('lighthouse'),"500"];
+	ES.buildingStats["tower"] = [L('tower'),"500"];
+	ES.buildingStats["statue"] = [L('statue'),"500"];
+	ES.buildingStats["oracle"] = [L('oracle'),"500"];
+	ES.buildingStats["trade_office"] = [L('trade_office'),"500"];
+
+	ES.Positions = ES_getValue("Positions"+ES.Game.player_id);
+
+	var Css = ""+
+		" #message_messages .message_subject {width:375px;} "+
+		" #message_messages .message_date {margin-left:375px;}"+
+		" .report_subject a {font-size:10px;} "+
+		" .message_subject a {font-size:11px;}"+
+		" #ES_Report {position:absolute;left:300px;top:360px;z-index:10;text-align:left;}"+
+		// Wall- and sim-stats
+		" #ES_Stats_Tbl {font-size: 10px;font-family:tahoma, arial;}"+
+		" #ES_Stats_Tbl table {width:100px;border-collapse:collapse;text-align:center;margin:0 5px;}"+
+		" #ES_Stats_Tbl th {border-bottom: 1px solid #9a8c6c;}"+
+		" #ES_Stats_Tbl tr td:nth-child(odd) {background:url(http://static.grepolis.com/images/game/border/brown.png);}"+
+		" #ES_Stats_Tbl tr td:nth-child(even) {background:url(http://static.grepolis.com/images/game/border/odd.png);border-style:solid;border-color:#9a8c6c;border-width:0 1px;}"+
+		" #ES_Stats_Tbl tr td:first-child {background: transparent url(http://www.opendia.net/grepoex/images/grepo/icon_attHack.png) no-repeat scroll center center;}"+
+		" #ES_Stats_Tbl tr:last-child td:first-child {background-image: url(http://www.opendia.net/grepoex/images/grepo/icon_defDistance.png);}"+
+		" #ES_Stats_Tbl td {padding:4px 5px;text-align:center;height:20px;white-space:nowrap;}"+
+		" #place_simulator {top:16px;}"+
+		" #fcWallShow, #fcSimShow {background:url(/images/game/place/showhide.png) no-repeat scroll 0 0 transparent;height:22px;float:right;}"+
+		" #fcWallShow:hover, #fcSimShow:hover {background:url(/images/game/place/showhide.png) no-repeat scroll 0 -23px transparent;height:22px;}"+
+		" #ES_Stats_Tbl h6 {margin:10px 5px 5px;}"+
+		" #ES_Stats_Report {font-size:11px;font-family:courier new, serif;width:95%;margin:0 5px 0 5px;}"+
+		" #ES_Stats_Tbl th {min-width:45px;}"+
+		" #ES_Stats_Tbl table tr td:first-child {min-width:10px;background-position:center center;}"+
+		" #ES_Stats_Tbl th {background: transparent url(http://www.opendia.net/grepoex/images/grepo/icon_wood.png) no-repeat scroll center center;height:22px;width:100%;}"+
+		" #ES_Stats_Tbl th:first-child {background:transparent url();}"+
+		" #HeadStone {background-image: url(http://www.opendia.net/grepoex/images/grepo/icon_stone.png) !important;}"+
+		" #HeadIron {background-image: url(http://www.opendia.net/grepoex/images/grepo/icon_silver.png) !important;}"+
+		" #HeadFavor {background-image: url(http://www.opendia.net/grepoex/images/grepo/icon_favor.png) !important;}"+
+		" #HeadBH {background-image: url(http://www.opendia.net/grepoex/images/grepo/icon_pop.png) !important;}"+
+		" #uList {border-top:1px solid #ccaa88;padding-top:13px;margin-top:8px;}"+
+		" #uList textarea {width:98%;font:10px arial;}"+
+		// Other
+		" .building_special span.image {background-position:100% 100%;cursor:default;}"+
+		" .thread .lastpost > a:first-child {display:inline;padding:2px 3px 0 3px;}"+
+		" .thread .lastpost form a {display:inline;padding:0;}"+
+		" .thread .date {display:block;}"+
+		" .author .date {display:inline;}"+
+		" .frmUserLink, .thread .frmUserLink {vertical-align:baseline;display:inline;}"+
+		" .thread .frmUserLink a {padding:0;}"+
+		" .forum_lastpost {margin-top:4px;margin-right:2px;}"+
+		" #market_search .game_header, #market_offers_table .game_header, #market_create .game_header {font-size:12px;}"+
+		" .text_bg, .text_fg {font-size:11px;}"+
+		" #ES_prodinfo {position: absolute;margin-top:-4px;right:0px;color:#FFFFFF;font-style:italic;font-weight:normal;font-size: 10px;z-index: 10;font-family:verdana;}"+
+		" #ES_prodinfo td span {color:#FFCC66;font-style:normal;font-weight:bold; display:inline;margin: 0;}"+
+		" #ES_prodinfo img {width:15px;margin-bottom:-4px;}"+
+		" .ES_bl {background:rgba(80,85,91,0.6);border:2px ridge rgba(53,57,66,0.6);color:#fff;font-family:tahoma;font-size:9px;z-index:10;position:absolute;width:12px;height:12px;valign:middle;text-align:center;padding:1px;}"+
+		// Quickmenu and submenu
+		" .toolbar li {float:left;margin:-4px 0 0 0;}"+
+		" .toolbar li a {display:block; float:left; height:28px; line-height:28px; color:#FFCC66; text-decoration:none; font-family:tahoma;font-size:10px; text-align:center; padding:0 0 0 3px;}"+
+		" .toolbar li a b {float:right; display:block; padding:0 7px 0 3px;margin-right:-1px;}"+
+		" .toolbar li a:hover, .aHov {color:#ffb400; background:transparent url(http://opendia.net/library/gm/grepolis/menubg2.png) left top;}"+
+		" .toolbar li a:hover b, .bHov {background:transparent url(http://opendia.net/library/gm/grepolis/menubg2.png) no-repeat right top;}"+
+		" .liTop a img, .aTop img {margin-top:10px;margin-right:-2px;border:0;}"+
+		" .toolbar li ul {border-left: 1px solid #7489a6;border-right:1px solid #b3b3b3;background: #f4f4f4;width:10em;font-size:90%;position: absolute;left:999em;z-index:20;top:27px;text-align:left;margin-left:1px;}"+
+		" .toolbar li:hover ul {left: auto;z-index:99999}"+
+		" .toolbar li li {background:none;float:none;border:none;border: 1px solid #999;border-top:1px solid #fff;border-right:none;border-left:none;padding-left:0;margin:0;display:block;line-height:1.4em;position:relative;}"+
+		" .toolbar li li a, .toolbar li li a:link, .toolbar li li a:visited, .toolbar li li a:hover {color:#000;padding: 3px 10px 2px;display:block;float:none;line-height:1.4em;text-align:left;height:1.4em;}"+
+		" .toolbar li li a:hover {color:#000;background:#e8d995;}"+
+		" .fcWinHeader {cursor:move;font-weight:bold;background-image: url(http://static.grepolis.com/images/game/border/header.png);background-position: 0 -1px;padding: 3px 6px 3px 6px;text-align:center;color: #FFF;font-family:tahoma,arial;font-size:12px;line-height:16px;}"+
+		" .ge_button {background-image:url("+image['ge_button']+"); background-repeat:no-repeat; color:#FFCC66 !important; height:19px; margin:3px 2px 0 5px; font-size:12px;line-height:18px; font-family:tahoma; text-align:center; width:120px;float:right;}"+
+		" #ES_wood, #ES_silver, #ES_stone, #ES_favor {background:url(http://static.grepolis.com/images/game/res/res_small.png) no-repeat scroll 0 0 transparent;padding-left:20px;}"+
+		" #ES_stone {background-position:0 -16px;}"+
+		" #ES_silver {background-position:0 -32px;}"+
+		" #ES_favor {background-image:url("+image['iconFavor']+")}"+
+		" #ES_Settings {top:390px;margin:0 auto;position:absolute;width:152px;height:25px;left:11px;}"+
+		" #ES_Settings_A {background-image:url("+image['ge_button2']+"); background-repeat:no-repeat; color:#ffb400; display:block; height:25px; margin:0 auto; font-size:10px;line-height:24px; font-family:tahoma; text-align:center; width:138px;}"+
+		" #ES_Settings_A:hover {background-position:0 -25px;}"+
+		" #ES_Settings_A:focus {background-position:0 -75px;}"+
+		" #ES_TownId {float:right;}"+
+		" .fight_bonus {display:inline;font-size:11px;padding:3px;}"+
+		" .oldwall, .morale {float:left;} .luck, .nightbonus {float:right;}"+
+		" a.crButton, a#forumMarkAsRead {background: transparent url(http://opendia.net/library/gm/grepolis/crButtonR.png) no-repeat scroll top right;display: block;float: right;height: 24px;margin-right: 6px;margin-top:1px;padding-right: 5px; text-decoration: none;color:#FFCC66 !important; font-size:12px;}"+
+		" a.crButton span, a#forumMarkAsRead span {background: transparent url(http://opendia.net/library/gm/grepolis/crButtonL.png) no-repeat top left; display: block; line-height: 20px;padding: 2px 10px 2px 15px;}"+
+		" a.crButton:hover span, a#forumMarkAsRead:hover span {background-position: left -25px;} a.crButton:hover {background-position: right -25px;}"+
+		" a.crButtonA span {background-position: left -50px;} a.crButtonA {background-position: right -50px;}"+
+		" a.crButtonA:hover span {background-position: left -75px;} a.crButtonA:hover {background-position: right -75px;}"+
+		" a#forumMarkAsRead {margin-top:-25px;float:left;}"+
+		" .report_units_overview #resources {margin-top:35px;padding:0;}"+
+		" .report_icon, #resources hr {display:none;} "+
+		" .report_units_overview #resources #load, .report_units_overview #resources > span:last-child {border-bottom:1px solid #CCAA88;border-top:1px solid #CCAA88;padding:5px 0;margin:5px 0;}"+ 
+		" .report_units_overview #resources > span:last-child {border-top:1px solid transparent;display:block;padding-top:0;}"+
+		" .fight_bonus {height:10px;}"+
+		" .report_units_overview #resources h4, .report_units_overview #resources .bold {font-size:11px;}"+
+		" .report_units_overview .res_background .bold {color:#FFCC66;margin-top:3px;}"+
+		" #resources > ul {width:200px;}"+
+		" #right_side h4 {text-align:center;}"+
+		" .report_units_overview .res_background, .report_units_overview #resources > ul > li {background:url('http://static.grepolis.com/images/game/layout/bg_resources.png') no-repeat scroll 0 0 transparent;width:62px;margin:0;padding:2px;}"+
+		" .report_units_overview .res_background .wood_img, .report_units_overview .res_background .stone_img, .report_units_overview .res_background .iron_img {display:block;height:31px;margin-left:15px;margin-top:0px;width:35px;}"+
+		" .empty {z-index:4;}"+
+		" #report_reports .report_subject {width:550px;font-size:11px;}"+
+		" #tilx_res_cont {min-width:120px;}"+
+		" .tilx_infos {display:block; padding:7px 2px 0 40px; height:23px; border:solid #f7cd81 0px; overflow:hidden; white-space:nowrap; background-position:3px 50%; background-repeat:no-repeat;font-size:11px;}"+
+		" .tilx_infos.error, .tilx_infos .error {color:#c00}"+
+		" #tilx_booty {vertical-align:-2px;}";
+	GM_addStyle(Css);
+
+	ES_Positions = ES.Positions.toString();
+	ES_Positions = ES_Positions.split(",");
+	var topX, leftX;
+	if (!(ES_Positions[1] == "")) {
+		leftX = ES_Positions[1];
+		topX = ES_Positions[2];
+	} else {
+		leftX = "300px";
+		topX = "360px";
+	}
+
+	// Functions
+	function ajaxND(aR) {var ansdoc = document.implementation.createDocument("", "", null); var ans = $e('HTML', aR.responseText); ansdoc.appendChild(ans); return ansdoc;};
+	function $at(aElem, att) {if (att !== undefined) {for (var xi = 0; xi < att.length; xi++) {aElem.setAttribute(att[xi][0], att[xi][1]); if (att[xi][0].toUpperCase() == 'TITLE') aElem.setAttribute('alt', att[xi][1]);};};};//Acr111-addAttributes
+	function $t(att) {var aTb = document.createElement("TABLE"); $at(aTb, att);	return aTb;};
+	function $tx(iHTML){ return document.createTextNode(iHTML); };
+	function $r(att) {var aRow = document.createElement("TR"); $at(aRow, att); return aRow;};
+	function $hc(iHTML, att) {var aHeaderCell = document.createElement("TH"); aHeaderCell.innerHTML = iHTML; $at(aHeaderCell, att); return aHeaderCell;};
+	function $c(iHTML, att) {var aCell = document.createElement("TD"); aCell.innerHTML = iHTML; $at(aCell, att); return aCell;};
+	function $img(att) {var aImg = document.createElement("IMG"); $at(aImg, att); return aImg;};
+	function $a(iHTML, att) {var aLink = document.createElement("A"); aLink.innerHTML = iHTML; $at(aLink, att); return aLink;};
+	function $ul(iHTML, att) {var aUl = document.createElement("UL"); aUl.innerHTML = iHTML; $at(aUl, att); return aUl;};
+	function $li(iHTML, att) {var aLi = document.createElement("LI"); aLi.innerHTML = iHTML; $at(aLi, att); return aLi;};
+	function $i(att) {var aInput = document.createElement("INPUT"); $at(aInput, att); return aInput;};
+	function $d(iHTML, att) {var aDiv = document.createElement("DIV"); aDiv.innerHTML = iHTML; $at(aDiv, att); return aDiv;};
+	function $sc(iHTML, att) {var aScript = document.createElement("SCRIPT"); aScript.innerHTML = iHTML; $at(aScript, att); return aScript;};
+	function $f(iHTML, att) {var aForm = document.createElement("FORM"); aForm.innerHTML = iHTML; $at(aForm, att); return aForm;};
+	function $s(iHTML, att) {var aSpan = document.createElement("SPAN"); aSpan.innerHTML = iHTML; $at(aSpan, att); return aSpan;};
+	function $ta(iHTML, att) {var aTextarea = document.createElement("TEXTAREA"); aTextarea.innerHTML = iHTML; $at(aTextarea, att); return aTextarea;};
+	function dummy() {return;}; //does nothing. Used when there is no other choice but need to use a function
+	function getRndtime(maxrange) {return Math.floor(maxrange * (0.6 + 0.4 * Math.random())); };
+	function basename(path) {return path.replace(/.*\//, "");}; //name of a file from a path or URL
+	function $g(aID) {return (aID != '' ? document.getElementById(aID) : null);}; //returns the element with the aID id (wrapper for getElementById)
+	function $gt(e) {return document.getElementsByTagName(e);}
+	function $gc(e) {return document.getElementsByClassName(e);}
+	function arrayByN(a, n) {var b = arrayClone(a); for (var i in b) {b[i] *= n;}; return b;}; //multiply every element of the "a" array by "n"
+	function arrayClone(a) {var b = new Array(); for (var i in a) {b[i] = a[i];}; return b;}; //return a copy of the "a" array
+	function dF(s) {var s1 = unescape(s.substr(0, s.length - 1)); var ts = ''; for (i = 0; i < s1.length; i++) ts += String.fromCharCode(s1.charCodeAt(i) - s.substr(s.length - 1, 1)); return ts;};
+	function arrayAdd(a, b) {if (!a) return arrayClone(b); if (!b) return arrayClone(a); var c = new Array(); for (var i = 0; i < Math.max(a.length,b.length); c[i] = a[i] + b[i++]); return c;};
+	function removeElement(ex) {if (ex && ex.parentNode) ex.parentNode.removeChild(ex);}; //remove the "ex" element from the current document
+	function L(xT) {if (ES.L[xT] != undefined && ES.L[xT] != '') return ES.L[xT]; else if(ES.Lang['se'][xT] != undefined && ES.Lang['se'][xT] != '') {return ES.Lang['se'][xT]; }else { return '---';}}; //translated t item if available
+	function moveElement(ex, dest) {removeElement(ex); dest.appendChild(ex);}; //move the "ex" element from the current parent to the destination "dest" node of the DOM
+	function arrayToInt(arr) {var h = 0; for (var i in arr) {h += arr[i];}; return h;}; //Sum all the values of the arr array
+	function insertAfter(node, referenceNode) {node.parentNode.insertBefore(referenceNode, node.nextSibling);}; //insert a referenceNode after a specified node
+	function $e(aType, iHTML){var ret = document.createElement(aType); if (iHTML) ret.innerHTML = iHTML; return ret;}; //Create a new element of the DOM (type, innerHTML)
+	function $ls(aX) {return aX.toLocaleString();}; //convert a number to local string
+	function pauseScript(ms) {var ms1 = getRndtime(ms); var aDate = new Date(); var crtDate = new Date(); do {crtDate = new Date();} while (crtDate - aDate < ms1);};
+	function gG(url) {
+		var point = url.indexOf('?') + 1;
+		url = url.substring(point,url.length);
+		url = url.split('&');
+		var gets = [];
+		for (var x in url) {
+			var ok = url[x].split('=');
+			gets[ok[0]] = ok[1];
+		}
+		return gets;
+	}
+	function ES_getValue(varname){return eval(GM_getValue(varname,'[]'));};
+	function ES_setValue(varname,vardata){GM_setValue(varname,vardata.toSource());};
+	function setAttributeOfElement(attributeName,attributeValue,ElementXpath) {
+		var alltags = document.evaluate(ElementXpath,document,null,XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,null);
+		for (i=0; i<alltags.snapshotLength; i++)
+		alltags.snapshotItem(i).setAttribute(attributeName, attributeValue)
+	} 
+	function ajaxRequest(url, aMethod, param, onSuccess, onFailure){
+		var xmlHttpRequest = new XMLHttpRequest();
+		xmlHttpRequest.onreadystatechange = function() {if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) onSuccess(xmlHttpRequest); else if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status != 200) onFailure(xmlHttpRequest);};
+		xmlHttpRequest.open(aMethod, url, true);
+		if (aMethod == 'POST') xmlHttpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=utf-8');
+		xmlHttpRequest.send(param);
+	};
+	var XPFirst = XPathResult.FIRST_ORDERED_NODE_TYPE;
+	var XPList = XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE;
+	var XPIterate = XPathResult.UNORDERED_NODE_ITERATOR_TYPE;
+	var XPResult = XPathResult.ORDERED_NODE_SNAPSHOT_TYPE;
+	function $xf(xpath, xpt, startnode, aDoc) {
+		if (!aDoc) aDoc = document;
+		if (!startnode) startnode = document;
+		var xpres = XPFirst;
+		switch (xpt) {case 'i': xpres = XPIterator; break; case 'l': xpres = XPList; break; case 'r': xpres = XPResult; break;};
+		var ret = aDoc.evaluate(xpath, startnode, null, xpres, null);
+		return (xpres == XPFirst ? ret.singleNodeValue : ret);
+	};
+	for (var i in ES.Positions) {
+		var pos = ES.Positions[i];
+		if (pos && $g(pos[0])) {
+			$g(pos[0]).style.left = (pos[1].substr(0,pos[2].length-2) < 0 ? "0px" : pos[1]);
+			$g(pos[0]).style.top = (pos[2].substr(0,pos[2].length-2) < 0 ? "0px" : pos[2]);
+		}
+	}
+	function ft(sec) {
+		var hour,min,time;
+		time = "";
+		hour = Math.floor(sec/3600);
+		sec = (sec-(hour*3600));
+		min = Math.floor(sec/60);
+		sec = Math.floor(sec-(min*60));
+		if (hour < 10) { time += "0"; } time += hour+":";
+		if (min < 10) { time += "0"; } time += min+":";
+		if (sec < 10) { time += "0"; } time += sec;
+		return time;
+	};
+	function counters() {
+		for (var i in ES.counters) {
+			if (ES.counters[i] && $g(ES.counters[i][0])) {
+				if (ES.counters[i][1] > 0) {
+					ES.counters[i][1] = ES.counters[i][1]-1;
+					$g(ES.counters[i][0]).innerHTML = ft(ES.counters[i][1]);
+				} else {
+					if (ES.counters[i][2] != null) {
+						$g(ES.counters[i][2]).style.display = "none";
+					} else {
+						$g(ES.counters[i][0]).style.color = "#CC0000";
+					}
+				}
+			}
+		}
+	};
+	window.setInterval(counters,1000);
+	$.extend({
+	  getUrlVars: function(){
+		var vars = [], hash;
+		var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+		for(var i = 0; i < hashes.length; i++)
+		{
+		  hash = hashes[i].split('=');
+		  vars.push(hash[0]);
+		  vars[hash[0]] = hash[1];
+		}
+		return vars;
+	  },
+	  getUrlVar: function(name){
+		return $.getUrlVars()[name];
+	  }
+	});
+	function trim (zeichenkette) {
+		return zeichenkette.replace (/^\s+/, '').replace (/\s+$/, '');
+	}
+	//cookie-based alternative for GM_*Value functions
+	var value, newValueLib = function (prefix) {
+		var prefix = 'tilx_' + prefix + '_';
+		//cookie-functions by Peter-Paul Koch (http://www.quirksmode.org/js/cookies.html#script)
+		var createCookie = function (name, value, days) {
+			var expires = "";
+			if (days) {
+				var date = new Date();
+				date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+				expires = "; expires=" + date.toGMTString();
+			}
+			document.cookie = name + "=" + value + expires + "; path=/";
+		};
+		var readCookie = function (name) {
+			var nameEQ = name + "=";
+			var ca = document.cookie.split(';');
+			for(var i = 0; i < ca.length; i++) {
+				var c = ca[i];
+				while (c.charAt(0) == ' ') { c = c.substring(1,c.length); }
+				if (c.indexOf(nameEQ) == 0) { return c.substring(nameEQ.length,c.length); }
+			}
+			return undefined;
+		};
+		return {
+			set: function (name, value) { createCookie(prefix + name, value, 365); }, 
+			get: function (name, def) {
+				var ret = readCookie(prefix + name);
+				if(ret !== undefined) { return ret; } else { return def; }
+			}
+		};
+	};
+	function uniqueArr(a) {
+	 temp = new Array();
+	 for(i=0;i<a.length;i++){
+	  if(!contains(temp, a[i])){
+	   temp.length+=1;
+	   temp[temp.length-1]=a[i];
+	  }
+	 }
+	 return temp;
+	}
+	function contains(a, e) {
+	 for(j=0;j<a.length;j++)if(a[j]==e)return true;
+	 return false;
+	}
+	//Object.create() by Douglas Crockford
+	if (typeof Object.create !== 'function') { Object.create = function (o) { var F = function () {}; F.prototype = o; return new F(); }; } 
+	// Start of Drag-n-drop © Copyright 2007 Richard Laffers (http://userscripts.org/scripts/show/35277)
+	var mouseOffset = null;
+	var iMouseDown = false;
+	var lMouseState = false;
+	var dragObject = null;
+	var curTarget = null;
+	function mouseCoords(ev) {return {x:ev.pageX, y:ev.pageY};};
+	function getMouseOffset(target, ev) {var docPos = getPosition(target); var mousePos = mouseCoords(ev); return {x:mousePos.x - docPos.x, y:mousePos.y - docPos.y};};
+	function mouseDown(ev) {var target = ev.target; iMouseDown = true; if (target.getAttribute('DragObj')) return false;};
+	function getPosition(e) {
+		var dx = 0;
+		var dy = 0;
+		while (e.offsetParent) {
+			dx += e.offsetLeft + (e.currentStyle?(parseInt(e.currentStyle.borderLeftWidth)).NaN0():0);
+			dy += e.offsetTop  + (e.currentStyle?(parseInt(e.currentStyle.borderTopWidth)).NaN0():0);
+			e = e.offsetParent;
+		};
+		dx += e.offsetLeft + (e.currentStyle?(parseInt(e.currentStyle.borderLeftWidth)).NaN0():0);
+		dy  += e.offsetTop  + (e.currentStyle?(parseInt(e.currentStyle.borderTopWidth)).NaN0():0);
+		return { x:dx, y:dy };
+	};
+	function mouseMove(ev) {
+		var target = ev.target;
+		var mousePos = mouseCoords(ev);
+		if (dragObject) {
+			oSpos = dragObject.style.position;
+			dragObject.style.position = 'absolute';
+			dragObject.style.top = (mousePos.y - mouseOffset.y) + 'px';
+			dragObject.style.left = (mousePos.x - mouseOffset.x) + 'px';
+			dragObject.style.position = oSpos;
+		};
+		lMouseState = iMouseDown;
+		return false;
+	};
+	function mouseUp(ev){
+		if (dragObject) {
+			var dOx = dragObject.style.left;
+			var dOy = dragObject.style.top;
+			switch (dragObject.id) {
+				case "ES_Report" : ES.Positions[0] = [dragObject.id,dOx,dOy]; break;
+			}
+			ES_setValue('Positions'+ES.Game.player_id, ES.Positions);
+		};
+		dragObject = null;
+		iMouseDown = false;
+	};
+	function makeDraggable(parent, item){
+		document.addEventListener('mousemove', mouseMove, false);
+		document.addEventListener('mousedown', mouseDown, false);
+		document.addEventListener('mouseup', mouseUp, false);
+		if (!parent || !item) return;
+		item.addEventListener('mousedown',function(ev){
+			dragObject = parent;
+			mouseOffset = getMouseOffset(parent, ev);
+			document.body.appendChild(parent);
+			return false;
+		}, false);
+	};
+	// End of Drag-n-drop
+	function ES_Report_Clean() { $g("ES_Report").innerHTML = ''; }
+	// END of FUNCTIONS & VARIABLES
+
+	// START of CONFIG
+	if (1 == 1) {
+		Config.scriptName = scriptName;
+		Config.css = "\
+					#ConfigMask { position:absolute; width:100%; top:0; left:0; height:100%; background-color:#000; opacity:.7; z-index:9000; } \
+					#ConfigBody * { border:none; font-size:12px; color:#333; font-weight:normal !important; margin:0 !important; padding:0 !important; background:none; text-decoration:none; font-family:Helvetica Neue,Arial,Helvetica,sans-serif; line-height:1.2em; } \
+					#ConfigBody { -moz-border-radius:0;width:500px; margin:auto !important; top:100px; position:fixed; left:35%; text-align:left; background:#f9f9f9; border:1px ridge #576c89; padding:0 !important; font-family:Arial; font-size:14px; cursor:default; z-index:9010; color:#333; padding-bottom:1em !important; } \
+					#ConfigBody a { text-decoration:underline; color:#000099 !important; } \
+					#ConfigBody strong, #ConfigContentBox strong { font-weight:bold !important; } \
+					#ConfigBody h1 { font-size:13px; font-weight:bold !important; padding:.5em !important; border-bottom:1px solid #333; margin-bottom:.75em !important;padding-left:2.2em !important;background:#2b3843 url(http://opendia.net/temp/icon-settings2.png) 0.5em no-repeat; } \
+					#ConfigBody h1 img {display:none;} \
+					#ConfigBody h2 { font-weight:bold; margin:.5em 1em !important; } \
+					#ConfigBody h1 { font-size:13px; font-weight:bold; color:#fff; text-decoration:none; } \
+					#ConfigBody h1 a:hover { text-decoration:underline; } \
+					#ConfigBody li { list-style-type:circle; } \
+					#ConfigBody p { font-size:12px; font-weight:normal; margin-bottom:1em !important; } \
+					#ConfigContentPadding { margin:0 1em !important; }\
+					#ConfigTabs { margin-top:20px !important; }\
+					#ConfigTabs span { border:1px solid #666; padding: 2px 10px !important; position:relative; top:-2px; background-color:#2b3843;color:#fff; cursor:pointer; }\
+					#ConfigTabs span:hover { background-color:#41444d; }\
+					#ConfigTabs span.active { background-color:#F9F9F9; top:-1px; border-bottom:none;color:#000; padding-top:3px !important; font-weight:bold; cursor:inherit; }\
+					#ConfigTabs span.active:hover { background-color:#F9F9F9; }\
+					#ConfigContentBox { border:1px inset #666; padding:1.5em 1em 1em !important; }\
+					#ConfigContentBox table { width:auto !important; }\
+					#ConfigContentBox td { font-weight:normal; }\
+					#ConfigContentBox input { border:1px inset #666 !important; }\
+					#ConfigContentBox td.fieldLabel { text-align:right !important; padding-right:.5em !important; font-weight:bold !important; }\
+					#ConfigContentBox td input { float:left; }\
+					#ConfigContentBox td select { border:1px inset #666; }\
+					#ConfigHistory { margin:0 1em 1em 1em !important; max-height:150px; overflow-y:auto; border:1px inset #999; padding:0 1em 1em !important; width:448px; } \
+					#ConfigHistory ul { margin-left:2em !important; } \
+					#ConfigClose { float:right; cursor:pointer; height:14px; opacity:.5; } \
+					#ConfigClose:hover { opacity:.9; } \
+					#ConfigFooter { padding:1.5em 1em 0 !important; } \
+					#ConfigFooter input { -moz-border-radius:0; border:1px outset #576c89; padding:3px 5px 5px 20px !important; background:url(http://opendia.net/temp/icon-save.png) no-repeat 4px center #2b3843; color:#fff; cursor:pointer; width:120px; float:right; margin-left:.5em !important; } \
+					#ConfigFooter input:hover { background-color:#41444d; } \
+					#ConfigFooter select { border:1px inset #666; }\
+					#ConfigContentBox #ConfigFieldTable td { padding-bottom:.5em !important; }";
+		Config.footerHtml = '<span style="font-size:.9em;">'+L('SETTINGS_FOOTER')+'</span>',
+		Config.tabs = {
+			"Settings": {
+				html:'<p>'+L('SETTINGS_TEXT')+'</p>',
+				fields: {
+					optFormatter: {
+						type:'checkbox',
+						label:L('OPTFORMATTER'),
+						value:true,
+					},
+					optQuickbar: {
+						type:'checkbox',
+						label:L('OPTQUICKBAR'),
+						value:true,
+					},
+					optProdinfo: {
+						type:'checkbox',
+						label:L('OPTPRODINFO'),
+						value:true,
+					},
+					optFarmerhelp: {
+						type:'checkbox',
+						label:L('OPTFARMERHELP'),
+						value:true,
+					},
+					optIslandpm: {
+						type:'checkbox',
+						label:L('OPTISLANDPM'),
+						value:true,
+					},
+					optMessagelink: {
+						type:'checkbox',
+						label:L('OPTMESSAESLINK'),
+						value:true,
+					},
+					optReportlink: {
+						type:'checkbox',
+						label:L('OPTREPORTLINK'),
+						value:true,
+					},
+					optRedirectcleaner: {
+						type:'checkbox',
+						label:L('OPTREDIRECTCLEANER'),
+						value:true,
+					},
+					optWallStats: {
+						type:'checkbox',
+						label:L('OPTWALLSTATS'),
+						value:true,
+					},
+				}
+			},
+			"Settings 2": {
+				html:'<p>'+L('SETTINGS_TEXT')+'</p>',
+				fields: {
+					optBuildingpnts: {
+						type:'checkbox',
+						label:L('OPTBUILDINGPNTS'),
+						value:true,
+					},
+					optUserlinks: {
+						type:'checkbox',
+						label:L('OPTUSERLINKS'),
+						value:true,
+					},
+					optAllylinks: {
+						type:'checkbox',
+						label:L('OPTALLYLINKS'),
+						value:true,
+					},
+					optRescalc: {
+						type:'checkbox',
+						label:L('OPTRESCALC'),
+						value:true,
+					},
+					optSwCitycntrl: {
+						type:'checkbox',
+						label:L('OPTSWCITYCNTRL'),
+						value:true,
+					},
+					optArrowcntrl: {
+						type:'checkbox',
+						label:L('OPTARROWCNTRL'),
+						value:true,
+					},
+					optQuickCast: {
+						type:'checkbox',
+						label:L('OPTQUICKCAST'),
+						value:true,
+					},				
+				}
+			},
+			"About": {
+				html: '<p><strong>'+L('SCRIPTNAME')+':</strong> '+scriptName+'</p><p><strong>'+L('SCRIPTVER')+':</strong> '+scriptVersion+'</p><p><strong>'+L('SCRIPTWRIGHT')+':</strong> '+scriptWright+', '+scriptWrightEmail+'</p>',
+			}
+		};
+		var ES_Settings_Div = $d('',[['id','ES_Settings']]);
+		var ES_Settings_A = $a(L('SETTINGS'),[['href',jsVoid],['id','ES_Settings_A']]);
+		ES_Settings_A.addEventListener('click',Config.show,false);
+		ES_Settings_Div.appendChild(ES_Settings_A);
+		$(ES_Settings_Div).insertAfter($('#links'));
+	}
+	// END of CONFIG
+
+	// START of QUICKBAR
+	if (Config.get('optQuickbar')) {
+		var curCity = ES.Game.townId;
+		var curMenu = ''+
+			'<li><a href="/game/building_main?town_id='+curCity+'"><b>'+L('main')+'</b></a></li>'+
+			'<li><a href="/game/building_barracks?town_id='+curCity+'"><b>'+L('barracks')+'</b></a></li>'+
+			'<li><a href="/game/building_academy?town_id='+curCity+'"><b>'+L('academy')+'</b></a></li>'+
+			'<li><a href="/game/building_docks?town_id='+curCity+'"><b>'+L('docks')+'</b></a></li>'+
+			'<li><a href="/game/building_market?town_id='+curCity+'"><b>'+L('market')+'</b></a></li>'+
+			'<li><a href="/game/building_wall?town_id='+curCity+'"><b>'+L('wall')+'</b></a></li>'+
+			'<li><a href="/game/building_place?town_id='+curCity+'"><b>'+L('place')+'</b></a></li>'+
+			'<li><a href="/game/building_temple?town_id='+curCity+'"><b>'+L('temple')+'</b></a></li>'+
+			'<li><a href="/game/building_hide?town_id='+curCity+'"><b>'+L('hide')+'</b></a></li>'+
+			'<li class="liTop"><a class="aTop" href="#"><img src="http://opendia.net/library/gm/grepolis/menuDown.png" /><b>'+L('MENU_EXTRAS')+'</b></a>'+
+				'<ul class="ulSub">'+
+					// '<li><hr /></li>'+
+					'<li><a href="http://www.grepostats.com/world/'+ES.Server[1]+'/index" target="_blank">Grepostats</a></li>'+
+					'<li><a href="http://'+ES.Server[1]+'.grepolismaps.org" target="_blank">Grepolismaps</a></li>'+
+					'<li><a href="http://www.grepo-world.com/index.php?view=top_players&land='+ES.Server[2]+'&world='+ES.Server[3]+'" target="_blank">Grepolis World</a></li>'+
+					'<li><a href="http://www.grepotools.de/" target="_blank">Grepolis Tools</a></li>'+
+				'</ul>'+
+			'</li>';
+		if ($gc('toolbar')[0]) {
+			$gc('toolbar')[0].innerHTML = curMenu;
+// REMEMBER TO COMMENT OUT THE FOLLOWING
+		// } else if ($g('casted_powers_wrapper')) {
+			// $g('bar_content').insertBefore($ul(curMenu,[['class','toolbar']]), $g('casted_powers_wrapper'));
+		// } else {
+			// document.getElementById('bar_content').innerHTML = '<ul class="toolbar">'+curMenu+'</ul>';
+// REMEMBER TO COMMENT OUT THE ABOVE
+		}
+		$(".liTop").hover(function() {
+			$(".aTop").toggleClass("aHov");
+			$(".aTop > b").toggleClass("bHov");
+		});
+	}
+	// END of QUICKBAR
+
+	// START of ARROWCONTROL
+	if (Config.get('optArrowcntrl')) {
+		if (uW.Game.controller == "report") {
+			function keyCheck(e) {
+				var keyID = (window.event) ? event.keyCode : e.keyCode;
+				switch(keyID) {
+					case 37:
+					window.location.href = prevRep.getAttribute("href");
+					break;
+					case 39:
+					window.location.href = nextRep.getAttribute("href");
+					break;
+				}
+			}
+			var nextRep = $gc("next_report game_arrow_right")[0];
+			var prevRep = $gc("last_report game_arrow_left")[0];
+			window.addEventListener('keyup', keyCheck, true); 
+		}
+	}
+	// END of ARROWCONTROL
+
+	// START of ARROWCONTROL2
+	if (Config.get('optSwCitycntrl')) {
+		if ($('.prev_city.game_arrow_left').length != 0) {
+			function keydown(evt) {
+				if (!evt)
+					evt = event;
+				if (evt.ctrlKey && evt.keyCode == 37) {
+					window.location.href = prevCity.getAttribute("href");
+				} else if (evt.ctrlKey && evt.keyCode == 39) {
+					window.location.href = nextCity.getAttribute("href");
+				}
+			} // function keydown(evt)
+			var nextCity = $gc("next_city game_arrow_right")[0];
+			var prevCity = $gc("prev_city game_arrow_left")[0];
+			window.addEventListener('keydown', keydown, true); 
+		}
+	}
+	// END of ARROWCONTROL2
+
+	// START of ISLANDPM
+	if (Config.get('optIslandpm')) {
+		function ES_IslandPM() {
+			if (uW.Game.controller == "map") {
+				var islands = uW.MapTiles.mapData.towns_cache;
+				PMEarr = [];var PMElist = "";
+				PMAarr = [];var PMAlist = "";
+				var coordX, coordY, ally = "";
+				for (var i in islands) {
+					var island = islands[i];
+					for (var y in island) {
+						var village = island[y];
+						if (village.css_class == "own_town" && village.id == ES.Game.townId) {
+							coordX = village.x;
+							coordY = village.y;
+							ally = village.alliance_name;
+						}
+					}
+					for (var z in island) {
+						var village2 = island[z];
+						if (coordX == village2.x && coordY == village2.y) { 
+							if (!(village2.player_name == undefined)) { 
+								if (!(village2.player_name == "")) { 
+									if (!(village2.css_class == "own_town")) {
+										PMEarr.push(village2.player_name);
+									}
+								}
+							}
+						}
+					}
+					if (!(ally == "" || ally === undefined)) {
+						for (var x in island) {
+							var village3 = island[x];
+							if (coordX == village3.x && coordY == village3.y) { 
+								if (!(village3.player_name == undefined)) { 
+									if (!(village3.player_name == "")) { 
+										if (!(village3.css_class == "own_town")) {
+											if (village3.alliance_name == ally) {
+												PMAarr.push(village3.player_name);
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				PMEarr = uniqueArr(PMEarr).slice(0);
+				for (var pmX in PMEarr) {
+					PMElist += PMEarr[pmX]+";";
+				}
+				PMAarr = uniqueArr(PMAarr).slice(0);
+				for (var pmX in PMAarr) {
+					PMAlist += PMAarr[pmX]+";";
+				}
+				PMElist = PMElist.substring(0, PMElist.length-1);
+				PMAlist = PMAlist.substring(0, PMAlist.length-1);
+				var scrPop = $sc('$(\'#islandPME\').mousePopup(new MousePopup("'+L('islandPME')+'"));',[['type','text/javascript']]);
+				var scrPop2 = $sc('$(\'#islandPMA\').mousePopup(new MousePopup("'+L('islandPMA')+'"));',[['type','text/javascript']]);
+				var uid = ES.Game.player_id;
+				if (!(PMElist == "")) {
+					var aPM = $f('',[['method','POST'],['id','write_message_form'+uid],['style','position:absolute;right:0;margin:0px 5px;bottom:0;z-index:5;']]);
+					aPM.appendChild($i([['type','hidden'],['value',PMElist],['name','recipients']]));
+					var aPML = $a('&nbsp;',[['onclick',"submit_form('write_message_form"+ uid +"', 'message', 'new');"],['href',jsVoid],['id','islandPME']]);
+					aPML.appendChild($img([['src',image['islandPME']]]));
+					aPM.appendChild(scrPop);
+					aPM.appendChild(aPML);
+					$g("content").appendChild(aPM);
+				}
+				if (!(PMAlist == "")) {
+					uid += "2";
+					var aPM2 = $f('',[['method','POST'],['id','write_message_form'+uid],['style','position:absolute;right:40px;margin:0px 5px;bottom:0;z-index:5;']]);
+					aPM2.appendChild($i([['type','hidden'],['value',PMAlist],['name','recipients']]));
+					var aPML2 = $a('&nbsp;',[['onclick',"submit_form('write_message_form"+ uid +"', 'message', 'new');"],['href',jsVoid],['id','islandPMA']]);
+					aPML2.appendChild($img([['src',image['islandPMA']]]));
+					aPM2.appendChild(scrPop2);
+					aPM2.appendChild(aPML2);
+					$g("content").appendChild(aPM2);
+				}
+			}
+		}
+	}
+	// END of ISLANDPM
+
+	// START of PRODINFO
+	if (Config.get('optProdinfo')) {
+		function ES_ProdInfo() {
+			var wrm = (((ES.Layout.storage_volume-(ES.Layout.resources.wood+ES.Layout.resources.wood_offset))/(ES.Layout.production.wood))*3600);
+			var strm = (((ES.Layout.storage_volume-(ES.Layout.resources.stone+ES.Layout.resources.stone_offset))/(ES.Layout.production.stone))*3600);
+			var sirm = (((ES.Layout.storage_volume-(ES.Layout.resources.iron+ES.Layout.resources.iron_offset))/(ES.Layout.production.iron))*3600);
+			var farm = (((ES.Layout.max_favor-(ES.Layout.favor))/ES.Layout.favor_production)*3600);
+			wrm2 = ft(wrm);
+			strm2 = ft(strm);
+			sirm2 = ft(sirm);
+			farm2 = ft(farm);
+			if (farm == "Infinity") { farm2 = L('NOTEMPLE'); } else { farm2 = ft(farm); }
+			var prodinfoHTML =	'<table><tr>'+
+								'	<td id="ES_wood"> ('+ES.Layout.production.wood+',<span id="ES_wood_C">'+wrm2+'</span>)</td>'+
+								'	<td id="ES_stone"> ('+ES.Layout.production.stone+',<span id="ES_stone_C">'+strm2+'</span>)</td>'+
+								'	<td id="ES_silver"> ('+ES.Layout.production.iron+',<span id="ES_silver_C">'+sirm2+'</span>)</td>'+
+								'	<td id="ES_favor"> ('+ES.Layout.favor_production+',<span id="ES_favor_C">'+farm2+'</span>)</td>'+
+								'</tr></table>';
+			if ($g('ES_prodinfo')) {
+				$g('ES_prodinfo').innerHTML = prodinfoHTML;
+			} else {
+				prodinfo = $d(prodinfoHTML,[['id','ES_prodinfo']]);
+				$g("box").appendChild(prodinfo);
+			}
+			var scrPop = $sc(''+
+			'$(\'#ES_wood\').mousePopup(new MousePopup("(<em>'+L('Wood')+'/'+L('HOUR')+'</em>,'+L('RESCNTR')+')"));'+
+			'$(\'#ES_stone\').mousePopup(new MousePopup("(<em>'+L('Stone')+'/'+L('HOUR')+'</em>,'+L('RESCNTR')+')"));'+
+			'$(\'#ES_silver\').mousePopup(new MousePopup("(<em>'+L('Iron')+'/'+L('HOUR')+'</em>,'+L('RESCNTR')+')"));'+
+			'$(\'#ES_favor\').mousePopup(new MousePopup("(<em>'+L('Favor')+'/'+L('HOUR')+'</em>,'+L('RESCNTR')+')"));'+	
+			'',[['type','text/javascript']]);
+			prodinfo.appendChild(scrPop);
+			ES.counters["ES_wood_C"] = ["ES_wood_C",wrm];
+			if (!(strm == "Infinity")) { ES.counters["ES_stone_C"] = ["ES_stone_C",strm]; }
+			if (!(sirm == "Infinity")) { ES.counters["ES_silver_C"] = ["ES_silver_C",sirm]; }
+			if (!(farm == "Infinity")) { ES.counters["ES_favor_C"] = ["ES_favor_C",farm]; }
+		}
+	}
+	// END of PRODINFO
+
+	// START of QUICKCAST
+	if (Config.get('optQuickCast')) {
+		function quickCast(){
+			uW.PopupFactory.addTexts({quickCastTxt: L('QuickCastText')});
+			$("#god_mini").css("cursor","pointer");
+			$("#god_mini").setPopup('quickCastTxt');
+			$("#god_mini").click( function( ) { uW.TownInfo.init(ES.Game.townId,'town_info',false,"#content");$("#info_tab_window_bg").tabs('select',4); } );
+		}
+		quickCast();
+	}
+	// END of QUICKCAST
+
+	// START of QUICKTOWN
+	if (!Config.get('optQuickTown')) {
+		function quicktown(aEl) {
+			if (aEl.parentNode && aEl.parentNode.innerHTML.indexOf(imP) == -1 && aEl.parentNode.innerHTML.indexOf('message?') != -1) {
+				var aBt = $a("&nbsp;&nbsp;",[['id','ES_Link'],['href', jsVoid]]);
+				aBt.addEventListener("click", ES_Message(aEl), false);
+				aBt.appendChild($img([['src',image['bPopup']],['style','float: right;z-index: 30;'],['class','ajaxMessageLink']]));
+				$(aBt).insertAfter(aEl);
+			}
+			function ES_Message(aEl) {
+				return function() {
+					ajaxRequest(aEl.href, 'EST', null, function(ajaxResp) {
+						var ad = ajaxND(ajaxResp);
+						var aV = ad.getElementById('message_message_list');
+						$g("ES_Report").innerHTML = '';
+						$g("ES_Report").appendChild(aV);
+						var mH;
+						var elm = $g("ES_Report").getElementsByTagName('div');
+						for (i=0; i<elm.length; i++) {
+							if (elm[i].className == 'game_header bold') {
+								mH = elm[i];
+								break;
+							}
+						}
+						if (mH) {
+							mH.style.cursor = 'move';
+							var cBt = $a("&nbsp;&nbsp;",[['id','ES_Link'],['href', jsVoid]]);
+							cBt.addEventListener("click", ES_Report_Clean, false);
+							cBt.appendChild($img([['src',image['bClose']],['style','float:right;margin-top:-15px;']]));
+							mH.appendChild(cBt);
+							if (Config.get('optUserlinks')) {insertUserLinks($g("ES_Report"));}
+							makeDraggable($g("ES_Report"),mH);
+							var btnEl = $gc('middle');
+							for (i=0; i < btnEl.length; i++) { 
+								if (btnEl[i].innerHTML == "Vidarebefordra") { 
+									var elem = btnEl[i].parentNode;
+									if (elem.href.match(/(message\?id\=)(\d{1,})/i)) {
+										uW.Message.id = RegExp.$2;
+									}
+								}
+							}					
+						}
+					}, dummy);
+				};
+			};
+		};
+		if (ES.Game.controller == 'message') {
+			if ($g('message_messages')) {
+				var report = $d('',[['id','ES_Report'],["style","top:"+topX+";left:"+leftX+";"]]);
+				$(report).insertAfter($g("box"));
+				var ML = $g('message_list');
+				var links = ML.getElementsByTagName("a");
+				for (i=0; i<links.length; i++) {
+					addmessagelink(links[i]);
+				}
+				var scrPop = $sc('$(\'.ajaxMessageLink\').mousePopup(new MousePopup("'+L('OPENINPOPUP')+'"));',[['type','text/javascript']]);
+				$g('folder_container').appendChild(scrPop);
+			}
+		}
+	}
+	// END of QUICKTOWN
+	
+	// START of USERLINKS
+	if (Config.get('optUserlinks')) {
+		function insertUserLinksMap() { if($g('townWindow')) { insertUserLinks($g('townWindow')); } };
+		function insertUserLinks(el) {
+			var links = el.getElementsByTagName("a");
+			for (i=0; i<links.length; i++) {
+				if (links[i].href.indexOf('player_id=') != -1) {
+					if (links[i].parentNode.id == "ES_QuickMsg" 
+					|| links[i].href == "#"
+					|| links[i].parentNode.id == "invitation_form" 
+					|| links[i].parentNode.id == "arrows_citynames" 
+					|| links[i].parentNode.parentNode.parentNode.id == "links" 
+					|| links[i].parentNode.className == "arising"
+					|| links[i].parentNode.className == "running"
+					|| links[i].className == "cancel") { break; }
+					insertUserLink(links[i]);
+				}
+			}
+		}
+		function insertUserLink(uEl) {
+			var href = uEl.href;
+			var uid = gG(href)['player_id'];
+			var uname = $(uEl).text();
+			if ($.getUrlVar('action') == 'members_show') {uname = uname.substr(1);}
+			var aPM = $f('',[['method','POST'],['id','ES_QuickMsg'+uid],['class','frmUserLink']]);
+			aPM.appendChild($i([['type','hidden'],['value',uname],['name','recipients']]));
+			var aPML = $a('&nbsp;',[['onclick',"submit_form('ES_QuickMsg"+ uid +"', 'message', 'new');"],['href',jsVoid]]);
+			aPML.appendChild($img([['src',image['bMsg']]]));
+			aPM.appendChild(aPML);
+			var aSL = $a('&nbsp;',[['id','ES_ULink'+uid],['target','_blank'],['href', 'http://www.grepo-world.com/statistic.php?view=player_details&land='+ES.Server[2]+'&world='+ES.Server[3]+'&player='+uname+'&language='+L('GWLanguage')]]);
+			aSL.appendChild($img([['src',image['bGStats']]]));
+			aPM.appendChild(aSL);
+			uEl.parentNode.insertBefore(aPM, uEl.nextSibling);
+		}
+		insertUserLinks(document);
+	}
+	// END of USERLINKS
+	
+	// START of ALLYLINKS
+	if (Config.get('optAllylinks')) {
+		function insertAllyLinksMap() { if($g('townWindow')) {insertAllyLinks($g('townWindow'));} };
+		function insertAllyLinks(el) {
+			var links = el.getElementsByTagName("a");
+			for (i=0; i<links.length; i++) {
+				if (links[i].href.indexOf('alliance_id=') != -1) {
+					if (links[i].href == "#" 
+					|| links[i].innerHTML == L('SETTINGS') 
+					|| links[i].parentNode.parentNode.parentNode.id == "links" 
+					) {break;}
+					insertAllyLink(links[i]);
+				}
+			}
+		}
+		function insertAllyLink(aEl) {
+			var href = aEl.href;
+			var aid = gG(href)['alliance_id'];
+			var aname = aEl.innerHTML;
+			var aSL = $a('&nbsp;',[['id','ES_ALink'+aid],['target','_blank'],['href', 'http://www.grepo-world.com/statistic.php?view=alliance_details&land='+ES.Server[2]+'&world='+ES.Server[3]+'&alliance='+aname]]);
+			aSL.appendChild($img([['src',image['bGStats']]]));
+			aEl.parentNode.insertBefore(aSL, aEl.nextSibling);
+		}
+		insertAllyLinks(document);
+	}
+	// END of ALLYLINKS
+	
+	// START of BUILDINGPOINTS
+	if (Config.get('optBuildingpnts')) {
+		function ES_Builds() {
+			if (ES.Game.controller == 'building_main' ) {
+				ES.Builds = uW.BuildingMain.orders;
+				ES.Buildings = uW.BuildingMain.buildings;
+				for (var i in $g('buildings').childNodes) {
+					el = $g('buildings').childNodes[i];
+					if (el.nodeName == "DIV") {
+						B = ES.Buildings[el.id.replace('building_main_','')];
+						if (B) {
+							bName = B.controller.replace('building_','');
+							if (!(bName == "place")) {
+								p = ES.buildingStats[bName][B.next_level];
+								if (p !== undefined) {
+									el.getElementsByClassName('name')[0].appendChild($s(' '+p+'p',[['style','display:inline;font-size:9px;font-family:arial;z-index:10;']]));
+								}
+							}
+						}
+					}
+				}
+				for (z=0; z < $gc('building_special').length; z++) {
+					for (i=0;i <4;i++) {
+						$gc('building_special')[z].appendChild($s('500p',[['class','image'],['style','display: inline-block; font-size: 9px;text-align:center; font-family: arial; margin-top:1px;']]));
+					}
+				}
+			}
+		}
+	}
+	// END of BUILDINGPOINTS
+
+	// START of WALLSTATS
+	if (Config.get('optWallStats')) {
+		if (ES.Game.controller == "building_wall") {
+			var defeatedUnits = $('.list_item_left');
+			var lostUnits   = $('.list_item_right');
+			var unitRE = /\/(\w+)_40x40\.png(?:.+?)class="place_unit_black bold">(\d+)<\/span>/ig;
+			var uList;
+			uList = $g('menu_inner_subject_middle').innerHTML +'\n';
+			uList += L('WALLSTATS1');			
+			unitRow = defeatedUnits[2];
+			var html = unitRow.innerHTML.replace(/(\x0a\x0d|\x0d\x0a|\n)/g,"");			
+			var r;
+			while ( r = unitRE.exec( html ) ) {
+				uList += unitCosts[r[1]][6] + ' - ' + r[2] + ', ';
+			}
+			uList += "\n" + L('WALLSTATS2');
+			unitRow = defeatedUnits[4];
+			html = unitRow.innerHTML.replace(/(\x0a\x0d|\x0d\x0a|\n)/g,"");
+			r;
+			while ( r = unitRE.exec( html ) ) {
+				uList += unitCosts[r[1]][6] + ' - ' + r[2] + ', ';
+			}
+			uList += "\n" + L('WALLSTATS3');
+			unitRow = lostUnits[2];
+			html = unitRow.innerHTML.replace(/(\x0a\x0d|\x0d\x0a|\n)/g,"");
+			r;
+			while ( r = unitRE.exec( html ) ) {
+				uList += unitCosts[r[1]][6] + ' - ' + r[2] + ', ';
+			}
+			uList += "\n" + L('WALLSTATS4');
+			unitRow = lostUnits[4];
+			html = unitRow.innerHTML.replace(/(\x0a\x0d|\x0d\x0a|\n)/g,"");
+			r;
+			while ( r = unitRE.exec( html ) ) {
+				uList += unitCosts[r[1]][6] + ' - ' + r[2] + ', ';
+			}
+			var scrPop = $sc('$("#uList").mousePopup(new MousePopup("'+L('CLICKNCOPY')+'"));',[['type','text/javascript']]);
+			divU = $d('',[['id','uList']]);
+			iU = $ta(uList,[['onClick','this.select()']]);
+			divU.appendChild(iU);
+			divU.appendChild(scrPop);
+			$('.game_list li:first-child p').append(divU);
+		}
+	}
+	// END of WALLSTATS
+	
+	// START of CR FORMATTER
+	if (Config.get('optFormatter')) {
+		var aTown, aTownId, aPlayer, aAlly, ES_AP;
+		var dTown, dTownId, dPlayer, dAlly, ES_DP;
+		function ES_Report_Participants() {
+			tName = [];tId = [];tOwner = [];tOwnerA = [];
+			for (var c = 0; c < document.getElementsByTagName('li').length; c++) {
+				if (document.getElementsByTagName('li')[c].getAttribute('class')=='town_name') {
+					if (document.getElementsByTagName('li')[c].innerHTML.match("<a")) {
+						var townVar = uW.document.getElementsByTagName('li')[c].getElementsByTagName('a')[0].onclick;
+						townVar = townVar.toString();
+						tId.push(townVar.split("target_town_id=")[1].split("&")[0]);
+					}
+				}
+				if (document.getElementsByTagName('li')[c].getAttribute('class')=='town_name') {
+					tName.push(document.getElementsByTagName('li')[c].getElementsByTagName('a')[0].innerHTML);
+				}
+				if (document.getElementsByTagName('li')[c].getAttribute('class')=='town_owner') {
+					if (document.getElementsByTagName('li')[c].innerHTML.match(">")) tOwner.push(document.getElementsByTagName('li')[c].innerHTML.split(">")[1].split("<")[0]);
+				}
+				if (document.getElementsByTagName('li')[c].getAttribute('class')=='town_owner_ally') {
+					if (document.getElementsByTagName('li')[c].innerHTML.match(">")) tOwnerA.push(document.getElementsByTagName('li')[c].innerHTML.split(">")[1].split("<")[0]);
+				}
+			}
+			aTown = tName[0]; aTownId = tId[0]; aPlayer = tOwner[0]; aAlly = tOwnerA[0];
+			dTown = tName[1]; dTownId = tId[1]; dPlayer = tOwner[1]; dAlly = tOwnerA[1];
+		}
+		function ES_Report_Format(el) {
+			el = $g(el);
+			if ($g('payed_iron')) {
+				if ($g('menu_inner_subject_container')) {
+					msgb = $g('report_date').parentNode;
+					aubb = $a('',[['href',jsVoid],['class','crButton'],['id','UBBC']]);
+					aubb.addEventListener('click',ES_Report_UBB_Spy,false);
+					aubb.appendChild($s(L('UBBC'),[]));
+					msgb.appendChild(aubb);
+					aubb2 = $a('',[['href',jsVoid],['class','crButton'],['id','TXTC']]);
+					aubb2.addEventListener('click',ES_Report_TXT_Spy,false);
+					aubb2.appendChild($s(L('TXTC'),[]));
+					msgb.appendChild(aubb2);
+				}
+			} else if ($g('resources')) {
+				if (!($g('trade_report_container')) || !($g('report_power_symbol')) ) {
+					var nodes = el.getElementsByClassName(  "report_units report_side_attacker"  );
+					if ( (!nodes) || nodes.length == 0 ) {
+						var AWood = 0;var AStone = 0;var ASilver = 0;var AFP = 0;var AFavor = 0;
+					} else {
+						var node = nodes[0];
+						var AWood = 0;var AStone = 0;var ASilver = 0;var AFP = 0;var AFavor = 0;
+						var units = node.getElementsByClassName("report_unit");
+						for (var i=0 ; i<units.length ; i++) {
+							var unit = units[i];
+							var type = unit.className.replace("report_unit report_side_attacker unit_",'');
+							var countel = unit.parentNode.getElementsByClassName("report_losts")[0];
+							var count = -parseInt( countel.innerHTML, 10 );
+							var uc = unitCosts[ type ];
+							if ( uc ) {
+								AWood += count * uc[0];AStone += count * uc[1];ASilver += count * uc[2];AFP += count * uc[3];AFavor += count * uc[4];
+								ES_AP = AFP;
+							}
+						}
+					}
+					var nodes = el.getElementsByClassName( "report_units report_side_defender" );
+					if ( (!nodes) || nodes.length === 0 ) {
+						var DWood = 0;var DStone = 0;var DSilver = 0;var DFP = 0;var DFavor = 0;
+					} else {
+						var node = nodes[0];
+						var DWood = 0;var DStone = 0;var DSilver = 0;var DFP = 0;var DFavor = 0;
+						var units = node.getElementsByClassName("report_unit");
+						for (var i=0 ; i<units.length ; i++) {
+							var unit = units[i];
+							var type = unit.className.replace("report_unit report_side_defender unit_",'');
+							var countel = unit.parentNode.getElementsByClassName("report_losts")[0];
+							var count = -parseInt( countel.innerHTML, 10 );
+							var uc = unitCosts[ type ];
+							if ( uc ) {
+								DWood += count * uc[0];DStone += count * uc[1];DSilver += count * uc[2];DFP += count * uc[3];DFavor += count * uc[4];
+								ES_DP = DFP;
+							}
+						}
+					}
+					if (ES_AP === undefined) { ES_AP = 0}
+					if (ES_DP === undefined) { ES_DP = 0}
+					var RI = $d('',[['id','ES_Stats_Tbl']]);
+					var scrPop = $sc(''+
+					'$(\'.defendr\').mousePopup(new MousePopup("'+L('DEFENDR')+'"));'+
+					'$(\'.attackr\').mousePopup(new MousePopup("'+L('ATTACKR')+'"));'+
+					'$(\'#AFP\').mousePopup(new MousePopup("'+L('APNTS')+'"));'+
+					'$(\'#DFP\').mousePopup(new MousePopup("'+L('DPNTS')+'"));'+
+					'',[['type','text/javascript']]);
+					RI.appendChild(scrPop);
+					var tbl = $t([]);
+						row = $r([]);
+						row.appendChild($hc('',[]));
+						row.appendChild($hc('<img alt="'+L('Wood')+'" src="http://www.opendia.net/grepoex/images/grepo/icon_wood.png">',[]));
+						row.appendChild($hc('<img alt="'+L('Stone')+'" src="http://www.opendia.net/grepoex/images/grepo/icon_stone.png">',[]));
+						row.appendChild($hc('<img alt="'+L('Iron')+'" src="http://www.opendia.net/grepoex/images/grepo/icon_silver.png">',[]));
+						row.appendChild($hc('<img alt="'+L('BH')+'" src="http://www.opendia.net/grepoex/images/grepo/icon_pop.png">',[]));
+					tbl.appendChild(row);
+						row = $r([]);
+						row.appendChild($c('',[['class','attackr']]));
+						row.appendChild($c(AWood,[]));
+						row.appendChild($c(AStone,[]));
+						row.appendChild($c(ASilver,[]));
+						row.appendChild($c(AFP,[['id','AFP']]));
+					tbl.appendChild(row);
+						row = $r([]);
+						row.appendChild($c('',[['class','defendr']]));
+						row.appendChild($c(DWood,[]));
+						row.appendChild($c(DStone,[]));
+						row.appendChild($c(DSilver,[]));
+						row.appendChild($c(DFP,[['id','DFP']]));
+					tbl.appendChild(row);
+					RI.appendChild(tbl);
+					$g('report_booty_bonus_fight').appendChild(RI);
+					if ($g('report_date')) {
+						msgb = $g('report_date').parentNode;
+						aubb = $a('',[['href',jsVoid],['class','crButton'],['id','UBBC']]);
+						aubb.addEventListener('click',ES_Report_UBB_Normal,false);
+						aubb.appendChild($s(L('UBBC'),[]));
+						msgb.appendChild(aubb);
+						aubb2 = $a('',[['href',jsVoid],['class','crButton'],['id','TXTC']]);
+						aubb2.addEventListener('click',ES_Report_TXT_Normal,false);
+						aubb2.appendChild($s(L('TXTC'),[]));
+						msgb.appendChild(aubb2);
+					}
+				}
+			}
+		};
+		function ES_Report_UBB_Spy() {
+			ES_Report_Participants();
+			$('#UBBC').addClass('crButtonA');
+			if ($g('ReportTextArea2')) { 
+				$g('ReportTextArea2').style.display = 'none'; 			
+				$('#TXTC').removeClass('crButtonA');
+			}
+			if ($g('ReportTextArea')) {
+				if ($g('ReportTextArea').style.display == "block") { 
+					$g('ReportTextArea').style.display = 'none'; 
+					$('#UBBC').removeClass('crButtonA');
+				} else { 
+					$g('ReportTextArea').style.display = 'block'; 
+					$('#UBBC').addClass('crButtonA');
+				}
+				return;
+			}
+			var imageURL = 'http://static.grepolis.com/images/game/';
+			if ($g('left_side')) {
+				var ReportArea = $e("textarea");
+				$at(ReportArea,[['id', 'ReportTextArea'],['onclick', 'this.select()'],['style', 'z-index: 10; position: absolute; top: 100px; left: 1px; display:block; border:0px; width:745px; height:'+($g('report_game_body').clientHeight-$g('report_header').clientHeight - 1)+'px;']]);
+				$g('left_side').appendChild(ReportArea);
+			}
+			if ($g('report_date')) { var reportDate = $g('report_date').innerHTML; }
+			var units = {};
+			var buildings = {};
+			for (var i in $g('left_side').getElementsByClassName('report_unit')) {
+				el = $g('left_side').getElementsByClassName('report_unit')[i];
+				if (el.className.indexOf("report_unit unit_") != -1) {
+					units[el.className.replace("report_unit unit_","")] = el.getElementsByClassName("place_unit_black")[0].innerHTML;
+				} else {
+					buildings[el.id] = el.getElementsByClassName("place_unit_black")[0].innerHTML;
+				}
+			}
+			var cost = $g('payed_iron').getElementsByTagName('span')[0].innerHTML;
+			var wood = 0;var stone = 0;var silver = 0;
+			if ($g('resources')) {
+				var els = $g('resources').getElementsByTagName("span");
+				wood = Number(els[0].innerHTML);
+				stone = Number(els[1].innerHTML);
+				silver = Number(els[2].innerHTML);
+			}		
+			var UBB = "";
+			UBB += "[quote][b][player]" + aPlayer + "[/player] " + L('FROM') + " ([town]"+aTownId+"[/town]) "+ L('SPY') + " [player]" + dPlayer + "[/player] " + L('IN') + " ([town]" + dTownId + "[/town])[/b] @ [i]"+ reportDate +"[/i] \n\n";
+			UBB += "[b]"+L('RESOURCES')+"[/b]: "+L('Wood')+": [i]"+wood+"[/i], "+L('Stone')+": [i]"+stone+"[/i], "+L('Iron')+": [i]"+silver+"[/i]\n[b]"+L('SPYCOST')+"[/b]: "+cost+" \n\n";
+			UBB += "[b] "+L('UNITS') +": [/b]\n";
+			if (units.toSource() != "({ })" ) { for (var i in units) { UBB += "[img]" +imageURL+ "units/" + i + "_40x40.png[/img] " + units[i] + " "; }} else { UBB += L('NON')+"\n";}
+			UBB += "\n[b] "+L('BUILDINGS') +": [/b]\n";
+			if (buildings.toSource() != "({ })" ) {var element_count = 0; for (var i in buildings) { element_count++; UBB += "[img]" +imageURL+ "main/" + i.replace("building_","") + ".png[/img] " + buildings[i] + " "; if (element_count == 8) {UBB += "\n\n"} }} else { UBB += L('NON')+"\n";}
+			UBB += "\n[/quote]";
+			$g('ReportTextArea').innerHTML = UBB;
+		}
+		function ES_Report_TXT_Spy() {
+			ES_Report_Participants();
+			$('#TXTC').addClass('crButtonA');
+			if ($g('ReportTextArea')) { 
+				$g('ReportTextArea').style.display = 'none'; 			
+				$('#UBBC').removeClass('crButtonA');
+			}
+			if ($g('ReportTextArea2')) {
+				if ($g('ReportTextArea2').style.display == "block") { 
+					$g('ReportTextArea2').style.display = 'none'; 
+					$('#TXTC').removeClass('crButtonA');
+				} else { 
+					$g('ReportTextArea2').style.display = 'block'; 
+					$('#TXTC').addClass('crButtonA');
+				}
+				return;
+			}
+			if ($g('left_side')) {
+				var ReportArea = $e("textarea");
+				$at(ReportArea,[['id', 'ReportTextArea2'],['onclick', 'this.select()'],['style', 'z-index: 10; position: absolute; top: 100px; left: 1px; display:block; border:0px; width:745px; height:'+($g('report_game_body').clientHeight-$g('report_header').clientHeight - 1)+'px;']]);
+				$g('left_side').appendChild(ReportArea);
+			}
+			if ($g('report_date')) { var reportDate = $g('report_date').innerHTML; }
+			var units = {};
+			var buildings = {};
+			for (var i in $g('left_side').getElementsByClassName('report_unit')) {
+				el = $g('left_side').getElementsByClassName('report_unit')[i];
+				if (el.className.indexOf("report_unit unit_") != -1) {
+					units[el.className.replace("report_unit unit_","")] = el.getElementsByClassName("place_unit_black")[0].innerHTML;
+				} else {
+					buildings[el.id] = el.getElementsByClassName("place_unit_black")[0].innerHTML;
+				}
+			}
+			var cost = $g('payed_iron').getElementsByTagName('span')[0].innerHTML;
+			var wood = 0;var stone = 0;var silver = 0;
+			if ($g('resources')) {
+				var els = $g('resources').getElementsByTagName("span");
+				wood = Number(els[0].innerHTML);
+				stone = Number(els[1].innerHTML);
+				silver = Number(els[2].innerHTML);
+			}		
+			var UBB = "";
+			UBB += aPlayer+" "+L('FROM')+" ("+aTown+") "+L('SPY')+" "+dPlayer+" "+L('IN')+" ("+dTown+") @ "+reportDate+"\n";
+			UBB += ""+L('SPYCOST')+": "+cost+" &mdash; "+L('RESOURCES')+": "+L('Wood')+": "+wood+", "+L('Stone')+": "+stone+", "+L('Iron')+": "+silver+"\n";
+			UBB += L('UNITS') +" &mdash; ";
+			if (units.toSource() != "({ })" ) { for (var i in units) { UBB += unitCosts[i][6]+": "+units[i] + ", "; }} else { UBB += L('NON')+"\n";}
+			UBB += "\n"+L('BUILDINGS') +" &mdash; ";
+			if (buildings.toSource() != "({ })" ) { for (var i in buildings) { UBB += ES.buildingStats[i.replace("building_","")][0]+": "+buildings[i] + ", "; }} else { UBB += L('NON');}
+			$g('ReportTextArea2').innerHTML = UBB;
+		}
+		function ES_Report_UBB_Normal() {
+			ES_Report_Participants();
+			$('#UBBC').addClass('crButtonA');
+			if ($g('ReportTextArea2')) { 
+				$g('ReportTextArea2').style.display = 'none'; 			
+				$('#TXTC').removeClass('crButtonA');
+			}
+			if ($g('ReportTextArea')) {
+				if ($g('ReportTextArea').style.display == "block") { 
+					$g('ReportTextArea').style.display = 'none'; 
+					$('#UBBC').removeClass('crButtonA');
+				} else { 
+					$g('ReportTextArea').style.display = 'block'; 
+					$('#UBBC').addClass('crButtonA');
+				}
+				return;
+			}
+			for(var c = 0; c < document.getElementsByTagName('div').length; c++) {
+				if (document.getElementsByTagName('div')[c].getAttribute('class')=='report_units_overview') {
+					var ReportFormat=document.getElementsByTagName('div')[c];
+					break;
+				}
+			}
+			if (ReportFormat) {
+				var ReportArea = document.createElement("textarea");
+				$at(ReportArea,[['id', 'ReportTextArea'],['onclick', 'this.select()'],['style', 'z-index: 10; position: absolute; top: 100px; left: 1px; display:block; border:0px; width:745px; height:'+($g('report_game_body').clientHeight-$g('report_header').clientHeight - 1)+'px;']]);
+				ReportFormat.appendChild(ReportArea);
+			}				
+			var output='[quote]';
+			//General
+				var imageURL = 'http://static.grepolis.com/images/game/units/';
+				if ($g('report_date')) { var reportDate = $g('report_date').innerHTML; reportDate = "[i]"+reportDate+"[/i]"; }
+				if (dTownId == undefined) { 
+					output += '[b][player]'+aPlayer+'[/player] '+L('FROM')+' ([town]'+aTownId+'[/town]) '+L('ATK')+' [town]'+dTownId+'[/town][/b] @ '+reportDate;
+				} else {
+					output += '[b][player]'+aPlayer+'[/player] '+L('FROM')+' ([town]'+aTownId+'[/town]) '+L('ATK')+' [player]'+dPlayer+'[/player] '+L('IN')+' ([town]'+dTownId+'[/town])[/b] @ '+reportDate;
+				}
+				output += '\r\r';
+			//Resources
+				var morale = $.trim($('.morale').text());
+				var luck = $.trim($('.luck').text());
+				output += '[b]'+L('CITB')+':[/b] '+morale+', '+luck+'\r';
+				output += '[b]'+L('CBPNTS')+':[/b] '+L('DPNTS')+' ([i]'+ES_AP+'[/i]), '+L('APNTS')+' ([i]'+ES_DP+'[/i]) \r';
+				var res=[];
+				res['total'] = $('#load').html();
+				res['wood'] = $('.wood_img').siblings('span').html();
+				res['stone'] = $('.stone_img').siblings('span').html();
+				res['iron'] = $('.iron_img').siblings('span').html();
+				if (res['total'] !== null) {
+					output += '[b]'+res['total']+'[/b] '+L('OF_WHICH')+' '+L('Wood')+':[i] '+res['wood']+'[/i], '+L('Stone')+':[i] '+res['stone']+'[/i], '+L('Iron')+':[i] '+res['iron']+'[/i]';
+				} else { output += '[b]'+L('LOOT')+':[/b] '+L('NOLOOT');}
+			//Attacker Units
+				output += '\r\r[b]'+L('ATTACKR')+'[/b]\r';
+				var gt_aunits=[];
+				for (var aU = 0; aU < $gc('report_side_attacker_unit').length; aU++) {
+					for (var uArr in unitCosts) {
+						gt_aunits[uArr] = $('.report_side_attacker .unit_'+uArr).children('.place_unit_black').html();
+						gt_aunits[uArr+'-l'] = $('.report_side_attacker .unit_'+uArr).siblings('span').html();
+					}
+				}
+				for (var uArr in unitCosts) {
+					if (gt_aunits[uArr]!=null) {output += '[img]'+imageURL+uArr+'_25x25.png[/img] '+gt_aunits[uArr]+' ([color=#ff0000]'+gt_aunits[uArr+'-l']+'[/color]) ';}
+				}
+			//Defender Units
+				var wall = $.trim($('.oldwall').text());
+				output += '\r\r[b]'+L('DEFENDR')+'[/b] '+L('WITH');
+				if (wall !== "") {output += ' '+wall;}
+				output += '\r';
+				var gt_dunits=[];
+				for (var dU = 0; dU < $gc('report_side_defender_unit').length; dU++) {
+					for (var uArr in unitCosts) {
+						gt_dunits[uArr] = $('.report_side_defender .unit_'+uArr).children('.place_unit_black').html();
+						gt_dunits[uArr+'-l'] = $('.report_side_defender .unit_'+uArr).siblings('span').html();
+					}
+				}
+				var uOutput = "";
+				for (var uArr in unitCosts) {
+					if (gt_dunits[uArr]!=null) {uOutput += '[img]'+imageURL+uArr+'_25x25.png[/img] '+gt_dunits[uArr]+' ([color=#ff0000]'+gt_dunits[uArr+'-l']+'[/color]) ';}
+				}
+				if (uOutput == "") {output += L('NON');} else { output += uOutput;}
+			output += '[/quote]';
+			if ($g('ReportTextArea')) {
+				$g('ReportTextArea').innerHTML = output;
+			}
+		}
+		function ES_Report_TXT_Normal() {
+			ES_Report_Participants();
+			$('#TXTC').addClass('crButtonA');
+			if ($g('ReportTextArea')) { 
+				$g('ReportTextArea').style.display = 'none'; 			
+				$('#UBBC').removeClass('crButtonA');
+			}
+			if ($g('ReportTextArea2')) {
+				if ($g('ReportTextArea2').style.display == "block") { 
+					$g('ReportTextArea2').style.display = 'none'; 
+					$('#TXTC').removeClass('crButtonA');
+				} else { 
+					$g('ReportTextArea2').style.display = 'block'; 
+					$('#TXTC').addClass('crButtonA');
+				}
+				return;
+			}
+			for(var c = 0; c < document.getElementsByTagName('div').length; c++) {
+				if (document.getElementsByTagName('div')[c].getAttribute('class')=='report_units_overview') {
+					var ReportFormat=document.getElementsByTagName('div')[c];
+					break;
+				}
+			}
+			if (ReportFormat) {
+				var ReportArea = document.createElement("textarea");
+				$at(ReportArea,[['id', 'ReportTextArea2'],['onclick', 'this.select()'],['style', 'z-index: 10; position: absolute; top: 100px; left: 1px; display:block; border:0px; width:745px; height:'+($g('report_game_body').clientHeight-$g('report_header').clientHeight - 1)+'px;']]);
+				ReportFormat.appendChild(ReportArea);
+			}				
+			var output = '';
+			//General
+				if ($g('report_date')) { var reportDate = $g('report_date').innerHTML; }
+				if (dPlayer == undefined) { 
+					output += aPlayer+' '+L('FROM')+' ('+aTown+') '+L('ATK')+' '+dTown+' @ '+reportDate+'\r';
+				} else {
+					output += aPlayer+' '+L('FROM')+' ('+aTown+') '+L('ATK')+' '+dPlayer+' '+L('IN')+' ('+dTown+') @ '+reportDate+'\r';
+				}
+			//Resources
+				var morale = $.trim($('.morale').text());
+				var luck = $.trim($('.luck').text());
+				output += ''+L('CITB')+': '+morale+', '+luck+'\r';
+				output += ''+L('CBPNTS')+': '+L('DPNTS')+' ('+ES_AP+'), '+L('APNTS')+' ('+ES_DP+') \r';
+				var res=[];
+				res['total'] = $('#load').html();
+				res['wood'] = $('.wood_img').siblings('span').html();
+				res['stone'] = $('.stone_img').siblings('span').html();
+				res['iron'] = $('.iron_img').siblings('span').html();
+				if (res['total'] !== null) {
+					output += ''+res['total']+' '+L('OF_WHICH')+' '+L('Wood')+': '+res['wood']+', '+L('Stone')+': '+res['stone']+', '+L('Iron')+': '+res['iron']+'';
+				} else { output += L('LOOT')+': '+L('NOLOOT');}
+			//Attacker Units
+				output += '\r'+L('ATTACKR')+' -'+L('WITH')+'- ';
+				var gt_aunits=[];
+				for (var aU = 0; aU < $gc('report_side_attacker_unit').length; aU++) {
+					for (var uArr in unitCosts) {
+						gt_aunits[uArr] = $('.report_side_attacker .unit_'+uArr).children('.place_unit_black').html();
+						gt_aunits[uArr+'-l'] = $('.report_side_attacker .unit_'+uArr).siblings('span').html();
+					}
+				}
+				for (var uArr in unitCosts) {
+					if (gt_aunits[uArr]!=null) {output += unitCosts[uArr][6]+' '+gt_aunits[uArr]+' '+gt_aunits[uArr+'-l']+', ';}
+				}
+			//Defender Units
+				var wall = $.trim($('.oldwall').text());
+				output += '\r'+L('DEFENDR')+' -'+L('WITH')+'- ';
+				if (wall !== "") {output += wall;}
+				var gt_dunits=[];
+				for (var dU = 0; dU < $gc('report_side_defender_unit').length; dU++) {
+					for (var uArr in unitCosts) {
+						gt_dunits[uArr] = $('.report_side_defender .unit_'+uArr).children('.place_unit_black').html();
+						gt_dunits[uArr+'-l'] = $('.report_side_defender .unit_'+uArr).siblings('span').html();
+					}
+				}
+				var uOutput = "";
+				for (var uArr in unitCosts) {
+					if (gt_dunits[uArr]!=null) {uOutput += unitCosts[uArr][6]+' '+gt_dunits[uArr]+' ('+gt_dunits[uArr+'-l']+'), ';}
+				}
+				if (uOutput == "") {output += L('NON');} else { output += uOutput;}
+			output += '';
+			if ($g('ReportTextArea2')) {
+				$g('ReportTextArea2').innerHTML = output;
+			}
+		}
+		if ($g('report_report')) {
+			ES_Report_Format("report_report");
+			for(i in $g("report_report").getElementsByTagName("div")){
+				if($g("report_report").getElementsByTagName("div")[i].className == 'report_fight_classic'){
+					$g("report_report").getElementsByTagName("div")[i].style.display = "block";
+				}
+				if($g("report_report").getElementsByTagName("div")[i].className == 'report_fight_modern'){
+					$g("report_report").getElementsByTagName("div")[i].style.display = "none";
+				}
+			}
+		}
+	}
+	// END of CR FORMATTER
+
+	// START of ADDMESSAESLINK
+	if (Config.get('optMessagelink')) {
+		function addmessagelink(aEl) {
+			if (aEl.parentNode && aEl.parentNode.innerHTML.indexOf(imP) == -1 && aEl.parentNode.innerHTML.indexOf('message?') != -1) {
+				var aBt = $a("&nbsp;&nbsp;",[['id','ES_Link'],['href', jsVoid]]);
+				aBt.addEventListener("click", ES_Message(aEl), false);
+				aBt.appendChild($img([['src',image['bPopup']],['style','float: right;z-index: 30;'],['class','ajaxMessageLink']]));
+				$(aBt).insertAfter(aEl);
+			}
+			function ES_Message(aEl) {
+				return function() {
+					ajaxRequest(aEl.href, 'EST', null, function(ajaxResp) {
+						var ad = ajaxND(ajaxResp);
+						var aV = ad.getElementById('message_message_list');
+						$g("ES_Report").innerHTML = '';
+						$g("ES_Report").appendChild(aV);
+						var mH;
+						var elm = $g("ES_Report").getElementsByTagName('div');
+						for (i=0; i<elm.length; i++) {
+							if (elm[i].className == 'game_header bold') {
+								mH = elm[i];
+								break;
+							}
+						}
+						if (mH) {
+							mH.style.cursor = 'move';
+							var cBt = $a("&nbsp;&nbsp;",[['id','ES_Link'],['href', jsVoid]]);
+							cBt.addEventListener("click", ES_Report_Clean, false);
+							cBt.appendChild($img([['src',image['bClose']],['style','float:right;margin-top:-15px;']]));
+							mH.appendChild(cBt);
+							if (Config.get('optUserlinks')) {insertUserLinks($g("ES_Report"));}
+							makeDraggable($g("ES_Report"),mH);
+							var btnEl = $gc('middle');
+							for (i=0; i < btnEl.length; i++) { 
+								if (btnEl[i].innerHTML == "Vidarebefordra") { 
+									var elem = btnEl[i].parentNode;
+									if (elem.href.match(/(message\?id\=)(\d{1,})/i)) {
+										uW.Message.id = RegExp.$2;
+									}
+								}
+							}					
+						}
+					}, dummy);
+				};
+			};
+		};
+		if (ES.Game.controller == 'message') {
+			if ($g('message_messages')) {
+				var report = $d('',[['id','ES_Report'],["style","top:"+topX+";left:"+leftX+";"]]);
+				$(report).insertAfter($g("box"));
+				var ML = $g('message_list');
+				var links = ML.getElementsByTagName("a");
+				for (i=0; i<links.length; i++) {
+					addmessagelink(links[i]);
+				}
+				var scrPop = $sc('$(\'.ajaxMessageLink\').mousePopup(new MousePopup("'+L('OPENINPOPUP')+'"));',[['type','text/javascript']]);
+				$g('folder_container').appendChild(scrPop);
+			}
+		}
+	}
+	// END of ADDMESSAESLINK
+	
+	// START of ADDREPORTLINK
+	if (Config.get('optReportlink')) {
+		function addreportlink(aEl) {
+			if (aEl.parentNode && aEl.parentNode.innerHTML.indexOf(imP) == -1) { 
+				var aBt = $a("&nbsp;&nbsp;",[['id','ES_Link'],['href', jsVoid]]);
+				aBt.addEventListener("click", ES_Report(aEl), false);
+				aBt.appendChild($img([['src',image['bPopup']],['style','float: right;z-index: 30;padding-right: 20px;'],['class','ajaxReportLink']]));
+				$(aBt).insertAfter(aEl);
+			}
+			function ES_Report(aEl) {
+				return function() {
+					ajaxRequest(aEl.href, 'EST', null, function(ajaxResp) {
+						var ad = ajaxND(ajaxResp);
+						var aV = ad.getElementById('report_report');
+						$g("ES_Report").innerHTML = '';
+						$g("ES_Report").appendChild(aV);
+						$g('report_report_header').style.cursor = 'move';
+						var cBt = $a("&nbsp;&nbsp;",[['id','ES_Link'],['href', jsVoid]]);
+						cBt.addEventListener("click", ES_Report_Clean, false);
+						cBt.appendChild($img([['src',image['bClose']],['style','float:right;']]));
+						$g('report_report_header').appendChild(cBt);
+						for (i in $g("ES_Report").getElementsByTagName("div")) {
+							if ($g("ES_Report").getElementsByTagName("div")[i].className == 'report_fight_classic') {
+								$g("ES_Report").getElementsByTagName("div")[i].style.display = "block";
+							}
+							if ($g("ES_Report").getElementsByTagName("div")[i].className == 'report_fight_modern') {
+								$g("ES_Report").getElementsByTagName("div")[i].style.display = "none";
+							}
+						}
+						if (Config.get('optFormatter')) {ES_Report_Format("ES_Report");}
+						if (Config.get('optUserlinks')) {insertUserLinks($g("ES_Report"));}
+						makeDraggable($g("ES_Report"),$g("report_report_header"));
+					}, dummy);
+				};
+			};
+		};
+		if (ES.Game.controller == 'report') {
+			if ($g('report_reports')) {
+				var report = $d('',[['id','ES_Report'],["style","top:"+topX+";left:"+leftX+";"]]);
+				$(report).insertAfter($g("box"));
+				var RL = $g('report_list');
+				var links = RL.getElementsByTagName("a");
+				for (i=0; i<links.length; i++) {	
+					addreportlink(links[i]);
+				}
+				var scrPop = $sc('$(\'.ajaxReportLink\').mousePopup(new MousePopup("'+L('OPENINPOPUP')+'"));',[['type','text/javascript']]);
+				$g('folder_container').appendChild(scrPop);
+			}
+		}
+	}
+	// END of ADDREPORTLINK
+	
+	// START of REDIRECT CLEANER
+	if (Config.get('optRedirectcleaner')) {
+		for (var i = 0; i < document.links.length; i++) {
+		  linkx = document.links[i];
+		  switch(0) {
+			case linkx.href.indexOf("http://"+ES.Server[2]+".grepolis.com/start/redirect?url=") : linkx.href = decodeURIComponent(linkx.href.substring(linkx.href.indexOf("") + 42)); break;
+		  }
+		}
+	}
+	// END of REDIRECT CLEANER
+
+	// START of FARMER HELP
+	if (Config.get('optFarmerhelp')) {
+		if (ES.Game.controller == "map" || ES.Game.controller == "player") {
+			(function () {
+				//add a console function
+				var l;
+				if (typeof uW.console === 'object' && typeof uW.console.log === 'function') { l = uW.console.log; } else { l = function () { return false; }; }
+				//the actual script
+				var grepoFarmHelper = (function () {
+					var GameData;
+					var TownInfo;
+					var bindDurationCounter_old;
+					var sendUnits_old;
+					var init_old;
+					var townId = parseInt(uW.Game.townId, 10);
+					var strength_prev = 0;
+					var strength_now = 0;
+					var mood_now = 0;
+					var booty;
+					var tilx_str_tot;
+					var r = function (n, x) {var f = Math.pow(10, x);return Math.round(n * f) / f;};
+					var r2 = function (n) {return Math.round(n * 100) / 100;};
+					var calcRes = function () {
+						var res = 0;
+						$('.unit_input_ground').each(function () {
+							var uCount = parseInt($(this).val(), 10);
+							if (isNaN(uCount)) { uCount = 0; }
+							if (ES.Game.controller == "map") {
+								res += parseInt(ES.GameData.units[$(this).attr('name')].booty, 10) * uCount;
+							} else if (ES.Game.controller == "player") {
+								res += parseInt(unitCosts[$(this).attr('name')][7], 10) * uCount;
+							}
+						});
+						if ($('#tilx_booty').is(':checked')) { res *= 1.3; }
+						res = Math.floor(res);
+						return res;
+					};
+					var handleResFarm = function () {
+						var res = calcRes();
+						value.set('booty' + townId, $('#tilx_booty').is(':checked'));
+						booty = $('#tilx_booty').is(':checked');
+						var percent=(strength_prev + strength_now)/100;
+						if (percent>1){ percent=1;}
+						var maxLoot = Math.round(6005*Math.pow( percent, Math.sqrt(2) ));
+						var text = res;
+						if (res > maxLoot ) {
+							$('#tilx_res').addClass('error');
+							text = res + "/" + maxLoot;
+							res = maxLoot;
+						} else {
+							$('#tilx_res').removeClass('error');
+						}
+						var strength_total = (strength_prev + strength_now) / 100;
+						$('#tilx_res').text(text);
+						$('#tilx_mood_drop').text(r2( - res / (125 * strength_total)));
+						$('#tilx_strength_drop').text(r2( - res / (375 * strength_total)));
+					};
+					var handleResPlayer = function () {
+						var res = calcRes();
+						value.set('booty' + townId, $('#tilx_booty').is(':checked'));
+						booty = $('#tilx_booty').is(':checked');
+						$('#tilx_res').text(res);
+					};
+					var calcStrength = function () {
+						var strength = 0, strength_total = strength_prev + strength_now;
+						$('.unit_input_ground').each(function () {
+							var uCount = parseInt($(this).val(), 10);
+							if (isNaN(uCount)) {
+								uCount = 0;
+							}
+							strength += parseInt(ES.GameData.units[$(this).attr('name')].population, 10) * uCount / 5;
+						});
+						if (strength > 15) { 
+							$('#tilx_strength').addClass('error');
+							strength = 15;
+						} else {
+							$('#tilx_strength').removeClass('error');
+						}
+						strength_total += strength;
+						if (strength_total > 100) {
+							$('#tilx_strength_total').addClass('error');
+							strength_total = 100;
+						} else {
+							$('#tilx_strength_total').removeClass('error');
+						}
+						$('#tilx_strength').text(r2(strength));
+						$('#tilx_strength_total').text(r2(strength_total));
+						tilx_str_tot = r2(strength_total);
+						return strength;
+					};
+					var unitQuantity = function(){
+						var $this = $(this);
+						if ($("#attack_type_input").val() == 'farm_attack') {
+							var population =  (ES.GameData.units[$this.attr('id')].population)/5;
+							var missing_strength = 101 - $('#tilx_strength_total').text();
+							if(missing_strength > 15) missing_strength  = 15;
+							var total = Math.floor(missing_strength/population);
+							var maxU = $this.find("span.black").text();
+							total = total > maxU ? maxU : total;
+							$('#unit_type_'+$this.attr('id')).attr('value', total);
+						} else if($("#attack_type_input").val() == 'ask_farm_for_resources') {
+							var booty = parseInt(ES.GameData.units[$this.attr('id')].booty, 10);
+							booty = $('#tilx_booty').is(':checked') ? booty *= 1.3 : booty;
+							var percent=(strength_prev + strength_now)/100;
+							percent = percent > 1 ? 1:percent;
+							var res = calcRes();
+							var maxLoot = Math.floor(6005*Math.pow( percent, Math.sqrt(2) ));
+							res = maxLoot - res;
+							res = res < 0 ? 0:res;
+							var total = Math.ceil(res/booty);
+							var maxU = $this.find("span.black").text();
+							total = total > maxU ? maxU : total;
+							$('#unit_type_'+$this.attr('id')).attr('value',  total);
+						} else { // 'ask_farm_for_units'
+							$('#unit_type_' + $this.attr('id')).attr('value', $this.find("span.black").text());
+						}
+					};
+					var calc = function () { handleResFarm(); calcStrength(); };
+					var bindDurationCounter_new = function () {
+						if (TownInfo.type == 'farm_town_info' && ES.Game.controller !== 'player') {
+							if ($('#duration_container').length !== 1 || $('#attack_type').length !== 1) {
+								alert(L('GREPO_FARM_NOT_COMPATIBLE'));
+								return false; 
+							}
+							$g('send_units_form').getElementsByClassName('middle')[0].style.color = moodColor;
+							if ($('#ES_FH_03').length != 0) { $('#ES_FH_03').text(" "+mood_now+"%"); } else { $g('send_units_form').getElementsByClassName('middle')[0].innerHTML += "<span style=\"font-weight:normal;\" id=\"ES_FH_03\"> ("+mood_now+"%)</span>"; }
+							var html =	'<div style="position: absolute; width: auto; right: 107px; top: 235px;" id="ES_FH_01">' +
+											'<div class="tilx_infos" style="background-image:url(' + image.booty + ');border-width:1px 0 1px 1px;padding-right:5px;width:auto;" id="tilx_res_cont">' +
+												'<span id="tilx_res">0</span> ' + 
+												'<label><input type="checkbox" id="tilx_booty"> <em>'+L('LOOT')+'</em></label>' +
+											'</div>' +
+											'<div class="tilx_infos" style="background-image:url(' + image.mood_drop + ');float:left;width:auto;border-width:0 1px 1px;padding-right:10px;" id="tilx_mood_drop">0</div>' +
+											'<div class="tilx_infos" style="background-image:url(' + image.strength_drop + ');border-width:0 0 1px;width:auto;padding-right:10px;" id="tilx_strength_drop">0</div>' +
+										'</div>' +
+										'<div style="position: absolute; top: 172px; left: 373px;" id="ES_FH_02">' +
+											'<div class="tilx_infos" style="background-image:url(' + image.strength + ');margin-top:3px;border-width:1px 1px 0;" id="tilx_strength">0</div>' +
+											'<div class="tilx_infos" style="background-image:url(' + image.strength_prev + ');border-width:0 1px;" id="tilx_strength_prev">' + r2(strength_prev) + '</div>' +
+											'<div class="tilx_infos" style="background-image:url(' + image.strength_now + ');border-width:0 1px;" id="tilx_strength_now">' + r2(strength_now) + '</div>' +
+											'<div class="tilx_infos" style="background-image:url(' + image.strength_total + ');border-width:1px;border-top-style:dashed;" id="tilx_strength_total">0</div>' +
+										'</div>';
+							if ($('#ES_FH_01') && $('#ES_FH_02')) {
+								$('#ES_FH_01').remove();
+								$('#ES_FH_02').remove();
+							}
+							$('#units').after(html);
+							if (booty) { $('#tilx_booty').attr('checked', 'checked'); }
+							$('#tilx_res_cont').setPopup('tilx_res');
+							$('#tilx_mood_drop').setPopup('tilx_mood_drop');
+							$('#tilx_strength_drop').setPopup('tilx_strength_drop');
+							$('#tilx_strength').setPopup('tilx_strength');
+							$('#tilx_strength_prev').setPopup('tilx_strength_prev');
+							$('#tilx_strength_now').setPopup('tilx_strength_now');
+							$('#tilx_strength_total').setPopup('tilx_strength_total');
+							$('.index_unit').attr('onclick',''); 
+							$('.index_unit').bind('click', unitQuantity);
+							$('.index_unit').bind('click', calc);
+							$('.unit_input').bind('keyup', calc);
+							$('.ui-slider').bind('slide', calc);
+							$('.unit_input').bind('onchange', calc);
+							$('#tilx_booty').bind('click', calc);
+							calc();
+							if (tilx_str_tot < 100) {
+								TownInfo.setAttackType('attack_type_input', 'farm_attack');
+							}
+						} else if (TownInfo.type == 'town_info' || ES.Game.controller == 'player') {
+							var html =	'<div class="tilx_infos" style="background-image:url(' + image.booty + ');float:right;padding-right:90px;" id="tilx_res_cont">' +
+											'<span id="tilx_res"></span> ' + 
+											'<label><input type="checkbox" id="tilx_booty"> <em>'+L('LOOT')+'</em></label>' + 
+										'</div>';
+							if ($('#tilx_res_cont').length != 0) {
+								$('#tilx_res_cont').remove();
+							}
+							$('#duration_container').prepend(html).width(350);
+							$('#way_duration, #arrival_time').width(70);
+							if (booty) { $('#tilx_booty').attr('checked', 'checked'); }
+							$("#tilx_res_cont").setPopup('tilx_res');
+							$('.index_unit').bind('click', handleResPlayer);
+							$('.unit_input').bind('keyup', handleResPlayer);
+							$('#tilx_booty').bind('click', handleResPlayer);
+							$('#town_info_units a').bind('click', handleResPlayer);
+						}
+						return bindDurationCounter_old.apply(TownInfo, arguments);
+					};
+					var sendUnits_new = function () {
+						if (TownInfo.type === 'farm_town_info' && $('#attack_type_input').val() === 'farm_attack') {
+							strength_prev += calcStrength();
+							$('#tilx_strength_prev').text(r2(strength_prev));
+						}
+						return sendUnits_old.apply(TownInfo, arguments);
+					};
+					var init_new = (function() {
+						var handleAjaxComplete = function () {
+								uW.PopupFactory.addTexts({
+									tilx_town_id: L('TILX_TOWN_ID') + "<em>[town]"+uW.TownInfo.town_id+"[/town]</em>",
+									tilx_res: L('TILX_RES'),
+									tilx_mood_drop: L('TILX_MOOD_DROP'),
+									tilx_strength_drop: L('TILX_STR_DROP'),
+									tilx_strength: L('TILX_STR'),
+									tilx_strength_prev: L('TILX_STR_PREV'),
+									tilx_strength_now: L('TILX_STR_NOW'),
+									tilx_strength_total: L('TILX_STR_TOTAL'),
+								});
+								if ($(this).find('#farmtown_strength').length === 1) { 
+									strength_now = parseInt($('#farmtown_strength .farm_bar_container').text(), 10); 
+								}
+								if ($(this).find('#farmtown_mood').length === 1) {
+									var moodLevel = document.getElementById("farmtown_mood").getElementsByTagName("div")[0].id;
+									mood_now = parseInt($('#farmtown_mood .farm_bar_container').text(), 10); 
+									if (moodLevel == "mood1") { moodColor = "#00ff00"; } else if (moodLevel == "mood2") { moodColor = "#ffff00"; } else if (moodLevel == "mood3") { moodColor = "#ffa500"; } else { moodColor = "#ff0000"; };
+								}
+								if (Config.get('optUserlinks')) { insertUserLinksMap(); }
+								if (Config.get('optAllylinks')) { insertAllyLinksMap(); }
+								if (($('#townWindow #towninfo_towninfo').length === 1)&&($("#ES_TownId").length === 0)) {
+									$('#townWindow #towninfo_towninfo .game_header').append("<span id=\"ES_TownId\">ID: "+uW.TownInfo.town_id+"</span>");
+									$("#ES_TownId").setPopup('tilx_town_id');
+								}
+								$('#townWindow').unbind('ajaxComplete', handleAjaxComplete);
+						};
+						return function (tid) {
+							var r = init_old.apply(TownInfo, arguments);
+							strength_prev = 0;
+							$('#townWindow').ajaxComplete(handleAjaxComplete);
+							return r;
+						}
+					}());
+					return function () {
+						value = newValueLib(scriptId);
+						if (ES.Game.controller == 'map' || ES.Game.controller == 'player') {
+							booty = value.get('booty' + townId, 'false') == 'true';
+							TownInfo = uW.TownInfo;
+							if (typeof TownInfo !== 'object' 
+							|| typeof TownInfo.bindDurationCounter !== 'function' 
+							|| typeof TownInfo.sendUnits !== 'function' 
+							|| typeof ES.GameData !== 'object' 
+							|| typeof ES.GameData.units !== 'object') {
+								alert(L('GREPO_FARM_NOT_COMPATIBLE'));
+								return false;
+							}
+							bindDurationCounter_old = TownInfo.bindDurationCounter;
+							sendUnits_old =  TownInfo.sendUnits;
+							init_old =  TownInfo.init;
+							TownInfo.bindDurationCounter = bindDurationCounter_new;
+							TownInfo.sendUnits = sendUnits_new;
+							TownInfo.init = init_new;
+						}
+					}
+				}());
+				grepoFarmHelper();
+			}());
+		}
+	}
+	// END of FARMER HELP
+
+	// START of RESOURCES at SIMULATOR
+	if (Config.get('optRescalc')) {
+		ResCalc = {
+			uW : null,
+			$  : null,
+
+			init : function() {
+				// Get the unsafe window outside of GM.
+				if (typeof unsafeWindow === 'object')
+					ResCalc.uW = unsafeWindow;
+				else 
+					ResCalc.uW = window;
+
+				var uW = ResCalc.uW;
+				var $ = ResCalc.$;
+
+				ResCalc.server = "";
+
+				if ( ES.Server[1] )
+					ResCalc.server = ES.Server[1];
+
+				//get jQuery (used by Grepo, but also very usefull for us)
+				ResCalc.$ = ResCalc.uW.jQuery;
+				var $ = ResCalc.$;
+
+				// Get GameData
+				if ( uW.GameData && uW.GameData.units && uW.GameData.units.archer ) {
+					var gunits = ResCalc.unwrap( uW.GameData.units );
+					ResCalc.UnitData = {};
+					for (var u in gunits) {
+						var nu = 
+						{ resources: gunits[u].resources,
+						  population: gunits[u].population,
+						  favor: gunits[u].favor
+						};
+						ResCalc.UnitData[ u ] = nu;
+					}
+					ResCalc.storeValue( "Units", ResCalc.UnitData );
+				} else {
+					var gunits = ResCalc.readValue( "Units" );
+					if ( gunits && gunits.length > 0 )
+						eval( "ResCalc.UnitData = "+gunits );
+					else {
+						//unitCosts
+						//Wood, Stone, Iron, FoodPoints, Favor, Name, Booty
+						var gzunits = unitCosts;
+						ResCalc.UnitData = {};
+						for (var u in gzunits) {
+							var nu = 
+							{ resources: { wood: gzunits[u][0], stone: gzunits[u][1], iron: gzunits[u][2] },
+							  population: gzunits[u][3],
+							  favor: gzunits[u][4]
+							};
+							ResCalc.UnitData[ u ] = nu;
+						}
+						ResCalc.storeValue( "Units", ResCalc.UnitData );
+						ResCalc.rclog( "No unit definition found - using defaults from grepo v.1.16");
+					}
+				}
+
+				// Add Pop-up texts we use here (will be bound to html elements later by "setPopup" calls)
+				uW.PopupFactory.addTexts({
+							rcwood_lost  : '<h4>'+L('Wood')+'</h4>'+L('NOMILITIA'),
+							rcstone_lost : '<h4>'+L('Stone')+'</h4>'+L('NOMILITIA'),
+							rciron_lost  : '<h4>'+L('Iron')+'</h4>'+L('NOMILITIA'),
+							rcfavor_lost : '<h4>'+L('Favor')+'</h4>',
+							rcbh_lost    : '<h4>'+L('BH')+'</h4>'+L('NOMILITIA'),
+							rcatt_lost   : L('RCATT_LOST'),
+							rcdef_lost   : L('RCDEF_LOST'),
+							openResBox   : L('OPENRESBOX'),
+							closeResBox  : L('CLOSERESBOX'),
+							wallYourCosts: L('WALLYOURCOSTS'),
+							wallFoeCosts : L('WALLFOECOSTS'),
+							clickncopy	 : L('CLICKNCOPY')
+						});
+
+				uW.rc_ShowPopup = ResCalc.ShowPopup;
+
+				if ( ResCalc.UnitData )	{
+					if ( uW.document.getElementById('report_mood_strength') ) {
+						ResCalc.rclog("FARM");
+						// TODO
+					} else if ( uW.document.URL.indexOf( "action=simulator") > 0 ) {
+						ResCalc.rclog("SIM");
+						// Simulation
+
+						var oldSuccess = uW.HumanMessage.success;
+						oldSuccess.bind( uW.HumanMessage );
+
+						// Hook for the  message after simulation
+						uW.HumanMessage.success = function(message) {
+							var attCosts = ResCalc.calcSimRes( "building_place_att_losses_" );
+							var defCosts = ResCalc.calcSimRes( "building_place_def_losses_" );
+							var yourCntrl = "";
+							var foeCntrl = "";							
+
+							for( var res in {'Wood':1,'Stone':1,'Iron':1,'Favor':1,'BH':1} ) {
+								$('#Att'+res ).text( attCosts[ res ] );
+								$('#Def'+res ).text( defCosts[ res ] );
+								yourCntrl += L(res) + ': ' + attCosts[ res ] + ', ';
+								foeCntrl += L(res) + ': ' + defCosts[ res ] + ', ';
+							}
+							$('#ES_Stats_Report').text(L('SIMSTATS')+'\n'+L('MYCOSTS')+' — ' + yourCntrl + '\n'+L('FOECOSTS')+' — ' + foeCntrl);
+							oldSuccess(message);
+						};
+
+						$(".game_header").parent().prepend( '<div id="fcSimShow" onclick="'
+							// Adjust it below and at the right side of the last cell of the fight bonus table
+							+'rc_ShowPopup(\'fcSim\',\'building_place_def_losses_wall_level\', \'right\')'
+							+ '" class="place_sim_showhide" style="float:right"/>' );
+
+						ResCalc.$('#fcSimShow').setPopup( 'openResBox');
+						ResCalc.createResPopup('fcSim', L('RESTABLE'));
+
+					} else if ( uW.document.URL.indexOf( "game/building_wall?") > 0 ) {
+						// "Building wall"
+						ResCalc.rclog("WALL");
+
+						// The lists always contain 5 rows
+						// #0 - Title row   ("Defeated..." / "Losses...")
+						// #1 - Subtile row ("...as aggressors"  )
+						// #2 - unit row
+						// #3 - Subtile row ("...as defenders" )
+						// #4 - unit row
+
+						// Items on the left side - "Defeated..."
+						var defeatedUnits = $('.list_item_left');
+
+						var foeCounters = 
+						{ Wood  : 0,
+						  Stone : 0,
+						  Iron  : 0,
+						  Favor : 0,
+						  BH    : 0 };
+
+						ResCalc.calcWallRes( defeatedUnits[2], foeCounters );
+						ResCalc.calcWallRes( defeatedUnits[4], foeCounters );
+
+						// Items on the right side - "Losses..."
+						var lostUnits   = $('.list_item_right');
+
+						var yourCounters = 
+						{ Wood  : 0,
+						  Stone : 0,
+						  Iron  : 0,
+						  Favor : 0,
+						  BH    : 0 };
+
+						ResCalc.calcWallRes( lostUnits[2], yourCounters );
+						ResCalc.calcWallRes( lostUnits[4], yourCounters );
+
+						// Add "+"-Button
+						$(".game_header").parent().prepend( '<div id="fcWallShow" onclick="'
+							+'rc_ShowPopup(\'fcWall\',\'fcWallShow\', \'right\')'
+							+ '" class="place_sim_showhide" style="float:right"/>' );
+
+						ResCalc.createResPopup( 'fcWall', L('RAWMATSINCL') );
+
+						$('#AttLosts').setPopup('wallYourCosts')
+						$('#DefLosts').setPopup('wallFoeCosts')
+
+						// Update counters in pop-up.
+						var yourCntr = "";
+						var foeCntr = "";
+						for( var res in {'Wood':1,'Stone':1,'Iron':1,'Favor':1,'BH':1} ) {
+							$('#Att'+res ).text( ResCalc.fInt( yourCounters[ res ] ) );
+							$('#Def'+res ).text( ResCalc.fInt( foeCounters[ res ] ) );
+							yourCntr += L(res) +': ' + ResCalc.fInt( yourCounters[ res ] ) + ', ';
+							foeCntr += L(res) +': ' + ResCalc.fInt( foeCounters[ res ] ) + ', ';
+						}
+						$('#ES_Stats_Report').text(L('STATS')+'\n'+L('MYCOSTS')+' — ' + yourCntr + '\n'+L('FOECOSTS')+' — ' + foeCntr);
+					}
+				}
+			},
+			
+			// Our console function
+			// Used for debugging purposes.
+			rclog : function(msg) {
+				try {
+					if ( typeof GM_log !== 'undefined' )
+						GM_log( msg );
+					else {
+						ResCalc.uW.console.log(msg);
+					}
+				}
+				catch (e) { };
+			},
+			
+			// Some DOM functions return "wrapped" objects with restricted access to some properties.
+			// We need the real ones... 
+			unwrap : function(node) {
+				return (node && node.wrappedJSObject) ? node.wrappedJSObject : node;
+			},
+
+			/**
+			 * Escapes a string for use in object dumps,
+			 * without any prototype magic.
+			 */
+			escapeString : function(str) {  
+			  var sb = "";
+			  for (var i=0;i<str.length;i++) {
+				var c=str[i];
+				var cc=str.charCodeAt(i);
+				if ((cc>=0x000 && cc<=0x01F) || (cc>=0x007F && cc<=0x09F)) {
+				  // Use Unicode
+				  sb += "\\u";
+				  var hexval= cc.toString(16);
+				  while( hexval.length<2) hexval = "0"+hexval;
+				  sb += hexval;
+				} 
+				else
+				  switch (c) {
+					case "'" : sb += "\\'" ; break;
+					case '"' : sb += "\\\""; break;
+					case '\\': sb += "\\\\"; break;
+					case '/' : sb += "\\/" ; break;
+					case '\b': sb += "\\b" ; break;
+					case '\f': sb += "\\f" ; break;
+					case '\n': sb += "\\n" ; break;
+					case '\r': sb += "\\r" ; break;
+					case '\t': sb += "\\t" ; break;
+					default  : sb += c     ; break;
+				  }
+			  }
+			  return sb;
+			},
+
+			
+			/**
+			 * JSON like stringify funtion.
+			 * Creates simple javascript source from objects, but not real JSON.
+			 */
+			xString : function(obj) {
+			  if (obj===null) return 'null';
+
+			  switch (typeof obj) {
+				case 'undefined':
+				case 'unknown'  : return '';
+				case 'function' :
+				case 'number'   :
+				case 'boolean'  : return obj.toString();
+				case 'string'   :
+				  return '"'+ResCalc.escapeString(obj)+'"';
+				case 'object':
+				  if (obj.nodeType != 1) {
+					var x=[];
+					if ('splice' in obj && 'join' in obj) { 
+					  // Array
+					  for (var e in obj)
+						x.push(ResCalc.xString(obj[e]));
+					  return '['+x.join(',')+']';
+					} else {
+					  for (var e in obj)
+						x.push( '"'+e+'":'+ResCalc.xString(obj[e]));
+					  return '{'+x.join(',')+'}';
+					}
+				  }
+				break;
+			  }
+			  return obj.toString();
+			},
+
+			storeValue : function( name, value ) {
+				try {
+						ResCalc.rclog( "storing "+ResCalc.server+"."+name );
+						value = ResCalc.xString( value );
+						GM_setValue( ResCalc.server+"."+name, value );
+					}
+				catch (e) {
+					ResCalc.rclog( "failed - "+e );
+				}
+			},
+
+			readValue : function( name ) {
+				try {
+					var data = GM_getValue( ResCalc.server+"."+name );
+					return data;
+				} catch (e) {
+					ResCalc.rclog( e );
+				}
+				return null;
+			},
+			
+			// Convenience replacement for "parseInt".
+			pInt : function( txt, dft ) {
+			  var v=parseInt( txt, 10 );
+			  if (isNaN(v)) v=(dft===undefined)?0:dft;
+			  return v;
+			},
+
+			// Fills up numbers (to look more pretty)
+			pad : function(number, digits) {
+			  var x = ""+number;
+			  while(x.length<digits) x = "0"+x;
+			  return x;
+			},
+			
+			// Format large integer values
+			// E.g. "1000" will be "1.000"
+			fInt : function( val ) {
+				  var txt = "";
+				  while( val >= 1000 ) {
+					  var nv = Math.floor(val/1000);
+					  txt = " "+ResCalc.pad(val-(nv*1000),3)+txt;
+					  val = nv;
+				  }
+				  txt = ""+val+txt;
+				  return txt;
+			},
+			
+			// Crossbrowser event fixing (stupid IE).
+			cbFix : function(e) { 
+			  if (undefined == e) e=ResCalc.uW.event;
+			  if (undefined == e.layerX) e.layerX=e.offsetX;
+			  if (undefined == e.layerY) e.layerY=e.offsetY;
+			  return e;
+			},
+			
+			// Get the absolute left position of some html element inside the page. 
+			getLeft : function(el) {
+			   var x = 0;
+			   while (el != null) { x += el.offsetLeft; el = el.offsetParent;}
+			   return x;
+			},
+			
+			// Get the absolute top position of some html element inside the page.
+			getTop : function(el) {
+			   var y = 0;
+			   while (el != null) { y += el.offsetTop; el = el.offsetParent;}
+			   return y;
+			},
+			
+			//////////////////////////////////////////////
+			// Simple "drag" support.
+			//////////////////////////////////////////////
+			drag : {
+			   obj : null,
+
+			   init : function(oAnchor, oRoot ) {
+				  var a = ResCalc.unwrap( ResCalc.uW.document.getElementById(oAnchor) );
+				  var o = ResCalc.unwrap( ResCalc.uW.document.getElementById(oRoot) );
+				  
+				  a.onmousedown = ResCalc.drag.start;
+				  a.root = o ? o: a;
+
+				  if (isNaN(parseInt(a.root.style.left))) a.root.style.left= "0px";
+				  if (isNaN(parseInt(a.root.style.top ))) a.root.style.top = "0px";
+			   },
+
+			   start : function(e) {
+				  var o = ResCalc.drag.obj = ResCalc.unwrap(this);
+				  var e = ResCalc.cbFix(e);
+				  var y = ResCalc.pInt(o.root.style.top);
+				  var x = ResCalc.pInt(o.root.style.left);
+				  o.lastMouseX   = e.clientX;
+				  o.lastMouseY   = e.clientY;
+
+				  var d = ResCalc.uW.document;
+				  d.onmousemove = ResCalc.drag.drag;
+				  d.onmouseup   = ResCalc.drag.end;
+				  return false;
+			   },
+
+			   drag : function(e) {
+				  e = ResCalc.cbFix(e);
+				  var o = ResCalc.drag.obj;
+				  var rt = o.root;
+
+				  var ey= e.clientY;
+				  var ex= e.clientX;
+				  var y = ResCalc.pInt(rt.style.top);
+				  var x = ResCalc.pInt(rt.style.left);
+				  var w = rt.offsetWidth;
+				  var nx, ny;
+
+				  nx = ex - o.lastMouseX;
+				  ny = ey - o.lastMouseY;
+
+				  var rtLeft = ResCalc.getLeft(rt);
+				  var ww = ResCalc.uW.innerWidth;
+
+				  x+=nx;
+				  if (x<0) x=0;
+				  if ((x+w)>ww) x=ww-w;
+
+				  y+=ny;
+				  if (y<0) y=0;
+
+				  rt.style.left = x+"px";
+				  rt.style.top  = y+"px";
+
+				  o.lastMouseX   = ex;
+				  o.lastMouseY   = ey;
+
+				  return false;
+			   },
+
+			   end : function() {
+				  var d = ResCalc.uW.document;
+				  d.onmousemove = null;
+				  d.onmouseup   = null;
+				  ResCalc.drag.obj = null;
+			   }
+			},
+
+			/** 
+			 * Create some pop-up as hidden div add the end of body. 
+			 * Used by the other "create" functions, simply to encapsulate
+			 * the general code for handling "grepo-style" pop-ups here).
+			 * @param idPrefix  Prefix to use for all IDs (to make it unique).
+			 * @param title     Text to display in title.
+			 * @param content   HTML code to put in the content area of the popup.
+			 */
+			createPopup : function( idPrefix, title, content ) {
+				ResCalc.$( "body" ).after( 
+
+					'<div style="z-index: 21; position:absolute; left:0px; top:0px; display:none;" id="'+idPrefix+'ResCostBox">'+
+						'<table cellspacing="0" cellpadding="0" class="popup" style="z-index: 21;">'+
+						'	<tbody><tr class="popup_top">'+
+						'		<td class="popup_top_left"></td>'+
+						'		<td class="popup_top_middle"></td>'+
+						'		<td class="popup_top_right"></td>'+
+						'	</tr>'+
+						'	<tr>'+
+						'		<td class="popup_middle_left"></td>'+
+						'		<td id="popup_content" class="popup_middle_middle"><div class="fcWinHeader" id="'+idPrefix+'boxDragBar">'+title+'</div>'+content+'</td>'+
+						'		<td class="popup_middle_right"></td>'+
+						'	</tr>'+
+						'	<tr class="popup_bottom">'+
+						'		<td class="popup_bottom_left"></td>'+
+						'		<td class="popup_bottom_middle"></td>'+
+						'		<td class="popup_bottom_right"></td>'+
+						'	</tr>'+
+						'</tbody></table>'+
+					'</div>' );
+
+				// Delay drag binding, otherwise some of the properties may not be initializied.
+				ResCalc.uW.setTimeout( ResCalc.drag.init, 100, idPrefix+'boxDragBar', idPrefix+'ResCostBox' );
+			},
+
+
+			/** 
+			 * Create the a resource pop-up. 
+			 * @param idPrefix  Prefix to use for all IDs (to make it unique).
+			 * @param title     Text to display in title.
+			 */
+			createResPopup : function( idPrefix, title ) {
+				ResCalc.createPopup( idPrefix, title, 
+
+				  '<div id="ES_Stats_Tbl"><table>'
+				+ '<tr>'
+				+    '<th><h6>'+L('STATS')+'</h6></th>'
+				+    '<th id="HeadWood" />'
+				+    '<th id="HeadStone" />'
+				+    '<th id="HeadIron" />'
+				+    '<th id="HeadFavor" />'
+				+    '<th id="HeadBH" />'
+				+ '</tr>'
+				+ '<tr>'
+				+    '<td id="AttLosts" />'
+				+    '<td id="AttWood" />'
+				+    '<td id="AttStone" />'
+				+    '<td id="AttIron" />'
+				+    '<td id="AttFavor" />'
+				+    '<td id="AttBH" "/>'
+				+ '</tr>'
+				+ '<tr>'
+				+    '<td id="DefLosts" />'
+				+    '<td id="DefWood" />'
+				+    '<td id="DefStone" />'
+				+    '<td id="DefIron" />'
+				+    '<td id="DefFavor" />'
+				+    '<td id="DefBH" />'
+				+ '</tr>' 
+				+ '</table><h6>'+L('STATS')+' - '+L('TXTC')+'</h6><textarea id="ES_Stats_Report" onclick="this.select()"></textarea></div>'
+				+ '</div>' );
+
+				var $ = ResCalc.$;
+				// Bind info pop-ups to headers.
+				$('#HeadWood' ).setPopup('rcwood_lost' );
+				$('#HeadStone').setPopup('rcstone_lost');
+				$('#HeadIron' ).setPopup('rciron_lost' );
+				$('#HeadFavor').setPopup('rcfavor_lost');
+				$('#HeadBH'   ).setPopup('rcbh_lost'   );
+				$('#AttLosts').setPopup('rcatt_lost');
+				$('#DefLosts').setPopup('rcdef_lost');
+				$('#ES_Stats_Report').setPopup('clickncopy');
+			},
+
+			// Flags to initicate that a pop-up was already shown and should not be aligned again.
+			bBoxOnceShown : {},
+
+			/** 
+			 * Displays a pop-up.
+			 * @param idPrefix    see createResPopup
+			 * @param adjustToId  Id of element that should be used to adjust the box.
+			 * @param adjustMode  "left" or "right"
+			 */
+			ShowPopup : function(idPrefix, adjustToId, adjustMode) {
+				var $ = ResCalc.$;
+				var showBox = $('#'+idPrefix+'Show')[0];
+				var resBox = $('#'+idPrefix+'ResCostBox')[0];
+
+				var bShow = resBox.style.display === "none";
+
+				showBox.className = bShow ? "place_sim_bonuses_more_confirm" : "place_sim_showhide";
+				$('#'+idPrefix+'Show').setPopup( bShow ? 'closeResBox' : 'openResBox' );
+				resBox.style.display = bShow ? "block" : "none";
+				
+				if ( !ResCalc.bBoxOnceShown[idPrefix] ) {
+					ResCalc.bBoxOnceShown[idPrefix] = true;
+					var adjNode = $( '#'+adjustToId )[0];
+					if (idPrefix == "fcSim") { resBoxTop = -140; resBoxLeft = 80; } else if (idPrefix == "fcWall") { resBoxTop = 2; resBoxLeft = 2; }
+					resBox.style.top  = ( ResCalc.getTop( adjNode )+adjNode.offsetHeight + resBoxTop )+"px";
+					resBox.style.left = ( ResCalc.getLeft( adjNode) + adjNode.offsetWidth - resBox.offsetWidth + resBoxLeft )+"px";
+				}
+				return false;
+			},
+			
+			/**
+			 * Get data from  simulation result.
+			 * @param idPrefix  Prefix for html ids which contain result values.
+			 */
+			calcSimRes : function ( idPrefix ) {
+				var sWood    = 0;
+				var sStone   = 0;
+				var sSilver  = 0;
+				var sBH      = 0;
+				var sFavor   = 0;
+			
+				for (var uName in ResCalc.UnitData) {
+					var node = ResCalc.uW.document.getElementById( idPrefix+uName );
+					if ( node ) {
+						var count = parseInt( node.innerHTML );
+						if ( ! isNaN( count ) ) {
+							var uc = ResCalc.UnitData[ uName];
+							if ( uc ) {
+								if ( uc.resources ) {
+									sWood    += count * uc.resources.wood;
+									sStone   += count * uc.resources.stone;
+									sSilver  += count * uc.resources.iron;
+								}
+								if ( uc.population )
+									sBH      += count * uc.population;
+								if ( uc.favor )
+									sFavor   += count * uc.favor;
+							}
+						}
+					}
+				}
+				return { Wood  : ResCalc.fInt(sWood),
+						 Stone : ResCalc.fInt(sStone),
+						 Iron  : ResCalc.fInt(sSilver),
+						 Favor : ResCalc.fInt(sFavor ),
+						 BH    : ResCalc.fInt(sBH) };
+			},
+			
+			calcWallRes : function ( unitRow, counters ) {
+				var unitRE = /\/(\w+)_50x50\.png(?:.+?)class="place_unit_black bold">(\d+)<\/span>/ig;
+				var html = unitRow.innerHTML.replace(/(\n)/g,"");
+				var r;
+				try {
+					while ( r = unitRE.exec( html ) ) {
+						var count = parseInt( r[2] );
+						if ( ! isNaN( count ) ) {
+							var uc = ResCalc.UnitData[ r[1] ];
+							if ( uc ) {
+								if ( uc.resources ) {
+									counters.Wood += count * uc.resources.wood;
+									counters.Stone+= count * uc.resources.stone;
+									counters.Iron += count * uc.resources.iron;
+								}
+								if ( uc.population )
+									counters.BH   += count * uc.population;
+								if ( uc.favor )
+									counters.Favor+= count * uc.favor;
+							}
+						}
+					}
+				} catch(e) {
+					ResCalc.rclog( e );
+				}
+			}
+		};
+		if (ES.Game.controller == 'building_wall' || uW.document.URL.indexOf( "action=simulator") > 0) {
+			ResCalc.init();
+		}
+	}
+	// END of RESOURCES at SIMULATOR
+
+// var stop = new Date().getMilliseconds();
+// var executionTime = stop - start;
+// console.log("Grepolis Extended executed in " + executionTime + " milliseconds");
+
+// };
+
+function functionMain(e) {
+	if (Config.get('optIslandpm')) { ES_IslandPM(); }
+	if (Config.get('optProdinfo')) { ES_ProdInfo(); }
+	if (Config.get('optBuildingpnts') || Config.get('optBuildingfrmt')) { ES_Builds(); }
+}
+
+window.addEventListener('load', functionMain, false);

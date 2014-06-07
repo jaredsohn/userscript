@@ -1,0 +1,9 @@
+// ==UserScript==
+// @name           Black Google
+// @namespace      Black Google
+// @include        http://www.google.fr/
+// ==/UserScript==
+GM_addStyle('body,p,td,.h{font-family:arial,sans-serif; color:#FFFFFF;}body{background:#2C3135 url(http://www.globexdesigns.com/gmail/img/login/bg.gif) repeat-x !important;}img[alt*="Google"]{background:url(http://img13.imageshack.us/img13/81/sanstitre1evm.png) no-repeat center center;height:0 !important;margin:0 auto !important;padding:72px 256px 00;}a:hover{color:#FFFFFF;text-decoration:none;}a:visited{color:#FFFFFF;text-decoration:none;}a:link{color:#FFFFFF;text-decoration:none;}.h{color:#FFFFFF;font-size:20px}.q{color:#FFFFFF}.tstd{padding:0}.ts{border-collapse:collapse}#gbar{height:22px;padding-left:2px}.gbh,.gbd{border-top:1pxsolid#c9d7f1;font-size:1px}.gbh{height:0;position:absolute;top:24px;width:100%}#gbi,#gbs{background:#fff;left:0;position:absolute;top:24px;visibility:hidden;z-index:1000}#gbi{border:1pxsolid;border-color:#FFFFFF;z-index:1001}#guser{padding-bottom:7px!important}#gbar,#guser{font-size:13px;padding-top:1px!important}@media all{.gb1,.gb3{height:22px;margin-right:.73em;vertical-align:top;}#gbar{float:left}}.gb2{display:block;padding:.2em.5em}a.gb1,a.gb3{color:#FFFFFF!important;text-decoration:underline;}.gb2,.gb3{text-decoration:none}a.gb2:hover{background:#36c;color:#fff!important}td[class*="gac_c"]{color: #000000;}#ssb,#bsf{background: none;}img[src*="/images/newspaper.gif"]{background:url(http://img21.imageshack.us/img21/8410/sanstitre3ngn.png) no-repeat center center;height:0 !important;width: 0 !important;margin:0 auto !important;padding:40px 30px 00;}.csb,.ss{background:url(http://img5.imageshack.us/img5/1053/sanstitre4ucw.png) no-repeat;height:26px;display:block}');
+
+var name = document.getElementById('logo');
+name.innerHTML = '<img width="168" height="119" src="http://img3.imageshack.us/img3/4284/sanstitre2bfv.png" alt="">';

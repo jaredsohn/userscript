@@ -1,0 +1,7 @@
+// ==UserScript==
+// @name        Batalha automatica
+// @namespace   http://userscripts.org/users/492640
+// @include     http://www.erepublik.com/*/military/battlefield/*
+// @version     1.1
+// ==/UserScript==
+var jaDeiMensagem=false;(function(){function e(){if(typeof unsafeWindow.jQuery=="undefined")window.setTimeout(e,100);else unsafeWindow.jQuery(function(){r(unsafeWindow.jQuery)})}function t(){var e=unsafeWindow.jQuery("#current_health").text().split("/")[0].replace(" ","");if(e<50){if(jaDeiMensagem){return}jaDeiMensagem=true;alert("Vida menor que 50, parando script!");throw new Error("Vida menor que 50, parando script!")}unsafeWindow.shoot()}function n(e){var n=prompt("Quantas vezes deseja lutar?");for(var r=0;r<n;r++){var i=unsafeWindow.jQuery("#current_health").text().split("/")[0].replace(" ","");if(i<50){if(jaDeiMensagem){return}jaDeiMensagem=true;alert("Vida menor que 50, parando script!");throw new Error("Vida menor que 50, parando script!")}setTimeout(t,r*2e3)}}function r(e){e(document).ready(function(){e(".action_holder").append('<button class="lutar_auto" >Lutar_auto</button>');e(".action_holder").append('<style type="text/css">.lutar_auto{background-color:#F55316;position:absolute;width:85px;height:35px;left:260px;top:15px;color:#fff;background-image:linear-gradient(to bottom, rgb(34, 34, 34), rgb(61, 28, 28));}</style>');e(".lutar_auto").click(function(){n(e)})})}e()})()

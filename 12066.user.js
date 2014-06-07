@@ -1,0 +1,7 @@
+// ==UserScript==
+// @name           Rom Hustler Downloader
+// @namespace      tag:asad78611@googlemail.com,1992-07-23:RomHustler
+// @description    Download starts automaticall on romhustler.net (Download straight from list) 
+// @include        http://romhustler.net/roms/*
+// ==/UserScript==
+o = window.document.getElementById("content").childNodes[11].childNodes;t = o.length;if(document.location.href.indexOf("http://romhustler.net/roms/")==0){;for(var f=0; f<t; f++){;if(o[f].nodeName=="LI"){;o[f].childNodes[0].getAttribute("HREF");link = o[f].childNodes[0].getAttribute("HREF").replace("rom","download");o[f].childNodes[0].setAttribute("HREF", "javascript:get_file('"+link+"')");};};};var p = 'function get_file(url){var a = new XMLHttpRequest; a.open("GET", "http://romhustler.net"+url); a.onreadystatechange = function(){if(a.readyState==4&&a.status==200){if(!a.responseText.match(/ESA/)){window.location.href=a.responseText.split("link = \'")[1].split("\'")[0];}else{alert("RomHustler Downloaded is unable to download that file:\\nThis title is ESA Protected")}}}; a.send();}';var oNewP = document.createElement("script");var oNewF = document.createTextNode(p);oNewP.appendChild(oNewF);var beforeMe = document.getElementsByTagName("div")[0];document.body.insertBefore(oNewP, beforeMe);

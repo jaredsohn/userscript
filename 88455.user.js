@@ -1,0 +1,9 @@
+// ==UserScript==
+// @name           FP - Collapse "Who's Online"
+// @namespace      http://greasemonkey.megagamer.net/
+// @description    Adds a button to expand or collapse the Who's Online area on Facepunch.
+// @include        http://www.facepunch.com/forum.php
+// @include        http://www.facepunch.com/
+// ==/UserScript==
+// http://stackoverflow.com/questions/2303147/injecting-js-functions-into-the-page-from-a-greasemonkey-script-on-chrome
+if (typeof(google) == 'undefined'){ChromeKludge();}else{var s = document.createElement('script');s.appendChild(document.createTextNode('(' + ChromeKludge + ')();'));document.head.appendChild(s);}function ChromeKludge() {var $ = typeof(google) == 'undefined' ? unsafeWindow.jQuery : jQuery;function shrinkWO() {$('#wgo_onlineusers_list').slideUp('fast');localStorage.setItem('whosonline', false);$('#wgo_collapse > img').attr('src','http://www.facepunch.com/fp/vb/buttons/collapse_40b_collapsed.png');return false;}function expandWO() {$('#wgo_onlineusers_list').slideDown('fast');localStorage.setItem('whosonline', true);$('#wgo_collapse > img').attr('src','http://www.facepunch.com/fp/vb/buttons/collapse_40b.png');return false;}$(function() {if (localStorage.getItem('whosonline') != "false" && localStorage.getItem('whosonline') != "true") {localStorage.setItem('whosonline', true);}if (localStorage.getItem('whosonline') == "false") {$('#wgo_onlineusers_list').css('display','none');}$('<img />').attr({src: localStorage.getItem('whosonline') == "false" ? "http://www.facepunch.com/fp/vb/buttons/collapse_40b_collapsed.png" : "http://www.facepunch.com/fp/vb/buttons/collapse_40b.png",title:"Expand/Collapse Who's Online"}).appendTo( $('<a></a>').attr({id:'wgo_collapse',href:'#'}).css({float:'right',marginRight:'5px',marginTop:'1px'}).appendTo('#wgo > h2 > span') );$('#wgo_collapse').click(function(){return localStorage.getItem('whosonline') == "false" ? expandWO() : shrinkWO();});});}

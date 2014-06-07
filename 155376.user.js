@@ -1,0 +1,14 @@
+// ==UserScript==
+// @name	人人网状态导出
+// @namespace	http://gera2ld.blog.163.com/
+// @author	Gerald <gera2ld@163.com>
+// @icon	http://s.gravatar.com/avatar/a0ad718d86d21262ccd6ff271ece08a3?s=80
+// @version	1.0
+// @homepage	https://userscripts.org/scripts/show/155376
+// @downloadURL	https://userscripts.org/scripts/source/155376.user.js
+// @updateURL	https://userscripts.org/scripts/source/155376.meta.js
+// @include	http://www.renren.com/*
+// @exclude	http://www.renren.com/ajaxproxy.htm
+// @grant	GM_xmlhttpRequest
+// ==/UserScript==
+function e(e){e=e.replace(/\r\n/g,"\n");for(var t="",n=0;n<e.length;n++){var o=e.charCodeAt(n);128>o?t+=String.fromCharCode(o):o>127&&2048>o?(t+=String.fromCharCode(o>>6|192),t+=String.fromCharCode(63&o|128)):(t+=String.fromCharCode(o>>12|224),t+=String.fromCharCode(o>>6&63|128),t+=String.fromCharCode(63&o|128))}return t}var t=document.querySelector("#navProfileDropMenu");if(t){var n=document.createElement("a");n.className="nav-drop-menu-item",n.href="#",n.innerHTML='<img class="icon" src="http://app.xnimg.cn/application/20090922/02/55/L937572594167SJS.gif"/> 导出状态',t.appendChild(n),t=document.createElement("div"),t.style.cssText="position:fixed;top:40%;height:50px;background:white;border:2px solid blue;border-radius:10px;z-index:9999;width:300px;padding:15px;text-align:center;display:none;",t.innerHTML="<h1 align=center>导出状态</h1>";var o=document.createElement("div");t.appendChild(o),document.body.appendChild(t),n.onclick=function(n){function r(e){j=JSON.parse(e),d=d.concat(j.doingArray),o.innerHTML="正在导出...("+d.length+"/"+j.count+")",d.length<j.count?(l++,setTimeout(a,1)):i()}function a(){GM_xmlhttpRequest({url:"http://status.renren.com/GetSomeomeDoingList.do?curpage="+l,method:"GET",onload:function(e){r(e.responseText)}})}function i(){var n=decodeURIComponent(c.user.name);o.innerHTML="导出完成！<a href=# data=open>打开</a> | <a href=# data=close>关闭</a>",o.onclick=function(o){if("A"==o.target.tagName&&(o.preventDefault(),t.style.display="none","open"==o.target.getAttribute("data"))){for(var r=['<!doctype html><html><head><meta http-equiv="Content-Type" content="text/html;charset=utf-8"><title>'+n+"的状态</title><style>.footer{color:gray;font-style:italic;font-size:80%;}</style></head><body><h1>"+n+"的状态</h1>"];d.length;)l=d.pop(),r.push("<hr><p><em>"+l.dtime+"</em></p><p>"+l.content+"</p>");r.push("<hr><div class=footer>来自 - <a href=http://userscripts.org/scripts/show/155376>人人网辅助脚本</a> - by <a href=http://gera2ld.blog.163.com/>Gerald</a> &copy; 2012</div></body></html>"),r=btoa(e(r.join(""))),open("data:text/html;charset=utf-8;base64,"+r),delete r,delete d}}}n.preventDefault(),t.style.display="block",t.style.left=(window.innerWidth-t.offsetWidth)/2+"px",o.innerHTML="正在导出...";var d=[],l=0,c=unsafeWindow.XN;a()}}

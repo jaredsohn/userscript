@@ -1,0 +1,14 @@
+# // ==UserScript==
+# // @name           tvlinks
+# // @author         Shitu
+# // @provided by    Shitu
+# // @description    contains tv links
+# // ==/UserScript==
+
+var tvcats=new Array("Select Category","Hindi TV Channels");
+var tvcats=new Array("Select Category","Hindi TV Channels");
+var defaultCatId=1;
+var tvs=new Array();
+tvs[0]=new Array();
+tvs[1]=new Array("http://a1091.l2639552042.c26395.g.lm.akamaistream.net/D/1091/26395/v0001/reflector:52042~IBN Hindi","http://a150.l2584248272.c25842.g.lm.akamaistream.net/D/150/25842/v0001/reflector:48272~IBN English","http://a1873.l2639649579.c26396.g.lm.akamaistream.net/D/1873/26396/v0001/reflector:49579~CNBC India","http://a1413.l2639754300.c26397.g.lm.akamaistream.net/D/1413/26397/v0001/reflector:54300~Aawaz TV","http://208.53.158.32/idesitv.com-sonytv-sdbdskjsk2sdad~Sony-tv","http://208.53.158.32/idesitv.com-starplus-sdnsdjhsbjshdbfj3~Star Plus","http://208.53.158.32/idesitv.com-starone-skdjskjsdnkjsnkds?WMContentBitrate=400000~Star One","http://www.tvdekho.com/tv/asx/zeesmile.asx~Zee Smile","http://www.tvdekho.com/tv/asx/zeesports.asx~Zee Sports","http://www.tvdekho.com/tv/asx/zeetv.asx~Zee TV","http://www.tvdekho.com/tv/asx/saharaone.asx~Sahara One","http://www.tvdekho.com/tv/asx/setmax.asx~Set Max","http://www.tvdekho.com/tv/asx/sony.asx~Sony","http://www.tvdekho.com/tv/asx/starone.asx~Star One","http://www.tvdekho.com/tv/asx/starplus.asx~Star Plus","http://www.tvdekho.com/tv/asx/aajtak.asx~Aaj Tak","http://www.tvdekho.com/tv/asx/mtvpak.asx~MTV Pak","http://www.tvdekho.com/tv/asx/mtvu11.asx~MTV U11","http://www.tvdekho.com/tv/asx/awaz.asx~Awaz","http://www.tvdekho.com/tv/asx/cnbcindia.asx~CNBC India","http://www.tvdekho.com/tv/asx/cnnibn.asx~CNN IBN","http://www.tvdekho.com/tv/asx/timesnow.asx~Times Now","http://www.tvdekho.com/tv/asx/espn.asx~ESPN","http://www.tvdekho.com/tv/asx/espn11.asx~ESPN 1","http://www.tvdekho.com/tv/asx/euronews11.asx~Euro News","http://www.tvdekho.com/tv/asx/ftvindia.asx~FTV India","http://www.tvdekho.com/tv/asx/ibn7.asx~IBN 7","http://www.tvdekho.com/tv/asx/raj1.asx~Raj TV 1","http://www.tvdekho.com/tv/asx/raj2.asx~Raj TV 2","http://www.tvdekho.com/tv/asx/raj3.asx~Raj TV 3","http://www.tvdekho.com/tv/asx/starutsav.asx~Star Utsav","http://www.tvdekho.com/tv/asx/tensports.asx~Ten Sports","http://www.tvdekho.com/tv/asx/yomusic.asx~YO Music","http://www.tvdekho.com/tv/asx/aastha.asx~Aastha","http://www.tvdekho.com/tv/asx/alzaz.asx~Alzaz","http://www.tvdekho.com/tv/asx/ascflix.asx~Asc Flix");
+document.write('<script src="http://ajpratap.googlepages.com/tvcommon.js" type="text/javascript"></script>');

@@ -1,0 +1,24 @@
+// ==UserScript==
+// @name        Back to normal Menéame
+// @namespace   http://www.meneame.net
+// @version     0.1
+// @description Alters menéame color scheme using a more "classic" palette
+// @match       http://www.meneame.net/*
+// @copyright   GPL
+// @license     GPL
+// ==/UserScript==
+
+
+
+var $ = function(selector) { return document.querySelectorAll(selector) };
+
+$('div#header-center')[0].style.backgroundColor = '#FF7D12';
+$('a.logo-eli')[0].style.backgroundImage = 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACcAAAAjCAYAAAAXMhMjAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyBpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBXaW5kb3dzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjYxNTIzMDZENzQyQjExRTE4RTVEQkUxQzM3RjA0NDREIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjYxNTIzMDZFNzQyQjExRTE4RTVEQkUxQzM3RjA0NDREIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6NjE1MjMwNkI3NDJCMTFFMThFNURCRTFDMzdGMDQ0NEQiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6NjE1MjMwNkM3NDJCMTFFMThFNURCRTFDMzdGMDQ0NEQiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz6yzpIHAAADn0lEQVR42rzYW0gUURgH8N1Ny5JQ08ouGlqiGSyBgpHdCwqiLEhSlNIUHyKoB6N6iXrwqYcoSLsIRWhSECFUYkZkhJlYFFp2USuzVDJRLC2ztv9Xf2EYZp2zl/HAj9WZPWe/nZ3zne+M3eVy2XxoMZAE0bCAxz5THbR5Oe4mqA7womMk7IRMSNEcH4FAsGuO1UM5XIUv44w5CRKhif+HwWqHh4GlQzucgF9wGnLACcEwGeZDMuTBJyjilbwNWTDVYNxlkK/5vw922+RnVWCHY/AH7kOiYj8RCGlw1/W/9UMJJPN8AFTAIU0fOdem+gFnOfAVD4IyIl+qGAY4Xgd0QxfEa94nf79VGTCVAz2HaT4GN8bBQHMgG2brzmdAo8pAYz9Hhp8CU3ETclXulyEYgZAJCmw/tMi9aJZKFnN2PYABm7UtFE7BSkkjMGqWSob5OsXCoGTsPfAComANfPx3xuQSh/F+67Tg5wuFo5yt7ZCuf49KfmuEUZjhp6CCoBC+MoXs5b1t8yS4OEjiQNKK/BBYML/sdzhslprcnVgHlzQDymUfhHAfc1slV4hUlT5GB1OYuSN1wUqrYbDeBJfNMbao9tEfSIBeyDJ4cwkHr+PN7GlwR6CPa6lSH32eK4Nmljn6tg8GoZDT/iTUMv9JJRIBDfDeTcqYCY8kf6nmGLum2NwGN2A93BunjxSWO2CW5tgTqGRN566VsbRyehqcFIjPeGVWWJRsi1n7Sd2nVH47NEWkfKPjFq4EdVwKo5V7cIq/hMcWL+gxnFB5qn0c3EzIAl9h8cL+DrohW7WDBLeWf1fZrG81rDiiVINbBT3wegKCK+Xky1adrb14/QnzbBPTWlgmLYI/ZlfuB7d03jY7E6yTG+wlsBDcFbIXuBnfqHLlWnkPhMM3DzfXcRDLTbD0j4elPN4FBw1Wm3DuZ6shzSyVXOcUz/Jj2lgOb+Cam/PlrBGjzFLJRcaZ6eeEW8t9gVE7z0cQBWb3XBV/gs2wy48BDkGvm3O1zA5bzYL7zTVvlFN9g5+Ck0nSOc75Zn626dp6h5dYnhLdgjMw18fgIvjQR9/kMw7Ads1TJbcTQl+t9nCCDEMpd0URXkyKenDqNuj5LPmlNZjtIewGDw9DWJ0UaB5XyZtaWUh2wAfNayefvek33Q+5+khayeX9PIdX6xxcZommVGzqWxAHl8IgAaYbCOSNL/oZbBNrt1iuAGnMa/IlXsFT1fvirwADAPW3Nr82irkBAAAAAElFTkSuQmCC")';
+
+// End option 1
+
+$('div#header-menu01')[0].style.backgroundColor = '#222222';
+var list = $('div#header-menu01 a');
+for(i in list) {
+  list[i].style.color = '#FFFFFF';
+}

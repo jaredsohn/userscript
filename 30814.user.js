@@ -1,0 +1,18 @@
+// ==UserScript==
+// @name           FP OIFY Link
+// @namespace      
+// @description    Places a link to the OIFY on front page.
+// @include        *
+// Copyright (C) 2008 Joscpe
+// ==/UserScript==
+
+icon="data:image/gif;base64,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%3D%3D"
+
+var allNav, thread, indicator, oify;
+allNav = document.getElementsByClassName('navbarlink');
+nav = allNav[allNav.length - 1];
+oifyText = '<a href="http://forums.facepunchstudios.com/forumdisplay.php?f=56"><img src="'+icon+'" width="33" height="35" alt="OIFY" />OIFY - INTERNET!</a>';
+oify = document.createElement("div");
+oify.setAttribute("class","navbarlink");
+oify.innerHTML = oifyText;
+nav.parentNode.insertBefore(oify, nav.nextSibling);

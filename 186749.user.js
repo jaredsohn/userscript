@@ -1,0 +1,6 @@
+// ==UserScript==
+// @name	Tieba Common
+// @namespace	http://gera2ld.blog.163.com/
+// @author	Gerald <gera2ld@163.com>
+// ==/UserScript==
+function notice(t,e){GM_getValue("notice",0)<t&&(alert(e),GM_setValue("notice",t))}var $=unsafeWindow.$,PageData=unsafeWindow.PageData,utils=null;!function(){function t(t,n){var r=(i||window)[t];return null==r&&null!=n&&e(t,r=n),r}function e(t,e){(i||window)[t]=e}function n(e,n){var i=t("msg",{});if(!i[e]){i[e]=1;var r=document.createElement("div");r.setAttribute("style","position:fixed;z-index:999999;background:white;border:1px solid;border-radius:3px;padding:10px;top:50px;left:50px;"),r.innerHTML='<a href=# style="float:right">关闭</a><h3>'+e+"</h3>"+n,document.body.appendChild(r),r.firstChild.onclick=function(t){t.preventDefault(),r.parentNode.removeChild(r)}}}var i=null,r="__ge_firefox";i=unsafeWindow[r],i||(i=unsafeWindow[r]={}),utils=t("utils"),utils||n("未检测到依赖脚本！","请确认已安装并启用：<br><a target=_blank href=http://userscripts.org/scripts/show/400102>http://userscripts.org/scripts/show/400102</a><br><p align=right>——寂寞的原子</p>")}();

@@ -1,0 +1,20 @@
+// ==UserScript==
+// @name          prohardver.hu : user : justified user data
+// @namespace     http://www.prohardver.hu/
+// @include       http://www.prohardver.hu/tag/*.html
+// @include       http://prohardver.hu/tag/*.html
+// ==/UserScript==
+function addGlobalStyle(css)
+{
+	var head, style;
+	head = document.getElementsByTagName('head')[0];
+	if (!head)
+		return;
+
+	style = document.createElement('style');
+	style.type = 'text/css';
+	style.innerHTML = css;
+	head.appendChild(style);
+}
+
+addGlobalStyle(".user ul { text-align: justify ! important; }");

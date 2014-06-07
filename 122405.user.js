@@ -1,0 +1,88 @@
+// ==UserScript==
+// @name        MusicBrainz: Label page: Make published works AR useful
+// @version     1.0.3
+// @author      Brian Schweitzer (brianfreud)
+// @namespace   MBLabelARs
+// @include     http://musicbrainz.org/label/*/relationships
+// @match       http://musicbrainz.org/label/*/relationships
+// ==/UserScript==
+
+/* ----------------------------------- */
+// Script Update Checker: http://userscripts.org/scripts/show/20145
+var SUC_script_num = 122405;
+try{function updateCheck(forced){if ((forced) || (parseInt(GM_getValue('SUC_last_update', '0')) + 86400000 <= (new Date().getTime()))){try{GM_xmlhttpRequest({method: 'GET',url: 'http://userscripts.org/scripts/source/'+SUC_script_num+'.meta.js?'+new Date().getTime(),headers: {'Cache-Control': 'no-cache'},onload: function(resp){var local_version, remote_version, rt, script_name;rt=resp.responseText;GM_setValue('SUC_last_update', new Date().getTime()+'');remote_version=parseInt(/@uso:version\s*(.*?)\s*$/m.exec(rt)[1]);local_version=parseInt(GM_getValue('SUC_current_version', '-1'));if(local_version!=-1){script_name = (/@name\s*(.*?)\s*$/m.exec(rt))[1];GM_setValue('SUC_target_script_name', script_name);if (remote_version > local_version){if(confirm('There is an update available for the Greasemonkey script "'+script_name+'."\nWould you like to go to the install page now?')){GM_openInTab('http://userscripts.org/scripts/show/'+SUC_script_num);GM_setValue('SUC_current_version', remote_version);}}else if (forced)console.log('No update is available for "'+script_name+'."');}else GM_setValue('SUC_current_version', remote_version+'');}});}catch (err){if (forced)console.log('An error occurred while checking for updates:\n'+err);}}}GM_registerMenuCommand(GM_getValue('SUC_target_script_name', '???'), '- Manual Update Check', function(){updateCheck(true);});updateCheck(false);}catch(err){}
+/* ----------------------------------- */
+// Chrome support for jQuery: http://erikvold.com/blog/index.cfm/2010/6/14/using-jquery-with-a-user-script
+function addJQuery(callback) {var script = document.createElement("script");script.setAttribute("src", "http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js");script.addEventListener('load', function() {var script = document.createElement("script");script.textContent = "(" + callback.toString() + ")();";document.body.appendChild(script);}, false);document.body.appendChild(script);}addJQuery(main);
+/* ----------------------------------- */
+
+function main() {
+    jQuery.noConflict(); 
+    (function ($) {
+        document.styleSheets[0].insertRule("table.workARs { width: 100%; }", 0);
+        document.styleSheets[0].insertRule("table.workARs > tbody > tr:nth-child(2n+1) { background-color: #F2F2F2; }", 0);
+        document.styleSheets[0].insertRule("table.workARs > thead > tr > th { text-align: left }", 0);
+        var iconRemove = 'data:image/gif;base64,R0lGODlhEAAQAPcAAAAAAIAAAMwAAMwzM//MmQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAP8ALAAAAAAQABAAAAhZAP8JHEiw4EACAQgYRKhQIMIBCQk+jPgvwICLFB9idGgRIwGNEBv+AylAwMWQBUGepJjS5EkBIlueHADT4MiOM1lyfOkS5U6PICnizDh0p86JIhku1GnTZkAAOw==',
+            iconEdit = 'data:image/png;base64,/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAAFAAA/+4ADkFkb2JlAGTAAAAAAf/bAIQAEg4ODhAOFRAQFR4UERQeIxoVFRojIhkZGhkZIiceIyEhIx4nJy4wMzAuJz4+QUE+PkFBQUFBQUFBQUFBQUFBQQEUFBQWGRYbFxcbGhYaFhohGh0dGiExISEkISExPi0nJycnLT44OzMzMzs4QUE+PkFBQUFBQUFBQUFBQUFBQUFB/8AAEQgAFAAUAwEiAAIRAQMRAf/EAHIAAQEBAQEAAAAAAAAAAAAAAAAEAwUGAQADAQAAAAAAAAAAAAAAAAABAgMAEAAABQIDBQkAAAAAAAAAAAAAARECA0ESIRMEMcFCFAVRYbEyUjNDJDQRAAIBAwUAAAAAAAAAAAAAAAABAhExUfAhYXES/9oADAMBAAIRAxEAPwD25mSY7Bxp+pFqHvggecRN8kpfI4qEtPEX6tJG5NyEivIql2CLT9MbNKUszUiZ7cfqMuJ24hGU5elGK7BVprYoztZyF9pZ+xaIqXAL0wQBYf1wr1Ivoc3Nb+pG5qLcnCN48tcL177t4AAru2si4N6AAAmP/9k=',
+            $newHTML = $('<table class="workARs"><tbody/></table>').css({
+                                                                       'border-collapse': 'collapse',
+                                                                       'margin-top':      '2em'
+                                                                       }),
+            infoLines = [],
+            $temp,
+            $tempSpan,
+            tempDate,
+            $megaTD = $('.details:last > tbody > tr:last').detach(),
+            clearParens = function (thisString) {
+                                                return thisString.replace(/[(?:^\()|(?:\)$)]/g, "");
+                                                },
+            makeHTML = function (html, classes) {
+                                        var $newTD = $('<' + html + '/>').addClass(classes.join(" "));
+                                        return $newTD;
+                                        };
+        $('.details:last > tbody > tr:first > th').remove();
+        $megaTD.find('td').children('span').each(function (i) {
+            $temp = $(this).detach();
+            $tempSpan = $temp.find('span:last').detach();
+            infoLines[i] = {
+                           $entity:         $temp.find('a').detach(),
+                           disambiguation: clearParens($temp.find('span:first').detach().text()),
+                           $remove:         $tempSpan.find('a:first').detach(),
+                           $edit:           $tempSpan.find('a:last').detach()
+                           }
+            infoLines[i].$remove.html('<img src="' + iconRemove + '" width="16" height="16" alt="remove work"/>').css('margin-right', '.7em');
+            infoLines[i].$edit.html('<img src="' + iconEdit + '" width="16" height="16" alt="edit work"/>').css('margin-right', '2em');
+            tempDate = clearParens($.trim($temp.text())).split('–');
+            infoLines[i].dateStart = $.trim(tempDate[0]);
+            infoLines[i].dateEnd = tempDate.length > 0 ? $.trim(tempDate[1]) : "";
+        });
+        for (var i = 0, j = infoLines.length; i < j; i++) {
+            $newHTML.append(makeHTML('tr', ['anchorCell' + i])
+                .append(makeHTML('td', ['anchorCell' + i, 'arAnchorEdits']).append(infoLines[i].$remove)
+                                                                           .append(infoLines[i].$edit)
+                                                                           .css('white-space', 'nowrap'))
+                .append(makeHTML('td', ['anchorCell' + i, 'date', 'dateStart']).css('white-space', 'nowrap').append(infoLines[i].dateStart))
+                .append(makeHTML('td', ['anchorCell' + i, 'date', 'dateEnd']).css('white-space', 'nowrap').append(infoLines[i].dateEnd))
+                .append(makeHTML('td', ['anchorCell' + i, 'arAnchorEnity']).append(infoLines[i].$entity))
+                .append(makeHTML('td', ['anchorCell' + i, 'arDisambig']).append(infoLines[i].disambiguation)));
+        }
+        $newHTML.prepend($('<thead/>').css({
+                                           'border-bottom-style': 'solid',
+                                           'border-width':        '1px'
+                                      })
+                                      .append($('<tr/>').append($('<th/>'))
+                                                        .append($('<th/>').text('Start'))
+                                                        .append($('<th/>').text('End'))
+                                                        .append($('<th/>').text('Work Title'))
+                                                        .append($('<th/>').text('Disambiguation'))));
+        $newHTML.prepend($('<colgroup></colgroup>').append($('<col/>').css('width', '8%'))
+                                                   .append($('<col/>').css('width', '7%'))
+                                                   .append($('<col/>').css('width', '7%'))
+                                                   .append($('<col/>').css('width', '45%'))
+                                                   .append($('<col/>').css('width', '33%')));
+        $('#content').append($('<h2>').text('Published Works'))
+                     .append($newHTML);
+        // Bookmarklet version of Tablesorter http://userscripts.org/scripts/show/25406
+        (function(){function forEach(h,o){for(var j=h.length,k=0;k<j;k++)o(h[k],k)}function forEachObject(h,o){for(var j in h)h.hasOwnProperty(j)&&o(h[j])} function processTable(h){function o(a,b){if(a.parentNode.tagName==='THEAD')return null;var c=a.getElementsByTagName('TD');if(c.length===0)return null;var d={getTr:function(){return a}},f=a.parentNode,e=[],g=0;forEach(c,function(a,c){var b=+a.colSpan;if(isNaN(b)||b===0)b=1;for(var d=0;d<b;d++)e[g++]=c});d.getCellCount=function(){return e.length};d.getCellValue=function(a){return a>=e.length?null:(a=c[e[a]].innerHTML,a=a.replace(/<[^<]*>/g,''))};d.getOriginalIndex=function(){return b};d.removeFromParent= function(){f.removeChild(a)};d.attachToParent=function(){f.appendChild(a)};return d}function j(a){r=a;forEachObject(i,function(a){var c=a===r;a.link.style.color=c?'black':'gray';a.link.style.textDecoration=c?'':'underline';a.link.style.cursor=c?'':'pointer'});s.style.display=a===i.NONE?'none':'';l!==null&&k(l,!1,!1)}function k(a,b,c){l===null?p(a,b,c):a==l?q!=null&&(q&&b||!q&&c)||p(a,b,c):(p(l,!1,!1),p(a,b,c))}function p(a,b,c){for(var d=v[a];d.firstChild;)d.removeChild(d.firstChild);var f=document.createElement('IMG'); f.src=b?'data:image/gif;base64,R0lGODlhCAAEAPcAAAAAAPfvc/8Avf///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////yH5BAEAAAIALAAAAAAIAAQAAAgSAAUIBABAoEGCBA8iTLhwYUAAADs=': 'data:image/gif;base64,R0lGODlhCAAEAPcAAAAAAP8Avf///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////yH5BAEAAAEALAAAAAAIAAQAAAgWAAMIBABAoEEAAgQUHJgwYUGCECEGBAA7'; f.style.cursor='pointer';f.onclick=function(){k(a,!0,!1);l=a;q=!0;r.fn(a,!0)};b=document.createElement('IMG');b.src=c?'data:image/gif;base64,R0lGODlhCAAEAPcAAAAAAPfvc/8Avf///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////yH5BAEAAAIALAAAAAAIAAQAAAgTAAEIHChQAMGCAgwOTMgQoYCAAAA7': 'data:image/gif;base64,R0lGODlhCAAEAPcAAAAAAP8Avf///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////yH5BAEAAAEALAAAAAAIAAQAAAgXAAEIHCgwAAABCAUACMDwoEKGEAsyDAgAOw=='; b.style.cursor='pointer';b.onclick=function(){k(a,!1,!0);l=a;q=!1;r.fn(a,!1)};d.appendChild(f);d.appendChild(b)}function t(){forEach(m,function(a){a.removeFromParent()});forEach(m,function(a){a.attachToParent()})}if(!function(a){function b(a){a=a.childNodes;if(!a)return!1;for(var d,f=/^\s+|\s+$/,e=0,g=a.length;e<g;e++)if(d=a[e],d.nodeType===3){if(d=d.nodeValue,d=d.replace(f,''),d.length>0)return!0}else if(b(d))return!0;return!1}return a.getElementsByTagName('TABLE').length>0?!1:a.getElementsByTagName('TR').length< 2?!1:!b(a)?!1:!0}(h))return null;var m=[],l=null,q=null,v=[],s,u,n=0,i={NONE:{text:'none',fn:function(){m.sort(function(a,b){return a.getOriginalIndex()-b.getOriginalIndex()});t()}},ALPHA:{text:'alpha',fn:function(a,b){if(a<n){var c=b?1:-1;m.sort(function(b,f){var e=b.getCellValue(a),e=e?e.toLowerCase():e,g=f.getCellValue(a),g=g?g.toLowerCase():g;return e?g?e>g?1*c:e<g?-1*c:0:1*c:g?-1*c:0})}t()}},NUM:{text:'num',fn:function(a,b){function c(a){return parseFloat(a.replace(/,/g,'').replace(/[^0-9\.+\-]+/, ' '))}if(a<n){var d=b?1:-1;m.sort(function(b,e){var g=c(b.getCellValue(a));if(isNaN(g))return Infinity;var h=c(e.getCellValue(a));return isNaN(h)?-Infinity:(g-h)*d})}t()}}},r=i.NONE;forEach(h.getElementsByTagName('TR'),function(a,b){var c=o(a,b);c&&(m.push(c),n=n<c.getCellCount()?c.getCellCount():n)});(function(){var a=m[0].getTr();u=document.createElement('TR');a.parentNode.insertBefore(u,a);var b=document.createElement('TD');b.style.fontSize='0.7em';b.colSpan=n;var c=document.createElement('SPAN'); c.style.paddingLeft='1em';c.innerHTML='Sort Type: ';var d=document.createElement('A');d.style.paddingLeft='0.5em';d.style.textDecoration='underline';d.style.cursor='pointer';d.innerHTML='alpha';d.onclick=function(){j(i.ALPHA)};i.ALPHA.link=d;var f=document.createElement('A');f.style.paddingLeft='0.5em';f.style.textDecoration='underline';f.style.cursor='pointer';f.innerHTML='none';f.onclick=function(){j(i.NONE);i.NONE.fn()};i.NONE.link=f;var e=document.createElement('A');e.style.paddingLeft='0.5em'; e.style.textDecoration='underline';e.style.cursor='pointer';e.innerHTML='num';e.onclick=function(){j(i.NUM)};i.NUM.link=e;b.appendChild(c);b.appendChild(d);b.appendChild(e);b.appendChild(f);u.appendChild(b);s=document.createElement('TR');a.parentNode.insertBefore(s,a);for(c=0;c<n;c++)a=document.createElement('TD'),a.style.fontSize='0.7em',a.style.fontWeight='bold',a.style.textAlign='center',v.push(a),b=document.createElement('A'),a.appendChild(b),s.appendChild(a),p(c,!1,!1);j(i.NONE)})()} forEach(document.getElementsByTagName('TABLE'),function(h){processTable(h)});})()
+    }(jQuery));
+}

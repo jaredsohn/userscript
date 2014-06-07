@@ -1,0 +1,167 @@
+// version 1.0.0 
+// 10/10/2010
+// ==UserScript==
+// @name          Vendetta.PLUS.Traduzione
+// @description	  Traduzione in ITA del testo
+// @author        Mozzicone[ITA]
+// @include       http://www.vendetta-plus.com/*
+// ==/UserScript==
+//
+
+(function() {
+
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Vision global de las Tropas)\b/g, 'Visione globale delle Truppe');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Vision general)\b/g, 'Vista generale');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Vision General)\b/g, 'Vista Generale');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Vision Global)\b/g, 'Vista Globale');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Vision global)\b/g, 'Vista globale');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Habitaciones)\b/g, 'Stanze');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Reclutamiento)\b/g, 'Addestramento');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Seguridad)\b/g, 'Uff.Sicurezza/Appostamento');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Entrenamiento)\b/g, 'Allenamento');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Edificios)\b/g, 'Edifici');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Buscar)\b/g, 'Cerca');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Arbol Tecnologico)\b/g, 'Tecnica');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Familias)\b/g, 'Famiglia');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Recursos)\b/g, 'Risorse');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Mapa)\b/g, 'Mappa');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Misiones)\b/g, 'Missioni');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Mensajes)\b/g, 'Messaggi');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Clasificacion)\b/g, 'Classifica');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Foro)\b/g, 'Forum');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Opciones)\b/g, 'Opzioni');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Salir)\b/g, 'Logout');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Armas)\b/g, 'Armi');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Municion)\b/g, 'Munizioni');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Alcohol)\b/g, 'Alcol');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Dolar)\b/g, 'Dollari');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Hora del servidor)\b/g, 'Ora del server');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Tropas)\b/g, 'Truppe');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Ninguna unidadad)\b/g, 'Nessuna unita`');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Stanze en fase de ampliacion)\b/g, 'Stanze in fase di sviluppo');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Defensa)\b/g, 'Difesa');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Puntos)\b/g, 'Punti');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Detalles)\b/g, 'Dettagli');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Cantidad)\b/g, 'Numero');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Entrenamientos)\b/g, 'Allenamenti');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Poder de ataque)\b/g, 'Forza in battaglia');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(de rutas)\b/g, 'del percorso');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Planificacion)\b/g, 'Pianificazione');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(de encargos)\b/g, 'della missione');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Extorsion)\b/g, 'Riscossione della protezione');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Administración de base)\b/g, 'Gestione del reddito');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Contrabando)\b/g, 'Carichi pesanti/Contrabbando');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Espionaje)\b/g, 'Raccolta Informazioni');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Proteccion de grupo)\b/g, 'Protezione del gruppo');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Combate cuerpo a cuerpo)\b/g, 'Combattimento corpo a corpo');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Combate de armas a corta distancia)\b/g, 'Combattimento all`arma bianca');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Allenamento de Tiro)\b/g, 'Allenamento al tiro');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Fabricación de explosivos)\b/g, 'Costruzione di bombe');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Allenamento de guerrilla)\b/g, 'Addestramento alla guerriglia');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Allenamento psicologico)\b/g, 'Allenamento fisico');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Allenamento Quimico)\b/g, 'Addestramento chimico');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Honor)\b/g, 'Onore');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Duración)\b/g, 'Durata');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Maton)\b/g, 'Picchiatore');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Portero)\b/g, 'Buttafuori');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Acuchillador)\b/g, 'Bandito');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Tropa de Ocupacion)\b/g, 'Truppa d`occupazione');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Espia)\b/g, 'Spia');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Porteador)\b/g, 'Imballatore');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Agente)\b/g, 'Agente');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(de la CIA)\b/g, 'CIA');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(del FBI)\b/g, 'FBI');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Transportista)\b/g, 'Trasportatore');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Francotirador)\b/g, 'Tiratore scelto');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Asesino)\b/g, 'Killer professionista');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Ir)\b/g, 'Vai');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Oficina del Jefe)\b/g, 'Ufficio del Boss');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Escuela de especialización)\b/g, 'Campo di allenemento');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Armería)\b/g, 'Armeria');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Almacén de munición)\b/g, 'Fabbrica di munizioni');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Cervecería)\b/g, 'Distilleria');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Taberna)\b/g, 'Bar');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Almacén de armas)\b/g, 'Magazzino delle armi');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Depósito de munición)\b/g, 'Magazzino delle munizioni');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Almacén de alcohol)\b/g, 'Magazzino degli alcolici');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Caja fuerte)\b/g, 'Cassaforte');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Campo de entrenamiento)\b/g, 'Campo di addestramento');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Torreta de fuego automático)\b/g, 'Postazione di guardia');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Buscar familia)\b/g, 'Cerca famiglia');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Fundar familia)\b/g, 'Crea una famiglia');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Minas ocultas)\b/g, 'Mine radio comandate');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Accion)\b/g, 'Azione');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Puntos)\b/g, 'Punti');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Habitacion)\b/g, 'Stanza');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Cambiar)\b/g, 'Cambia');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Borrar)\b/g, 'Distruggi');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Jugador)\b/g, 'Giocatore');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Familia)\b/g, 'Famiglia');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Texto)\b/g, 'Testo');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Salario base)\b/g, 'Reddito di base');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Capacidad de Almacenamiento)\b/g, 'Capacita` di deposito');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(almacenados de forma segura del total)\b/g, 'Limite risorse nascoste,non rubabili');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Ciudad)\b/g, 'Citta`');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Barrio)\b/g, 'Quartiere');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Actualizar)\b/g, 'Aggiorna');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Planificar nuevo ataque)\b/g, 'Organizza la nuova missione');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Edificio de destino)\b/g, 'Edificio bersaglio');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Mision)\b/g, 'Missione');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Solo para transporte)\b/g, 'Solo per trasporto');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Enviar)\b/g, 'Invia');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Estacionar)\b/g, 'Staziona');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Transportar recursos)\b/g, 'Trasporta risorse');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Total de Unidades)\b/g, 'Totale unita`');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Salario)\b/g, 'Stipendio');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(unidad más lenta)\b/g, 'unita` più lenta');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Capacidad de carga)\b/g, 'Capacita` di trasporto');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Puntuación de ataque)\b/g, 'Indice di attacco');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Valor de defensa)\b/g, 'Valore della difesa');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Misión desde)\b/g, 'Missione di');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Este edificio pertenece a)\b/g, 'Questo edificio è posseduto da');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Distancia entre edificios)\b/g, 'Distanza edifici');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(A nadie)\b/g, 'Nessuno');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Durata de la misión)\b/g, 'Durata della missione');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Escribir mensaje)\b/g, 'Scrivi messaggio');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Bandeja de entrada)\b/g, 'Posta in arrivo');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Contestar)\b/g, 'Rispondi');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Asunto)\b/g, 'Contenuto');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(finalizada)\b/g, 'terminata');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(nivel)\b/g, 'livello');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(completada)\b/g, 'completata');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Borrar mensajes marcados)\b/g, 'Eliminare i messaggi spuntati');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Borrar todos los mensajes)\b/g, 'Eliminare tutti i messaggi');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Estas en la posicion)\b/g, 'Sei alla posizione');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Mostrar)\b/g, 'Mostra');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Nombre)\b/g, 'Nome');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Primera)\b/g, 'Prima');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Anterior)\b/g, 'Precedente');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Siguiente)\b/g, 'Seguente');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Cambia direccion de correo)\b/g, 'Cambia l`indirizzo E-Mail');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Cambiar contraseña)\b/g, 'Cambia password');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Borrar cuenta)\b/g, 'Cancella account');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Si, borren mi cuenta... adios)\b/g, 'Si`, elimina il mio account... addio!');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Unidad)\b/g, 'Unita`');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Carpeta Bandeja de Entrada)\b/g, 'Cartella Posta in Arrivo');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(de las tropas)\b/g, 'delle truppe');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Dólar)\b/g, 'Dollari');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Unidades seleccionadas)\b/g, 'Unita` scelte');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Enemigas)\b/g, 'Nemiche');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Ninguna unidad)\b/g, 'Nessuna unita`');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(de inicio)\b/g, 'iniziale');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Comenzar)\b/g, 'Partenza');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Llegada)\b/g, 'Arrivo');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Tiempo)\b/g, 'Tempo');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Volver)\b/g, 'Indietro');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Ampliacion Nivel)\b/g, 'Espansione Livello');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Empezar Ampliacion)\b/g, 'Inizia Espansione');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(de la lista de espera)\b/g, 'della coda di attesa');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Empezar)\b/g, 'Inizia');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Nuevo mensaje)\b/g, 'Nuovo messaggio');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(Carpeta)\b/g, 'Cartella');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(regresando)\b/g, 'Sulla via del ritorno');
+		document.body.innerHTML = document.body.innerHTML.replace(/\b(recibidos en el edificio)\b/g, 'inviate nell`edificio');
+		
+		
+	    
+})();

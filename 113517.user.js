@@ -1,0 +1,29 @@
+// ==UserScript==
+// @name          Facebook - pink!
+// @namespace     http://userscripts.org
+// @description	  A nice, simple pink theme for Facebook.
+// @author        rachster
+// @homepage      
+// @include       http://facebook.com/*
+// @include       https://facebook.com/*
+// @include       http://*.facebook.com/*
+// @include       https://*.facebook.com/*
+// ==/UserScript==
+(function() {
+var css = "#contentCol  { background-color:#cce5c1 !important; }\n.profile .profile_color_bar  { background-color:#cce5c1 !important; }\n\n\n\n#blueBar       { background:#78f09f !important; }\n#pageLogo a    { background:url(http://www.madebymat.com/facebook/icons.png) no-repeat scroll -21px 0 !important; }\n#headNavOut    { background:#9ef3a6 !important; border-color:#9ef30a !important; }\n\n\n\n\n.jewelToggler  { background-image:url(http://www.madebymat.com/facebook/icons.png) !important; }\n#jewelAlert:hover, #jewelAlert:focus, #jewelAlert:active,\n#jewelMail:hover, #jewelMail:focus, #jewelMail:active,\n#jewelRequest:hover, #jewelRequest:focus, #jewelRequest:active   { background-color:#9ef3a6 !important; }\n#jewelCase .jewel  { border:none !important; }\n\n\n\n\n#navSearch button  { background:url(http://www.madebymat.com/facebook/icons.png) no-repeat scroll -1px 0 !important; }\n#navSearch     { border-color:#78f09f !important; }\n\n\n\n\n#pageNav a:hover, #pageNav a:focus, #pageNav a:active  { background-color:#9ef30a !important; color:#ffffff !important; }\n\n\n\n\n.lightblue_box  { background-color:#fce1e8 !important; border-color:#9ef3a6 !important; }\n.commentable_item .ufi_section  { background-color:#fce1e8 !important; }\ntextarea, .inputtext, .inputpassword  { border-color:#9ef3a6 !important; }\n\n\n\n\na  { color:#9ef30a !important; }\n.uiLinkButton input  { color:#2c2c2c !important; }\n.action_links_title .comment_link, .action_links_bottom .comment_link, .feedback_show_link, .feedback_hide_link, .UIActionLinks .comment_link  { color:#2c2c2c !important; }\nbutton.as_link  { color:#2c2c2c !important; }\n\n\n\n\n.uiSideNav .selected .item, .uiSideNav ul .selected .subitem, .uiSideNav .selected .item:hover, .uiSideNav ul .selected .subitem:hover  { background-color:#9ef3a6 !important; }\n\n.uiSideNav .item:hover, .uiSideNav .subitem:hover  { background-color:#fce1e8 !important; }\n.friends_online_sidebar li.buddy_row a:hover  { background-color:#fce1e8 !important; }\n\n.unread  { background-color:#9ef3a6 !important; }\n.line  { color:#9ef30a !important; }\n\n\n\n\n#jewelCase .jewelFooter a   { background-color:#fce1e8 !important; }\n#jewelCase .jewelFooter .uiTextSubtitle  { color:#9ef30a !important;  }\n\n#jewelCase .jewelFooter a:hover span, #jewelCase .jewelFooter a:active span, #jewelCase .jewelFooter a:focus span, #jewelBoxMail a:hover .uiTextSubtitle, #jewelBoxMail a:active .uiTextSubtitle, #jewelBoxMail a:focus .uiTextSubtitle  { color:#9ef30a !important; }\n\n#jewelBoxMail li a:hover, #jewelBoxMail li a:active, #jewelBoxMail li a:focus  { background-color:#fce1e8 !important; border-color:#78f09f !important; }\n#jewelCase .jewelBox  { background-color:#cce5c1 !important; }\n\n\n\n\n.uiHeader h2  { color:#9ef30a !important; }\n\n\n\n\n.current_stuff td  { background-color:#cce5c1 !important; border-color:#9ef3a6 !important; }\n\n\n\n\n.UIComposer .UIComposer_Box  { background-color:#cce5c1 !important; border-color:#9ef3a6 !important; }\n.profile .box .box_header  { background-color:#cce5c1 !important; border-color:#9ef3a6 !important; }\n\n\n\n\n.profile .top_bar ul.tabs li.selected a.tab_link  { background-color:#ffffff !important; border-color:#9ef3a6 !important; }\n.profile .top_bar ul.tabs li a.tab_link  { background-color:#f6b0c2 !important; border-color:#78f09f !important; }\n.profile .top_bar ul.tabs li a.tab_link:hover  { background-color:#9ef30a !important; color:#ffffff !important; border-color:#9ef30a !important; }\n\n\n\n\n\n#chat_tab_bar .disabled .chat_window .chat_conv  { background-color:#cce5c1 !important;  }\n#chat_tab_bar .chat_header  { background-color:#78f09f !important; border-color:#000000 !important; }\n#chat_tab_bar .chat_header_name a  { color:#ffffff !important; }\n#chat_tab_bar .chat_window .chat_conv .visibility_change  { background-color:#9ef3a6 !important; color:#9ef30a !important; }\n#presence_bar .presence_menu_opts h2 span  { background:#78f09f !important; }\n#presence_bar .presence_menu_opts h2  { border-color:#78f09f !important; }\n.buddy_list a.friend:hover, .buddy_list a.selected, .buddy_list a.drag  { background:#cce5c1 !important; }\n\n#presence.fbx_bar .presence_section, #presence.fbx_bar #chat .tab_handle, #presence.fbx_bar #presence_gk_tab, #presence.fbx_bar #presence_translations_tab  { background:#78f09f !important; border-color:#78f09f !important; }\n#presence .presence_bar_button .inner_button  { border-top:none !important; }\n#presence #buddy_list_tab #buddy_count .buddy_count_num  { color:#ffffff !important; }\n\n#presence .presence_menu_opts  { border-color:#78f09f !important; }\n\n\n\n\n.UIButton_Blue  { background:#9ef30a !important; border-color:#78f09f !important; }\n.UIComposer_InputArea  { border-color:#9ef3a6 !important; }\n.uiButtonConfirm  { background:#9ef30a !important; border-color:#78f09f !important; }\n#presence #buddy_list_tab #buddy_count strong  { color:#ffffff !important; }";
+if (typeof GM_addStyle != "undefined") {
+	GM_addStyle(css);
+} else if (typeof PRO_addStyle != "undefined") {
+	PRO_addStyle(css);
+} else if (typeof addStyle != "undefined") {
+	addStyle(css);
+} else {
+	var heads = document.getElementsByTagName("head");
+	if (heads.length > 0) {
+		var node = document.createElement("style");
+		node.type = "text/css";
+		node.appendChild(document.createTextNode(css));
+		heads[0].appendChild(node); 
+	}
+}
+})();

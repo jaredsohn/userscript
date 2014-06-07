@@ -1,0 +1,15 @@
+// ==UserScript==
+// @name	Tieba Sign
+// @namespace	http://gera2ld.blog.163.com/
+// @author	Gerald <gera2ld@163.com>
+// @icon	http://s.gravatar.com/avatar/a0ad718d86d21262ccd6ff271ece08a3?s=80
+// @version	1.3.4
+// @description	贴吧签到
+// @homepage	http://userscripts.org/scripts/show/154159
+// @downloadURL	https://userscripts.org/scripts/source/154159.user.js
+// @updateURL	https://userscripts.org/scripts/source/154159.meta.js
+// @include	http://tieba.baidu.com/*
+// @exclude	http://tieba.baidu.com/tb/*
+// @require	http://userscripts.org/scripts/source/186749.user.js
+// ==/UserScript==
+function n(n,e){function i(){s.err=2,s.msg="网络错误",e(s)}var s={err:-1};$.get("/mo/?kw="+encodeURIComponent(n)+"&ie=utf-8",function(n){var a,t;if(t=n.match(/<(\w+) style="text-align:right;">(.*?)<\/\1>/))if(t=t[2]){if(a=t.match(/<a href="(.*?)">签到<\/a>/))return $.get(a[1].replace(/&amp;/g,"&"),function(n){(a=n.match(/<span class="light">(.*?)<div/))&&(s.msg=a[1].replace(/<[^>]*>/g,""),/^签到成功/.test(s.msg)&&(s.err=0)),e(s)},"html").fail(i);t.match(/<span >已签到<\/span>/)&&(s.err=0,s.msg="已签到")}else s.err=1;e(s)},"html").fail(i)}function e(n,e){function i(){s.err=2,s.msg="网络错误",e(s)}var s={err:-1};$.get("/f?kw="+encodeURIComponent(n)+"&ie=utf-8",function(a){var t=a.match(/"is_sign_in":(\d+),"user_sign_rank":(\d+),/);if(t&&"1"==t[1])s.err=0,s.msg="签到成功，排名"+t[2];else if(t=a.match(/PageData\.tbs = "(.*?)";/))return $.post("/sign/add",{ie:"utf-8",kw:n,tbs:t[1]},function(n){n.no?s.msg=n.no+": "+n.error:(s.err=0,s.msg="签到成功，排名"+n.data.uinfo.user_sign_rank),e(s)},"json").fail(i);e(s)},"html").fail(i)}function i(e){e.length&&!$("#balv_dolike").length&&(utils.getObj("wap",!0)?n(PageData.forum.name,function(n){n.err||(e.removeClass("j_cansign signstar_btn").addClass("signstar_signed").html('<span class="sign_keep_span">WAP成功</span>'),$("#signstar_wrapper").addClass("signstar_wrapper_signed sign_box_bright_signed"))}):$(".j_cansign").click())}function s(){function i(){o.prop("disabled",!1),o.html("全部签到")}function s(){o.prop("disabled",!0),o.html("正在签到..."),r=0,t()}function a(n){var e=$("a.unsign[data-fid="+g[r].forum_id+"]");n.err?1==n.err?(n.color="blue",n.msg="未开通签到"):(n.color="red",n.msg=n.msg||"未知错误"):(g[r].is_sign=1,e.removeClass("unsign").addClass("sign")),e.prop("title",n.msg),r++,setTimeout(t,1e3)}function t(){for(var s;(s=g[r])&&s.is_sign;)r++;return s?(o.html("正在签到..."+s.forum_name),(utils.getObj("wap",!0)?n:e)(s.forum_name,a),void 0):i()}var r,o=$("<button>").appendTo(".ihome_title").click(s),g=unsafeWindow.ihome.forumGroup._forumArr;i()}function a(){utils.popup.show({html:"<h3>设置 - 百度贴吧签到脚本</h3><label><input type=checkbox id=gs_wap>模拟WAP签到</label><br><label><input type=checkbox id=gs_sign>访问已关注的贴吧时自动签到</label><br>",className:"ge_opt",init:function(n){utils.bindProp($(n).find("#gs_wap"),"checked","wap",!0),utils.bindProp($(n).find("#gs_sign"),"checked","sign",!0)}})}PageData&&PageData.user&&PageData.user.is_login&&(GM_registerMenuCommand("签到脚本设置",a),unsafeWindow.ihome&&$(".userinfo_scores").length?s():utils.getObj("sign",!0)&&!PageData.user.is_black&&i($("#sign_mod .j_cansign")));

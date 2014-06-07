@@ -1,0 +1,25 @@
+// ==UserScript==
+// @name           TrexTM 3.0
+// @description    Tabela de links
+// @include        http://trophymanager.com/showprofile.php*
+// @include        http://trophymanager.com/*
+// @exclude        http://trophymanager.com/manual_show.php?page=*
+// @exclude        http://trophymanager.com/livematch.php*
+// @exclude        http://trophymanager.com/manual_show.php*
+// @exclude        http://trophymanager.com/forum.php*
+// @exclude        http://trophymanager.com/transform.php*
+// @exclude	   http://trophymanager.com/klubhus_squad.php?showclub=*
+// ==/UserScript==
+
+
+// @version        1.1
+
+// ==/UserScript==
+<script>
+//Navigationsbereich
+var div = document.createElement('div');
+appdiv = document.body.appendChild(div);
+appdiv.innerHTML = '<div id="TrexTM" style="position: fixed; top: 10px;right: 5px; height: 500px; width: 150px; -moz-opacity: .10; text-align: left; border: 3px #000000 outset; display:inline;"><img src="http://img816.imageshack.us/img816/8829/semttulo1te.jpg"><p style="text-decoration: underline;">Geral</p><li><a href="http://trophymanager.com/klubhus.php" target="_self" style="font-size: 10px;" title="Sede">- Sede </a></li><li><a href="http://trophymanager.com/oecon.php" target="_self" style="font-size: 10px;" title="Economia">- Economia </a><li><a href="http://trophymanager.com/showstadium.php" target="_self" style="font-size: 10px;" title="Sede">- Estádio </a></li><li><a href="http://trophymanager.com/klubhus.php" target="_self" style="font-size: 10px;" title="Sede">- Sede </a></li><li><a href="http://trophymanager.com/oecon.php" target="_self" style="font-size: 10px;" title="Economia">- Economia </a><li><a href="http://trophymanager.com/stadion1.php" target="_self" style="font-size: 10px;" title="Sede">- Instalações </a></li></li><li><a href="http://trophymanager.com/squad.php" target="_self" style="font-size: 10px;" title="Ir para Escalações">- Escalação</a></li><li><a href="http://trophymanager.com/tactics.php" target="_self" style="font-size: 10px;" title="Go to Tactics">- Taticas</a></li><li><a href="http://trophymanager.com/staff.php" target="_self" style="font-size: 10px;" title="Search for new staff members">- Comissão Técnica</a></li><li><a href="http://trophymanager.com/staff_reports.php" target="_self" style="font-size: 10px;" title="See what you´ve scouted">- Relatório dos Olheiros</a></li><li><a href="http://trophymanager.com/plystat.php" target="_self" style="font-size: 10px;" title="Estatisticas">- Estatisticas </a></li><li><a href="http://trophymanager.com/training.php" target="_self" style="font-size: 10px;" title="Check the training results">- Evolução </a><img src= "http://static.trophymanager.com/pics/pro_req_mini2.gif"></li><li><a href="http://trophymanager.com/trainers.php" target="_self" style="font-size: 10px;" title="Change your training teams">- Treino</a></li><p style="text-decoration: underline;">Forum</p><li><a href="http://trophymanager.com/forum.php" target="_self" style="font-size: 10px;" title="Browse Forum">- Forum</a> ( <a href="http://trophymanager.com/forum.php?cache=meh&show=115" title="Transfer-Forum">T</a> | <a href="http://trophymanager.com/forum.php?cache=meh&show=32" title="General Forum">G</a> | <a href="http://trophymanager.com/forum.php?cache=meh&show=federations" title="Federations (PRO only)">F</a> )</li><li><a href="http://trophymanager.com/forum.php?topic=show&show=1386163" target="_self" style="font-size: 10px;" title="Guia">- Guia ELM </a></li><li><a href="http://trophymanager.com/forum.php?topic=show&show=1668925" target="_self" style="font-size: 10px;" title="Guia">- Guia:Treinamento </a></li><li><a href="http://trophymanager.com/forum.php?topic=show&show=1673851" target="_self" style="font-size: 10px;" title="Tópico">- Tópico de Bugs(Brasil) </a></li><li><a href="http://trophymanager.com/forum.php?topic=show&show=1651963" target="_self" style="font-size: 10px;" title="Tópico">- Juniores Season21 </a></li><li><a href="http://trophymanager.com/forum.php?topic=show&show=1676687" target="_self" style="font-size: 10px;" title="Tópico">- Tutorial Trexma</a></li><li><a href="http://trophymanager.com/forum.php?topic=show&show=1214828" target="_self" style="font-size: 10px;" title="Tópico">- Amistosos [ Oficial ] </a></li><li><a href="http://trophymanager.com/forum.php?topic=show&show=589079" target="_self" style="font-size: 10px;" title="Tópico">- Curiosidades do TM </a></li><li><a href="http://trophymanager.com/manual_show.php?page=help_index" target="_self" style="font-size: 10px;" title="User-Guide">- Manual TM</a></li><li><a href="http://trophymanager.com/klubhus.php" target="_self" style="font-size: 10px;" title="Sede">- Sede </a></li><li><a href="http://trophymanager.com/oecon.php" target="_self" style="font-size: 10px;" title="Economia">- Economia </a><li><a href="http://trophymanager.com/forum.php?topic=show&show=1513077" target="_self" style="font-size: 10px;" title="Forum">- Ferramentas Uteis </a></li><li><a href="http://trophymanager.com/forum.php?show=c1202" target="_self" style="font-size: 10px;" title="Forum">- TEC </a></li></div>';
+})();
+
+</script>

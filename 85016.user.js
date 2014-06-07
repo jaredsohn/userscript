@@ -1,0 +1,19 @@
+// ==UserScript==
+// @name           模拟小屏幕
+// @namespace      
+// @include        
+// ==/UserScript==
+
+
+
+(function ssr() {
+	var head, style;
+	head = document.getElementsByTagName('head')[0];
+	if (!head) { return; }
+	style = document.createElement('link');
+	style.type = 'text/css';
+	style.rel = 'stylesheet';
+	style.id = 'small-screen-render';
+	style.href = 'data:text/css;base64,Ym9keXsgd2lkdGg6MTc2cHggISBpbXBvcnRhbnQ7IG1pbi13aWR0aDowcHggISBpbXBvcnRhbnQ7ICAgcGFkZGluZzozcHggISBpbXBvcnRhbnQ7IG1hcmdpbjphdXRvICEgaW1wb3J0YW50OyBib3JkZXI6dGhpY2sgYmxhY2sgc29saWQgISBpbXBvcnRhbnR9KnsgIGZvbnQtc2l6ZToxMXB4ICEgaW1wb3J0YW50fSo6bm90KGJvZHkpOm5vdChodG1sKTpub3Qoc2VsZWN0KTpub3Qob3B0aW9uKTpub3Qob3B0Z3JvdXApeyAgd2lkdGg6YXV0byAhIGltcG9ydGFudDsgbWluLXdpZHRoOjBweCAhIGltcG9ydGFudDsgaGVpZ2h0OmF1dG8gISBpbXBvcnRhbnQ7ICBtYXgtd2lkdGg6MTc2cHggISBpbXBvcnRhbnQ7ICBwb3NpdGlvbjpzdGF0aWMgISBpbXBvcnRhbnQ7ICB0b3A6YXV0byAhIGltcG9ydGFudDsgbGVmdDphdXRvICEgaW1wb3J0YW50OyAgZmxvYXQ6bm9uZSAhIGltcG9ydGFudDsgIHBhZGRpbmc6MHB4ICEgaW1wb3J0YW50OyBtYXJnaW46MHB4ICEgaW1wb3J0YW50OyAgd2hpdGUtc3BhY2U6bm9ybWFsICEgaW1wb3J0YW50OyBvdmVyZmxvdzpoaWRkZW4gISBpbXBvcnRhbnR9dGFibGUsdGJvZHksdGhlYWQsdGZvb3QsdHIsdGQsdGgsY29sLGNvbGdyb3VweyAgZGlzcGxheTpibG9jayAhIGltcG9ydGFudH1pbWdbd2lkdGg9IjEiXSxpbWdbaGVpZ2h0PSIxIl0saW1nW3dpZHRoPSI0NjgiXSxpbWdbaGVpZ2h0PSI2MDAiXXsgICAgZGlzcGxheTpub25lICEgaW1wb3J0YW50fWxpeyAgbGlzdC1zdHlsZS1wb3NpdGlvbjppbnNpZGUgISBpbXBvcnRhbnR9aWZyYW1leyAgZGlzcGxheTpub25lICEgaW1wb3J0YW50fWVtYmVkW3R5cGUqPSJzaG9ja3dhdmUiXXsgIGRpc3BsYXk6bm9uZSAhIGltcG9ydGFudH1odG1sOi1tb3otYW55LWxpbmt7ICB0ZXh0LWRlY29yYXRpb246dW5kZXJsaW5lICFpbXBvcnRhbnR9dWwsb2x7IGRpc3BsYXk6YmxvY2sgISBpbXBvcnRhbnR9bGl7IGRpc3BsYXk6bGlzdC1pdGVtICEgaW1wb3J0YW50fWF7IGJhY2tncm91bmQtaW1hZ2U6bm9uZSAhIGltcG9ydGFudH1pbWdbc3JjKj0ic3BhY2VyIl17IGRpc3BsYXk6bm9uZSAhIGltcG9ydGFudH0=';
+	head.appendChild(style);
+})();

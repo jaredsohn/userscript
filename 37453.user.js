@@ -1,0 +1,126 @@
+// ==UserScript==
+// @name           g.e-hentai.org downloader
+// @namespace      http://g.e-hentai.org
+// @include        http://g.e-hentai.org/*
+// ==/UserScript==
+
+function parse_html(html)
+{
+    var m;
+    var out = {};
+    var re_next = /<a +href="([^"]*)"[^>]*>[ \t]*<img[^>]+alt="Next"/;
+    m = re_next.exec(html);
+    if (m)
+    {
+        out.next_url = m[1];
+    }
+    var re_img = /<img +id="mainimg"[^>]+src="([^"]+)"/
+    m = re_img.exec(html);
+    if (m)
+    {
+        out.img_url = m[1];
+    }
+    var re_page = /Page ([0-9]+)\/([0-9]+)/
+    m = re_page.exec(html);
+    if (m)
+    {
+        out.current = parseInt(m[1]);
+        out.total = parseInt(m[2]);
+    }
+    return out;
+}
+
+function build_ui()
+{
+    var main = document.getElementById('mainimg').parentNode;
+    var main2 = document.createElement('div');
+    main2.innerHTML='<div id="__status__"></div><div id="__output__"></div>';
+    main.parentNode.replaceChild(main2,main);
+}
+function append_output(html)
+{
+    document.getElementById('__output__').innerHTML += html;
+}
+function set_status(html)
+{
+    document.getElementById('__status__').innerHTML = html;
+}
+function do_current()
+{
+    var current_out = unsafeWindow.__currentout__;
+    if ('img_url' in current_out)
+    {
+        append_output('<a href="'+current_out.img_url+'">'+current_out.current+'</a> &nbsp;');
+    }
+    //ajax next
+    do_next();
+    
+}
+function do_next()
+{
+    var current_out = unsafeWindow.__currentout__;
+    if (current_out.current < current_out.total &&
+        'next_url' in current_out)
+    {
+        var url = current_out.next_url;
+        set_status('current:'+current_out.current+'/'+current_out.total+'<br/>fetch:'+url);
+        function onload(resp)
+        {
+            if (resp.status!=200){do_error('download error:'+resp.statusText);return;}
+            var out = parse_html(resp.responseText);
+            //todo::handle parse error
+            var items = [];
+            for (x in out){items.push(x);}
+            if (items.length<4)
+            {
+                //GM_log('error url:'+resp.finalUrl);
+                //GM_log('error html:'+resp.responseText);
+                do_error('Parse error:'+resp.responseText);
+                return;
+            }
+            unsafeWindow.__currentout__ = out;
+            do_current();
+        }
+        GM_xmlhttpRequest({
+            method:'GET',
+            url:url,
+            headers:{
+                'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.9.0.4) Gecko/2008102920 Firefox/3.0.4',
+                'Referer':document.location.href,
+                'Cookie':document.cookie
+            },
+            onload:onload,
+            onerror:do_error
+        });
+    }
+}
+function do_error(reason)
+{
+    GM_log('do_error='+reason);
+    var html = '<button id="__continue__">continue</button><br/>';
+    var txt = document.createTextNode(reason);
+    var div = document.createElement('div');
+    div.appendChild(txt);
+    set_status(html+div.innerHTML);
+    document.getElementById('__continue__').addEventListener('click',function(e){
+        set_status('');
+        do_next();
+    },false)
+}
+function btn_download_click(e)
+{
+    document.getElementById('__btn_download__').disabled = true;
+    unsafeWindow.__currentout__ = parse_html(document.documentElement.innerHTML);
+    build_ui();
+    do_current();
+    
+}
+var tmp = document.getElementById('imgtext_1');
+if (tmp)
+{
+    var div = document.createElement('div');
+    div.innerHTML = '<button id="__btn_download__">download</button>';
+    tmp.parentNode.insertBefore(div,tmp);
+    var btn = document.getElementById('__btn_download__');
+    btn.addEventListener('click',btn_download_click,false);
+}

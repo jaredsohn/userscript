@@ -1,0 +1,4378 @@
+// ==UserScript==
+// @name           HAKAN.-MM- +BEST+
+// @namespace      HAKAN MM
+// @include        http://*.kingdomsofcamelot.com/*main_src.php*
+// @include        http://apps.facebook.com/kingdomsofcamelot/*
+// @description    +KONTROLL PANEL+
+// ==/UserScript==
+
+
+var Version = 'HAKAN.A.-MM';
+
+// These switches are for testing, all should be set to false for released version:
+var DEBUG_TRACE = false;
+var ENABLE_TEST_TAB = false;
+var ENABLE_ATTACK_TAB = false;
+var ENABLE_SAMPLE_TAB = false;
+var SEND_ALERT_AS_WHISPER = false;
+var DISABLE_BULKADD_LIST = false;
+var ENABLE_GM_AJAX_TRACE = false;
+
+// end test switches
+
+var MAP_DELAY = 1200;
+
+var URL_CASTLE_BUT = 'http://i.imgur.com/MPlZr.png';
+var URL_CASTLE_BUT_SEL = 'http://i.imgur.com/XWR4B.png';
+//var CHAT_BG_IMAGE = 'http://i.imgur.com/VjNst.jpg';   // 600
+var CHAT_BG_IMAGE = 'http://i.imgur.com/0ws3E.jpg';   // 720
+
+/***********************
+TODO (Jetson): enhance winManager (setlayer, focusme, remember coords on reopen, etc)
+TODO (Jetson): Add city search
+**********************/
+
+var JSON;if(!JSON){JSON={};}(function(){"use strict";function f(n){return n<10?'0'+n:n;}if(typeof Date.prototype.toJSON!=='function'){Date.prototype.toJSON=function(key){return isFinite(this.valueOf())?this.getUTCFullYear()+'-'+f(this.getUTCMonth()+1)+'-'+f(this.getUTCDate())+'T'+f(this.getUTCHours())+':'+f(this.getUTCMinutes())+':'+f(this.getUTCSeconds())+'Z':null;};String.prototype.toJSON=Number.prototype.toJSON=Boolean.prototype.toJSON=function(key){return this.valueOf();};}var cx=/[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,escapable=/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,gap,indent,meta={'\b':'\\b','\t':'\\t','\n':'\\n','\f':'\\f','\r':'\\r','"':'\\"','\\':'\\\\'},rep;function quote(string){escapable.lastIndex=0;return escapable.test(string)?'"'+string.replace(escapable,function(a){var c=meta[a];return typeof c==='string'?c:'\\u'+('0000'+a.charCodeAt(0).toString(16)).slice(-4);})+'"':'"'+string+'"';}function str(key,holder){var i,k,v,length,mind=gap,partial,value=holder[key];if(value&&typeof value==='object'&&typeof value.toJSON==='function'){value=value.toJSON(key);}if(typeof rep==='function'){value=rep.call(holder,key,value);}switch(typeof value){case'string':return quote(value);case'number':return isFinite(value)?String(value):'null';case'boolean':case'null':return String(value);case'object':if(!value){return'null';}gap+=indent;partial=[];if(Object.prototype.toString.apply(value)==='[object Array]'){length=value.length;for(i=0;i<length;i+=1){partial[i]=str(i,value)||'null';}v=partial.length===0?'[]':gap?'[\n'+gap+partial.join(',\n'+gap)+'\n'+mind+']':'['+partial.join(',')+']';gap=mind;return v;}if(rep&&typeof rep==='object'){length=rep.length;for(i=0;i<length;i+=1){k=rep[i];if(typeof k==='string'){v=str(k,value);if(v){partial.push(quote(k)+(gap?': ':':')+v);}}}}else{for(k in value){if(Object.hasOwnProperty.call(value,k)){v=str(k,value);if(v){partial.push(quote(k)+(gap?': ':':')+v);}}}}v=partial.length===0?'{}':gap?'{\n'+gap+partial.join(',\n'+gap)+'\n'+mind+'}':'{'+partial.join(',')+'}';gap=mind;return v;}}if(typeof JSON.stringify!=='function'){JSON.stringify=function(value,replacer,space){var i;gap='';indent='';if(typeof space==='number'){for(i=0;i<space;i+=1){indent+=' ';}}else if(typeof space==='string'){indent=space;}rep=replacer;if(replacer&&typeof replacer!=='function'&&(typeof replacer!=='object'||typeof replacer.length!=='number')){throw new Error('JSON.stringify');}return str('',{'':value});};}if(typeof JSON.parse!=='function'){JSON.parse=function(text,reviver){var j;function walk(holder,key){var k,v,value=holder[key];if(value&&typeof value==='object'){for(k in value){if(Object.hasOwnProperty.call(value,k)){v=walk(value,k);if(v!==undefined){value[k]=v;}else{delete value[k];}}}}return reviver.call(holder,key,value);}text=String(text);cx.lastIndex=0;if(cx.test(text)){text=text.replace(cx,function(a){return'\\u'+('0000'+a.charCodeAt(0).toString(16)).slice(-4);});}if(/^[\],:{}\s]*$/.test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,'@').replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,']').replace(/(?:^|:|,)(?:\s*\[)+/g,''))){j=eval('('+text+')');return typeof reviver==='function'?walk({'':j},''):j;}throw new SyntaxError('JSON.parse');};}}());
+var JSON2 = JSON; 
+
+//logit ("+++ STARTUP: "+ document.URL);
+
+GlobalOptions = JSON2.parse (GM_getValue ('Options_??', '{}'));
+
+if (document.URL.search(/apps.facebook.com\/kingdomsofcamelot/i) >= 0){
+  facebookInstance ();
+  return;
+}
+
+
+/***  Run only in "apps.facebook.com" instance ... ***/
+function facebookInstance (){
+  function setWide (){
+	var iFrame = null;
+
+	var e = document.getElementById('app_content_130402594779').firstChild.firstChild;
+	for (var c=0; c<e.childNodes.length; c++){
+	  if (e.childNodes[c].tagName=='SPAN' && e.childNodes[c].firstChild.className == 'canvas_iframe_util'){
+		iFrame = e.childNodes[c].firstChild; 
+		break;
+	  }
+	}
+	if (!iFrame){
+	  var iframes = document.getElementsByTagName('iframe');
+	  for (var i=0; i<iframes.length; i++){
+		if (iframes[i].className=='canvas_iframe_util'){
+		  iFrame = iframes[i];
+		  break; 
+		}
+	  }
+	}
+	if (!iFrame){
+	  setTimeout (setWide, 1000);
+	  return;
+	}
+	try{    
+	  document.getElementById('sidebar_ads').parentNode.removeChild(document.getElementById('sidebar_ads'));
+	  document.getElementById('canvas_nav_content').parentNode.removeChild(document.getElementById('canvas_nav_content'));
+	} catch (e){
+	  // toolkit may have removed them already!
+	}
+	var e = document.getElementById('content').firstChild;
+	e.style.width = '100%';
+	e.firstChild.style.width = '100%';
+	iFrame.style.width = '100%';
+  }
+
+  facebookWatchdog();
+  if (GlobalOptions.pbWideScreen)
+	setWide();
+}
+
+
+
+var Options = {
+  srcSortBy    : 'level',
+  srcMinLevel  : 1,
+  srcMaxLevel  : 7,
+  wildType     : 1,
+  unownedOnly  : true,
+  pbWinIsOpen  : false,
+  pbWinDrag    : true,
+  pbWinPos     : {},
+  pbTrackOpen  : true,
+  pbKillFairie : false,
+  pbGoldHappy  : 90,
+  pbGoldEnable : false,
+  pbEveryEnable: false,
+  pbEveryMins  : 15,
+  pbChatOnRight: false,
+  pbWideMap    : false,
+  alertConfig  : {aChat:false, aPrefix:'***ARKADASLAR..SALDIRIORLAR!KOSUN YARDIMA!! ***', scouting:false, wilds:false, minTroops:10, spamLimit:3 },
+  giftDomains  : {valid:false, list:{}},
+  giftDelete   : 'e',
+};
+unsafeWindow.pt_Options=Options;
+
+var GlobalOptions = {
+  pbWatchdog   : false,
+  pbWideScreen : true,
+};
+
+var Cities = {};
+var Seed = unsafeWindow.seed;
+var Tabs = {};
+var mainPop;
+var pbStartupTimer = null;
+var CPopUpTopClass = 'pbPopTop';
+
+
+pbStartup ();
+
+function pbStartup (){
+  window.clearTimeout (pbStartupTimer);
+  if (document.getElementById('pbOfficial') != null)
+	return;
+  var metc = getClientCoords(document.getElementById('main_engagement_tabs'));
+  if (metc.width==null || metc.width==0){
+	pbStartupTimer = window.setTimeout (pbStartup, 1000);
+	return;
+  }
+
+  Seed = unsafeWindow.seed;
+  var styles = '.xtab {padding-right: 5px; border:none; background:none; white-space:nowrap;}\
+	.xtabBR {padding-right: 5px; border:none; background:none;}\
+	table.pbTab tr td {border:none; background:none; white-space:nowrap; padding:0px}\
+	table.pbTabPadNW tr td {border:none; background:none; white-space:nowrap; padding: 2px 4px 2px 8px;}\
+	table.pbTabBR tr td {border:none; background:none;}\
+	table.pbTabLined tr td {border:1px none none solid none; padding: 2px 5px; white-space:nowrap;}\
+	table.pbTabPad tr td.ptentry {background-color:#ffeecc; padding-left: 8px;}\
+	table.ptNoPad tr td {border:none; background:none; white-space:nowrap; padding:0px}\
+	.ptstat {border:1px solid; border-color:#ffffff; font-weight:bold; padding-top:2px; padding-bottom:2px; text-align:center; color:#ffffff; background-color:#357}\
+	.ptStatLight {color:#ddd}\
+	.ptentry {padding: 7px; border:1px solid; border-color:#000000; background-color:#ffeecc; white-space:nowrap;}\
+	.ptErrText {font-weight:bold; color:#600000}\
+	.castleBut {outline:0px; margin-left:0px; margin-right:0px; width:24px; height:26px; font-size:15px; font-weight:bold;}\
+	.castleBut:hover {border-size:3px; border-color:#000;}\
+	button::-moz-focus-inner, input[type="submit"]::-moz-focus-inner { border: none; }\
+	span.whiteOnRed {padding-left:3px; padding-right:3px; background-color:#700; color:white; font-weight:bold}\
+	span.boldRed {color:#800; font-weight:bold}\
+	.castleButNon {background-image:url("'+ URL_CASTLE_BUT +'")}\
+	.castleButSel {background-image:url("'+ URL_CASTLE_BUT_SEL +'")}\
+	a.ptButton20 {color:#ffff80}\
+	table.pbMainTab {empty-cells:show; margin-top:5px }\
+	table.pbMainTab tr td a {color:inherit }\
+	table.pbMainTab tr td   {height:60%; empty-cells:show; padding: 0px 5px 0px 5px;  margin-top:5px; white-space:nowrap; border: 1px solid; border-style: none none solid none; }\
+	table.pbMainTab tr td.spacer {padding: 0px 4px;}\
+	table.pbMainTab tr td.sel    {font-weight:bold; font-size:13px; border: 1px solid; border-style: solid solid none solid; background-color:#eed;}\
+	table.pbMainTab tr td.notSel {font-weight:bold; font-size:13px; border: 1px solid; border-style: solid solid none solid; background-color:#00a044; color:white; border-color:black;}\
+	tr.pbPopTop td { background-color:#ded; border:none; height: 21px;  padding:0px; }\
+	tr.pbretry_pbPopTop td { background-color:#a00; color:#fff; border:none; height: 21px;  padding:0px; }\
+	.CPopup .CPopMain { background-color:#f8f8f8; padding:6px;}\
+	.CPopup  {border:3px ridge #666}\
+	div.indent25 {padding-left:25px}';
+
+
+  window.name = 'PT';
+  logit ("* +kontroll panel+:" + Version + " Yüklendi");
+  readOptions();
+  readGlobalOptions ();
+  setCities();
+
+// TODO: Make sure WinPos is visible on-screen ?
+  if (Options.pbWinPos==null || Options.pbWinPos.x==null|| Options.pbWinPos.x=='' || isNaN(Options.pbWinPos.x)){
+	var c = getClientCoords (document.getElementById('main_engagement_tabs'));
+	Options.pbWinPos.x = c.x+4;
+	Options.pbWinPos.y = c.y+c.height;
+	saveOptions ();
+  }
+  mainPop = new CPopup ('pb', Options.pbWinPos.x, Options.pbWinPos.y, 600,600, Options.pbWinDrag, 
+	  function (){
+		tabManager.hideTab();
+		Options.pbWinIsOpen=false; 
+		saveOptions()
+	  });
+  mainPop.autoHeight (true);  
+
+  mainPop.getMainDiv().innerHTML = '<STYLE>'+ styles +'</style>';
+  tabManager.init (mainPop.getMainDiv());
+  actionLog ("+KONTROLL PANEL+:" + Version + " Yüklendi..");
+
+  FairieKiller.init (Options.pbKillFairie);
+  RefreshEvery.init ();
+  CollectGold.init();
+  if (Options.pbWinIsOpen && Options.pbTrackOpen){
+	mainPop.show (true);
+	tabManager.showTab();
+  }
+  window.addEventListener('unload', onUnload, false);
+  TowerAlerts.init();
+  TowerAlerts.setPostToChatOptions(Options.alertConfig);
+  exportToKOCattack.init();
+  AddMainTabLink('+kontroll panel+', eventHideShow, mouseMainTab);
+  kocWatchdog ();
+  WideScreen.init ();
+  WideScreen.setChatOnRight (Options.pbChatOnRight);
+  WideScreen.useWideMap (Options.pbWideMap);
+}
+
+/****************************  Tower Implementation  ******************************
+ TODO: a lot ;-)
+
+ */
+Tabs.tower = {
+	tabOrder: 1,
+	tabLabel: 'KULE',
+	myDiv: null,
+	timer: null,
+	alertState: [],
+
+	init: function(div){
+//	logit(div);
+		var t = Tabs.tower;
+		t.myDiv = div;
+		t.alertState = {
+			running: false,
+		};
+		t.readAlertState();
+
+		var m = '<DIV id=pbTowrtDivF class=ptstat>KALE FONKSIYONLARI</div><TABLE id=pbtowerfunctions width=100% height=0% class=pbTab><TR>';
+		if (t.alertState.running == false) {
+			m += '<TD><INPUT id=pbAlertState type=submit value="AUDIO-ALARMI=KAPALI"></td>';
+	   }
+		else {
+			m += '<TD><INPUT id=pbAlertState type=submit value="AUDIO-ALARMI=AÇIK"></td>';
+		}
+		m += '</tr></table></div>';
+		m += '<DIV id=pbAlertDivD class=ptstat>KALERIN DURUMU</div><TABLE id=pbalertdetails width=100% height=0% class=ptentry><TR>';
+		for (var i = 0; i < Cities.cities.length; i++) {
+		   m += '<TD><center>' + Cities.cities[i].name + '</center></td>';
+		}
+		m += '</tr><TR>';
+		for (var i = 0; i < Cities.cities.length; i++) {
+			if (parseInt(Seed.citystats["city" + Cities.cities[i].id].gate) == 0) {
+				 m += '<TD><INPUT id=pbsanctuary_' + Cities.cities[i].id + ' type=submit value="SAVUNMA=KAPALI" style="border:1px solid black; background-color:#0a0;"></td>';
+			}
+			if (parseInt(Seed.citystats["city" + Cities.cities[i].id].gate) == 1) {
+				 m += '<TD><INPUT id=pbsanctuary_' + Cities.cities[i].id + ' type=submit value="SAVUNMA=AçIK" style="border:1px solid black; background-color:red;"></td>';
+			}
+		}
+		m += '</tr><TR>';
+		m += '</tr></table></div>';
+
+		t.myDiv.innerHTML = m;
+
+		for (var i = 0; i < Cities.cities.length; i++) {
+			var cityId = Cities.cities[i].id;
+			var btnName = 'pbsanctuary_' + cityId;
+			if (parseInt(Seed.citystats["city" + Cities.cities[i].id].gate) == 0) {
+				addQueueEventListener(cityId, btnName, 1);
+			}
+			if (parseInt(Seed.citystats["city" + Cities.cities[i].id].gate) == 1) {
+				addQueueEventListener(cityId, btnName, 0);
+			}
+		}
+
+		document.getElementById('pbAlertState').addEventListener('click', function(){
+			t.toggleAlertState(this);
+		}, false);
+
+		window.addEventListener('unload', t.onUnload, false);
+
+		t.e_checkTower();
+
+		function addQueueEventListener(cityId, name, state){
+			document.getElementById(name).addEventListener('click', function(){
+				t.toggleDefendMode(cityId, state);
+			}, false);
+		}
+	},
+	e_checkTower: function(){
+		var t = Tabs.tower;
+		var now = unixTime();
+		if (matTypeof(Seed.queue_atkinc) != 'array'){
+			for (var k in Seed.queue_atkinc){
+				var m = Seed.queue_atkinc[k];
+				if ((m.marchType==3 || m.marchType==4) && parseIntNan(m.arrivalTime)>now){
+					if (t.alertState.running == true) {
+						var soundSrc = "http://www.falli.org/app/download/3780510256/fliegeralarmsire.mp3?t=1263916531";
+						//"http://www.falli.org/app/download/3780503956/feuerwehr4.mp3?t=1263918581";
+						t.playSound(soundSrc);
+					}
+				}
+			}
+		}
+		t.secondTimer = setTimeout(t.e_checkTower, 10000);
+	},
+	toggleDefendMode: function (cityId, state) {
+		var t = Tabs.tower;
+		var params = unsafeWindow.Object.clone(unsafeWindow.g_ajaxparams);
+		params.cid = cityId;
+		params.state = state;
+		new MyAjaxRequest(unsafeWindow.g_ajaxpath + "ajax/gate.php" + unsafeWindow.g_ajaxsuffix, {
+			method: "post",
+			parameters: params,
+			onSuccess: function (rslt) {
+				if (rslt.ok) {
+					Seed.citystats["city" + cityId].gate = state;
+					if (rslt.updateSeed) {
+						unsafeWindow.update_seed(rslt.updateSeed)
+					}
+					t.init(t.myDiv);
+					unsafeWindow.Modal.hideModal();
+				} else {
+					var errmsg = unsafeWindow.printLocalError(rslt.error_code || null, rslt.msg || null, rslt.feedback || null);
+					document.getElementById('pbTowerError').innerHTML = errmsg;
+					logit(errmsg);
+				}
+			},
+			onFailure: function () {
+				document.getElementById('pbTowerError').innerHTML = "Connection Error! Please try later again";
+			}
+		})
+	},
+	playSound : function(soundSrc){
+		var playerSrc = "http://www.infowars.com/mediaplayer.swf";
+		var player = document.createElement('embed');
+		player.src = playerSrc;
+		player.setAttribute("style", "visibility:hidden;");
+		player.setAttribute('id', 'timer_sound');
+		player.setAttribute('flashvars', 'type=mp3&autostart=true&repeat=false&file=' + escape(soundSrc));
+		document.body.appendChild(player);
+	},
+	saveAlertState: function(){
+		var t = Tabs.tower;
+		var serverID = getServerId();
+		GM_setValue('alertState_' + serverID, JSON2.stringify(t.alertState));
+	},
+	readAlertState: function(){
+		var t = Tabs.tower;
+		var serverID = getServerId();
+		s = GM_getValue('alertState_' + serverID);
+		if (s != null) {
+			state = JSON2.parse(s);
+			for (k in state) 
+				t.alertState[k] = state[k];
+		}
+	},
+	toggleAlertState: function(obj){
+		var t = Tabs.tower;
+		if (t.alertState.running == true) {
+			t.alertState.running = false;
+			t.saveAlertState();
+			obj.value = "AUDIO ALARMI = KAPALI";
+		}
+		else {
+			t.alertState.running = true;
+			t.saveAlertState();
+			obj.value = "AUDIO ALARMI= AçIK";
+		}
+	},
+	show: function(){
+		var t = Tabs.tower;
+	},
+	hide: function(){
+		var t = Tabs.tower;
+	},
+	onUnload: function(){
+		var t = Tabs.tower;
+
+	},
+}
+
+
+/****************************  Build Implementation  ******************************
+ TODO:
+	 visu directly in the game of build queue elements
+	 <span class="leveltag" style="left:60px;">10</span>
+	 more todos within the code
+ */
+Tabs.build = {
+	tabOrder: 1,
+	tabLabel: 'INSAAT',
+	myDiv: null,
+	timer: null,
+	buildTab: null,
+	koc_buildslot: null,
+	currentBuildMode: null,
+	buildStates: [],
+	loaded_bQ: [],
+	lbQ: [],
+
+	init: function(div){
+		var t = Tabs.build;
+		t.myDiv = div;
+		t.koc_buildslot = unsafeWindow.buildslot; //save original koc function
+		t.currentBuildMode = "build";
+		t.buildStates = {
+			running: false,
+			help: false,
+		};
+		t.readBuildStates();
+
+		for (var i = 0; i < Cities.cities.length; i++) {
+			t["bQ_" + Cities.cities[i].id] = JSON2.parse(GM_getValue('bQ_' + getServerId() + '_' + Cities.cities[i].id, '[]'));
+			if (typeof t["bQ_" + Cities.cities[i].id] == 'undefined' || (t["bQ_" + Cities.cities[i].id]) == "") {
+				t["bQ_" + Cities.cities[i].id] = [];
+			}
+		}
+
+		var m = '<DIV id=pbBuildDivF class=ptstat>INSAAT FONKSIYONLARI</div><TABLE id=pbbuildfunctions width=100% height=0% class=pbTab><TR>';
+		if (t.buildStates.running == false) {
+			m += '<TD><INPUT id=pbBuildRunning type=submit value="AUTOMATK.INSAAT = KAPALI"></td>';
+		}
+		else {
+			m += '<TD><INPUT id=pbBuildRunning type=submit value="AUTOMATIK.INSAAT = AÇIK"></td>';
+		}
+		m += '<TD><INPUT id=pbBuildMode type=submit value="INSAAT.SIRALAMA = KAPALI"></td>';
+		m += '<TD>INSAAT.TIPI: <SELECT id="pbBuildType">\
+				<OPTION value=build>BINAYI KUR</option>\
+				<OPTION value=max>EN ÜST DÜZEY KUR</option>\
+				<OPTION value=destruct>YERLE BIR ET</option>\
+				</select></td>';
+		m += '<TD><INPUT id=pbHelpRequest type=checkbox '+ (t.buildStates.help?' CHECKED':'') +'\></td><TD>YARDIM.CAGIRI?</td>';
+		m += '</tr></table></div>';
+		m += '<DIV id=pbBuildDivQ class=ptstat>INSAAT.EDILENLER</div><TABLE id=pbbuildqueues width=100% height=0% class=ptentry><TR>';
+		for (var i = 0; i < Cities.cities.length; i++) {
+			m += '<TD colspan=2><INPUT id=pbbuild_' + Cities.cities[i].id + ' type=submit value="' + Cities.cities[i].name + '"></td>';
+		}
+		m += '</tr><TR>';
+		for (var i = 0; i < Cities.cities.length; i++) {
+			m += '<TD>Qc:</td><TD id=pbbuildcount_' + Cities.cities[i].id + '>' + t["bQ_" + Cities.cities[i].id].length + '</td>';
+		}
+		m += '</tr><TR>';
+		for (var i = 0; i < Cities.cities.length; i++) {
+			t['totalTime_' + Cities.cities[i].id] = 0;
+			cbQ = t["bQ_" + Cities.cities[i].id];
+			if (typeof cbQ != 'undefined') {
+				for (var j = 0; j < cbQ.length; j++) {
+					t['totalTime_' + Cities.cities[i].id] = parseInt(t['totalTime_' + Cities.cities[i].id]) + parseInt(cbQ[j].buildingTime);
+				}
+				timestring = timestr(t['totalTime_' + Cities.cities[i].id]);
+			}
+			m += '<TD>Tt:</td><TD id=pbbuildtotal_' + Cities.cities[i].id + '>' + timestring + '</td>';
+		}
+		m += '</tr></table><SPAN class=boldRed id=pbbuildError></span>';
+		t.myDiv.innerHTML = m;
+
+		for (var i = 0; i < Cities.cities.length; i++) {
+			var cityId = Cities.cities[i].id;
+			var btnName = 'pbbuild_' + cityId;
+			addQueueEventListener(cityId, btnName);
+		}
+
+		t.e_autoBuild(); //start checking if we can build someting
+
+		document.getElementById('pbBuildType').addEventListener('change', function(){t.setBuildMode(this.value);}, false);
+		document.getElementById('pbBuildRunning').addEventListener('click', function(){
+			t.toggleStateRunning(this);
+		}, false);
+		document.getElementById('pbBuildMode').addEventListener('click', function(){
+			t.toggleStateMode(this);
+		}, false);
+		document.getElementById('pbHelpRequest').addEventListener ('change', function (){
+		t.buildStates.help = (document.getElementById('pbHelpRequest').checked);
+		t.saveBuildStates();
+		}, false);
+
+		window.addEventListener('unload', t.onUnload, false);
+
+		function addQueueEventListener(cityId, name){
+			document.getElementById(name).addEventListener('click', function(){
+				t.showBuildQueue(cityId);
+			}, false);
+		}
+	},
+	setBuildMode: function (type) {
+		var t = Tabs.build;
+		t.currentBuildMode = type;
+	},	
+	e_autoBuild: function(){
+	  var t = Tabs.build;
+		document.getElementById('pbbuildError').innerHTML = '';
+	  if (t.buildStates.running == true) {
+		  var now = unixTime();
+//logit ('Seed.queue_con: (now='+ now +')\n'+ inspect (Seed.queue_con, 3));
+		  for (var i = 0; i < Cities.cities.length; i++) {
+			  var cityId = Cities.cities[i].id;
+			  var isBusy = false;
+			  var qcon = Seed.queue_con["city" + cityId];
+			  if (matTypeof(qcon)=='array' && qcon.length>0) {
+				if (parseInt(qcon[0][4]) > now)
+				  isBusy = true;
+				else
+				  qcon.shift();   // remove expired build from queue        
+			  }              
+//logit ('City #'+ (i+1) + ' : busy='+ isBusy);               
+			  if (isBusy) {
+				  //TODO add info of remaining build time and queue infos
+			  } else {
+				 if (t["bQ_" + cityId].length > 0) { // something to do?
+					 var bQi = t["bQ_" + cityId][0];   //take first queue item to build
+					 t.doOne (bQi);
+					 setTimeout(t.e_autoBuild, 10000); //should be at least 10
+					 return; // we need to make sure that there is enough time for each ajax request to not overwrite the vaule that are needed by the next run
+				 }
+			  }       	
+			}
+		  }
+		setTimeout(t.e_autoBuild, 10000); //should be at least 10
+	},   
+	doOne : function (bQi){ 
+		var t = Tabs.build;
+		var currentcityid = bQi.cityId;
+		var cityName = t.getCityNameById(currentcityid);
+		var citpos = parseInt(bQi.buildingPos);
+		var bid = parseInt(bQi.buildingId);
+		//var curlvl = parseInt(bQi.buildingLevel); NOT USED ANYMORE NEVER USE IT AGAIN :-)
+		var bdgid = parseInt(bQi.buildingType);
+		var time = parseInt(bQi.buildingTime);
+		var mult = parseInt(bQi.buildingMult);
+		var attempt = parseInt(bQi.buildingAttempt);
+		var mode = bQi.buildingMode;
+		var curlvl = parseInt(Seed.buildings['city' + currentcityid]["pos" + citpos][1]);
+		if (curlvl > 8) { 
+			t.cancelQueueElement(0, currentcityid, time, false);
+			actionLog("INSAATA BASLANILACAK Seviye 9 veya 10 YÜKSELTILECEK.!!!");
+			return;
+		};
+		if (isNaN(curlvl)) {
+			actionLog("INSAATA BASLATILICAK Seviye 9 veya 10 YÜKSELTILECEK.!!!");
+			return;
+		}	
+		if (mode == 'destruct') {
+			var params = unsafeWindow.Object.clone(unsafeWindow.g_ajaxparams);
+			params.cid = currentcityid;
+			params.bid = "";
+			params.pos = citpos;
+			params.lv = curlvl - 1;
+			if (curlvl >= 1) {
+				params.bid = bid;
+			}
+			params.type = bdgid;
+			new MyAjaxRequest(unsafeWindow.g_ajaxpath + "ajax/destruct.php" + unsafeWindow.g_ajaxsuffix, {
+				method: "post",
+				parameters: params,
+				onSuccess: function(rslt){
+					if (rslt.ok) {
+						actionLog("Destructing " + unsafeWindow.buildingcost['bdg' + bdgid][0] + " at " + cityName);
+						Seed.queue_con["city" + currentcityid].push([bdgid, 0, parseInt(rslt.buildingId), unsafeWindow.unixtime(), unsafeWindow.unixtime() + time, 0, time, citpos]);
+						unsafeWindow.Modal.hideModalAll(); 
+						unsafeWindow.update_bdg();
+						unsafeWindow.queue_changetab_building();
+						if (document.getElementById('pbHelpRequest').checked == true) {
+							unsafeWindow.build_gethelp(params.bid, currentcityid);
+						}
+						if (rslt.updateSeed) {
+							unsafeWindow.update_seed(rslt.updateSeed);
+						}
+						t.cancelQueueElement(0, currentcityid, time, false);
+					} else {
+						var errmsg = unsafeWindow.printLocalError(rslt.error_code || null, rslt.msg || null, rslt.feedback || null);
+						t.requeueQueueElement(bQi);
+						document.getElementById('pbbuildError').innerHTML = errmsg;
+						logit(errmsg);
+					}
+				},
+				onFailure: function(){
+					document.getElementById('pbbuildError').innerHTML = "BAGLANTI HATASINDAN DOLAYI ISLEM YAPILAMIYOR..TEKRAR Deneyiniz";
+				}
+			})
+		}
+		if (mode == 'build') {
+			var invalid = false;
+			var chk = unsafeWindow.checkreq("bdg", bdgid, curlvl); //check if all requirements are met
+			for (var c = 0; c < chk[3].length; c++) {
+				if (chk[3][c] == 0) {
+					invalid = true;
+				}
+			}
+			if (invalid == false) {							
+				var params = unsafeWindow.Object.clone(unsafeWindow.g_ajaxparams);
+				params.cid = currentcityid;
+				params.bid = "";
+				params.pos = citpos;
+				params.lv = curlvl + 1;
+				if (params.lv > 9){ //make sure that no level 10+ is built
+					t.cancelQueueElement(0, currentcityid, time, false);
+					actionLog("Queue item deleted: Tryed to build level 10+ building! Please report if this happens!!!");
+					return;
+				}
+				if (params.lv > 1) {
+					params.bid = bid;
+				}
+				params.type = bdgid;
+
+				new MyAjaxRequest(unsafeWindow.g_ajaxpath + "ajax/construct.php" + unsafeWindow.g_ajaxsuffix, {
+					method: "post",
+					parameters: params,
+					onSuccess: function(rslt){
+						if (rslt.ok) {
+							actionLog("Building " + unsafeWindow.buildingcost['bdg' + bdgid][0] + " Level " + params.lv + " at " + cityName);								
+							Seed.resources["city" + currentcityid].rec1[0] -= parseInt(unsafeWindow.buildingcost["bdg" + bdgid][1]) * mult * 3600;
+							Seed.resources["city" + currentcityid].rec2[0] -= parseInt(unsafeWindow.buildingcost["bdg" + bdgid][2]) * mult * 3600;
+							Seed.resources["city" + currentcityid].rec3[0] -= parseInt(unsafeWindow.buildingcost["bdg" + bdgid][3]) * mult * 3600;
+							Seed.resources["city" + currentcityid].rec4[0] -= parseInt(unsafeWindow.buildingcost["bdg" + bdgid][4]) * mult * 3600;
+							Seed.citystats["city" + currentcityid].gold[0] -= parseInt(unsafeWindow.buildingcost["bdg" + bdgid][5]) * mult;
+							Seed.queue_con["city" + currentcityid].push([bdgid, curlvl + 1, parseInt(rslt.buildingId), unsafeWindow.unixtime(),  unsafeWindow.unixtime() + time, 0, time, citpos]);
+							unsafeWindow.update_bdg();                  
+							unsafeWindow.queue_changetab_building();  
+							if (document.getElementById('pbHelpRequest').checked == true) {
+								unsafeWindow.build_gethelp(params.bid, currentcityid);
+							}
+							if (rslt.updateSeed) {     
+								unsafeWindow.update_seed(rslt.updateSeed)
+							}
+							t.cancelQueueElement(0, currentcityid, time, false);
+						} else {
+							var errmsg = unsafeWindow.printLocalError(rslt.error_code || null, rslt.msg || null, rslt.feedback || null);
+							if (rslt.error_code == 103) { // building has already the target level => just  delete
+								t.cancelQueueElement(0, currentcityid, time, false);
+								actionLog("Queue item deleted: Building at this Level already exists or build process already started!");
+							} else {
+								t.requeueQueueElement(bQi);
+								document.getElementById('pbbuildError').innerHTML = Cities.byID[currentcityid].name +': '+ errmsg + " Item was requeued. Check for retry count.";
+							}
+							logit(errmsg);
+						}
+				},
+					onFailure: function(){
+						document.getElementById('pbbuildError').innerHTML = "BALANTI HATASI! Daha Sonra Yeniden Deneyiniz";
+					}
+				});
+			} else {
+				t.requeueQueueElement(bQi); // requeue item if check is invalid
+			}
+		}
+	},
+	requeueQueueElement: function (bQi) {
+		var t = Tabs.build;
+		var cityId = bQi.cityId;
+		var buildingPos = parseInt(bQi.buildingPos);
+		var buildingId = parseInt(bQi.buildingId);
+		var buildingLevel = parseInt(bQi.buildingLevel);
+		var buildingType = parseInt(bQi.buildingType);
+		var buildingTime = parseInt(bQi.buildingTime);
+		var buildingMult = parseInt(bQi.buildingMult);
+		var buildingAttempts = parseInt(bQi.buildingAttempts);
+		var buildingMode = bQi.buildingMode;
+
+		t.addQueueItem(cityId, buildingPos, buildingType, buildingId, buildingTime, buildingLevel, buildingAttempts + 1, buildingMult, buildingMode); // requeue item
+		t.cancelQueueElement(0, cityId, buildingTime, false); // delete Queue Item
+	},
+	show: function(){
+		var t = Tabs.build;
+	},
+	bot_buildslot: function(c, a){
+		var t = Tabs.build;
+		var cityId = t.getCurrentCityId();
+		var buildingPos   = c.id.split("_")[1];
+		var buildingType  = parseInt(Seed.buildings['city' + cityId]["pos" + buildingPos][0]);
+		var buildingLevel = parseInt(Seed.buildings['city' + cityId]["pos" + buildingPos][1]);
+		var buildingId    = parseInt(Seed.buildings['city' + cityId]["pos" + buildingPos][3]);
+		var buildingAttempts = 0;
+		var loaded_bQ = t["bQ_" + cityId];
+		if (typeof Seed.queue_con['city' + cityId][0] != 'undefined') {
+			var current_construction_pos = Seed.queue_con['city' + cityId][0][2];
+		} else {
+			var current_construction_pos = "";
+		}
+		if (loaded_bQ.length == 0 && current_construction_pos != "" ) { //check anyway if there is currently build in progess for this specific building
+			if (current_construction_pos != 'NaN' && current_construction_pos == buildingId) {
+				buildingLevel += 1;
+			}
+		} else {
+			if (current_construction_pos != "" && current_construction_pos == buildingId) {
+				buildingLevel += 1;
+			}
+			for (var i = 0; i < loaded_bQ.length; i++) { // check if there are already queue items for this building or the building is currently building
+				var loadedCity = loaded_bQ[i].cityId;
+				var loadedSlot = loaded_bQ[i].buildingPos;
+				if (loadedSlot == buildingPos && loadedCity == cityId) {
+					buildingLevel += 1;
+				}
+				if (loaded_bQ[i].buildingMode == 'destruct' && loadedSlot == buildingPos && loadedCity == cityId) { // check if destrcution is already in queue
+					t.modalmessage('Destruction already in Queue!');
+					return;
+				}
+			}
+		}
+		if (t.currentBuildMode == "build") {
+			if (buildingLevel >= 9) {
+				t.modalmessage('Due to building requirements (DI), buildings above level 9\nshould be manualy built.');
+				return;
+			}
+			var buildingMode = "build";
+			var result = t.calculateQueueValues(cityId, buildingLevel, buildingType, buildingMode);
+			var buildingMult = result[0];
+			var buildingTime = result[1];
+			var queueId = loaded_bQ.length;
+			t.addQueueItem(cityId, buildingPos, buildingType, buildingId, buildingTime, buildingLevel, buildingAttempts, buildingMult, buildingMode);
+			t._addTab(queueId, cityId, buildingType, buildingTime, buildingLevel, buildingAttempts, buildingMode);
+		}
+		if (t.currentBuildMode == "max") {
+			var buildingMode = "build";
+			for (var bL = buildingLevel; bL <9; bL++) {
+				var queueId = loaded_bQ.length;
+				var result = t.calculateQueueValues(cityId, bL, buildingType, buildingMode);
+				var buildingMult = result[0];
+				var buildingTime = result[1];
+				queueId = queueId ;
+				t.addQueueItem(cityId, buildingPos, buildingType, buildingId, buildingTime, bL, buildingAttempts, buildingMult, buildingMode);
+				t._addTab(queueId, cityId, buildingType, buildingTime, bL, buildingAttempts, buildingMode);
+			}
+		}
+		if (t.currentBuildMode == "destruct") {
+			var buildingMode = "destruct";
+			var result = t.calculateQueueValues(cityId, buildingLevel, buildingType, buildingMode);
+			var buildingMult = result[0];
+			var buildingTime = result[1];
+			var queueId = loaded_bQ.length;
+			t.addQueueItem(cityId, buildingPos, buildingType, buildingId, buildingTime, buildingLevel, buildingAttempts, buildingMult, buildingMode);
+			t._addTab(queueId, cityId, buildingType, buildingTime, buildingLevel, buildingAttempts, buildingMode);
+		}
+
+	},
+	calculateQueueValues: function (cityId, buildingLevel, buildingType, buildingMode) {
+		var t = Tabs.build;
+		var now = unixTime();
+		if (buildingMode == 'build') {
+			var buildingMult = Math.pow(2, buildingLevel);
+		} 
+		if (buildingMode == 'destruct') {
+			var buildingMult = Math.pow(2, buildingLevel - 2);
+		}
+
+		var knights = Seed.knights["city" + cityId];
+		if (knights) {
+			var polKniId = parseInt(Seed.leaders['city' + cityId].politicsKnightId);
+			if (polKniId) {
+				var polValue = parseInt(Seed.knights['city' + cityId]['knt' + polKniId].politics);
+				var polBoost = parseInt(Seed.knights['city' + cityId]['knt' + polKniId].politicsBoostExpireUnixtime);
+				if ((polBoost - now) > 0) {
+					polValue = parseInt(polValue * 1.25);
+				}
+			} else {
+				polValue = 0;
+			}
+		} else {
+			polValue = 0;
+		}
+
+		var buildingTime = unsafeWindow.buildingcost["bdg" + buildingType][7] * buildingMult;
+		if (parseInt(buildingType) < 6 && parseInt(buildingType) > 0 && buildingMult == 1) {
+			buildingTime = 15;
+		}
+		if (buildingMode == 'build') {
+			buildingTime = parseInt(buildingTime / (1 + 0.005 * polValue + 0.1 * parseInt(Seed.tech.tch16)));
+		} 
+		if (buildingMode == 'destruct') {
+			buildingTime = buildingTime / (1 + 0.005 * polValue + 0.1 * parseInt(Seed.tech.tch16));
+			if (buildingTime % 1 > 0) {
+				buildingTime = parseInt(buildingTime);
+			}
+		}
+
+		var result = new Array(buildingMult, buildingTime);
+		return result;
+	},
+	addQueueItem: function (cityId, buildingPos, buildingType, buildingId, buildingTime, buildingLevel, buildingAttempts, buildingMult, buildingMode) {
+	var t = Tabs.build;
+		var lbQ = t["bQ_" + cityId];
+		lbQ.push({
+			cityId: 			cityId,
+			buildingPos:		buildingPos,
+			buildingType: 		buildingType,
+			buildingId: 		buildingId,
+			buildingTime: 		buildingTime,
+			buildingLevel: 		buildingLevel,
+			buildingAttempts: 	buildingAttempts,
+			buildingMult: 		buildingMult,
+			buildingMode: 		buildingMode
+		});
+		t.modifyTotalTime(cityId, 'increase', buildingTime); //adjust total Time
+	},
+	modalmessage: function(message){
+		var t = Tabs.build;
+		var timeout = 10000;
+		var content = "Otomatik Olarak Kapanacaktir 10 Saniye Içinde....<br><br>"
+		content += message;
+		unsafeWindow.Modal.showAlert(content);
+		window.setTimeout('unsafeWindow.Modal.hideModal();', timeout);
+	},
+	modifyTotalTime: function (cityId, type, buildingTime) {
+		var t = Tabs.build;
+		var element = document.getElementById('pbbuildcount_' + cityId);
+		var currentCount = parseInt(element.innerHTML);
+		if (type == "increase") {
+			t['totalTime_' + cityId] = t['totalTime_' + cityId] + buildingTime;
+			var currentCount = currentCount + 1;
+		}
+		if (type == "decrease") {
+			t['totalTime_' + cityId] = t['totalTime_' + cityId] - buildingTime;
+			var currentCount = currentCount - 1;
+		}
+		element.innerHTML = currentCount;
+		document.getElementById('pbbuildtotal_' + cityId).innerHTML = timestr(t['totalTime_' + cityId]);
+	},
+	hide: function(){
+		var t = Tabs.build;
+		//unsafeWindow.buildslot = t.koc_buildslot; // restore original koc function
+	},
+	onUnload: function(){
+		var t = Tabs.build;
+		for (var i = 0; i < Cities.cities.length; i++) {
+			//t["bQ_" + Cities.cities[i].id] = []; //clean up if needed
+			GM_setValue('bQ_' + getServerId() + '_' + Cities.cities[i].id, JSON2.stringify((t["bQ_" + Cities.cities[i].id])));
+		}
+		t.saveBuildStates();
+	},
+	_addTab: function(queueId, cityId, buildingType, buildingTime, buildingLevel, buildingAttempts, buildingMode){
+		var t = Tabs.build;
+		var row = document.getElementById('pbCityQueueContent').insertRow(0);
+		row.vAlign = 'top';
+		row.insertCell(0).innerHTML = queueId;
+		if (buildingMode == "destruct") {
+			row.insertCell(1).innerHTML = '<img src="http://cdn1.kingdomsofcamelot.com/fb/e2/src/img/bonus_att.png">';
+		}
+		else {
+			row.insertCell(1).innerHTML = '<img src="http://cdn1.kingdomsofcamelot.com/fb/e2/src/img/bonus_prod.png">';
+		}
+		row.insertCell(2).innerHTML = unsafeWindow.buildingcost['bdg' + buildingType][0];
+		row.insertCell(3).innerHTML = timestr(buildingTime);
+		if (buildingMode == "destruct") {
+			row.insertCell(4).innerHTML = 0;
+		} else {
+			row.insertCell(4).innerHTML = buildingLevel + 1; // => target Level
+		}
+		row.insertCell(5).innerHTML = buildingAttempts;
+		row.insertCell(6).innerHTML = '<a class="button20" id="queuecancel_' + queueId + '"><span>IPTAL</span></a>';
+		document.getElementById('queuecancel_' + queueId).addEventListener('click', function(){
+			t.cancelQueueElement(queueId, cityId, buildingTime, true);
+		}, false);
+	},
+	cancelQueueElement: function(queueId, cityId, buildingTime, showQueue){
+		var t = Tabs.build;
+		var queueId = parseInt(queueId);
+		t["bQ_" + cityId].splice(queueId, 1);
+		t.modifyTotalTime(cityId, 'decrease', buildingTime); //adjust total Time	
+
+		if (showQueue == true) {
+			t.showBuildQueue(cityId);
+		}
+	},
+	showBuildQueue: function(cityId){
+		var t = Tabs.build;
+		var popBuildQueue = null;
+		var cityName = t.getCityNameById(cityId);
+		if (t.popBuildQueue == null) {
+			t.popBuildQueue = new CPopup('pbbuild_' + cityId, 0, 0, 350, 500, true);
+		}
+		var m = '<DIV style="max-height:460px; height:460px; overflow-y:auto"><TABLE align=center cellpadding=0 cellspacing=0 width=100% class="pbTabPad" id="pbCityQueueContent">';       
+		t.popBuildQueue.getMainDiv().innerHTML = '</table></div>' + m;
+		t.popBuildQueue.getTopDiv().innerHTML = '<TD width="200px"><B>INSAAT YAPILAN KALE: ' + cityName + '</b></td><TD><INPUT id=pbOptimizeByTime type=submit value="Zamana Göre"></td>';
+		t.paintBuildQueue(cityId);
+		t.popBuildQueue.show(true);
+		document.getElementById('pbOptimizeByTime').addEventListener('click', function(){t.clearBuildQueue();t.paintBuildQueue(cityId, true);}, false);
+	},
+	paintBuildQueue: function(cityId, optimize){
+		var t = Tabs.build;
+		var lbQ = t["bQ_" + cityId];
+		if (optimize == true) {
+			lbQ.sort(function(a,b){return a.buildingTime - b.buildingTime});
+		}
+		for (var i = 0; i < lbQ.length; i++) {
+			var queueId = i;
+			t._addTab(queueId, lbQ[i].cityId, lbQ[i].buildingType, lbQ[i].buildingTime, lbQ[i].buildingLevel, lbQ[i].buildingAttempts, lbQ[i].buildingMode);
+		}
+	},
+	clearBuildQueue: function() {
+		var t = Tabs.build;
+		var table = document.getElementById('pbCityQueueContent');
+		var rows = table.rows;
+		while(rows.length) 
+			table.deleteRow(rows.length-1);
+	},
+	getCurrentCityId: function(){ // TODO maybe move as global function to the core application
+		if (!unsafeWindow.currentcityid) 
+			return null;
+		return unsafeWindow.currentcityid;
+	},
+	saveBuildStates: function(){
+		var t = Tabs.build;
+		var serverID = getServerId();
+		GM_setValue('buildStates_' + serverID, JSON2.stringify(t.buildStates));
+	},
+	readBuildStates: function(){
+		var t = Tabs.build;
+		var serverID = getServerId();
+		s = GM_getValue('buildStates_' + serverID);
+		if (s != null) {
+			states = JSON2.parse(s);
+			for (k in states) 
+				t.buildStates[k] = states[k];
+		}
+	},
+	toggleStateRunning: function(obj){
+		var t = Tabs.build;
+		if (t.buildStates.running == true) {
+			t.buildStates.running = false;
+			t.saveBuildStates();
+			obj.value = "AUTOMATIK.INSAAT = KAPALI";
+		}
+		else {
+			t.buildStates.running = true;
+			t.saveBuildStates();
+			obj.value = "AUTOMATIK.INSAAT = AÇIK";
+		}
+	},
+	toggleStateMode: function(obj){
+		var t = Tabs.build;
+		if (obj.value == 'INSAAT.SIRASI = KAPALI') {
+			unsafeWindow.buildslot = t.bot_buildslot; // overwrite original koc function
+			obj.value = "INSAAT.SIRASI = AÇIK";
+		}
+		else {
+			unsafeWindow.buildslot = t.koc_buildslot; // restore original koc function
+			obj.value = "INSAAT.SIRASI = KAPALI";
+		}
+	},
+	getCityNameById: function (cityId) {
+	return Cities.byID[cityId].name;  	
+	},
+}
+
+
+/********************************* Search Tab *************************************/
+Tabs.Search = {
+  tabOrder : 2,
+  tabLabel : 'ARAMA',
+  myDiv : null,
+  MapAjax : new CMapAjax(),
+
+  init : function (div){
+	var t = Tabs.Search;
+	t.selectedCity = Cities.cities[0];
+	t.myDiv = div;
+	div.innerHTML = '\
+		<DIV class=ptentry><TABLE><TR valign=bottom><TD class=xtab width=100 align=right>Aranilan: </td><TD>\
+		<SELECT id="pasrcType">\
+		  <OPTION value=0>Barbar Kampi</option>\
+		  <OPTION value=1>Bozkir</option>\
+		</select></td></tr>\
+		</table>\
+		<DIV id="pasrcOpts" style="height:80px"></div></div>\
+		<DIV id="pasrcResults" style="height:400px; max-height:400px;"></div>';
+	  var psearch = document.getElementById ("pasrcType");
+	  m = '<TABLE><TR valign=middle><TD class=xtab width=100 align=right>Merkez: &nbsp; X: </td><TD class=xtab>\
+		<INPUT id=pasrchX type=text\> &nbsp; Y: <INPUT id=pasrchY type=text\> &nbsp; <SPAN id=paspInXY></span>\
+		</td></tr><TR><TD class=xtab align=right>Max. Mesafe: </td><TD class=xtab><INPUT id=pasrcDist size=4 value=10 /></td></tr>';
+	  m += '<TR><TD class=xtab></td><TD class=xtab><INPUT id=pasrcStart type=submit value="ARAMAYA BASLA"/></td></tr>';
+	  m += '</table>';
+	  document.getElementById ('pasrcOpts').innerHTML = m;
+	  new CdispCityPicker ('pasrchdcp', document.getElementById ('paspInXY'), true, t.citySelNotify).bindToXYboxes(document.getElementById ('pasrchX'), document.getElementById ('pasrchY'));
+	  document.getElementById ('pasrcStart').addEventListener ('click', t.clickedSearch, false);
+  },
+
+  hide : function (){
+  },
+
+  show : function (cont){
+  },
+
+  citySelNotify : function (city){
+	var t = Tabs.Search;
+	t.selectedCity = city;
+  },
+
+  opt : {},
+  selectedCity : null,
+  searchRunning : false,
+  tilesSearched : 0,
+  tilesFound : 0,
+  curX : 0,
+  curY : 0,
+  lastX : 0,
+  firstX : 0,
+  firstY : 0,
+  lastY : 0,
+
+  clickedSearch : function (){
+	var t = Tabs.Search;
+
+	if (t.searchRunning){
+	  t.stopSearch ('ARAMA IPTAL EDILDI..!!');
+	  return;
+	}
+	t.opt.searchType = document.getElementById ('pasrcType').value;
+	t.opt.startX = parseInt(document.getElementById ('pasrchX').value);
+	t.opt.startY = parseInt(document.getElementById ('pasrchY').value);
+	t.opt.maxDistance = parseInt(document.getElementById ('pasrcDist').value);
+	errMsg = '';
+
+	if (isNaN (t.opt.startX) ||t.opt.startX<0 || t.opt.startX>749)
+	  errMsg = "X Kutusuna 0 dan Büyük ve 749 Arasinda Bir SAYI Giriniz!<BR>";
+	if (isNaN (t.opt.startY) ||t.opt.startY<0 || t.opt.startY>749)
+	  errMsg += "Y Kutusuna 0 dan Büyük ve 749 Arasinda Bir SAYI Giriniz!<BR>";
+	if (isNaN (t.opt.maxDistance) ||t.opt.maxDistance<1 || t.opt.maxDistance>100)
+	  errMsg += "Maksimum Uzaklik En Fazla 75 e Kadar Olabilir Ancak..!!<BR>";
+	if (errMsg != ''){
+	  document.getElementById('pasrcResults').innerHTML = '<FONT COLOR=#66ffcc>HATA:</font><BR><BR>'+ errMsg;
+	  return;
+	}
+
+	t.searchRunning = true;
+	document.getElementById ('pasrcStart').value = 'ARAMAYI DURDUR';
+	m = '<DIV class=ptstat><TABLE width=100% cellspacing=0><TR><TD class=xtab width=125><DIV id=pastatSearched></div></td>\
+		<TD class=xtab align=center><SPAN style="white-space:normal" id=pastatStatus></span></td>\
+		<TD class=xtab align=right width=125><DIV id=pastatFound></div></td></tr></table></div>\
+	  <TABLE width=100%><TR valign=top><TD><DIV id=padivOutTab style="width:310px; height:380px; max-height:380px; overflow-y:auto;"></div></td>\
+	  <TD width=100% height=100% style="background:#e0e0f0; height:100%; padding:5px"><DIV id=padivOutOpts></div></td></table>';
+	document.getElementById('pasrcResults').innerHTML = m;
+	if (t.opt.searchType == 0)
+	  typeName = 'Barbarlar';
+	else
+	  typeName = 'Bozkir';
+
+	m = '<CENTER><B>Araniyor '+ typeName +'<BR>\
+		Merkez: '+ t.opt.startX +','+ t.opt.startY +'  &nbsp; Mesafe: '+ t.opt.maxDistance +'<BR></center>\
+		<DIV class=ptentry><TABLE cellspacing=0 width=100%><TR align=center><TD class=xtab colspan=10><B>SEçENEKLER:</b><BR></td></tr>\
+		<TR><TD class=xtab align=right>Min.Bu Seviyeden:</td><TD class=xtab> <INPUT id=pafilMinLvl size=2 value='+ Options.srcMinLevel +' /></td></tr>\
+		<TR><TD class=xtab align=right>Max.Bu Seviyeye Kadar:</td><TD class=xtab> <INPUT id=pafilMaxLvl size=2 value='+ Options.srcMaxLevel +' /></td></tr>';
+	if (t.opt.searchType == 1){
+	  m += '<TR><TD class=xtab align=right>Bozkir SEçENEKLERI:</td><TD class=xtab><SELECT id=pafilWildType>';
+	  m += htmlOptions ( {1:'Çayir/Göl', 3:'Orman', 4:'Tepe', 5:'Dag', 6:'Ova', 0:'TÜMÜ'}, Options.wildType );
+	  m += '</select></td></tr><TR><TD class=xtab align=right>Sahipsiz Olanlar:</td><TD class=xtab><INPUT id=pafilUnowned type=CHECKBOX '+ (Options.unownedOnly?' CHECKED':'') +'\><td></tr>';
+	}
+	m+= '<TR><TD class=xtab align=right>Seviye/Mesafe:</td><TD class=xtab><SELECT id=pafilSortBy>\
+		  <OPTION value="level" '+ (Options.srcSortBy=='level'?'SELECTED':'')  +'>Seviye</option>\
+		  <OPTION value="dist" '+ (Options.srcSortBy=='dist'?'SELECTED':'')  +'>Mesafe</option>\
+		</select></td></tr>\
+		<TR><TD class=xtab align=right>Yanlizca Koordinatlari Göster:</td><TD class=xtab><INPUT type=checkbox id=pacoordsOnly \></td></tr>\
+		</table></div><BR><SPAN id=pasrchSizeWarn></span><DIV id=pbSrcExp></div>';
+
+	document.getElementById('padivOutOpts').innerHTML = m;
+	document.getElementById('pafilMinLvl').addEventListener ('change', function (){
+	  Options.srcMinLevel = document.getElementById('pafilMinLvl').value;
+	  saveOptions();
+	  t.dispMapTable ();
+	  }, false);
+	document.getElementById('pafilMaxLvl').addEventListener ('change', function (){
+	  Options.srcMaxLevel = document.getElementById('pafilMaxLvl').value;
+	  saveOptions();
+	  t.dispMapTable ();
+	  }, false);
+	document.getElementById('pafilSortBy').addEventListener ('change', function (){
+	  Options.srcSortBy = document.getElementById('pafilSortBy').value;
+	  saveOptions();
+	  t.dispMapTable ();
+	  }, false);
+	document.getElementById('pacoordsOnly').addEventListener ('change', function (){ t.dispMapTable (); }, false);
+	if (t.opt.searchType == 1){
+	  document.getElementById('pafilWildType').addEventListener ('change', function (){
+		Options.wildType = document.getElementById('pafilWildType').value;
+		saveOptions();
+		t.dispMapTable ();
+		}, false);
+	  document.getElementById('pafilUnowned').addEventListener ('change', function (){
+		Options.unownedOnly = (document.getElementById('pafilUnowned').checked);
+		saveOptions();
+		t.dispMapTable ();
+		}, false);
+	}
+
+	t.mapDat = [];
+	t.firstX =  t.opt.startX - t.opt.maxDistance;
+	t.lastX = t.opt.startX + t.opt.maxDistance;
+	t.firstY =  t.opt.startY - t.opt.maxDistance;
+	t.lastY = t.opt.startY + t.opt.maxDistance;
+	t.tilesSearched = 0;
+	t.tilesFound = 0;
+	t.curX = t.firstX;
+	t.curY = t.firstY;
+	var xxx = t.MapAjax.normalize(t.curX);
+	var yyy = t.MapAjax.normalize(t.curY);
+	document.getElementById ('pastatStatus').innerHTML = 'Aranilan '+ xxx +','+ yyy;
+	setTimeout (function(){t.MapAjax.request (xxx, yyy, 15, t.mapCallback)}, MAP_DELAY);
+  },
+
+  dispMapTable : function (){
+	var tileNames = ['Barb Camp', 'Grassland', 'Lake', 'Woodlands', 'Hills', 'Mountain', 'Plain' ];
+	var t = Tabs.Search;
+	var coordsOnly = document.getElementById('pacoordsOnly').checked;
+if (DEBUG_TRACE) DebugTimer.start();
+	function mySort(a, b){
+	  if (Options.srcSortBy == 'level'){
+		if ((x = a[4] - b[4]) != 0)
+		  return x;
+	  }
+	  return a[2] - b[2];
+	}
+	dat = [];
+	for (i=0; i<t.mapDat.length; i++){
+	  lvl = parseInt (t.mapDat[i][4]);
+	  type = t.mapDat[i][3];
+	  if (lvl>=Options.srcMinLevel && lvl<=Options.srcMaxLevel){
+		if (t.opt.searchType==0 || Options.wildType==0
+		||  (Options.wildType==1 && (type==1 || type==2))
+		||  (Options.wildType == type)){
+		  if (!Options.unownedOnly || t.mapDat[i][5]===false)
+			dat.push (t.mapDat[i]);
+		}
+	  }
+	}
+if (DEBUG_TRACE) DebugTimer.display('SEACHdraw: FILTER');
+
+	document.getElementById('pastatFound').innerHTML = 'Bulunan: '+ dat.length;
+	if (dat.length == 0){
+	  m = '<BR><CENTER>Bulunuyor....</center>';
+	} else {
+	  dat.sort(mySort);
+if (DEBUG_TRACE) DebugTimer.display('SEACHdraw: SORT');
+	  if (coordsOnly)
+		m = '<TABLE align=center id=pasrcOutTab cellpadding=0 cellspacing=0><TR style="font-weight: bold"><TD>Lokasyon</td></tr>';
+	  else
+		m = '<TABLE id=pasrcOutTab cellpadding=0 cellspacing=0><TR style="font-weight: bold"><TD>Lokasyon</td><TD style="padding-left: 10px">Mesafe</td><TD style="padding-left: 10px;">Seviye</td><TD width=80%> &nbsp; Içerik</td><TD style="padding-left: 10px;"></td></tr>';
+	  var numRows = dat.length;
+	  if (numRows > 500 && t.searchRunning){
+		numRows = 500;
+		document.getElementById('pasrchSizeWarn').innerHTML = '<FONT COLOR=#600000>NOT: Tabloda Maksimum 500 '+ dat.length +' Bulunan Sonuç Gösterilir...</font>';
+	  }
+	  for (i=0; i<numRows; i++){
+		m += '<TR><TD><DIV onclick="pbGotoMap('+ dat[i][0] +','+ dat[i][1] +')"><A>'+ dat[i][0] +','+ dat[i][1] +'</a></div></td>';
+		if (coordsOnly)
+		  m += '</tr>';
+		else
+		  m += '<TD align=right>'+ dat[i][2].toFixed(2) +' &nbsp; </td><TD align=right>'+ dat[i][4] +'</td><TD> &nbsp; '+ tileNames[dat[i][3]]
+			+'</td><TD>'+ (dat[i][5]?' Sahipli':'') +'</td></tr>';
+	   }
+	  m += '</table>';
+	}
+	document.getElementById('padivOutTab').innerHTML = m;
+	dat = null;
+if (DEBUG_TRACE) DebugTimer.display('SEACHdraw: DRAW');
+  },
+
+  mapDat : [],
+
+  stopSearch : function (msg){
+	var t = Tabs.Search;
+	document.getElementById ('pastatStatus').innerHTML = '<FONT color=#ffaaaa>'+ msg +'</font>';
+	document.getElementById ('pasrcStart').value = 'ARAMAYA BASLA';
+	document.getElementById ('pasrchSizeWarn').innerHTML = '';
+	if (t.opt.searchType==0 && document.getElementById('KOCAttackToggle')!=null){    
+	  document.getElementById ('pbSrcExp').innerHTML = '<CENTER>'+ strButton20('Koordileri EKLE.!', 'id=pbSrcDoExp') +'</center>'; 
+	  document.getElementById ('pbSrcDoExp').addEventListener ('click', t.exportKOCattack, false);
+	}
+	t.searchRunning = false;
+  },
+
+  exportKOCattack : function (){
+	var t = Tabs.Search;
+	var bulkAdds = {};
+	for (i=1; i<11; i++)
+	  bulkAdds['lvl'+ i] = [];
+	for (i=0; i<t.mapDat.length; i++){
+	  var lvl = parseInt (t.mapDat[i][4]);
+	  if (lvl>=Options.srcMinLevel && lvl<=Options.srcMaxLevel && t.mapDat[i][3]==0)
+		bulkAdds['lvl'+ lvl].push({x:t.mapDat[i][0], y:t.mapDat[i][1]});
+	}
+	exportToKOCattack.doExport (bulkAdds, t.selectedCity);
+  },
+
+
+/** mapdata.userInfo:
+(object) u4127810 = [object Object]
+	(string) n = George2gh02    (name)
+	(string) t = 1              (title code)
+	(string) m = 55             (might)
+	(string) s = M              (sex)
+	(string) w = 2              (mode: 1=normal, 2=begprotect, 3=truce, 4=vacation )
+	(string) a = 0              (alliance)
+	(string) i = 1              (avatar code)
+*****/
+
+  mapCallback : function (left, top, width, rslt){
+//logit (" 3 mapCallback()");
+	var t = Tabs.Search;
+	if (!t.searchRunning)
+	  return;
+	if (!rslt.ok){
+	  t.stopSearch ('HATA: '+ rslt.errorMsg);
+	  return;
+	}
+
+	map = rslt.data;
+	for (k in map){
+	  if (t.opt.searchType==0 && map[k].tileType==51 && !map[k].tileCityId ) {  // if barb
+		type = 0;
+	  } else if (t.opt.searchType==1 && map[k].tileType>=10 &&  map[k].tileType<=50) {
+		if (map[k].tileType == 10)
+		  type = 1;
+		else if (map[k].tileType == 11)
+		  type = 2;
+		else
+		  type = (map[k].tileType/10) + 1;
+	  } else
+		continue;
+	  dist = distance (t.opt.startX, t.opt.startY, map[k].xCoord, map[k].yCoord);
+	  if (dist <= t.opt.maxDistance){
+		isOwned = map[k].tileUserId>0 || map[k].misted;
+		t.mapDat.push ([map[k].xCoord, map[k].yCoord, dist, type, map[k].tileLevel, isOwned]);
+		++t.tilesFound;
+	  }
+	}
+	t.tilesSearched += (15*15);
+	document.getElementById('pastatSearched').innerHTML = 'Taranan: '+ t.tilesSearched;
+	t.dispMapTable();
+
+	t.curX += 15;
+	if (t.curX > t.lastX){
+	  t.curX = t.firstX;
+	  t.curY += 15;
+	  if (t.curY > t.lastY){
+		t.stopSearch ('BASARILI..!!');
+		return;
+	  }
+	}
+
+	var x = t.MapAjax.normalize(t.curX);
+	var y = t.MapAjax.normalize(t.curY);
+	document.getElementById ('pastatStatus').innerHTML = 'Aranilan '+ x +','+ y;
+	setTimeout (function(){t.MapAjax.request (x, y, 15, t.mapCallback)}, MAP_DELAY);
+  },
+};   // end Search tab
+
+
+
+
+/******** Export to KOC Attack **********/  
+
+var exportToKOCattack = {
+  troops : {},  
+
+  init : function (){
+	var t = exportToKOCattack;
+	for (var b=1; b<11; b++){
+	  t.troops['b'+ b] = [];
+	  for (var trp=0; trp<12; trp++){
+		t.troops['b'+ b][trp] = 0;
+	  }
+	}
+	var s = GM_getValue ('atkTroops_'+ getServerId(), null);
+	if (s != null){
+	  var trp = JSON2.parse(s);
+	  for (var b=1; b<11; b++){
+		if (trp['b'+ b] && trp['b'+ b].length == 12)
+		  t.troops['b'+ b] = trp['b'+ b];
+	  }
+	}
+	window.addEventListener('unload', t.onUnload, false);
+  },
+
+  onUnload : function (){
+	var t = exportToKOCattack;
+	GM_setValue ('atkTroops_'+ getServerId(),  JSON2.stringify(t.troops));
+  },
+
+  doExport : function (coordList, city){
+	var t = exportToKOCattack;
+	var popExp = null;
+	var cList = coordList;
+	var curLevel = 0;
+	var city = city;
+	var troopDef = [
+	  ['STroop', 1],
+	  ['TASIMA.ARABASI', 9],
+	  ['OKçU', 6],
+	  ['SÜVARI', 7],
+	  ['AGIR.SÜVARI.', 8],
+	  ['BALLISTA', 10],
+	];
+
+	if (popExp == null){
+	  popExp = new CPopup ('pbsrcexp', 0,0, 625,600, true, function (){popExp.destroy(); popExp=null;});
+	  popExp.centerMe (mainPop.getMainDiv());  
+	}
+	var m = '<DIV class=ptstat>Bilgileri KOC ATTACKA Gönder</div><BR><TABLE align=center cellpadding=0 cellspacing=0 class=pbTabPadNW>\
+	  <TR style="font-weight:bold; background-color:white"><TD>HEDEF IçERIGI</td><TD style="padding:1px" align=center>#<BR>HEDEFLER</td><TD width=15></td>';
+	for (var i=0; i<troopDef.length; i++)
+	  m += '<TD>'+ troopDef[i][0] +'</td>';
+	m += '</tr>';
+	for (var b=1; b<11; b++){
+	  m += '<TR><TD>Barbar Seviye '+ b +'</td><TD align=right>'+ coordList['lvl'+b].length  +'&nbsp; &nbsp;</td><TD></td>'; 
+	  for (var td=0; td<troopDef.length; td++)
+		m += '<TD><INPUT id=ptET_'+ b +'_'+ troopDef[td][1] +' type=text size=3 value="'+ t.troops['b'+ b][troopDef[td][1]-1] +'"></td>';
+	  m += '<TD width=90%><SPAN class=boldRed id=ptETerr_'+ b +'></span></tr>';
+	} 
+	m += '</table>';
+	var isKOCattack = !(document.getElementById('KOCAttackToggle') == null);
+
+	//TODO: 'RESET VALUES' button ?
+
+	if (isKOCattack){
+	  m += '<BR><CENTER>'+ strButton20('Koord. Hafizaya AL..!', 'id=pbSrcDoBA') +'</center>';
+	} else {
+	  m += 'KOC Attack not running, unable to export';
+	} 
+	m += '<CENTER><DIV style="width:70%" id=pbSrcExpResult></DIV></center>'; 
+	popExp.getMainDiv().innerHTML =  m;
+	for (var b=1; b<11; b++)
+	  for (var td=0; td<troopDef.length; td++)
+		document.getElementById('ptET_'+ b +'_'+ troopDef[td][1]).addEventListener ('change', validate, false);
+
+	popExp.getTopDiv().innerHTML = '<CENTER><B>KONTROLL PANEL</b></center>';
+	if (isKOCattack)    
+	  document.getElementById ('pbSrcDoBA').addEventListener ('click', doBulkAdd, false);
+	popExp.show(true);
+
+	if (city != null){
+	  for (var i=0; i<Cities.numCities; i++)
+		if (city.id == Cities.cities[i].id)
+		  break;
+	  if (i < Cities.numCities){
+		setTimeout (function(){unsafeWindow.citysel_click(document.getElementById('citysel_'+ (i+1)));}, 0);
+//logit ("SWITCH CITY: "+ (i+1));          
+	  }
+	}
+// TODO: WAIT FOR City select ?
+
+
+	function validate (e){
+	  var x = e.target.id.substr(5).split('_');
+	  var b = x[0];
+	  var trp = x[1];
+	  document.getElementById('ptETerr_'+ b).innerHTML = '';
+	  var x = parseIntZero (e.target.value);
+	  if (isNaN(x) || x<0 || x>100000){
+		e.target.style.backgroundColor = 'red';
+		document.getElementById('ptETerr_'+ b).innerHTML = 'Invalid Entry';
+		return;
+	  } else {
+		e.target.style.backgroundColor = '';
+		e.target.value = x;
+		t.troops['b'+ b][trp-1] = x;
+	  }
+	  var tot = 0;
+	  for (var td=0; td<troopDef.length; td++)
+		tot += parseIntZero(document.getElementById('ptET_'+ b +'_'+ [troopDef[td][1]]).value);
+	  if (tot<1 && cList['lvl'+ b].length>0 )
+		document.getElementById('ptETerr_'+ b).innerHTML = 'No troops defined';
+	  if (tot>100000)
+		document.getElementById('ptETerr_'+ b).innerHTML = 'Too many troops';
+	}
+
+	function doBulkAdd (){
+	  for (var b=1; b<11; b++){
+		if (document.getElementById('ptETerr_'+ b).innerHTML != '')
+		  return;
+		var tot = 0;
+		for (var td=0; td<troopDef.length; td++)
+		  tot += t.troops['b'+b][troopDef[td][1]-1];
+		if (tot<1 && cList['lvl'+ b].length>0){
+		  document.getElementById('ptETerr_'+ b).innerHTML = 'No troops defined';
+		  return; 
+		} else if (tot>100000) {
+		  document.getElementById('ptETerr_'+ b).innerHTML = 'Too many troops';
+		  return; 
+		}
+	  }    
+	  document.getElementById('pbSrcExpResult').innerHTML = '';
+	  doNextLevel ();
+	}
+
+	function endBulkAdd (msg){
+	  unsafeWindow.Modal.hideModalAll(); 
+	  curLevel = 0;
+	  showMe ();
+	  popExp.show(true);
+	  document.getElementById('pbSrcExpResult').innerHTML += msg;
+	}
+
+	function doNextLevel (){
+	  while ( curLevel<10 && cList['lvl'+ ++curLevel].length==0)
+		;
+	  if (curLevel>=10){
+		endBulkAdd ('Done!<BR>'); 
+		return;
+	  }
+// WinManager.hideall();      <=== TODO!  
+	  hideMe();
+	  popExp.show (false);
+	  unsafeWindow.Modal.hideModalAll(); 
+	  unsafeWindow.modal_attack(4,0,0);
+	  new CwaitForElement ('BulkAddAttackDiv', 5000, e_attackDialog );
+	}
+
+	function e_attackDialog (tf){
+	  if (!tf){
+		endBulkAdd ('<SPAN class=boldRed>ERROR: Unable to open attack dialog</span>');
+		return;  
+	  } 
+	  var div = document.getElementById('BulkAddAttackDiv').firstChild;
+	  if (div==null || div.style.display!='none'){
+		endBulkAdd ('<SPAN class=boldRed>ERROR: Unexpected attack dialog format.</span>');
+		return;  
+	  }
+	  // find div and textarea and button ...
+	  var ta = null;
+	  var but = null;
+	  for (var i=0; i<div.childNodes.length; i++){
+		if (div.childNodes[i].tagName=='TEXTAREA')
+		  ta = div.childNodes[i];
+		else if (div.childNodes[i].tagName=='A')
+		  but = div.childNodes[i];
+	  }
+	  if (ta==null || but==null){
+		endBulkAdd ('<SPAN class=boldRed>ERROR: Unexpected attack dialog format.</span>');
+		return;  
+	  } 
+	  for (var trp=1; trp<13; trp++){
+		if (t.troops['b'+curLevel][trp-1] > 0){
+		  var inp = document.getElementById('modal_attack_unit_ipt' +trp);
+		  inp.value = t.troops['b'+curLevel][trp-1];
+		  inp.style.backgroundColor = 'yellow';
+		}
+	  }
+	  div.style.display = 'block';
+	  document.getElementById('KOCAttackBulkAddForce').checked = true;
+	  if (DISABLE_BULKADD_LIST)
+		ta.value = '';
+	  else {
+		var m = '';
+		var list = cList['lvl'+ (curLevel)];
+		for (i=0; i<list.length; i++)
+		  m += list[i].x +','+ list[i].y +'\n';
+		ta.value = m;
+	  }
+	  clickWin (unsafeWindow, but, 'click');   
+	  unsafeWindow.Modal.hideModal();
+	  document.getElementById('pbSrcExpResult').innerHTML += 'Added '+ list.length +' targets for '+ city.name +'<BR>';
+	  setTimeout (doNextLevel, 10);
+	}    
+  },
+}
+
+
+
+/****************************  Sample Tab Implementation  ******************************/
+Tabs.sample = {
+  tabOrder : 30,                    // order to place tab in top bar
+  tabDisabled : !ENABLE_SAMPLE_TAB, // if true, tab will not be added or initialized
+  tabLabel : 'TIKLA',            // label to show in main window tabs
+  myDiv : null,
+  timer : null,  
+
+  init : function (div){    // called once, upon script startup
+	var t = Tabs.sample;
+	t.myDiv = div;
+	var cityName = Cities.cities[0].name;
+	div.innerHTML = '<CENTER><BR>This is a sample tab implementation<BR><BR>Yiyecek '+ cityName +' : <SPAN id=pbSampleFood>0</span>\
+		<BR><BR>(Yiyecek, Her 5 Saniyede Yenilenir)</center>';
+  },
+
+  hide : function (){         // called whenever the main window is hidden, or another tab is selected
+	var t = Tabs.sample;
+	clearTimeout (t.timer);
+  },
+
+  show : function (){         // called whenever this tab is shown
+	var t = Tabs.sample;
+	var food = parseInt(Seed.resources['city'+ Cities.cities[0].id]['rec'+1][0] / 3600);
+	document.getElementById('pbSampleFood').innerHTML = addCommas (food);
+	clearTimeout (t.timer);
+	t.timer = setTimeout (t.show, 5000);
+  },
+}
+
+
+/*********************************** ATTACK TAB ***********************************/
+function setMaxHeightScrollable (e){
+  e.style.height = '100%';
+  e.style.height = e.clientHeight + 'px';
+  e.style.maxHeight = e.clientHeight + 'px';
+  e.style.overflowY = 'auto';
+}
+
+Tabs.Attack = {
+  tabDisabled : !ENABLE_ATTACK_TAB,
+  tabOrder: 20,
+  myDiv : null,
+  data : {},  
+  MapAjax : new CMapAjax(),
+
+  init : function (div){
+	var t = Tabs.Attack;
+	t.myDiv = div;
+	t.myDiv.innerHTML = '<TABLE width=100% height=100% class=pbTab><TR><TD><INPUT id=pbBarbShow type=submit value="Show All Targets" \> <BR>\
+	   City: <SPAN id=pbAtkCSS></span> &nbsp; &nbsp; &nbsp; Radius: <INPUT id=pbBarbDist size=3 type=text> &nbsp; &nbsp; <INPUT id=pbBarbScan type=submit value=Scan \></td></tr><TR><TD height=100%>\
+	   <DIV id=pbAtkDiv style="background-color:white"></div></td></tr></table>';
+	t.loadTargets ();
+	// TODO: Check current cities, invalidate data if city moved
+	document.getElementById('pbBarbScan').addEventListener ('click', t.e_clickedScan, false);
+	document.getElementById('pbBarbShow').addEventListener ('click', t.e_clickedShow, false);
+	new CdispCityPicker ('pbAtkCS', document.getElementById('pbAtkCSS'), false, function (c){t.scanCity=c}, 0);
+  },
+
+  hide : function (){
+  },
+
+  state : 0,
+  show : function (){
+	var t = Tabs.Attack;
+	if (t.state == 0){
+	  setMaxHeightScrollable (document.getElementById('pbAtkDiv'));
+	  t.state = 1;
+	}
+  },
+
+  clearDiv : function (){
+	document.getElementById('pbAtkDiv').innerHTML = '';
+  },
+  writeDiv : function (m){
+	document.getElementById('pbAtkDiv').innerHTML += m;
+  },
+
+  loadTargets : function (){
+	var t = Tabs.Attack;
+DebugTimer.start(); 
+	var totTargets = 0;   
+	for (var c=0; c<Cities.numCities; c++){
+	  var s = GM_getValue ('atk_'+ getServerId() +'_'+ Cities.cities[c].id, null);
+	  if (s == null)
+		t.data['city'+ Cities.cities[c].id] = {cityX:Cities.cities[c].x, cityY:Cities.cities[c].y, radius:0, numTargets:0, targets:{}};
+	  else
+		t.data['city'+ Cities.cities[c].id] = JSON2.parse (s);
+	  totTargets += t.data['city'+ Cities.cities[c].id].numTargets;
+	}
+DebugTimer.display ('Time to GM_getValue() '+ totTargets +' targets for all cities');    
+  },
+
+  e_clickedScan : function (){
+	var t = Tabs.Attack;
+	t.clearDiv();
+	var dist = parseInt(document.getElementById('pbBarbDist').value);
+	if (isNaN(dist) || dist<1 || dist>35){
+	  t.writeDiv ("<SPAN class=boldRed>Nuh-uh, try again</span><BR>");
+	  return; 
+	}
+	t.writeDiv ('Scanning map for city: '+ t.scanCity.name +'<BR>');
+	t.scanBarbs (t.scanCity.id, dist);
+  },
+
+  popShow : null,  
+
+  e_clickedShow : function (){    // show all current attack data
+	var t = Tabs.Attack;
+	if (t.popShow == null){
+	  t.popShow = new CPopup ('pbbs', 0,0, 500,500, true, function (){t.popShow.destroy(); t.popShow=null;});
+	  t.popShow.centerMe (mainPop.getMainDiv());  
+	}
+	var m = '<DIV style="max-height:460px; height:460px; overflow-y:auto"><TABLE align=center cellpadding=0 cellspacing=0 class=pbTabPad>';
+	for (var c=0; c<Cities.numCities; c++){
+	  var dat = t.data['city'+ Cities.cities[c].id];
+	  m += '<TR><TD colspan=3><DIV class=ptstat>'+ Cities.cities[c].name +' &nbsp; (radius:'+ dat.radius +' &nbsp;targets:'+ dat.numTargets  +')</div></td></tr>';
+	  // sort by distance ...
+	  var atks = [];
+	  for (k in dat.targets)
+		atks.push (dat.targets[k]);
+	  atks.sort (function(a,b){return a.dist-b.dist});     
+	  for (i=0; i<atks.length; i++)
+		m += '<TR><TD>Barb Camp '+ atks[i].lvl +'</td><TD>'+ atks[i].x +','+ atks[i].y +'</td><TD> &nbsp; Dist='+ atks[i].dist.toFixed(2) +'</td></tr>';
+	}    
+	t.popShow.getMainDiv().innerHTML = '</table></div>'+ m;
+	t.popShow.getTopDiv().innerHTML = '<CENTER><B>Showing all targets in memory</b></center>';
+	t.popShow.show(true);    
+  },
+
+  configWriteTargets : function (cityID){
+	var t = Tabs.Attack;
+	var serverID = getServerId();
+	DebugTimer.start();    
+	GM_setValue ('atk_'+ serverID +'_'+ cityID,  JSON2.stringify(t.data['city'+ cityID]));
+	t.writeDiv ('** Time to GM_setValue() '+ t.data['city'+ cityID].numTargets +' targets for city: '+ (DebugTimer.getMillis()/1000) +' seconds<BR>');
+  },
+
+  oScan : {},   
+  scanBarbs : function (cityID, distance){   // max distance:35
+	var t = Tabs.Attack;
+	var city = Cities.byID[cityID];
+// TODO: remember state - in case of refresh
+	var x = t.MapAjax.normalize(city.x-distance); 
+	var y = t.MapAjax.normalize(city.y-distance); 
+	t.oScan = { city:city, centerX:city.x, centerY:city.y, maxDist:distance,
+		minX:x, maxX:city.x+distance, minY:y, maxY:city.y+distance, curX:x, curY:y, data:[] };
+	setTimeout (function(){t.MapAjax.request (t.oScan.curX, t.oScan.curY, 15, t.e_mapCallback)}, MAP_DELAY);
+	t.writeDiv ('Scanning @ '+ t.oScan.curX +','+ t.oScan.curY +'<BR>');
+  },
+
+  e_scanDone : function (errMsg){
+	var t = Tabs.Attack;
+	t.data['city'+ t.oScan.city.id] = {cityX:t.oScan.city.x, cityY:t.oScan.city.y, radius:t.oScan.maxDist, numTargets:0, targets:{}};
+	var dat = t.data['city'+ t.oScan.city.id];
+	t.writeDiv ('Done scanning<BR>');
+	for (var i=0; i<t.oScan.data.length; i++){
+	  var map = t.oScan.data[i];
+	  dat.targets[map[0] +'_'+ map[1]] = {type:'b', x:map[0], y:map[1], dist:map[2], lvl:map[3]};
+	  ++dat.numTargets;
+	}
+	t.configWriteTargets (t.oScan.city.id);
+  },
+
+  e_mapCallback : function (left, top, width, rslt){
+	var t = Tabs.Attack;
+	if (!rslt.ok){
+	  setTimeout (function(){t.e_scanDone (rslt.errorMsg)}, 0);
+	  t.writeDIV ('<BR>ERROR: '+ rslt.errorMsg +'<BR>');
+	  return;
+	}
+	var map = rslt.data;
+	for (k in map){
+	  var lvl = parseInt(map[k].tileLevel);
+	  if (map[k].tileType==51 && !map[k].tileCityId && lvl<8) {  // if barb
+		var dist = distance (t.oScan.centerX, t.oScan.centerY, map[k].xCoord, map[k].yCoord);
+		if (dist <= t.oScan.maxDist){
+		  t.oScan.data.push ([parseInt(map[k].xCoord), parseInt(map[k].yCoord), dist, lvl]);
+		}
+	  } 
+	}
+	t.oScan.curX += 15;
+	if (t.oScan.curX > t.oScan.maxX){
+	  t.oScan.curX = t.oScan.minX;
+	  t.oScan.curY += 15;
+	  if (t.oScan.curY > t.oScan.maxY){
+		setTimeout (function(){t.e_scanDone (null)}, 0);
+		return;
+	  }
+	}
+	var x = t.oScan.curX;
+	var y = t.oScan.curY;
+	setTimeout (function(){t.MapAjax.request (x,y, 15, t.e_mapCallback)}, MAP_DELAY);
+	t.writeDiv ('Scanning @ '+ x +','+ y +'<BR>');
+  },
+}
+
+
+/*********************************** Test TAB ***********************************/
+Tabs.Test = {
+  tabOrder: 25,
+  tabDisabled : !ENABLE_TEST_TAB,         // if true, tab will not be added or initialized
+  tabLabel : 'Test',
+  myDiv : null,
+
+  init : function (div){
+	var t = Tabs.Test;
+	t.myDiv = div;
+	var m = '<TABLE><TR><TD align=right>Scout: </td><TD><INPUT type=checkbox id=pbfakeIsScout></td></tr>\
+		<TR><TD align=right>Wild: </td><TD><INPUT type=checkbox id=pbfakeIsWild></td></tr>\
+		<TR><TD align=right>False Report: </td><TD><INPUT type=checkbox id=pbfakeFalse></td></tr>\
+		<TR><TD align=right>Seconds: </td><TD><INPUT type=text size=4 value=300 id=pbfakeSeconds></td></tr>\
+		<TR><TD align=right># of Militia: </td><TD><INPUT type=text size=6 value=5000 id=pbfakeMilitia></td></tr>\
+		<TR><TD colspan=2 align=center><INPUT id=pbtestSendMarch type=submit value="Fake Attack" \></td></tr></table>\
+		<INPUT id=pbReloadKOC type=submit value="Reload KOC" \>\
+		<BR>Force ajax errors : <INPUT type=checkbox id=pbajaxErr>\
+		<BR><DIV id=pbtestDiv style="background-color:#ffffff; maxwidth:675; maxheight:350px; height:350px; overflow-y:auto;"></div>';
+	div.innerHTML = m;
+	document.getElementById('pbtestSendMarch').addEventListener ('click', t.clickFakeAttack, false);
+	document.getElementById('pbReloadKOC').addEventListener ('click', reloadKOC, false);
+	document.getElementById('pbajaxErr').addEventListener ('click', function (){window.EmulateAjaxError=this.checked}, false);
+  },
+
+  hide : function (){
+	var t = Tabs.Test;
+  },
+
+  show : function (){
+  },
+
+  writeDiv : function (msg){
+	var t = Tabs.Test;
+	if (t.state != null)
+	  document.getElementById('pbtestDiv').innerHTML = msg;
+  },
+
+  addDiv : function (msg){
+	var t = Tabs.Test;
+	if (t.state != null)
+	  document.getElementById('pbtestDiv').innerHTML += msg;
+  },
+
+  createFakeAttack : function (cityNum, isScout, isWild, isFalse, secs, numMilitia){
+	var marchId = 'm'+ (88888 + Math.floor(Math.random()*11111));
+	var march = {};
+	if (matTypeof(Seed.queue_atkinc)=='array')
+	  Seed.queue_atkinc = {};
+	if (isFalse)
+	  march.marchType = 0;
+	else if (isScout)
+	  march.marchType = 3;
+	else
+	  march.marchType = 4;
+
+	march.toCityId = Cities.cities[cityNum].id;
+	if (isWild) {
+	  keys = unsafeWindow.Object.keys(Seed.wilderness['city'+Cities.cities[cityNum].id]);
+	  march.toTileId = Seed.wilderness['city'+Cities.cities[cityNum].id][keys[0]].tileId;
+	} else {
+	  march.toTileId = Cities.cities[cityNum].tileId;
+	}
+	secs = parseInt(secs);
+	march.arrivalTime = unixTime() + secs;
+	march.departureTime = unixTime() - 10;
+	march.unts = {}
+	march.unts.u3 = 1
+	march.unts.u2 = numMilitia
+	march.pid = 1234567
+	march.score = 9
+	march.mid = marchId.substr(1);
+	march.players = {}
+	march.players.u1234567 = {}
+	march.players.u1234567.n = 'Hakan-MM-';
+	march.players.u1234567.t = 60
+	march.players.u1234567.m = 5441192
+	march.players.u1234567.s = 'M';
+	march.players.u1234567.w = 1
+	march.players.u1234567.a = 1
+	march.players.u1234567.i = 5
+	Seed.queue_atkinc[marchId] = march;
+	Seed.players.u1234567 = march.players.u1234567;
+  },
+
+  clickFakeAttack : function (){
+	var t = Tabs.Test;
+	var isScout = document.getElementById('pbfakeIsScout').checked;
+	var isWild = document.getElementById('pbfakeIsWild').checked;
+	var isFalse = document.getElementById('pbfakeFalse').checked;
+	var secs = parseInt(document.getElementById('pbfakeSeconds').value);
+	var mil = parseInt(document.getElementById('pbfakeMilitia').value);
+	t.createFakeAttack (0, isScout, isWild, isFalse, secs, mil);
+  },
+}
+
+/*********************************** Log Tab ***********************************/
+Tabs.ActionLog = {
+  tabOrder: 11,
+  tabLabel : 'KAYIT',
+  myDiv : null,
+  logTab : null,
+  maxEntries: 300,
+  last50 : [],
+  state : null,
+
+  init : function (div){
+	var t = Tabs.ActionLog;
+	t.myDiv = div;
+	t.myDiv.innerHTML = '<DIV class=ptstat>HAREKET LISTESI</div><DIV style="height:535px; max-height:535px; overflow-y:auto">\
+	  <TABLE cellpadding=0 cellspacing=0 id=pbactionlog class=pbTabLined><TR><TD></td><TD width=95%></td></table></div>';
+	t.logTab = document.getElementById('pbactionlog');  
+	t.state = 1;
+	var a = JSON2.parse(GM_getValue ('log_'+getServerId(), '[]'));
+	if (matTypeof(a) == 'array'){
+	  t.last50 = a;
+	  for (var i=0; i<t.last50.length; i++)
+		t._addTab (t.last50[i].msg, t.last50[i].ts);
+	}
+	window.addEventListener('unload', t.onUnload, false);
+  },
+
+  hide : function (){
+  },
+
+  show : function (){
+  },
+
+  onUnload : function (){
+	var t = Tabs.ActionLog;
+	GM_setValue ('log_'+getServerId(), JSON2.stringify(t.last50));
+  },
+
+  _addTab : function (msg, ts){
+	var t = Tabs.ActionLog;
+	if (t.state != 1)
+	  return;
+	if (t.logTab.rows.length >= t.maxEntries)
+	  t.logTab.deleteRow(t.maxEntries-1);
+	var row = t.logTab.insertRow(0);
+	row.vAlign = 'top';
+	row.insertCell(0).innerHTML = ts;
+	row.insertCell(1).innerHTML = msg;
+  }, 
+
+  log : function (msg){
+	var t = Tabs.ActionLog;
+	var ts = new Date().toTimeString().substring (0,8);
+	t._addTab (msg, ts);
+	while (t.last50.length >= 50)
+	  t.last50.shift();
+	t.last50.push ({msg:msg, ts:ts});
+  },
+}
+
+function actionLog (msg){
+  if (!Tabs.ActionLog.tabDisabled)
+	Tabs.ActionLog.log (msg);  
+}
+
+
+/*********************************** Options Tab ***********************************/
+Tabs.Options = {
+  tabOrder: 5,
+  tabLabel : 'SECENEKLER',
+  myDiv : null,
+  fixAvailable : {},
+
+  init : function (div){
+	var t = Tabs.Options;
+	t.myDiv = div;
+	try {      
+	  m = '<DIV style="height:500px; max-height:500px; overflow-y:auto"><TABLE width=100% class=pbTabLined cellspacing=0 cellpadding=0>\
+		<TR><TD colspan=2><B>KONTROL PANEL AYARLAR:</b></td></tr>\
+		<TR><TD><INPUT id=pballowWinMove type=checkbox /></td><TD>Isaretlendiginde Kontroll panelini Hareket Ettirebilirsiniz</td></tr>\
+		<TR><TD><INPUT id=pbTrackWinOpen type=checkbox /></td><TD>Isaretlendiginde En Son Oynanan Serveyi Hatirlar</td></tr>\
+		<TR><TD colspan=2><BR><B>ÖZELLIKLER:</b></td></tr>\
+		<TR><TD><INPUT id=pbFairie type=checkbox /></td><TD>Isaretlendiginde Pencere Açilmasini ENGELLER</td></tr>\
+		<TR><TD><INPUT id=pbWideOpt type=checkbox '+ (GlobalOptions.pbWideScreen?'CHECKED ':'') +'/></td><TD>Isaretlendiginde Genis Oyun Alan Ekrani Acar</td></tr>\
+		<TR><TD><INPUT id=pbWatchEnable type=checkbox '+ (GlobalOptions.pbWatchdog?'CHECKED ':'') +'/></td><TD>Isaretlendiginde 1 dakikada bir alaniniz da yükleme yapar</td></tr>\
+		<TR><TD><INPUT id=pbEveryEnable type=checkbox /></td><TD>Isaretlendiginde Dakika da Bir Sayfayi YENILER! <INPUT id=pbeverymins type=text size=2 maxlength=3 \>Dakika</td></tr>\
+		<TR><TD><INPUT id=pbChatREnable type=checkbox /></td><TD>ChatBox Penceresini Saga ceker(KoC Toolkit gerekiyor)</td></tr>\
+		<TR><TD><INPUT id=pbWMapEnable type=checkbox /></td><TD>Haritayi Genisletir(Genis Oyun Alan Ekran Isaret varsa Çalisir.)</td></tr>\
+		<TR><TD><INPUT id=pbGoldEnable type=checkbox /></td><TD>Isaretlendiginde % Ulasildiginda Altini ARTTIRIR<INPUT id=pbgoldLimit type=text size=2 maxlength=3 \>%</td></tr>\
+		<TR><TD><INPUT id=pbalertEnable type=checkbox '+ (Options.alertConfig.aChat?'CHECKED ':'') +'/></td><TD>Saldiriya Uradiginda Asagida ki METNI Chatbox a OTOMATIK Olarak Gönderir!!</td></tr>\
+		<TR><TD></td><TD><TABLE cellpadding=0 cellspacing=0>\
+			<TR><TD align=right>YARDIM MESAJI: &nbsp; </td><TD><INPUT id=pbalertPrefix type=text size=60 maxlength=120 value="'+ Options.alertConfig.aPrefix +'" \></td></tr>\
+			<TR><TD align=right>B.Toplayici Alarmi: &nbsp; </td><TD><INPUT id=pbalertScout type=checkbox '+ (Options.alertConfig.scouting?'CHECKED ':'') +'/></td></tr>\
+			<TR><TD align=right>Saldiri Alarmi: &nbsp; </td><TD><INPUT id=pbalertWild type=checkbox '+ (Options.alertConfig.wilds?'CHECKED ':'') +'/></td></tr>\
+			<TR><TD align=right>ASKER SAYISI: &nbsp; </td><TD><INPUT id=pbalertTroops type=text size=7 value="'+ Options.alertConfig.minTroops +'" \> &nbsp; &nbsp; <span id=pbalerterr></span></td></tr>\
+			</table></td></tr>\
+		</table><BR><BR><HR>Note that if a checkbox is greyed out there has probably been a change of KofC\'s code, rendering the option inoperable.</div>';
+	  div.innerHTML = m;
+
+	  document.getElementById('pbWatchEnable').addEventListener ('change', t.e_watchChanged, false);
+	  document.getElementById('pbWideOpt').addEventListener ('change', t.e_wideChanged, false);
+	  document.getElementById('pbalertEnable').addEventListener ('change', t.e_alertOptChanged, false);
+	  document.getElementById('pbalertPrefix').addEventListener ('change', t.e_alertOptChanged, false);
+	  document.getElementById('pbalertScout').addEventListener ('change', t.e_alertOptChanged, false);
+	  document.getElementById('pbalertWild').addEventListener ('change', t.e_alertOptChanged, false);
+	  document.getElementById('pbalertTroops').addEventListener ('change', t.e_alertOptChanged, false);
+	  t.togOpt ('pballowWinMove', 'pbWinDrag', mainPop.setEnableDrag);
+	  t.togOpt ('pbTrackWinOpen', 'pbTrackOpen');
+	  t.togOpt ('pbFairie', 'pbKillFairie', FairieKiller.setEnable);
+	  t.togOpt ('pbGoldEnable', 'pbGoldEnable', CollectGold.setEnable);
+	  t.changeOpt ('pbgoldLimit', 'pbGoldHappy');
+	  t.changeOpt ('pbeverymins', 'pbEveryMins');
+	  t.togOpt ('pbEveryEnable', 'pbEveryEnable', RefreshEvery.setEnable);
+	  t.togOpt ('pbChatREnable', 'pbChatOnRight', WideScreen.setChatOnRight);
+	  t.togOpt ('pbWMapEnable', 'pbWideMap', WideScreen.useWideMap);
+	  t.togOpt ('pbEveryEnable', 'pbEveryEnable', RefreshEvery.setEnable);
+
+	} catch (e) {
+	  div.innerHTML = '<PRE>'+ e.name +' : '+ e.message +'</pre>';  
+	}      
+  },
+
+  hide : function (){
+  },
+
+  show : function (){
+  },
+
+  togOpt : function (checkboxId, optionName, callOnChange){
+	var t = Tabs.Options;
+	var checkbox = document.getElementById(checkboxId);
+	if (Options[optionName])
+	  checkbox.checked = true;
+	checkbox.addEventListener ('change', eventHandler, false);
+	function eventHandler (){
+	  Options[optionName] = this.checked;
+	  saveOptions();
+	  if (callOnChange)
+		callOnChange (this.checked);
+	}
+  },
+
+  changeOpt : function (valueId, optionName, callOnChange){
+	var t = Tabs.Options;
+	var e = document.getElementById(valueId);
+	e.value = Options[optionName];
+	e.addEventListener ('change', eventHandler, false);
+	function eventHandler (){
+	  Options[optionName] = this.value;
+	  saveOptions();
+	  if (callOnChange)
+		callOnChange (this.value);
+	}
+  },
+
+  e_watchChanged : function (){
+	GlobalOptions.pbWatchdog = document.getElementById('pbWatchEnable').checked;
+	GM_setValue ('Options_??', JSON2.stringify(GlobalOptions));  
+  },
+
+  e_wideChanged : function (){
+	GlobalOptions.pbWideScreen = document.getElementById('pbWideOpt').checked;
+	GM_setValue ('Options_??', JSON2.stringify(GlobalOptions));  
+  },
+
+  e_alertOptChanged : function (){
+	Options.alertConfig.aChat = document.getElementById('pbalertEnable').checked;
+	Options.alertConfig.aPrefix=document.getElementById('pbalertPrefix').value;      
+	Options.alertConfig.scouting=document.getElementById('pbalertScout').checked;      
+	Options.alertConfig.wilds=document.getElementById('pbalertWild').checked;
+	var mt = parseInt(document.getElementById('pbalertTroops').value);
+	if (mt<1 || mt>120000){
+	  document.getElementById('pbalertTroops').value = Options.alertConfig.minTroops;
+	  document.getElementById('pbalerterr').innerHTML = '<font color=#600000><B>INVALID</b></font>';
+	  setTimeout (function (){document.getElementById('pbalerterr').innerHTML =''}, 2000);
+	  return;
+	} 
+	Options.alertConfig.minTroops = mt;
+	saveOptions();
+	TowerAlerts.setPostToChatOptions (Options.alertConfig);
+  },
+}
+
+
+/************************ Tower Alerts ************************/
+var TowerAlerts = {
+  generateIncomingFunc : null,
+  fixTargetEnabled : false,
+  towerMarches : {},    // track all marches that have been posted to alliance chat
+
+  init : function (){
+	var t = TowerAlerts; 
+	var s = GM_getValue ('towerMarches_'+getServerId());
+	if (s != null)
+	  t.towerMarches = JSON2.parse (s);
+
+	t.generateIncomingFunc = new CalterUwFunc ('attack_generateincoming', [[/.*} else {\s*e = true;\s*}/im, '} else { e = ptGenerateIncoming_hook(); }']]);
+	unsafeWindow.ptGenerateIncoming_hook = t.generateIncoming_hook;
+  },
+
+  postToChatOptions : {aChat:false},
+  secondTimer : null,
+
+  setPostToChatOptions : function (obj){
+	var t = TowerAlerts;
+	t.postToChatOptions = obj;
+	clearTimeout(t.secondTimer);
+	 if (obj.aChat)
+		t.e_eachSecond();
+	//DD two lines deleted
+  },
+
+  addTowerMarch : function (m){
+	var t = TowerAlerts;
+	var now = unixTime();
+	for (k in t.towerMarches){
+	  if (t.towerMarches[k].arrival < now)
+		delete t.towerMarches[k];
+	}
+	t.towerMarches['m'+m.mid] = {added:now, arrival:parseIntNan(m.arrivalTime) };
+	GM_setValue ('towerMarches_'+getServerId(), JSON2.stringify(t.towerMarches) );
+  },
+
+  getTowerMarch : function (mid){ // ID only (no 'm')
+	var t = TowerAlerts;
+	return t.towerMarches['m'+mid];
+  },
+
+  e_eachSecond : function (){   // check for incoming marches
+	var t = TowerAlerts;
+	var now = unixTime();
+	if (matTypeof(Seed.queue_atkinc) != 'array'){
+	  for (var k in Seed.queue_atkinc){
+		var m = Seed.queue_atkinc[k]; 
+		if ((m.marchType==3 || m.marchType==4) && parseIntNan(m.arrivalTime)>now && t.getTowerMarch(m.mid)==null){
+		  t.addTowerMarch (m);
+		  t.postToChat (m, false);
+		}
+	  }
+	}
+	t.secondTimer = setTimeout (t.e_eachSecond, 2000);
+  },
+
+  postToChat : function (m, force){
+	var t = TowerAlerts;
+	if (DEBUG_TRACE) logit ("checkTower(): INCOMING at "+ unixTime()  +": \n"+ inspect (m, 8, 1));
+	if (m.marchType == null)      // bogus march (returning scouts)
+	  return;
+	if (ENABLE_TEST_TAB) Tabs.Test.addDiv ("Incoming!<BR><PRE style='margin:0px;'>" + inspect (m, 8, 1) +'</pre>');
+	if (m.marchType == 3){
+	  if (!t.postToChatOptions.scouting && !force)
+		return;
+	  atkType = 'scouted';
+	} else if (m.marchType == 4){
+	  atkType = 'attacked';
+	} else {
+	  return;
+	}
+	var target, atkType, who;
+	var city = Cities.byID[m.toCityId];
+	if ( city.tileId == m.toTileId )
+	  target = 'city at '+ city.x +','+ city.y;
+	else {
+	  if (!t.postToChatOptions.wilds && !force)
+		return;
+	  target = 'wilderness';
+	  for (k in Seed.wilderness['city'+m.toCityId]){
+		if (Seed.wilderness['city'+m.toCityId][k].tileId == m.toTileId){
+		  target += ' at '+ Seed.wilderness['city'+m.toCityId][k].xCoord +','+ Seed.wilderness['city'+m.toCityId][k].yCoord;
+		  break;
+		}
+	  }
+	}
+	if (Seed.players['u'+m.pid])
+	  who = Seed.players['u'+m.pid].n;
+	else if (m.players && m.players['u'+m.pid])
+	  who = m.players['u'+m.pid].n;
+	else
+	  who = 'Unknown';
+
+	if (m.fromXCoord)
+	  who += ' at '+ m.fromXCoord +','+ m.fromYCoord;
+	var msg = '';
+	if (!force)
+	  msg = t.postToChatOptions.aPrefix +' ';
+	msg += 'My '+ target +' is being '+ atkType  +' by '+ who +'. Incoming Troops (arriving in '+
+		unsafeWindow.timestr(parseInt(m.arrivalTime - unixTime())) +') : ';
+	var totTroops = 0;
+	for (k in m.unts){
+	  var uid = parseInt(k.substr (1));
+	  msg += m.unts[k] +' '+ unsafeWindow.unitcost['unt'+uid][0] +', ';
+	  totTroops += m.unts[k];
+	}
+	if ((totTroops < t.postToChatOptions.minTroops) && !force)
+	  return;
+	msg = msg.slice (0, -2);
+	msg += '.';
+	if ( city.tileId == m.toTileId ){
+	  var emb = getCityBuilding(m.toCityId, 8);
+	  if (emb.count > 0){
+		var availSlots = emb.maxLevel;
+		for (k in Seed.queue_atkinc){
+		  if (Seed.queue_atkinc[k].marchType==2 && Cities.byID[Seed.queue_atkinc[k].fromCityId]==null){
+			--availSlots;
+		  }
+		}
+		msg += ' My embassy has '+ availSlots +' of '+ emb.maxLevel +' slots available.';
+	  }
+	}
+	if (ENABLE_TEST_TAB) Tabs.Test.addDiv (msg);
+	if (SEND_ALERT_AS_WHISPER)
+	  sendChat ("/"+ Seed.player.name +' '+ msg);    // Whisper to myself
+	else
+	  sendChat ("/a "+  msg);                        // Alliance chat
+  },
+}
+
+/************************ Gold Collector ************************/
+var CollectGold = {
+  timer : null,
+  lastCollect : {},
+
+  init : function (){
+	var t = CollectGold;
+	for (var c=0; c<Cities.numCities; c++)
+	  t.lastCollect['c'+ Cities.cities[c].id] = 0;
+	if (Options.pbGoldEnable)
+	  t.setEnable (true);
+  },
+
+  setEnable : function (tf){
+	var t = CollectGold;
+	clearTimeout (t.timer);
+	if (tf)
+	  t.tick();
+  },
+
+  colCityName : null,
+  colHappy : 0,  
+  tick : function (){
+	var t = CollectGold;
+	for (var c=0; c<Cities.numCities; c++){
+	  var city = Cities.cities[c];
+	  var happy = Seed.citystats['city'+ city.id].pop[2];
+	  var since = unixTime() - t.lastCollect['c'+city.id];
+	  if (happy>=Options.pbGoldHappy && since>15*60){
+		t.lastCollect['c'+city.id] = unixTime();
+		t.colCityName = city.name;
+		t.colHappy = happy;
+		t.ajaxCollectGold (city, t.e_ajaxDone); 
+		break;
+	  }
+	}
+	t.timer = setTimeout (t.tick, 15000);    
+  },
+
+  e_ajaxDone : function (rslt){
+	var t = CollectGold;
+	if (rslt.ok)
+	  actionLog ('Collected '+ rslt.goldGained +' gold for '+ t.colCityName +' (happiness was '+ t.colHappy +')'); 
+	else 
+	  actionLog ('Error collecting gold for '+ t.colCityName +': <SPAN class=boldRed>'+ rslt.errorMsg +'</span>'); 
+  },
+
+  ajaxCollectGold : function (city, notify){
+	var params = unsafeWindow.Object.clone(unsafeWindow.g_ajaxparams);
+	params.cid = city.id;
+	new MyAjaxRequest(unsafeWindow.g_ajaxpath + "ajax/levyGold.php" + unsafeWindow.g_ajaxsuffix, {
+	  method: "post",
+	  parameters: params,
+	  onSuccess: function (rslt) {
+		if (notify)  
+		  notify (rslt);
+	  },
+	  onFailure: function (rslt) {
+		if (notify)  
+		  notify (rslt);
+	  }
+	});
+  },
+}
+
+/************************ Refresh Every X minutes ************************/
+var RefreshEvery  = {
+  timer : null,
+  init : function (){
+	if (Options.pbEveryMins < 1)
+	  Options.pbEveryMins = 1;
+	RefreshEvery.setEnable (Options.pbEveryEnable);
+  },
+  setEnable : function (tf){
+	var t = RefreshEvery;
+	clearTimeout (t.timer);
+	if (tf)
+	  t.timer = setTimeout (t.doit, Options.pbEveryMins*60000);
+  },
+  doit : function (){
+	actionLog ('Yenilendi ('+ Options.pbEveryMins +' Dakikada Bir Sayfa Yenileniyor..)');
+	reloadKOC();
+  }
+}
+
+/************************ Fairie Killer ************************/
+var FairieKiller  = {
+  saveFunc : null,
+  init : function (tf){
+	FairieKiller.saveFunc = unsafeWindow.Modal.showModalUEP;
+	FairieKiller.setEnable (tf);
+  },
+  setEnable : function (tf){
+	if (tf)
+	  unsafeWindow.Modal.showModalUEP = eval ('function (a,b,c) {actionLog ("Açilir Pencereler Engellendi..!")}');
+	else
+	  unsafeWindow.Modal.showModalUEP = FairieKiller.saveFunc;
+  },
+}
+
+/********** facebook watchdog: runs only in 'http://apps.facebook.com/kingdomsofcamelot/*' instance!  ******/
+function facebookWatchdog (){
+  var INTERVAL = 50000; // wait 50 seconds minute before checking DOM
+  if (!GlobalOptions.pbWatchdog)
+	return;
+  setTimeout (watchdog, INTERVAL);
+
+// TODO: actionLog ?  
+  function watchdog (){
+logit ("--- Facebook WATCHDOG");    
+	try {
+//      if (document.getElementById('app_content_130402594779').firstChild.firstChild.childNodes[1].firstChild.tagName!='IFRAME'){
+	  if (document.getElementById('app_content_130402594779') == null){
+		logit ("KOC NOT FOUND!"); 
+		KOCnotFound(5*60);
+	  } 
+	} catch (e){
+	  logit ("KOC NOT FOUND!"); 
+	  KOCnotFound(5*60);
+	} 
+  }
+}
+
+
+function kocWatchdog (){
+  var INTERVAL = 30000; // wait 30 seconds before checking DOM
+  if (!GlobalOptions.pbWatchdog)
+	return;
+  setTimeout (watchdog, INTERVAL);
+  function watchdog (){
+logit ("--- KOC WATCHDOG");    
+	if (document.getElementById('mod_maparea')==null){
+	  actionLog ("KOC not loaded");
+	  KOCnotFound(3*60);
+	}     
+  }
+}
+
+
+function KOCnotFound(secs){
+  var div;
+  var countdownTimer = null;
+  var endSecs = (new Date().getTime()/1000) + secs;
+
+  div = document.createElement('div');
+  div.innerHTML = '<DIV style="font-size:18px; background-color:#a00; color:#fff"><CENTER><BR>KOC Power Bot has detected that KOC is not loaded<BR>\
+	  Refreshing in <SPAN id=pbwdsecs></span><BR><INPUT id=pbwdcan type=submit value="Cancel Refresh"><BR><BR></div>';
+  document.body.insertBefore (div, document.body.firstChild);
+  document.getElementById('pbwdcan').addEventListener('click', cancel, false);
+  countdown();
+
+  function countdown (){
+	var secsLeft = endSecs - (new Date().getTime()/1000);
+	document.getElementById('pbwdsecs').innerHTML = timestr(secsLeft);
+	if (secsLeft < 0)
+	  reloadKOC();
+	countdownTimer = setTimeout (countdown, 1000);
+  }
+  function cancel (){
+	clearTimeout (countdownTimer);
+	document.body.removeChild (div);
+  }
+}
+
+
+
+var WideScreen = {
+  chatIsRight : false,
+  useWideMap : false,
+
+  init : function (){
+	if (GlobalOptions.pbWideScreen){
+	  GM_addStyle ('.modalCurtain {width:760px !important} .mod_comm_mmb{z-index:0 !important}');  
+	  try {
+		document.getElementById('progressBar').parentNode.removeChild(document.getElementById('progressBar'));
+	  } catch (e) {
+	  }
+	}
+  },
+
+  setChatOnRight : function (tf){
+	t = WideScreen;
+	if (tf == t.chatIsRight || !GlobalOptions.pbWideScreen)
+	  return;
+	if (tf){
+	  var chat = document.getElementById('kocmain_bottom').childNodes[1];
+	  if (!chat || chat.className!='mod_comm')
+		setTimeout (function (){t.setChatOnRight(tf)}, 1000); 
+	  chat.style.top = '-624px';
+	  chat.style.left = '760px';
+	  chat.style.height = '720px';
+	  chat.style.background = 'url("'+ CHAT_BG_IMAGE +'")';
+	  document.getElementById('mod_comm_list1').style.height = '580px';
+	  document.getElementById('mod_comm_list2').style.height = '580px';
+	} else {
+	  var chat = document.getElementById('kocmain_bottom').childNodes[1];
+	  chat.style.top = '0px';
+	  chat.style.left = '0px';
+	  chat.style.height = '';
+	  chat.style.background = '';
+	  document.getElementById('mod_comm_list1').style.height = '287px';
+	  document.getElementById('mod_comm_list2').style.height = '287px';
+	}
+	t.chatIsRight = tf;
+  },
+	useWideMap : function (tf) {
+	t = WideScreen;
+	if (tf == t.useWideMap || !GlobalOptions.pbWideScreen)
+		return;
+	if (tf){
+		document.getElementById('mapwindow').style.height = "436px";
+		document.getElementById('mapwindow').style.width = "1220px";
+		document.getElementById('mapwindow').style.zIndex = "50";
+	} else {
+		document.getElementById('mapwindow').style.height = "439px";
+		document.getElementById('mapwindow').style.width = "760px";
+		document.getElementById('mapwindow').style.zIndex = "";
+	}
+  },
+}
+
+
+
+/*******************   KOC Map interface ****************/
+// 0:bog, 10:grassland, 11:lake, 20:woods, 30:hills, 40:mountain, 50:plain, 51:city / barb, 53:misted city
+function CMapAjax (){
+  this.normalize = normalize;  
+  this.request = request;
+
+  function request (left, top, width, notify){    
+	var left = parseInt(left / 5) * 5;
+	var top = parseInt(top / 5) * 5;
+	var width = parseInt((width+4) / 5) * 5;
+
+	var blockString = generateBlockList(left, top, width);
+	var params = unsafeWindow.Object.clone(unsafeWindow.g_ajaxparams);
+	params.blocks = blockString;
+	new MyAjaxRequest(unsafeWindow.g_ajaxpath + "ajax/fetchMapTiles.php" + unsafeWindow.g_ajaxsuffix, {
+	  method: "post",
+	  parameters: params,
+	  onSuccess: function (rslt) {
+		notify(left, top, width, rslt);
+	  },
+	  onFailure: function (rslt) {
+		notify(left, top, width, rslt);
+	  }
+	});
+	function generateBlockList (left, top, width) {
+	  var width5 = parseInt(width / 5);
+	  var bl = [];
+	  for (x=0; x<width5; x++){
+		var xx = left + (x*5);
+		if (xx > 745)
+		  xx -= 750;
+		for (y=0; y<width5; y++){
+		  var yy = top + (y*5);
+		  if (yy > 745)
+			yy -= 750;
+		  bl.push ('bl_'+ xx +'_bt_'+ yy);
+		}
+	  }
+	  return bl.join(",");
+	}
+  }
+
+  function normalize  (x){
+	if ( x >= 750)
+	  x -= 750;
+	else if (x < 0)
+	  x += 750;
+	return parseInt (x/5) * 5;
+  }
+}
+
+
+var tabManager = {
+  tabList : {},           // {name, obj, div}
+  currentTab : null,
+
+  init : function (mainDiv){
+	var t = tabManager;
+	var sorter = [];
+	for (k in Tabs){
+	  if (!Tabs[k].tabDisabled){  
+		t.tabList[k] = {};
+		t.tabList[k].name = k;
+		t.tabList[k].obj = Tabs[k];
+		if (Tabs[k].tabLabel != null)
+		  t.tabList[k].label = Tabs[k].tabLabel;
+		else
+		  t.tabList[k].label = k;
+		if (Tabs[k].tabOrder != null)
+		  sorter.push([Tabs[k].tabOrder, t.tabList[k]]);
+		else
+		  sorter.push([1000, t.tabList[k]]);
+		t.tabList[k].div = document.createElement('div');
+	  }
+	}
+
+	sorter.sort (function (a,b){return a[0]-b[0]});
+	var m = '<TABLE cellspacing=0 class=pbMainTab><TR>';
+	for (var i=0; i<sorter.length; i++)
+	  m += '<TD class=spacer></td><TD class=notSel id=pbtc'+ sorter[i][1].name +' ><A><SPAN>'+ sorter[i][1].label +'</span></a></td>';
+	m += '<TD class=spacer width=90% align=right>'+ Version +'&nbsp;</td></tr></table>';
+	mainPop.getTopDiv().innerHTML = m;
+
+	for (k in t.tabList) {
+	  if (t.currentTab == null)
+		t.currentTab = t.tabList[k];
+	  document.getElementById('pbtc'+ k).addEventListener('click', this.e_clickedTab, false);
+	  var div = t.tabList[k].div; 
+	  div.style.display = 'none';
+	  div.style.height = '100%';
+	  mainDiv.appendChild(div);
+	  try {
+		t.tabList[k].obj.init(div);
+	  } catch (e){
+		div.innerHTML = "INIT ERROR: "+ e;
+	  }
+	}
+
+	t.setTabStyle (document.getElementById ('pbtc'+ t.currentTab.name), true);
+	t.currentTab.div.style.display = 'block';
+  },
+
+  hideTab : function (){
+	var t = tabManager;
+	t.currentTab.obj.hide();
+  },
+
+  showTab : function (){
+	var t = tabManager;
+	t.currentTab.obj.show();
+  },
+
+  setTabStyle : function (e, selected){
+	if (selected){
+	  e.className = 'sel';
+	} else {
+	  e.className = 'notSel';
+	}
+  },
+
+  e_clickedTab : function (e){
+	var t = tabManager;
+	newTab = t.tabList[e.target.parentNode.parentNode.id.substring(4)];
+	if (t.currentTab.name != newTab.name){
+	  t.setTabStyle (document.getElementById ('pbtc'+ t.currentTab.name), false);
+	  t.setTabStyle (document.getElementById ('pbtc'+ newTab.name), true);
+	  t.currentTab.obj.hide ();
+	  t.currentTab.div.style.display = 'none';
+
+	  t.currentTab = newTab;
+	  newTab.div.style.display = 'block';
+	}
+	newTab.obj.show();
+  },
+}
+
+
+function onUnload (){
+  Options.pbWinPos = mainPop.getLocation();
+  saveOptions();
+}
+
+function mouseMainTab (me){   // right-click on main button resets window location
+  if (me.button == 2){
+	var c = getClientCoords (document.getElementById('main_engagement_tabs'));
+	mainPop.setLocation ({x: c.x+4, y: c.y+c.height});
+  }
+}
+
+function eventHideShow (){
+  if (mainPop.toggleHide(mainPop)){
+	tabManager.showTab();
+	Options.pbWinIsOpen = true;
+  } else {
+	tabManager.hideTab();
+	Options.pbWinIsOpen = false;
+  }
+  saveOptions();
+}
+
+function hideMe (){
+  mainPop.show (false);
+  tabManager.hideTab();
+  Options.pbWinIsOpen = false;
+  saveOptions();
+}
+
+function showMe (){
+  mainPop.show (true);
+  tabManager.showTab();
+  Options.pbWinIsOpen = true;
+  saveOptions();
+}
+
+function addMyFunction (func){      // add function to run in our own scope
+  unsafeWindow[func.name] = func;
+}
+
+function addUwFunction (func){      // add function to run in unsafeWindow's scope
+  var scr = document.createElement('script');
+	scr.innerHTML = func.toString();
+	document.body.appendChild(scr);
+}
+
+function alterUwFunction (funcName, frArray){
+  try {
+	funcText = unsafeWindow[funcName].toString();
+	rt = funcText.replace ('function '+funcName, 'function');
+	for (i=0; i<frArray.length; i++){
+	  x = rt.replace(frArray[i][0], frArray[i][1]);
+	  if (x == rt)
+		return false;
+	  rt = x;
+	}
+	js = funcName +' = '+ rt;
+	var scr=document.createElement('script');
+	scr.innerHTML=js;
+	document.body.appendChild(scr);
+	return true;
+  } catch (err) {
+	return false;
+  }
+}
+
+function officerId2String (oid){
+  if (oid==null)
+	return '';
+  else if (oid==3)
+	return 'Officer';
+  else if (oid==2)
+	return 'Vice Chance';
+  else if (oid==1)
+	return 'Chancellor';
+  return '';
+}
+
+var knightRoles = {
+  Foreman : 'politics',
+  Marshall : 'combat',
+  Alchemystic : 'intelligence',
+  Steward : 'resourcefulness',
+};
+
+function officerId2String (oid){
+  if (oid==null)
+	return '';
+  else if (oid==3)
+	return 'Officer';
+  else if (oid==2)
+	return 'Vice Chance';
+  else if (oid==1)
+	return 'Chancellor';
+  return '';
+}
+
+var fortNamesShort = {
+  53: "Crossbows",
+  55: "Trebuchet",
+  60: "Trap",
+  61: "Caltrops",
+  62: "Spiked Barrier",
+}
+
+// onClick (city{name, id, x, y}, x, y)   city may be null!
+function CdispCityPicker (id, span, dispName, notify, selbut){
+  function CcityButHandler (t){
+	var that = t;
+	this.clickedCityBut = clickedCityBut;
+	function clickedCityBut (e){
+	  if (that.selected != null)
+		that.selected.className = "castleBut castleButNon";
+	  that.city = Cities.cities[e.target.id.substr(that.prefixLen)];
+	  if (that.dispName)
+		document.getElementById(that.id+'cname').innerHTML = that.city.name;
+	  e.target.className = "castleBut castleButSel";
+	  that.selected = e.target;
+	  if (that.coordBoxX){
+		that.coordBoxX.value = that.city.x;
+		that.coordBoxY.value = that.city.y;
+		that.coordBoxX.style.backgroundColor = '#ffffff';
+		that.coordBoxY.style.backgroundColor = '#ffffff';
+	  }
+	  if (that.notify != null)
+		that.notify(that.city, that.city.x, that.city.y);
+	}
+  }
+
+  function selectBut (idx){
+	document.getElementById(this.id+'_'+idx).click();
+  }
+
+  function bindToXYboxes (eX, eY){
+	function CboxHandler (t){
+	  var that = t;
+	  this.eventChange = eventChange;
+	  if (that.city){
+		eX.value = that.city.x;
+		eY.value = that.city.y;
+	  }
+	  function eventChange (){
+		var x = parseInt(that.coordBoxX.value, 10);
+		var y = parseInt(that.coordBoxY.value, 10);
+		if (isNaN(x) || x<0 || x>750){
+		  that.coordBoxX.style.backgroundColor = '#ff8888';
+		  return;
+		}
+		if (isNaN(y) || y<0 || y>750){
+		  that.coordBoxY.style.backgroundColor = '#ff8888';
+		  return;
+		}
+		that.coordBoxX.style.backgroundColor = '#ffffff';
+		that.coordBoxY.style.backgroundColor = '#ffffff';
+		if (that.notify != null)
+		  that.notify (null, x, y);
+	  }
+	}
+	this.coordBoxX = eX;
+	this.coordBoxY = eY;
+	var bh = new CboxHandler(this);
+	eX.size=2;
+	eX.maxLength=3;
+	eY.size=2;
+	eY.maxLength=3;
+	eX.addEventListener('change', bh.eventChange, false);
+	eY.addEventListener('change', bh.eventChange, false);
+  }
+
+  this.selectBut = selectBut;
+  this.bindToXYboxes = bindToXYboxes;
+  this.coordBoxX = null;
+  this.coordBoxY = null;
+  this.id = id;
+  this.dispName = dispName;
+  this.prefixLen = id.length+1;
+  this.notify = notify;
+  this.selected = null;
+  this.city = null;
+  var m = '';
+  for (var i=0; i<Cities.cities.length; i++)
+	m += '<INPUT class="castleBut castleButNon" id="'+ id +'_'+ i +'" value="'+ (i+1) +'" type=submit \>';
+  if (dispName)
+	m += ' &nbsp; <SPAN style="display:inline-block; width:85px; font-weight:bold;" id='+ id +'cname' +'></span>';
+  span.innerHTML = m;
+  var handler = new CcityButHandler(this);
+  for (var i=0; i<Cities.cities.length; i++)
+	document.getElementById (id+'_'+i).addEventListener('click', handler.clickedCityBut, false);
+  if (selbut != null)
+	this.selectBut(selbut);
+};
+
+function setCities(){
+  Cities.numCities = Seed.cities.length;
+  Cities.cities = [];
+  Cities.byID = {};
+  for (i=0; i<Cities.numCities; i++){
+	city = {};
+	city.idx = i;
+	city.id = parseInt(Seed.cities[i][0]);
+	city.name = Seed.cities[i][1];
+	city.x = parseInt(Seed.cities[i][2]);
+	city.y = parseInt(Seed.cities[i][3]);
+	city.tileId = parseInt(Seed.cities[i][5]);
+	Cities.cities[i] = city;
+	Cities.byID[Seed.cities[i][0]] = city;
+  }
+}
+
+
+function dialogRetry (errMsg, seconds, onRetry, onCancel){
+  seconds = parseInt(seconds);
+  var pop = new CPopup ('pbretry', 0, 0, 400,200, true);
+  pop.centerMe(mainPop.getMainDiv());
+  pop.getTopDiv().innerHTML = '<CENTER>KOC Power Bot</center>';
+  pop.getMainDiv().innerHTML = '<CENTER><BR><FONT COLOR=#550000><B>An error has ocurred:</b></font><BR><BR><DIV id=paretryErrMsg></div>\
+	  <BR><BR><B>Automatically retrying in <SPAN id=paretrySeconds></b></span> seconds ...<BR><BR><INPUT id=paretryCancel type=submit value="CANCEL Retry" \>';
+  document.getElementById('paretryCancel').addEventListener ('click', doCancel, false);
+  pop.show(true);
+
+  document.getElementById('paretryErrMsg').innerHTML = errMsg;
+  document.getElementById('paretrySeconds').innerHTML = seconds;
+  var rTimer = setTimeout (doRetry, seconds*1000);
+  countdown ();
+
+  function countdown (){
+	document.getElementById('paretrySeconds').innerHTML = seconds--;
+	if (seconds > 0)
+	  cdTimer = setTimeout (countdown, 1000);
+  }
+  function doCancel(){
+	clearTimeout (rTimer);
+	clearTimeout (cdTimer);
+	pop.destroy();
+	onCancel ();
+  }
+  function doRetry (){
+	clearTimeout (rTimer);
+	clearTimeout (cdTimer);
+	pop.show(false);
+	onRetry();
+  }
+}
+
+function implodeUrlArgs (obj){
+  var a = [];
+  for (var k in obj)
+	a.push (k +'='+ encodeURI(obj[k]) );
+  return a.join ('&');    
+}
+
+// NOTE: args can be either a string which will be appended as is to url or an object of name->values
+function addUrlArgs (url, args){
+  if (!args)
+	return url;
+  if (url.indexOf('?') < 0)
+	url += '?';
+  else if (url.substr(url.length-1) != '&')
+	url += '&';    
+  if (matTypeof(args == 'object'))
+	return url + implodeUrlArgs (args);    
+  return url + args;
+}
+
+// emulate protoype's Ajax.Request ...
+function AjaxRequest (url, opts){
+  var headers = {
+	'X-Requested-With': 'XMLHttpRequest',
+	'X-Prototype-Version': '1.6.1',
+	'Accept': 'text/javascript, text/html, application/xml, text/xml, */*'
+  };
+  var ajax = null;
+
+  if (window.XMLHttpRequest)
+	ajax=new XMLHttpRequest();
+  else
+	ajax=new ActiveXObject("Microsoft.XMLHTTP");
+
+  if (opts.method==null || opts.method=='')
+	method = 'GET';
+  else
+	method = opts.method.toUpperCase();  
+
+  if (method == 'POST'){
+	headers['Content-type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+  } else if (method == 'GET'){
+	addUrlArgs (url, opts.parameters);
+  }
+
+  ajax.onreadystatechange = function(){
+//  ['Uninitialized', 'Loading', 'Loaded', 'Interactive', 'Complete']; states 0-4
+	if (ajax.readyState==4) {
+	  if (ajax.status >= 200 && ajax.status < 305)
+		if (opts.onSuccess) opts.onSuccess(ajax);
+	  else
+		if (opts.onFailure) opts.onFailure(ajax);
+	} else {
+	  if (opts.onChange) opts.onChange (ajax);
+	}
+  }  
+
+  ajax.open(method, url, true);   // always async!
+
+  for (var k in headers)
+	ajax.setRequestHeader (k, headers[k]);
+  if (matTypeof(opts.requestHeaders)=='object')
+	for (var k in opts.requestHeaders)
+	  ajax.setRequestHeader (k, opts.requestHeaders[k]);
+
+  if (method == 'POST'){
+	var a = [];
+	for (k in opts.parameters)
+	  a.push (k +'='+ opts.parameters[k] );
+	ajax.send (a.join ('&'));
+  } else               {
+	ajax.send();
+  }
+}   
+
+
+function MyAjaxRequest (url, o, noRetryX){
+if (DEBUG_TRACE) logit (" 0 myAjaxRequest: "+ url +"\n" + inspect (o, 2, 1));
+  var opts = unsafeWindow.Object.clone(o);
+  var wasSuccess = o.onSuccess;
+  var wasFailure = o.onFailure;
+  var retry = 0;
+  var delay = 5;
+  var noRetry = noRetry===true?true:false;
+  opts.onSuccess = mySuccess;
+  opts.onFailure = myFailure;
+
+  new AjaxRequest(url, opts);
+  return;
+
+  function myRetry(){
+	++retry;
+	new AjaxRequest(url, opts);
+	delay = delay * 1.25;
+  }
+  function myFailure(){
+	var o = {};
+	o.ok = false;
+	o.errorMsg = "AJAX Communication Failure";
+	wasFailure (o);
+  }
+  function mySuccess (msg){
+	var rslt = eval("(" + msg.responseText + ")");
+	var x;
+	if (window.EmulateAjaxError){
+	  rslt.ok = false;  
+	  rslt.error_code=8;
+	}
+	if (rslt.ok){
+	  if (rslt.updateSeed)
+		unsafeWindow.update_seed(rslt.updateSeed);
+	  wasSuccess (rslt);
+	  return;
+	}
+	rslt.errorMsg = unsafeWindow.printLocalError((rslt.error_code || null), (rslt.msg || null), (rslt.feedback || null));
+	if ( (x = rslt.errorMsg.indexOf ('<br><br>')) > 0)
+	  rslt.errorMsg = rslt.errorMsg.substr (0, x-1);
+	if (!noRetry && (rslt.error_code==0 ||rslt.error_code==8 || rslt.error_code==1 || rslt.error_code==3)){
+	  dialogRetry (rslt.errorMsg, delay, function(){myRetry()}, function(){wasSuccess (rslt)});
+	} else {
+	  wasSuccess (rslt);
+	}
+  }
+}
+
+// returns: 'neutral', 'friendly', or 'hostile'
+function getDiplomacy (aid) {
+  if (Seed.allianceDiplomacies == null)
+	return 'neutral';
+  if (Seed.allianceDiplomacies.friendly && Seed.allianceDiplomacies.friendly['a'+aid] != null)
+	return 'friendly';
+  if (Seed.allianceDiplomacies.hostile && Seed.allianceDiplomacies.hostile['a'+aid] != null)
+	return 'hostile';
+  return 'neutral';
+};
+
+function getMyAlliance (){
+  if (Seed.allianceDiplomacies==null || Seed.allianceDiplomacies.allianceName==null)
+	return [0, 'None'];
+  else
+	return [Seed.allianceDiplomacies.allianceId, Seed.allianceDiplomacies.allianceName];
+}
+
+function distance (d, f, c, e) {
+  var a = 750;
+  var g = a / 2;
+  var b = Math.abs(c - d);
+  if (b > g)
+	b = a - b;
+  var h = Math.abs(e - f);
+  if (h > g)
+	h = a - h;
+  return Math.round(100 * Math.sqrt(b * b + h * h)) / 100;
+};
+
+
+// returns {count, maxlevel}
+function getCityBuilding (cityId, buildingId){
+  var b = Seed.buildings['city'+cityId];
+  var ret = {count:0, maxLevel:0};
+  for (var i=1; i<33; i++){
+	if (b['pos'+i] && b['pos'+i][0] == buildingId){
+	  ++ret.count;
+	  if (parseInt(b['pos'+i][1]) > ret.maxLevel)
+		ret.maxLevel = parseInt(b['pos'+i][1]);
+	}
+  }
+  return ret;
+}
+
+// example: http://www150.kingdomsofcamelot.com
+var myServerId = null;
+function getServerId() {
+  if (myServerId == null){
+	var m=/^[a-zA-Z]+([0-9]+)\./.exec(document.location.hostname);
+	if (m)
+	  myServerId = m[1];
+	else
+	  myServerId = '??';
+  }
+  return myServerId;
+}
+
+function logit (msg){
+  var now = new Date();
+  GM_log (getServerId() +' @ '+ now.toTimeString().substring (0,8) +'.' + now.getMilliseconds() +': '+  msg);
+}
+
+
+
+/************ DEBUG WIN *************/
+var debugWin = {
+  popDebug : null,
+  dbDefaultNot : 'tech,tutorial,items,quests,wilderness,wildDef,buildings,knights,allianceDiplomacies,appFriends,players',
+  dbSelect : {},
+
+  doit : function (){ 
+	var t = debugWin;    
+
+	function syncBoxes (){
+	  var div = document.getElementById('dbpoplist');
+	  for (var i=0; i<div.childNodes.length; i++){
+		if (div.childNodes[i].type && div.childNodes[i].type=='checkbox'){
+		  var name=div.childNodes[i].name.substr(6);
+		  div.childNodes[i].checked = t.dbSelect[name];
+		}
+	  } 
+	}
+	function clickedAll (){
+	  for (var k in t.dbSelect)
+		t.dbSelect[k] = true;
+	  syncBoxes();
+	}
+	function clickedNone (){
+	  for (var k in t.dbSelect)
+		t.dbSelect[k] = false;
+	  syncBoxes();
+	}
+	function clickedDefaults (){
+	  for (k in t.dbSelect)
+		t.dbSelect[k] = true;
+	  var not = t.dbDefaultNot.split(',');
+	  for (var i=0; i<not.length; i++)
+		t.dbSelect[not[i]] = false;
+	  syncBoxes();
+	}
+	function clickedShow (){
+	  var now = new Date();
+	  var myseed = unsafeWindow.Object.clone (Seed);
+	  var div = document.getElementById('dbpoplist');
+	  for (var i=0; i<div.childNodes.length; i++){
+		if (div.childNodes[i].type && div.childNodes[i].type=='checkbox'){
+		  var name=div.childNodes[i].name.substr(6);
+		  if (!div.childNodes[i].checked)
+			delete myseed[name];
+		}
+	  } 
+	  WinLog.write ("seed @ "+ unixTime()  +" ("+ now +")\n\n"+ inspect (myseed, 8, 1));
+	  myseed=null;
+	}
+
+	if (t.popDebug == null){  
+	  t.popDebug = new CPopup ('db', 0, 0, 350,500, true);
+	  t.popDebug.getTopDiv().innerHTML = 'DEBUG';
+	  t.popDebug.getMainDiv().innerHTML = '<DIV><INPUT type=submit id=padbsuball value=ALL> &nbsp; <INPUT type=submit id=padbsubnone value=NONE> &nbsp; \
+		<INPUT type=submit id=padbdefaults value=DEFAULTS> &nbsp; <INPUT type=submit id=padbsubdo value=SHOW></div>\
+		<DIV id=padbpoplist style="max-height:400px; height:400px; overflow-y:auto"></div>';
+	  var div = document.getElementById('padbpoplist');
+	  for (var k in Seed)
+		t.dbSelect[k] = true;
+	  var not = t.dbDefaultNot.split(',');
+	  for (var i=0; i<not.length; i++)
+		t.dbSelect[not[i]] = false;
+	  var m = [];
+	  for (k in t.dbSelect){
+		m.push ('<INPUT type=checkbox ');
+		m.push ('name="dbpop_');
+		m.push (k);
+		m.push ('"> &nbsp; ');
+		m.push (k);
+		m.push ('<BR>');
+	  }
+	  div.innerHTML = m.join ('');
+	  document.getElementById('padbsuball').addEventListener('click', clickedAll, false);
+	  document.getElementById('padbsubnone').addEventListener('click', clickedNone, false);
+	  document.getElementById('padbdefaults').addEventListener('click', clickedDefaults, false);
+	  document.getElementById('padbsubdo').addEventListener('click', clickedShow, false);
+	  syncBoxes();
+	}
+	t.popDebug.show (true);
+  },
+}
+
+function saveOptions (){
+  var serverID = getServerId();
+  setTimeout (function (){GM_setValue ('Options_'+serverID, JSON2.stringify(Options));}, 0);
+}
+
+function readOptions (){
+  var serverID = getServerId();
+  s = GM_getValue ('Options_'+serverID);
+  if (s != null){
+	opts = JSON2.parse (s);
+	for (k in opts)
+	  Options[k] = opts[k];
+  }
+}
+
+function readGlobalOptions (){
+  GlobalOptions = JSON2.parse (GM_getValue ('Options_??', '{}'));
+}
+
+function createButton (label){
+  var a=document.createElement('a');
+  a.className='button20';
+  a.innerHTML='<span style="color: #ff6">'+ label +'</span>';
+  return a;
+}
+
+function AddMainTabLink(text, eventListener, mouseListener) {
+  var a = createButton (text);
+  a.className='tab';
+  a.id = 'pbOfficial';
+  var tabs=document.getElementById('main_engagement_tabs');
+  if(!tabs) {
+	tabs=document.getElementById('topnav_msg');
+	if (tabs)
+	  tabs=tabs.parentNode;
+  }
+// TODO: Fit 'POW' button in main div if there's room (make room by shortening 'Invite Friends' to 'Invite' ?)
+  if(tabs) {
+	var eNew = document.getElementById('gmTabs');
+	if (eNew == null){
+	  eNew = document.createElement('div');
+	  eNew.className='tabs_engagement';
+	  eNew.style.background='#ca5';
+	  tabs.parentNode.insertBefore (eNew, tabs);
+	  eNew.id = 'gmTabs';
+	  eNew.style.whiteSpace='nowrap';
+	  eNew.style.width='735px';
+	}
+	eNew.appendChild(a);
+	a.addEventListener('click',eventListener, false);
+	if (mouseListener != null)
+	  a.addEventListener('mousedown',mouseListener, true);
+	return a;
+  }
+  return null;
+}
+
+
+unsafeWindow.pbGotoMap = function (x, y){
+  hideMe ();
+  setTimeout (function (){ 
+	document.getElementById('mapXCoor').value = x;
+	document.getElementById('mapYCoor').value = y;
+	unsafeWindow.reCenterMapWithCoor();
+	var a = document.getElementById("mod_views").getElementsByTagName("a");
+	for (var b = 0; b < a.length; b++) {
+		a[b].className = ""
+	}
+	document.getElementById('mod_views_map').className = "sel";
+	document.getElementById("maparea_city").style.display = 'none';
+	document.getElementById("maparea_fields").style.display = 'none';
+	document.getElementById("maparea_map").style.display = 'block';
+	unsafeWindow.tutorialClear()
+  }, 0);
+};
+
+/**********************************************************************************/
+var CalterUwFunc = function (funcName, findReplace) {
+  var t = this;
+  this.isEnabled = false;
+  this.isAvailable = isAvailable;
+  this.setEnable = setEnable;
+  this.funcName = funcName;
+  this.funcOld = unsafeWindow[funcName];  
+  this.funcNew = null;
+  try {
+	var funcText = unsafeWindow[funcName].toString();
+	var rt = funcText.replace ('function '+ funcName, 'function');
+	for (var i=0; i<findReplace.length; i++){
+	  x = rt.replace(findReplace[i][0], findReplace[i][1]);
+	  if (x == rt)
+		return false;
+	  rt = x;
+	}
+	this.funcNew = rt;
+  } catch (err) {
+  }
+
+  function setEnable (tf){
+	if (t.funcNew == null)
+	  return;
+	if (t.isEnabled != tf){
+	  if (tf){
+		var scr=document.createElement('script');
+		scr.innerHTML = funcName +' = '+ t.funcNew;
+		document.body.appendChild(scr);
+		setTimeout ( function (){document.body.removeChild(scr);}, 0);
+		t.isEnabled = true;
+	  } else {
+		unsafeWindow[t.funcName] = t.funcOld;
+		t.isEnabled = false;
+	  }
+	}
+  }
+  function isAvailable (){
+	if (t.funcNew == null)
+	  return false;
+	return true;
+  }
+};
+
+
+function makeButton20 (label){
+  var a = document.createElement('a');
+  a.className = "button20 ptButton20";
+  var s = document.createElement('span');
+  s.innerHTML = label;
+  a.appendChild (s);
+  return a;
+}
+
+function strButton20 (label, tags){
+  if (tags == null)
+	tags = '';
+  return ('<TABLE class=ptNoPad><TR><TD><A class="button20 ptButton20" '+ tags +'><SPAN>'+ label +'</span></a></td></tr></table>' );
+}
+
+function reloadKOC (){
+  var goto = 'http://apps.facebook.com/kingdomsofcamelot/?s='+getServerId();
+  var t = '<FORM target="_top" action="'+ goto +'" method=get><INPUT id=xxButReload type=submit value=RELOAD></form>';
+  var e = document.createElement ('div');
+  e.innerHTML = t;
+  document.body.appendChild (e);
+  setTimeout (function (){document.getElementById('xxButReload').click();}, 0);
+  return;
+}
+
+function htmlSelector (valNameObj, curVal, tags){
+  var m = [];
+  m.push ('<SELECT');
+  if (tags){
+	m.push (' ');
+	m.push (tags);
+  }  
+  for (var k in valNameObj){
+	m.push ('><OPTION ');
+	if (k == curVal)
+	  m.push ('SELECTED ');
+	m.push ('value="');
+	m.push (k);
+	m.push ('">');
+	m.push (valNameObj[k]);
+	m.push ('</option>');
+  }
+  m.push ('</select>');
+  return m.join ('');
+}
+
+function cityStatusString (cs){
+  if (cs==4)
+	return 'Vacation';
+  if (cs==3)
+	return 'Truce';
+  if (cs==2)
+	return 'Beg Protection';
+  return 'Normal';
+}    
+
+// Simple method, as if it were typed in thru DOM
+function sendChat (msg){
+  document.getElementById ("mod_comm_input").value = msg;
+  unsafeWindow.Chat.sendChat ();
+}
+
+// works well, but message is not echoed back to local client
+Chat = {
+  params : null,
+
+  sendWhisper : function (msg, who, notify){
+	this.params = unsafeWindow.Object.clone(unsafeWindow.g_ajaxparams);
+	this.params.ctype = 3;
+	this.params.name = who;
+	this._sendit (msg, notify);
+  },
+
+  sendGlobal : function (msg, notify){
+	this.params = unsafeWindow.Object.clone(unsafeWindow.g_ajaxparams);
+	this.params.ctype = 1;
+	this._sendit (msg, notify);
+  },
+
+  sendAlliance : function (msg, notify){
+	this.params = unsafeWindow.Object.clone(unsafeWindow.g_ajaxparams);
+	this.params.ctype = 2;
+	this._sendit (msg, notify);
+  },
+
+  _sendit : function (msg, notify){
+	function strip(s) {
+	   return s.replace(/^\s+/, '').replace(/\s+$/, '');
+	}
+	this.params.comment = strip (msg);
+	new MyAjaxRequest(unsafeWindow.g_ajaxpath + "ajax/sendChat.php" + unsafeWindow.g_ajaxsuffix, {
+	  method: "post",
+	  parameters: this.params,
+	  onSuccess: function(transport) {
+		if (notify)
+		  notify ();
+	  },
+	  onFailure: function(transport) {
+		if (notify)
+		  notify ();
+	  }
+	});
+  },
+}
+
+
+
+/************  LIB classes/functions .... **************/
+
+DebugTimer = {
+  startTime : 0,
+  start : function (){
+	now = new Date();
+	DebugTimer.startTime = now.getTime();
+  },
+  getMillis : function (){
+	now = new Date();
+	return now.getTime() - DebugTimer.startTime;
+  },
+  display : function (label, noReset){
+	now = new Date();
+	elapsed = now.getTime() - DebugTimer.startTime;
+	logit (label +": "+ elapsed/1000);
+	if (noReset===null || !noReset)
+	  DebugTimer.startTime = now.getTime();
+  },
+};
+
+
+function debugPos  (e){
+  return '['+ e.tagName +'] client - offset: '+ e.clientLeft +','+ e.clientTop +','+ e.clientWidth +','+ e.clientHeight
+		  +' - '+ e.offsetLeft +','+ e.offsetTop +','+ e.offsetWidth +','+ e.offsetHeight +' '+ e +' --OP--> '+ e.offsetParent;
+}
+
+function CwaitForElement (id, timeout, notify){
+  this.check = check;
+  this.end = new Date().getTime() + timeout;
+  var t = this;
+  this.check();
+  function check(){
+	if (document.getElementById (id))
+	  notify (true);
+	else if (new Date().getTime() > t.end)
+	  notify (false);
+	else
+	  setTimeout (t.check, 250);
+  }
+}
+
+function clickWin (win,obj,evtName) {
+	var evt = win.document.createEvent("MouseEvents");
+	evt.initMouseEvent(evtName, true, true, win, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+	return !obj.dispatchEvent(evt);
+}
+
+function debugElement  (e){
+  var x = unsafeWindow.Object.clone (e.wrappedJSObject);
+  x.innerHTML = '';
+  x.innerText = '';
+  x.textContent = '';
+  return inspect (x, 1, 1);
+}     
+
+function getClientCoords(e){
+  if (e==null)
+	return {x:null, y:null, width:null, height:null};
+  var x=0, y=0;
+  ret = {x:0, y:0, width:e.clientWidth, height:e.clientHeight};
+  while (e.offsetParent != null){
+	ret.x += e.offsetLeft;
+	ret.y += e.offsetTop;
+	e = e.offsetParent;
+  }
+  return ret;
+}
+
+function DOMtree (e, levels){
+  var m = [];
+  level (e, levels, 0);
+
+  function level (e, levels, cur){
+	try {        
+	  for (var i=0; i<cur; i++)
+		m.push('  ');
+	  if (!e.tagName)
+		m.push ('?');
+	  else
+		m.push (e.tagName);
+	  if (e.id){
+		m.push (' id=');
+		m.push (e.id);
+	  }
+	  if (e.name){
+		m.push (' name=');
+		m.push (e.name);
+	  }
+	  if (e.className){
+		m.push (' class=');
+		m.push (e.className);
+	  }
+	  if (e.style && e.style.display && e.style.display.indexOf('none')>0)
+		m.push (' hidden');
+	   m.push ('\n');
+	  if (cur < levels){
+		for (var c=0; c<e.childNodes.length; c++){
+		  level (e.childNodes[c], levels, cur+1);
+		}
+	  }
+	} catch (e) {
+	  m.push ('UNAVAILBLE!\n');
+	}
+  }
+  return m.join('');  
+}
+
+function parseIntNan (n){
+  x = parseInt(n, 10);
+  if (isNaN(x))
+	return 0;
+  return x; 
+}
+function parseIntZero (n){
+  n = n.trim();
+  if (n == '')
+	return 0;
+  return parseInt(n, 10);
+}
+
+
+
+
+var WinManager = {
+  wins : {},    // prefix : CPopup obj
+
+  get : function (prefix){
+	var t = WinManager;
+	return t.wins[prefix];
+  },
+
+  add : function (prefix, pop){
+	var t = WinManager;
+	t.wins[prefix] = pop;
+	if (unsafeWindow.cpopupWins == null)
+	  unsafeWindow.cpopupWins = {};
+	unsafeWindow.cpopupWins[prefix] = pop;
+  },
+
+  delete : function (prefix){
+	var t = WinManager;
+	delete t.wins[prefix];
+	delete unsafeWindow.cpopupWins[prefix];
+  }    
+}
+
+
+// creates a 'popup' div
+// prefix must be a unique (short) name for the popup window
+function CPopup (prefix, x, y, width, height, enableDrag, onClose) {
+  var pop = WinManager.get(prefix);
+  if (pop){
+	pop.show (false);
+	return pop;
+  }
+  this.BASE_ZINDEX = 111111;
+
+  // protos ...
+  this.show = show;
+  this.toggleHide = toggleHide;
+  this.getTopDiv = getTopDiv;
+  this.getMainDiv = getMainDiv;
+  this.getLayer = getLayer;
+  this.setLayer = setLayer;
+  this.setEnableDrag = setEnableDrag;
+  this.getLocation = getLocation;
+  this.setLocation = setLocation;
+  this.focusMe = focusMe;
+  this.unfocusMe = unfocusMe;
+  this.centerMe = centerMe;
+  this.destroy = destroy;
+  this.autoHeight = autoHeight;
+
+  // object vars ...
+  this.div = document.createElement('div');
+  this.prefix = prefix;
+  this.onClose = onClose;
+
+  var t = this;
+  this.div.className = 'CPopup '+ prefix +'_CPopup';
+  this.div.id = prefix +'_outer';
+  this.div.style.background = "#fff";
+  this.div.style.zIndex = this.BASE_ZINDEX        // KOC modal is 100210 ?
+  this.div.style.display = 'none';
+  this.div.style.width = width + 'px';
+  this.div.style.height = height + 'px';
+  this.div.style.maxHeight = height + 'px';
+  this.div.style.overflowY = 'hidden';
+  this.div.style.position = "absolute";
+  this.div.style.top = y +'px';
+  this.div.style.left = x + 'px';
+
+  if (CPopUpTopClass==null)
+	topClass = 'CPopupTop '+ prefix +'_CPopupTop';
+  else
+	topClass = CPopUpTopClass +' '+ prefix +'_'+ CPopUpTopClass;
+
+  var m = '<TABLE cellspacing=0 width=100% height=100%><TR id="'+ prefix +'_bar" class="'+ topClass +'"><TD width=99% valign=bottom><SPAN id="'+ prefix +'_top"></span></td>\
+	  <TD id='+ prefix +'_X align=right valign=middle onmouseover="this.style.cursor=\'pointer\'" style="color:#fff; background:#333; font-weight:bold; font-size:14px; padding:0px 5px">X</td></tr>\
+	  <TR><TD height=100% valign=top class="CPopMain '+ prefix +'_CPopMain" colspan=2 id="'+ prefix +'_main"></td></tr></table>';
+  document.body.appendChild(this.div);
+  this.div.innerHTML = m;
+  document.getElementById(prefix+'_X').addEventListener ('click', e_XClose, false);
+  this.dragger = new CWinDrag (document.getElementById(prefix+'_bar'), this.div, enableDrag);
+
+  this.div.addEventListener ('mousedown', e_divClicked, false);
+  WinManager.add(prefix, this);
+
+  function e_divClicked (){
+	t.focusMe();
+  }  
+  function e_XClose (){
+	t.show(false);
+	if (t.onClose != null)
+	  t.onClose();
+  }
+  function autoHeight (onoff){
+	if (onoff)
+	  t.div.style.height = '';  
+	else
+	  t.div.style.height = t.div.style.maxHeight;
+  }
+  function focusMe (){
+	t.setLayer(5);
+	for (k in unsafeWindow.cpopupWins){
+	  if (k != t.prefix)
+		unsafeWindow.cpopupWins[k].unfocusMe(); 
+	}
+  }
+  function unfocusMe (){
+	t.setLayer(-5);
+  }
+  function getLocation (){
+	return {x: parseInt(this.div.style.left), y: parseInt(this.div.style.top)};
+  }
+  function setLocation (loc){
+	t.div.style.left = loc.x +'px';
+	t.div.style.top = loc.y +'px';
+  }
+  function destroy (){
+	document.body.removeChild(t.div);
+	WinManager.delete (t.prefix);
+  }
+  function centerMe (parent){
+	if (parent == null){
+	  var coords = getClientCoords(document.body);
+	} else
+	  var coords = getClientCoords(parent);
+	var x = ((coords.width - parseInt(t.div.style.width)) / 2) + coords.x;
+	var y = ((coords.height - parseInt(t.div.style.height)) / 2) + coords.y;
+	t.div.style.left = x +'px';
+	t.div.style.top = y +'px';
+  }
+  function setEnableDrag (tf){
+	t.dragger.setEnable(tf);
+  }
+  function setLayer(zi){
+	t.div.style.zIndex = ''+ (this.BASE_ZINDEX + zi);
+  }
+  function getLayer(){
+	return parseInt(t.div.style.zIndex) - this.BASE_ZINDEX;
+  }
+  function getTopDiv(){
+	return document.getElementById(this.prefix+'_top');
+  }
+  function getMainDiv(){
+	return document.getElementById(this.prefix+'_main');
+  }
+  function show(tf){
+	if (tf){
+	  t.div.style.display = 'block';
+	  t.focusMe ();
+	} else {
+	  t.div.style.display = 'none';
+	}
+	return tf;
+  }
+  function toggleHide(t){
+	if (t.div.style.display == 'block') {
+	  return t.show (false);
+	} else {
+	  return t.show (true);
+	}
+  }
+}
+
+function CWinDrag (clickableElement, movingDiv, enabled) {
+  var t=this;
+  this.setEnable = setEnable;
+  this.setBoundRect = setBoundRect;
+  this.debug = debug;
+  this.dispEvent = dispEvent;
+  this.lastX = null;
+  this.lastY = null;
+  this.enabled = true;
+  this.moving = false;
+  this.theDiv = movingDiv;
+  this.body = document.body;
+  this.ce = clickableElement;
+  this.moveHandler = new CeventMove(this).handler;
+  this.outHandler = new CeventOut(this).handler;
+  this.upHandler = new CeventUp(this).handler;
+  this.downHandler = new CeventDown(this).handler;
+  this.clickableRect = null;
+  this.boundRect = null;
+  this.bounds = null;
+  this.enabled = false;
+  if (enabled == null)
+	enabled = true;
+  this.setEnable (enabled);
+
+  function setBoundRect (b){    // this rect (client coords) will not go outside of current body
+	this.boundRect = boundRect;
+	this.bounds = null;
+  }
+
+  function setEnable (enable){
+	if (enable == t.enabled)
+	  return;
+	if (enable){
+	  clickableElement.addEventListener('mousedown',  t.downHandler, false);
+	  t.body.addEventListener('mouseup', t.upHandler, false);
+	} else {
+	  clickableElement.removeEventListener('mousedown', t.downHandler, false);
+	  t.body.removeEventListener('mouseup', t.upHandler, false);
+	}
+	t.enabled = enable;
+  }
+
+  function CeventDown (that){
+	this.handler = handler;
+	var t = that;
+	function handler (me){
+	  if (t.bounds == null){
+		t.clickableRect = getClientCoords(clickableElement);
+		t.bodyRect = getClientCoords(document.body);
+		if (t.boundRect == null)
+		  t.boundRect = t.clickableRect;
+		t.bounds = {top:10-t.clickableRect.height, bot:t.bodyRect.height-25, left:40-t.clickableRect.width, right:t.bodyRect.width-25};
+	  }
+	  if (me.button==0 && t.enabled){
+		t.body.addEventListener('mousemove', t.moveHandler, true);
+		t.body.addEventListener('mouseout', t.outHandler, true);
+		t.lastX = me.clientX;
+		t.lastY = me.clientY;
+		t.moving = true;
+	  }
+	}
+  }
+
+  function CeventUp  (that){
+	this.handler = handler;
+	var t = that;
+	function handler (me){
+	  if (me.button==0 && t.moving)
+		_doneMoving(t);
+	}
+  }
+
+  function _doneMoving (t){
+	t.body.removeEventListener('mousemove', t.moveHandler, true);
+	t.body.removeEventListener('mouseout', t.outHandler, true);
+	t.moving = false;
+  }
+
+  function CeventOut  (that){
+	this.handler = handler;
+	var t = that;
+	function handler (me){
+	  if (me.button==0){
+		t.moveHandler (me);
+	  }
+	}
+  }
+
+  function CeventMove (that){
+	this.handler = handler;
+	var t = that;
+	function handler (me){
+	  if (t.enabled && !t.wentOut){
+		var newTop = parseInt(t.theDiv.style.top) + me.clientY - t.lastY;
+		var newLeft = parseInt(t.theDiv.style.left) + me.clientX - t.lastX;
+		if (newTop < t.bounds.top){     // if out-of-bounds...
+		  newTop = t.bounds.top;
+		  _doneMoving(t);
+		} else if (newLeft < t.bounds.left){
+		  newLeft = t.bounds.left;
+		  _doneMoving(t);
+		} else if (newLeft > t.bounds.right){
+		  newLeft = t.bounds.right;
+		  _doneMoving(t);
+		} else if (newTop > t.bounds.bot){
+		  newTop = t.bounds.bot;
+		  _doneMoving(t);
+		}
+		t.theDiv.style.top = newTop + 'px';
+		t.theDiv.style.left = newLeft + 'px';
+		t.lastX = me.clientX;
+		t.lastY = me.clientY;
+	  }
+	}
+  }
+
+  function debug  (msg, e){
+	logit ("*************** "+ msg +" ****************");
+	logit ('clientWidth, Height: '+ e.clientWidth +','+ e.clientHeight);
+	logit ('offsetLeft, Top, Width, Height (parent): '+ e.offsetLeft +','+ e.offsetTop +','+ e.offsetWidth +','+ e.offsetHeight +' ('+ e.offsetParent +')');
+	logit ('scrollLeft, Top, Width, Height: '+ e.scrollLeft +','+ e.scrollTop +','+ e.scrollWidth +','+ e.scrollHeight);
+  }
+
+  function dispEvent (msg, me){
+	logit (msg + ' Button:'+ me.button +' Screen:'+ me.screenX +','+ me.screenY +' client:'+  me.clientX +','+ me.clientY +' rTarget: '+ me.relatedTarget);
+  }
+}
+
+function inspect(obj, maxLevels, level, doFunctions){
+  var str = '', type, msg;
+  if(level == null)  level = 0;
+  if(maxLevels == null) maxLevels = 1;
+  if(maxLevels < 1)
+	  return 'Inspect Error: Levels number must be > 0';
+  if(obj == null)
+	return 'ERROR: Object is NULL\n';
+  var indent = '';
+  for (var i=0; i<level; i++)
+	indent += '  ';
+  for(property in obj) {
+	try {
+		type =  matTypeof(obj[property]);
+		if (doFunctions==true && (type == 'function')){
+		  str += indent + '(' + type + ') ' + property + "[FUNCTION]\n";
+		} else if (type != 'function') {
+		  str += indent + '(' + type + ') ' + property + ( (obj[property]==null)?(': null'):('')) +' = '+ obj[property] +"\n";
+		}
+		if((type=='object' || type=='array') && (obj[property] != null) && (level+1 < maxLevels))
+		  str += inspect(obj[property], maxLevels, level+1, doFunctions);  // recurse
+	}
+	catch(err) {
+	  // Is there some properties in obj we can't access? Print it red.
+	  if(typeof(err) == 'string') msg = err;
+	  else if(err.message)        msg = err.message;
+	  else if(err.description)    msg = err.description;
+	  else                        msg = 'Unknown';
+	  str += '(Error) ' + property + ': ' + msg +"\n";
+	}
+  }
+  str += "\n";
+  return str;
+}
+
+Array.prototype.compare = function(testArr) {
+	if (this.length != testArr.length) return false;
+	for (var i = 0; i < testArr.length; i++) {
+		if (this[i].compare) { 
+			if (!this[i].compare(testArr[i])) return false;
+		}
+		if (this[i] !== testArr[i]) return false;
+	}
+	return true;
+}
+
+function objectName (o){
+  var s = o.toString();
+  return s.substr(7,s.length-8);
+}
+
+function matTypeof (v){
+  if (typeof (v) == 'object'){
+	if (!v)
+	  return 'null';
+//    else if (unsafeWindow.Object.prototype.toString.apply(v) === '[object Array]')
+	else if (v.constructor.toString().indexOf("Array")>=0 && typeof(v.splice)=='function')
+	  return 'array';
+	else return 'object';
+  }
+  return typeof (v);
+}
+
+
+function tbodyScroller (tbody, maxHeight){  
+  tbody.style.maxHeight = '';
+  tbody.style.height = '';
+  tbody.style.overflowX = 'hidden';
+  if (parseInt(tbody.clientHeight) > maxHeight){
+	tbody.style.height = maxHeight + 'px';
+	tbody.style.maxHeight = maxHeight + 'px';
+	tbody.style.overflowY = 'auto';
+  }
+}
+function getRemainingHeight (e, cont){
+  var ec = getClientCoords(e);
+  var cc = getClientCoords(cont);
+  return cont.clientHeight - (ec.y - cc.y);
+}
+
+
+function addCommasInt(n){
+  nStr = parseInt(n) + '';
+  var rgx = /(\d+)(\d{3})/;
+  while (rgx.test(nStr)) {
+	nStr = nStr.replace(rgx, '$1' + ',' + '$2');
+  }
+  return nStr;
+}
+
+function addCommas(nStr){
+  nStr += '';
+  x = nStr.split('.');
+  x1 = x[0];
+  x2 = x.length > 1 ? '.' + x[1] : '';
+  var rgx = /(\d+)(\d{3})/;
+  while (rgx.test(x1)) {
+	x1 = x1.replace(rgx, '$1' + ',' + '$2');
+  }
+  return x1 + x2;
+}
+
+function unixTime (){
+  return parseInt (new Date().getTime() / 1000) + unsafeWindow.g_timeoff;
+}
+function htmlOptions (a, curVal){
+  m = '';
+  for (k in a)
+	m += '<OPTION value="'+ k +'"'+ (k==curVal?' SELECTED':'')  +'>'+ a[k] +'</option>';
+  return m;
+}
+function getFunctionName (func){
+  var name=/\W*function\s+([\w\$]+)\(/.exec(func);
+  if (!name)
+	return '';
+  return name[1];
+}
+
+function findAllBetween (txt, find1, find2){
+  var m = [];
+  var last = 0;
+  while ( (i1=txt.indexOf(find1, last))>=0 && (i2=txt.indexOf (find2, i1))>=0 ) {
+	m.push (txt.substring(i1+find1.length, i2));
+	last = i2 + find2.length;
+  }
+  return m;
+}
+
+function strUpTo (s, find){
+  var i = s.indexOf(find);
+  if (i > 0)
+	return s.substr(0, i);
+  return s;
+}
+
+/********
+ Xd Xh
+ Xh Xm
+ Xm Xs
+ Xs
+********/
+function timestrShort(time) {
+  time = parseInt (time);
+  if (time > 86400){
+	var m = [];
+	time /= 3600;
+	m.push (parseInt(time/24)); 
+	m.push ('d ');
+	m.push (parseInt(time%24)); 
+	m.push ('h ');
+	return m.join ('');    
+  } else
+	return timestr (time);
+}
+
+/**********************
+ part       full
+ Xd Xh Xm   Xd Xh Xm Xs
+ Xh Xm      Xh Xm Xs
+ Xm Xs      Xm Xs
+ Xs         Xs
+**********************/
+function timestr(time, full) {
+  time = parseInt (time);
+  var m = [];
+  var t = time;
+  if (t < 61)
+	return  t + 's';
+  if (t > 86400){
+	m.push (parseInt(t/86400)); 
+	m.push ('d ');
+	t %= 86400;
+  }  
+  if (t>3600 || time>3600){
+	m.push (parseInt(t/3600)); 
+	m.push ('h ');
+	t %= 3600;
+  }  
+  m.push (parseInt(t/60)); 
+  m.push ('m');
+  if (full || time<=3600 ){
+	m.push (' ');
+	m.push (t%60);
+	m.push ('s');  
+  }
+  return m.join ('');
+}
+
+/************  LIB singletons .... **************/
+// TODO: fix REopening window
+var WINLOG_MAX_ENTRIES = 1000;     // TODO
+var WinLog = {
+  state : null,
+  win: null,
+  eOut : null,
+  lastE : null,
+  enabled : true,
+  reverse : true,
+  busy : false,
+isOpening : false,
+
+  open : function (){
+	var t = WinLog;
+
+	function eventButClear(){
+	  var t = WinLog;
+	  t.lastE = null;
+	  t.eOut.innerHTML ='';
+	}
+	function eventButReverse(){
+	  var t = WinLog;
+	  if (t.busy)
+		return;
+	  t.busy = true;
+	  if (t.reverse){
+		t.win.document.getElementById('wlRev').value= 'Top';
+		t.reverse = false;
+	  } else{
+		t.win.document.getElementById('wlRev').value= 'Bottom';
+		t.reverse = true;
+	  }
+	  var n = t.eOut.childNodes.length;
+	  if (n < 2)
+		return;
+	  for (i=n-2; i>=0; i--){
+		t.eOut.appendChild (t.eOut.childNodes[i]);
+	  }
+	  t.busy = false;
+	}
+
+	if (!t.win || t.win.closed){
+t.isOpening = true;  
+// Firefox bug??? It appears as if a new thread is started on open, withOUT reusing same window? huh?
+	  t.win = window.open('', 'uwtrace', 'top=30,left=0,width=900,height=700,scrollbars=no,location=no,menubar=no,directories=no,status=no');
+t.isOpening = false; 
+t.state = null; 
+	}
+
+	if (t.state == null){
+	  t.win.document.body.innerHTML = '<STYLE>pre{margin:0px} hr{margin:3px; height:1px; border:0px; color:#cee; background-color:#cee}</style>\
+		<BODY style="margin:0px; padding:0px; border:none">\
+		<DIV id=winlogtop style="background-color:#d0d0d0; margin:0px; padding:0px; border:1px solid">\
+		<INPUT id=wlClear type=submit value="Clear"> &nbsp; <INPUT id=wlRev type=submit value="Bottom"></div>\
+		<DIV id=wlOut style="overflow-y:auto; height:100%; max-height:100%"></div></body>';
+	  t.win.document.getElementById('wlClear').addEventListener('click', eventButClear, false);
+	  t.win.document.getElementById('wlRev').addEventListener('click', eventButReverse, false);
+	  t.eOut =  t.win.document.getElementById('wlOut');
+	  t.lastE = null;
+	  t.state = 1;
+	}
+  },
+
+  writeText : function (msg){
+	var t = WinLog;
+	if (!t.enabled || t.isOpening)
+	  return;
+	t.write (t.gtlt(msg));
+  },
+
+  write : function (msg){
+	var t = WinLog;
+	if (!t.enabled || t.isOpening)
+	  return;
+	t.open();
+	var te = document.createElement('pre');
+	var now = new Date();
+	var m = [];
+	var millis = now.getMilliseconds();
+	m.push (now.toTimeString().substring (0,8));
+	m.push ('.');
+	if (millis<100)
+	  m.push('0');
+	if (millis<10)
+	  m.push('0');
+	m.push(millis);
+	m.push (': ');
+	m.push (msg);
+	te.innerHTML = m.join('');
+	if (t.reverse){
+	  if (t.lastE == null){
+		t.eOut.appendChild(te);
+		t.lastE = te;
+	  } else {
+		t.eOut.insertBefore(te, t.lastE);
+	  }
+	  var hr = document.createElement('hr');
+	  t.eOut.insertBefore(hr, te);
+	  t.lastE = hr;
+	} else {
+	  t.eOut.appendChild(te);
+	  t.eOut.appendChild(document.createElement('hr'));
+	}
+  },
+
+  gtlt : function (s){
+	s = s.toString().replace ('<', '&lt;', 'g');
+	return s.replace ('>', '&gt;', 'g');
+  },
+
+};
+
+
+/*********************************** Gifts TAB ***********************************/
+function explodeUrlArgs (url){
+  var i = url.indexOf ('?');
+  var a = url.substr(i+1).split ('&'); 
+  var args = {};
+  for (i=0; i<a.length; i++){
+	var s = a[i].split ('=');
+	args[s[0]] = s[1];
+  }
+  return args;
+}
+
+
+// returns: page text or null on comm error
+function GM_AjaxPost (url, args, notify, label){
+  if (ENABLE_GM_AJAX_TRACE) WinLog.writeText ('GM_AjaxPost ('+ label +'): ' + url +'\n'+ inspect (args, 5, 1));
+  GM_xmlhttpRequest({
+	method: "post",
+	url: url,
+	data: implodeUrlArgs(args),
+	headers: { "Content-Type": "application/x-www-form-urlencoded", 'X-Requested-With': 'XMLHttpRequest', 'X-Prototype-Version': '1.6.1',
+			   'Accept': 'text/javascript, text/html, application/xml, text/xml, */*' },
+	onload: function (rslt) {
+	  if (ENABLE_GM_AJAX_TRACE) WinLog.writeText ( 'GM_AjaxPost.onLoad ('+ label +'):\n '  + inspect (rslt, 6, 1));   
+	  notify (rslt.responseText);
+	},
+	onerror: function () {
+	  notify (null);
+	},
+  });  
+}
+
+// returns: page text or null on comm error
+function GM_AjaxGet (url, args, notify, label){
+  if (ENABLE_GM_AJAX_TRACE) WinLog.writeText ('GM_AjaxGet ('+ label +'): ' + url);
+  GM_xmlhttpRequest({
+	method: "get",
+	url: addUrlArgs(url, args),
+	onload: function (rslt) {
+	  if (ENABLE_GM_AJAX_TRACE) WinLog.writeText ( 'GM_AjaxGet.onLoad ('+ label +')  len='+ rslt.responseText.length +':\n '  + inspect (rslt, 6, 1));   
+	  notify (rslt.responseText);
+	},
+	onerror: function () {
+	  notify (null);
+	},
+  });  
+}    
+
+
+Tabs.Gifts = {
+  tabOrder : 4,
+  tabLabel : 'HEDIYELER',
+  gifts : null,
+  myDiv : null,
+  doList : [], // list of gifts to accept 
+  doServer : 0,
+  accepting : false,
+
+  init : function (div){
+	var t = Tabs.Gifts;
+WinLog.enabled = ENABLE_GM_AJAX_TRACE;    
+	t.myDiv = div;    
+	div.innerHTML = '<TABLE cellpadding=0 cellspacing=0 class=pbTab width=100%><TR><TD width=200></td><TD align=center><INPUT id="pasubGifts" type=submit value="Hediyeni Kontrol ET" \></td><TD width=200 align=right><INPUT id=paGiftHelp type=submit value=HELP></td></tr></table><HR>\
+		<DIV id=giftDiv style="width:100%; min-height:300px; height:100%">';
+	document.getElementById('pasubGifts').addEventListener ('click', t.e_clickedGifts, false);
+	document.getElementById('paGiftHelp').addEventListener ('click', t.helpPop, false);
+	if (!Options.giftDomains.valid)
+	  Options.giftDomains.list[getServerId()] = unsafeWindow.domainName;
+  },
+
+  show : function (){
+  },
+  hide : function (){
+  },
+
+  helpPop : function (){
+	var helpText = 'HATALI YÜKLEME!!!</ul>';
+	var pop = new CPopup ('giftHelp', 0, 0, 500, 400, true);
+	pop.centerMe (mainPop.getMainDiv());  
+	pop.getMainDiv().innerHTML = helpText;
+	pop.getTopDiv().innerHTML = '<CENTER><B>KONTROLL PANEL</b>: HEDIYELERI ONAYLAMA</center>';
+	pop.show (true);
+  },
+
+
+  e_clickedGifts : function  (){     // (also cancel accepting)
+	var t = Tabs.Gifts;
+	if (t.accepting){
+	  document.getElementById('pasubGifts').value = 'Check for Gifts';
+	  document.getElementById('giftDiv').innerHTML+= '<BR><SPAN class=boldRed>Cancelled.</span>';
+	  t.accepting = false;
+	  return; 
+	}
+	document.getElementById('giftDiv').innerHTML = 'Facebook Sayfaniza Baglaniliyor ...';
+
+	t.fetchGiftsPage (gotGiftsPage);
+	function gotGiftsPage(rslt){
+	  if (rslt.errMsg){
+		document.getElementById('giftDiv').innerHTML += rslt.errMsg;
+		return;
+	  } 
+	  t.gifts = rslt;
+	  if (!Options.giftDomains.valid && t.gifts.length>0){
+		t.ajaxGetGiftData (t.gifts[0], listGifts, function (){});    // try to get domain list ... don't delete gift!
+		return;
+	  }
+	  listGifts();
+	}
+
+	function listGifts (){
+//logit ("LIST GIFTS"); 
+//logit (inspect (t.gifts, 8, 1));     
+	  var m = '<DIV class=ptstat><CENTER>KOC HEDIYELERI &nbsp; &nbsp; &nbsp; ('+ t.gifts.length +' BULUNDU)</center></div>';
+	  if (t.gifts.length<1){
+		document.getElementById('giftDiv').innerHTML = m + '<BR><BR><CENTER>HEDIYENIZ BULUNAMADI!</center>';
+		return;
+	  }
+	  m += '<TABLE class=pbTab align=center><TR><TD align=right>KABUL EDILEN ALAN: </td><TD>'
+		+ htmlSelector (Options.giftDomains.list, getServerId(), 'id=pbGiftServers') +'</td></tr>\
+		  <TR><TD align=right>Reddetme SEçENEKLERI:</td><TD>'
+		+ htmlSelector ({y:'Daima', e:'Hataliysa', n:'ASLA'}, Options.giftDelete, 'id=pbGiftDel')
+		+ '</td></tr><TR><TD>ISARET EDILEN HEDIYELERI KABUL ET: </td><TD width=250><INPUT type=submit id=pbGiftDo value="KABUL ET">\
+		&nbsp; <SPAN id=pbGiftNone class=boldRed></span></td></tr></table><HR><TABLE class=pbTab><TR valign=top><TD>\
+		<INPUT id=pbGiftButAll type=submit value="TÜMÜ" style="width:100%; margin-bottom:5px"><BR><INPUT id=pbGiftButNone type=submit value="HIÇBIRI"></td>\
+		<TD width=10></td><TD><TABLE align=center cellpadding=0 cellspacing=0 class=pbTabLined>\
+		<TBODY id=pbGiftTbody>\
+		<TR style="font-weight:bold; background:white"><TD>HEDIYE</td><TD>Tarih</td><TD>Yollayan (Alani)</td><TD width=20></td></tr>';
+	  t.gifts.sort (function (a,b){  // sort by gift name, date
+		  var x = a.gift.localeCompare (b.gift);
+		  if (x != 0)
+			return x;
+		  return a.args.da.localeCompare(b.args.da);
+		  });
+	  for (var i=0; i<t.gifts.length; i++){
+		var giftName = t.gifts[i].gift;
+		if (t.gifts[i].args.si == 9)
+		  giftName += ' (Daily)';
+		var date = t.gifts[i].args.da.substr(0,4) +'-'+ t.gifts[i].args.da.substr(4,2) +'-'+ t.gifts[i].args.da.substr(6,2);
+		m += '<TR><TD><INPUT type=checkbox id=pbgchk_'+ i +'> &nbsp;'+ giftName +'</td><TD>'+ date +'</td>\
+			  <TD>'+ t.gifts[i].giver +' ('+ t.gifts[i].args.exs +')</td></tr>';
+	  }
+	  document.getElementById('giftDiv').innerHTML = m + '</tbody></table></td></tr></table>';
+	  document.getElementById('pbGiftDo').addEventListener ('click', t.getErDone, false);
+	  document.getElementById('pbGiftButAll').addEventListener ('click', t.e_butAll, false);
+	  document.getElementById('pbGiftButNone').addEventListener ('click', t.e_butNone, false);
+	  var tbody = document.getElementById('pbGiftTbody');
+	  tbodyScroller (tbody, getRemainingHeight (tbody, mainPop.div));
+	}
+  },
+
+  e_butAll : function (){
+	var t = Tabs.Gifts;
+	for (var i=0; i<t.gifts.length; i++)
+	  document.getElementById('pbgchk_'+i).checked = true;
+  },
+
+  e_butNone : function (){
+	var t = Tabs.Gifts;
+	for (var i=0; i<t.gifts.length; i++)
+	  document.getElementById('pbgchk_'+i).checked = false;
+  },
+
+  getErDone : function (){ 
+	var t = Tabs.Gifts;
+	t.doList = [];
+	document.getElementById('pbGiftNone').innerHTML = '';
+	Options.giftDelete = document.getElementById('pbGiftDel').value;
+	for (var i=0; i<t.gifts.length; i++){
+	  if (document.getElementById('pbgchk_'+i).checked)
+		t.doList.push (t.gifts[i]); 
+	}
+	if (t.doList.length==0){
+	  document.getElementById('pbGiftNone').innerHTML = 'Hiç Bir HEDIYE ISARETLEMEDINIZ!';
+	  return;
+	}
+	t.doServer = document.getElementById('pbGiftServers').value;
+	t.accepting = true;
+	document.getElementById('pasubGifts').value = 'Onayi DURDUR'; 
+	document.getElementById('giftDiv').innerHTML = '<DIV id=acpDiv style="height:400px; max-height:400px; overflow-y:auto"><B>Onaylandi '+ t.doList.length +' HEDIYE:</b><BR></div>';    
+	t.acceptNext ();
+  },
+
+
+  allDone : function (msg){
+	var t = Tabs.Gifts;
+	document.getElementById('acpDiv').innerHTML += '<BR><BR>' + msg;
+	document.getElementById('pasubGifts').value = 'Check for Gifts';
+	t.accepting = false;
+  },
+
+
+  acceptNext : function (){
+	var t = Tabs.Gifts;
+	var gift = t.doList.shift();
+	if (gift == null){
+	  t.allDone ('HEDIYELERINIZ ONAYLANDI.'); 
+	  return;
+	}
+	var acpDiv = document.getElementById('acpDiv');
+	var curDiv = document.createElement ('div');
+	acpDiv.appendChild (curDiv);
+	curDiv.innerHTML = '<B>'+ gift.gift +'</b> from '+ gift.giver +' on '+ gift.args.da.substr(0,4) +'-'+ gift.args.da.substr(4,2) +'-'+ gift.args.da.substr(6,2) +': ';    
+	var statSpan = document.createElement ('span');
+	curDiv.appendChild (statSpan);
+	statSpan.innerHTML = 'Getting data ';
+	t.ajaxGetGiftData (gift, gotGiftData, progress);
+
+	function progress (m){
+	  if (t.accepting)
+		statSpan.innerHTML += ' '+m;
+	}
+
+	function gotGiftData (rslt){
+//logit ("getErDone.gotGiftData ... \n"+ inspect (gift, 8, 1)); 
+	  if (!t.accepting)
+		return;
+	  if (rslt.ok){
+		statSpan.innerHTML += ' &nbsp; Accepting .';
+		t.ajaxAcceptGift (gift, t.doServer, doneAccepting);
+		return;
+	  }
+
+	  if (rslt.feedback)
+		msg = '<B>'+ rslt.feedback + '</b>';
+	  else 
+		msg = '<SPAN class=boldRed>ERROR: '+ rslt.ajaxErr +'</span>';
+	  if (rslt.del && Options.giftDelete!='n'){
+		t.deleteGift (gift);  	
+		msg += ' Gift Deleted.';
+	  }
+	  curDiv.removeChild (statSpan);
+	  curDiv = document.createElement ('div');
+	  curDiv.className = 'indent25';
+	  acpDiv.appendChild (curDiv);
+	  curDiv.innerHTML = msg;
+	  t.acceptNext ();  
+	}
+
+	function doneAccepting (rslt){
+	  if (!t.accepting)
+		return;
+	  var msg = 'OK.';
+	  if (rslt.ok)
+		actionLog ('Accepted Gift:  '+ gift.gift +' from '+ gift.giver +' on '+ gift.args.da.substr(0,4) +'-'+ gift.args.da.substr(4,2) +'-'+ gift.args.da.substr(6,2)     );
+	  else
+		msg = '<SPAN class=boldRed>'+ rslt.msg +'</span>';
+	  statSpan.innerHTML = msg;
+	  if (Options.giftDelete=='y'){
+		statSpan.innerHTML += ' &nbsp; Deleted.';
+		t.deleteGift (gift);      
+	  }
+	  t.acceptNext ();  
+	}
+  },
+
+
+
+  ajaxAcceptGift : function (gift, serverId, notify){
+	var url;
+	var pargs = {};
+
+	if (gift.dat.ver == 1){
+	  url = gift.dat.url;
+	  pargs.giftId = gift.dat.giftId;
+	  pargs.hasExistingServer = 1;
+	  pargs.serverid = serverId;
+	  pargs.go = 'Next';
+	  GM_AjaxPost (url, pargs, ver1GotPost, 'Accept'); 
+	} else {
+	  var i = gift.dat.url.indexOf('src/');
+	  url = gift.dat.url.substr(0,i) +'src/ajax/claimgift.php?wcfbuid='+ gift.dat.wcfbuid;        
+	  pargs = unsafeWindow.Object.clone(unsafeWindow.g_ajaxparams);
+	  pargs.fb_sig_ext_perms = unescape(pargs.fb_sig_ext_perms);
+	  pargs.ver = '2';
+	  pargs.selectedS = serverId;
+	  pargs.giftinviteid = gift.dat.giftId;
+	  GM_AjaxPost (url, pargs, ver2GotPost, 'Accept'); 
+	 }
+
+//  parse multiple reply formats .....         
+	function ver1GotPost (rslt){
+	  if (rslt == null){
+		notify ({ok:false, msg:"AJAX Error"}); 
+		return;
+	  }
+	  var m = /<div class=\'nm\'>(.*?)<\/div/im.exec(rslt);
+	  if (m)
+		notify ({ok:false, msg: 'Got '+ m[1]}); 
+	  else
+		notify ({ok:true, msg:'OK'});
+	}
+	function ver2GotPost (rslt){
+	  if (rslt == null){
+		notify ({ok:false, msg:"AJAX Error"}); 
+		return;
+	  } 
+	  rslt = eval ('('+ rslt +')');
+	  if (rslt.ok)
+		rslt.msg = 'OK';
+	  notify (rslt);
+	}
+  },
+
+
+  deleteGift : function (gift){
+	var pargs = {};
+//logit ("DELETING GIFT!");    
+	for (var i=0; i<gift.inputs.length; i++){
+//      if (gift.inputs[i].name != 'actions[reject]')
+		pargs[gift.inputs[i].name] = gift.inputs[i].value;
+	}
+	GM_AjaxPost ('http://www.facebook.com/ajax/reqs.php?__a=1', pargs, gotAjaxPost, 'Delete');
+	function gotAjaxPost (p){
+	}
+  },
+
+
+// get 3 pages ... facebook convert page, facebook claim page and first KofC page (for gift ID) ...
+// adds: dat.url, dat.giftId and dat.ver to gift object (if available)
+// notify: {ok:true/false,  feedback:,  ajaxErr:  }    
+  ajaxGetGiftData : function (gift, notify, progress, DELETE){
+    var t = Tabs.Gifts;
+    gift.dat = {};
+
+    GM_AjaxGet (gift.submit, null, got1, 'Page 1');        
+        
+    function got1 (page){
+// sample URL: http://apps.facebook.com/kingdomsofcamelot/?page=claimdailygift&gid=361&sid=4411654&s=88&in=4411654&si=9      
+// sample result: .... window.location.replace("http:\/\/apps.facebook.com\/kingdomsofcamelot\/?page=claimgift&gid=1045&sid=1432568&s=250&in=1432568&si=5"); ...
+      if (page == null)
+        notify ({ajaxErr:'COMM Error - page 1'});
+      progress ('1');
+      var m = /window.location.replace\(\"(.*?)\"/im.exec (page);
+      if (m == null)
+        notify ({ajaxErr:'PARSE Error - page 1'});
+      var url = m[1].replace ('\\/', '/', 'g');
+      GM_AjaxGet (url, '', got2, 'Page 2');        
+    }
+    
+// sample URL: http://www88.kingdomsofcamelot.com/fb/e2/src/claimDailyGift_src.php?sid=4411654&gid=361&standalone=0&res=1&iframe=1&wcfbuid=1400526627&fbml_sessionkey=2.wdwjP4blBLkO2wXAFqDglg__.3600.1293681600-1400526627&lang=en&in=4411654&si=9&ts=1293677199.881&page=claimdailygift&gid=361&sid=4411654&s=88&in=4411654&si=9&appBar=&kabamuid=114014&tpuid=alYJXw-Us9z9qjRn3DHChEtsFvo&fb_sig_in_iframe=1&fb_sig_base_domain=kingdomsofcamelot.com&fb_sig_locale=en_GB&fb_sig_in_new_facebook=1&fb_sig_time=1293677199.924&fb_sig_added=1&fb_sig_profile_update_time=1267240352&fb_sig_expires=1293681600&fb_sig_user=1400526627&fb_sig_session_key=2.wdwjP4blBLkO2wXAFqDglg__.3600.1293681600-1400526627&fb_sig_ss=7wEsU_e0FLqhrGxE1LAZDg__&fb_sig_cookie_sig=514b59deb303becb5c5c654c9d457732&fb_sig_ext_perms=email%2Cuser_birthday%2Cuser_religion_politics%2Cuser_relationships%2Cuser_relationship_details%2Cuser_hometown%2Cuser_location%2Cuser_likes%2Cuser_activities%2Cuser_interests%2Cuser_education_history%2Cuser_work_history%2Cuser_online_presence%2Cuser_website%2Cuser_groups%2Cuser_events%2Cuser_photos%2Cuser_videos%2Cuser_photo_video_tags%2Cuser_notes%2Cuser_about_me%2Cuser_status%2Cfriends_birthday%2Cfriends_religion_politics%2Cfriends_relationships%2Cfriends_relationship_details%2Cfriends_hometown%2Cfriends_location%2Cfriends_likes%2Cfriends_activities%2Cfriends_interests%2Cfriends_education_history%2Cfriends_work_history%2Cfriends_online_presence%2Cfriends_website%2Cfriends_groups%2Cfriends_events%2Cfriends_photos%2Cfriends_videos%2Cfriends_photo_video_tags%2Cfriends_notes%2Cfriends_about_me%2Cfriends_status&fb_sig_country=us&fb_sig_api_key=0ab5e11ff842ddbdbf51ed7938650b3f&fb_sig_app_id=130402594779&fb_sig=fca33813d9e1c9d411f0ddd04cf5d014
+    function got2 (page){
+      if (page == null)
+        notify ({ajaxErr:'COMM Error - page 2'});
+      progress ('2');
+     var m = page.match (/<form action=\"(.*?)\"/im);
+      if (m == null)
+        notify ({ajaxErr:'PARSE Error - page 2'});
+      var url = m[1].replace ('&amp;', '&', 'g');
+      gift.dat.url = url;
+      GM_AjaxGet (url, '', got3, 'Page 3');        
+    }
+    
+    function got3 (page){
+      if (page == null)
+        notify ({ajaxErr:'COMM Error - page 3'});
+      progress ('3');
+      var m = /<div class=\'giftreturned\'>(.*?)<\/div/im.exec(page);
+      if (m != null){
+        notify ({feedback:m[1], del:true}); 
+        return;
+      }
+      var m = /(We were unable to find your gift.*?)</im.exec(page);
+      if (m != null){
+        notify ({feedback:m[1], del:true}); 
+        return;
+      }
+      var m = /(Unable to get the list of your friends.*?)</im.exec(page);
+      if (m != null){
+        notify ({feedback:m[1]}); 
+        return;
+      }
+      var m = /(Facebook says you are not friends.*?)</im.exec(page);
+      if (m != null){
+        notify ({feedback:m[1], del:true}); 
+        return;
+      }
+            
+      var regexp = /<option value='(.*?)'.*?>(.*?)</img ;
+      var m;
+      while ( (m = regexp.exec (page)) != null){
+        if (m[1] != 'noserver')
+          Options.giftDomains.list[m[1]] = m[2];  
+      }
+      Options.giftDomains.valid = true;
+      if (page.indexOf('ver:2') >= 0){
+        m = /giftinviteid:(.*?),/im.exec(page);
+        if (m == null)
+          notify ({ajaxErr:'PARSE Error (ver:2, giftinviteid not found) - page 3'});
+        gift.dat.giftId = m[1];
+        gift.dat.ver = 2;
+/** for KofC change 20110119
+        m = /wcfbuid=([0-9]*)/im.exec(page);
+        if (m == null){
+          notify ({ajaxErr:'PARSE Error (ver:2, wcfbuid not found) - page 3'});
+          return;
+        }
+        gift.dat.wcfbuid = m[1];
+**/        
+      } else {
+        m = /name='giftId' value='(.*?)'/im.exec(page);
+        if (m == null){
+          notify ({ajaxErr:'PARSE Error (ver:1, giftId not found) - page 3'});
+          return;
+        }
+        gift.dat.giftId = m[1];
+        gift.dat.ver = 1;
+      }
+      notify ({ok:true});
+    }
+  },
+
+  
+  // notify with gifts[] or: {errMsg:xxx}
+  fetchGiftsPage : function (notify){
+    GM_AjaxGet ('http://www.facebook.com/games?ap=1', '', parseGiftsPage, 'FB Gifts Page');
+    
+    // ...profile.php?id=100000710937192">Anestis Mallos</
+    // Here is a GIFTNAME you can use 
+    // OR:  ... would like to give you a gift of GIFTNAME in Kingdoms of Camelot
+    // OR:  ... would like to give you a GIFTNAME in Kingdoms of Camelot
+    // <input value=\"Accept\" type=\"submit\" name=\"actions[http:\/\/apps.facebook.com\/kingdomsofcamelot\/convert.php?pl=1&in=4411654&ty=1&si=9&wccc=fcf-inv-9&ln=11&da=20101229&ex=gid%3A361%7Csid%3A4411654%7Cs%3A88]\" \/><\/label>
+    function parseGiftsPage  (p){
+      if (p == null)
+        notify ({errrMsg:'Ajax Comm Error'});
+      p = p.replace ('\\u003c', '<', 'g');    
+      var t = Tabs.Gifts;
+      var gifts = [];
+      try {    
+        var m = p.split ('<form');  
+        for (var i=0; i<m.length; i++){
+          if ( m[i].indexOf('kingdomsofcamelot')<0)
+            continue;
+          var mm = m[i].match( /facebook.com\\\/.*\">(.*?)<\\\/a><\\\/strong>.*?(?:give you a (?:gift of|)(.*?) in |here is a(.*?)you can use)/im );
+          if (mm==null)
+            continue;
+          var giver = mm[1];
+          if (mm[2])
+            var gift = mm[2].trim();
+          else
+            var gift = mm[3].trim();
+            
+          // get all inputs ...  (name, value, type)          
+          var inps = [];
+          var args = {};  
+          var inpsub = null;            
+          var ins = m[i].match (/<input.*?>/igm);
+          for (var ii=0; ii<ins.length; ii++){
+            var it = {};
+            mm = /value=\\\"(.*?)\\\"/im.exec(ins[ii]);  
+            it.value = mm[1];
+            mm = /name=\\\"(.*?)\\\"/im.exec(ins[ii]);  
+            it.name = mm[1];
+            mm = /type=\\\"(.*?)\\\"/im.exec(ins[ii]);  
+            it.type = mm[1];
+            if (it.type=='submit' && it.name!='actions[reject]'){
+              it.name = eval ('"'+ it.name +'"');          
+              mm = /actions\[(.*?)\]/im.exec(it.name);
+              inpsub = mm[1].replace('\\/', '/', 'g');
+              inpsub = inpsub.replace('&amp;', '&', 'g');
+              var a = inpsub.split ('&');
+              for (var iii=0; iii<a.length; iii++){
+                var aa = a[iii].split ('=');
+                if (aa[0]=='da' || aa[0]=='si'){
+                  args[aa[0]] = unescape(aa[1]);
+                } else if (aa[0] == 'ex') {
+                  var s = unescape(aa[1]).split ('|');
+                  for (var iiii=0; iiii<s.length; iiii++){
+                    var ss = s[iiii].split(':');
+                    if (ss[0] == 's')
+                      args.exs = ss[1];
+                  }
+                } 
+              }
+            } else {
+              inps.push (it); 
+            }
+          }
+          if (args.da)
+            gifts.push ({giver:giver, gift:gift, args:args, submit:inpsub, inputs:inps});
+        } 
+        notify (gifts);
+      } catch (e) {
+        notify ({errMsg:"Error parsing Facebook gift page"+ e});
+      }
+    }
+  },
+
+}

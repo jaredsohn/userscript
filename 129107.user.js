@@ -1,0 +1,14 @@
+// ==UserScript==
+// @name           IRCCloud Message Favicon
+// @description    Flash IRCCloud favicon when you get a mention
+// @author         thekirbylover
+// @include        http://irccloud.com/*
+// @include        https://irccloud.com/*
+// @version        1.1
+// ==/UserScript==
+// Script licensed under MIT License <http://adam.mit-license.org>
+// Icon by Function Design <http://wefunction.com>
+
+var s=document.createElement("script");
+s.textContent="(function(){var oldicon=window.document.querySelector('link[rel=icon]').href,curicon=false,hasmsg=false,hasfocus=true,icon='data:image/x-icon;base64,AAABAAEAEBAAAAAAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAQAQAAAAAAAAAAAAAAAAAAAAAAAD///8B////AZTx+wX///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////AZTx+wX///8BCXGqKRN1q+EWd63vF3mu7xd6r+8Xeq/vF3qv7xd6r+8Xeq/vF3qv7xd6r+8Xeq/vF3qv7xZ4re8VdqzpDnKpyQ5+v2cJfL7/CIzY/wSk3v8AtOX/AMXq/wDQ7/8A2vP/AN71/wDX8f8Azu3/AL/o/wCt4f8Ektn/CIDI/wtupfUMfb4HD3+/+wqV2f8QouL/AaPi/wCq5P8As+r/HHqe/yJ3mv8Ds+j/AK3l/wCl4/8BneH/EKDj/xN+tf8ObaOr////ARN1r5kPhMT/FrHs/xe77f8Auu7/AMf1/xBylf8RaYv/AcTw/wC97/8AtOz/F7Ts/yOl2v8OcKbzCmmgCf///wEIWJAHFYPA8Rak3v9E1fb/Bsn0/wDR9/8Ryuv/Fsfn/wDU+f8AyvX/BsLy/0fU9/8TeK39DGmgZf///wH///8B////ARJup2cPgsH/OdX5/0Tg+v8A4f//EoGe/xZ5lf8A5P//ANT6/0Tc+v83rdb/D2+m2////wH///8B////Af///wH///8BG4O93SCn2/936/z/IOr+/xVuiv8UZoP/Cez//x3c/v904/b/EHOo/QppoTn///8B////Af///wH///8B////AQ5noT8Sg8H/SNn2/2ju/P8XZ4T/FWB9/yHp//9n6vz/M5zH/w5tpLv///8B////Af///wH///8B////Af///wH///8BH4C4xR+Wzv9r7P3/LIWi/xlniP9H5v7/Y9Ts/w9xp/sKbKMV////Af///wH///8B////Af///wH///8B////AQhdliEciMT9SMjq/1/Y8P9ExuX/aOr+/yOFtv8Na6GN////Af///wH///8B////Af///wH///8B////Af///wH///8BIHuynRmIxf9o6P3/Z+r//1vA3/8ScqfvC26lA////wH///8B////Af///wH///8B////Af///wH///8B////AQJXkBEskMb1U7/h/4Xx+/8Yd6v/CmifV////wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8BF3OqcxiEwv9Xpsr/E3Gm0////wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wEVe7atF3asuwlooCf///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8BAAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//w==';function flashicon(){window.document.querySelector('link[rel=icon]').href=(curicon=!curicon)&&hasmsg?icon:oldicon;setTimeout(flashicon,1000)}function init(){if(!!window.SESSION){window.SESSION.backend.bind('message',function(e){if(e.highlight&&!hasfocus) hasmsg=true})}else{setTimeout(init,20)}}window.addEventListener('blur',function(){hasfocus=false},false);window.addEventListener('focus',function(){hasfocus=true;hasmsg=false},false);flashicon();init()})()";
+document.body.appendChild(s);

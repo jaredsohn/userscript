@@ -1,0 +1,23 @@
+// ==UserScript==
+// @name		IGM Missions buttons
+// @namespace		IGM
+// @icon		http://dy5oyikz6c23y.cloudfront.net/V005/1/templates/igmaraudersglobal/favicon.ico
+// @description		Add brokers buttons
+// @author		Kleho
+// @version		0.0.1
+// @date		2012-06-15
+// @include		http://igmarauders.isotx.com/*
+// ==/UserScript==
+
+if (/http:\/\/igmarauders.isotx.com\//.test(window.location.href)) {
+
+	if (!document.getElementById('broker-buttons-Jasmine')) {
+		var btns_text =	'<li id="broker-buttons-Jasmine"><img class="icon16" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAsNJREFUeNpsk0lPU1EUx89989RXCq0dkLZIouBQDSGoiauSGN24Y0E0Ia7EhWGrC7+AKxM/gAtZuzQxajQxDiGykBAxttCCQmnpzBv73uv1Fidovcld3Ol/fud/zkUYY7gxSUHX4GgEoZqGJ8t0eDosU89kp7AAFDp0aWGxDT0vyeBphONVDc86sfHHl6/PzkjHJ54UDG6eAtxzuVuAIUEGqzrMMPHxe2dSo/69fBaifSIkz0893Na4O90i3QIB18WXykzsdiQRV04lkjA/NwfX0lPgl0Vghs4+KGswcTAT5sBjRNCDRQOlxaF4VGIwvHj9ATTbgdXVLLiuBuFYWFhek2+GsP4JIdRDgDAgVmCBdms7OJffAZ8iwqu3S+C5DtQbBhTyG56f8wr7SeDeFOjOWmZwo1mqeZXNPORy65C+kALTsCCzsgKNQoXmsbVGkxLhLg8oQiTbLpz8WpevGi6mhwc80OpleP7yDXzLZuCIgsGyLbyhyXd3dTpNIXxIgGiC6rXxCCixRL9PRJ7rQr/qBz9lQSKkQiAggMJTSAwMplpIGMHtwwSdfrI5Bm0HW5lFw9RbW02eOKxD02iAY1U7FoPpIlfSM49USv+4z3xAwCNAGsHI+kW0o0oU4kUJSjUNQkob1n/UoNhAIAo0+ASo8Azk/tj4l+BXFbBQMehRhW6xlFGwAwLGDDliEIVFr+Zgu9pumOwt08EBGvVWgSV7AYZlXJoTrO2qV9V1/f1WxQEfZy6V6va6xAumovLfaYLf/k8ZEcmDZRHbNxxQhLGkCjK/j9omDVZORkX7RET197H8mON1guEeAZcoFy3bXFneLGWOBqVoODJwxXU8j5Pkc6ePBVP53frnrUr9KceATeL97r5/35klM0j6PEEsSRX3uOlEZOAiD5aDKU7I7ZrvFLp5X+Dgi9dGesd48p3xTwEGAJMkLzV8PHAcAAAAAElFTkSuQmCC"><a href="http://igmarauders.isotx.com/game.php?/mission/&agent=2" class="btutorial">Jasmine</a></li>'+
+				'<li><img class="icon16" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAy5JREFUeNpsU1tvG0UU/mZ3dvYW2107Tqgc06RAlYikwqBGBaQ+5YE/wAMXUYknUJ95Q0j8Afgd8ILEAw8FKp4KL0CJSkouTp2U1I4Te+219747w6xLJQSMNCPNmXO+851vziHvXCP4n0VIsYngxUXMDjIz3v5D4NR74iO3rl5t/AdAUQicOBUbXQ9vTWJc4xlCUyenBUDNJjg4l3gzVHD6r2BVOlWDUFyfW1r/9KObH7ZMQ8ed724/2v7hyzfKJtmp2cD1ZYK7hzMErvwj2FSIaKYp3tXsxc/s+qUWl6kZU8Bsp5mA3SCymDQHVheB1y4TUBlN/tbAkKRWh6FxyylffHvjpTXrt8e+5MOgGwa84QAs6m/TydEHIOmPRflUBVzp8rSEiqzp9dOJ/p5iaSwMfMxRjsp8FbrOQOIAhmKtD4apqUhCGhVJlhNcsKRghZqFaEFCXlSJAkeVKu+2oWcB/CgE1RSMJy5O/uwiosufa/XNb32y+LEQwsj5EwZSOFH1U+2F2oUFVihdr85juVnHz90e2qcdRK6HkJaUxsLKVUUv4eDh6MYSG2zX7ezrgkGJczzLqN6wZLY7vx+jc+ZBj1J4j89x/34Hg2mGnNk47vaxs7+L85GHJFeXi2QSQFzyE/PNlWZrbaqWUKpUcRKo+OreI4RhDq5ZKC00kKUce50jDFw3N7VsaLPsHhfFTxA83/WUV1OHgpkUm69solatYmdvD+39B0gkRXevAxIFiCVIOjr3t1bz901N3M04gbp+EVtBbm/1BoEZZnymev/sDPvtNsZ+iMuNZ9CYY3CjHK31DQmSaVEUDnWNnDAqejTJwbxIdXQlQzDqYzeYQtMY/CRGpVLG2mIF7tSXNoqDo0MwqirHY+eWQtzxlQX+q/pyk1iGGkyjNFI5JxU/8GkQxaQ0Z8MpW9jvuhhFCWpG0tcRdNN40qsZwfdX6tknXCCgsqN/qZik59jpN2Eyfk6W3BwErDXNxYoST4Qhktjg2YMlM/6ClTCU7xPZiA9zTsZFBxZ9MJRIY56TQ0bxk7w7jXIyLzC0ijmWX+XJgBPJbpwLZMUASXv+dMr/EmAAhlRtT+dboDoAAAAASUVORK5CYII="><a href="http://igmarauders.isotx.com/game.php?/mission/&agent=9" class="btutorial">Joaquin</a></li>'+
+				'<li><img class="icon16" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA3JJREFUeNpUkttvG0UUxs/M3rxrr9d3rx2bOrLrUNKEhiilCAmJ0hLuogJEESoSD/CChARvvCKhSvCA+AsQlz4hgdonioSoeAApVUMJTSCJaue2ydqO7di1d9d7GyZOosKRvtmR5nxnvh390FtTQfhPsVQBqpDv+RHiexLdIwLIYjn2Ht13qUwqm4p8Nd/bN6BDL8GH5jTyByeymehEIJbMur6PyMDZ3qpsLgFmVxFCOu3pULnDGwkafuk1DF09kUGDYvbY2KvJiUfOEEEpYMyw9sBui/LK99XFuY7ruR2E2d7RAOwzFgyFLT4gCaNxdeoVzUtfrN2Dsdnzs8JLL7zIRKLxRAOFX1OKFz8Ox0Zzvmu4R/+M3pxBQAhhBQaprvLM5d2++4YSaTCWy0IylQFVTcKtm7chGPJoyhLEpfQ3A+3aR45Z076etwFTM8YIFGHk9ff6fP5c8VSCGcllSS6jukAA7la2oFjIESWc9rXmPMytr14KHX/nXWAPQmDaJHKcmP9HM54cP11QP738OYwGE7W02F1SIgrMTI2D67R2J2NypTz+hP/wo2NwV995jpOL6vAREQKJ8JnJiFxInJ09C+uaZa4v3/kuGWsG0km+0dU2oRS2tM071/Hk05/IqYlj6R+N5SJsZUeoX2dpfAEQH9WbG2o8HgFd63Xae62ru9q6LIm6SggabDhex/edQpHD0zPTj6Vv/LQomrYlDBP4PiDG7w/y2eOtG7/NBV0rFBWjJa+1t/aLh7gY5YNg5AYQKyYgmApu13QI8PGmRWzngDwEFiZOs769Yl+7ugaYw0I2Ov2+3Ku83W9XqvQ8QBEpxx+69Hj2wXJ+Y6MCS3/9YZYEUjkACcCwevryZDn9+82680DPW+C2vdqFcub5RCxe/wH7PdJn1fMLPf+c8fMVhMyEmZBi83ZLN444YGjKCBtIPtvAZz7oCtKJprEimqYNLA5DMCiDS/pgmS0IcnmQSfLvU8rtp9r1xZ0rtwjs808JQV3HaPyaZ//8IsmnKgpb6ktM1Om0dGg31oD1Ag7pxclE9vT1k6nOh3vUjBh0n8TD4ihUaY6XTyr5l2ervcwFnrRrO20jX8rlFiQOVq3NLz+z+/WNI/O3c/7/BuwXQ3zCY0ZIiKFk1HVM+vgjktOvVj3HaHqe5yB8v39/wL8CDADl6YXahf4s2AAAAABJRU5ErkJggg=="><a href="http://igmarauders.isotx.com/game.php?/mission/&agent=15" class="btutorial">Frannel</a></li>';
+
+		var btns = document.getElementById('chat_buttons');
+		btns.innerHTML = btns.innerHTML.replace(/<ul>/i, '<ul>'+btns_text);
+	}
+
+}

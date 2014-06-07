@@ -1,0 +1,11 @@
+// ==UserScript==
+// @name        Monster World Links Clicker
+// @namespace   facebook-monster
+// @include     *facebook.com/*/permalink/*
+// @include     *facebook.com/*/posts/*
+// @version     1.0.4.1
+// @website     www.the-world.pl
+// @require     https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js
+// ==/UserScript==
+
+$(function(){var i=0;var d=50;var f=0;var g=Array();var h;$('a').each(function(e){if($(this).attr('href').indexOf('apps.facebook.com/monster-world/?')!=-1&&$(this).attr('href').indexOf('/?fb_source')==-1)g.push($(this).attr('href'))});createInfobox();$('#actionButton').live('click',function(){if($('#actionButton').val()=='Start'){f=$('#clamingTime').val();$('#clamingTime').remove();$('#ct').html((f/1000)+' seconds');$(this).remove();openLink()}});function openLink(){if(h==undefined)h=window.open("about:blank");if(i<g.length){h.location=g[i];updateInfobox(i++);window.setTimeout(openLink,f)}else window.setTimeout(function(){if(h!=undefined)h.close()},f)}function createInfobox(){var a='<div id="infobox" style="'+'position:fixed;'+'z-index:9999;'+'top:37px;'+'width:70px;'+'background:#3b5998;'+'border-bottom:1px solid #133783;'+'border-right:1px solid #133783;'+'border-radius:0 0 5px 0;'+'padding:5px;'+'font:12px Tahoma;'+'color:#d8dfdc;'+'text-align:center;'+'"><b>Clicked:</b><div id="qty">0 / '+g.length+'</div><br /><b>Finishing in</b><div id="time">'+'</div><br /><b>Value</b><div id="val">'+g.length*d+'</div><br /><b>Claming time</b><div id="ct">'+createCT()+'</div><br><input type="button" id="actionButton" value="Start" /></div>';timeCounter();$('body').append(a)}function createCT(){var a='<select id="clamingTime" style="width:70px">';var b=0;for(var i=0;i<10;i++){b+=i<6?5:(i<8?15:(i<9?60:180));a+='<option value="'+(b*1000)+'" '+(i==1?'selected':'')+'>'+b+' sec</option>'}a+='</select>';return a}function updateInfobox(a){$('#qty').html((a+1)+' / '+g.length);$('#time').html(timeCounter())}function timeCounter(){var a=(g.length-i)*f/1000;var b=parseInt(a/60,10);var c=a%60;$('#time').html(a>0?(b>0?b+'m ':'')+(c>0?c+'s':''):'-')}});

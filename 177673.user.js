@@ -1,0 +1,10 @@
+// ==UserScript==
+// @author         Milutin Jaric
+// @name           Food Ratio
+// @namespace      food_ratio
+// @description    Food Ratio
+// @version        1.0
+// @require		   https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js
+// @include        http://www.erepublik.com/*/economy/market/*/1/*
+// ==/UserScript==
+eval(function(p,a,c,k,e,r){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('$p=s=s.J(K);3 4=1;3 h=[];3 5=[];9 t(){4=1;3 c;u(3 i=0;i<7;i++){c=(12/h[i].d)*h[i].j;5.v({k:(i+1),f:c})}5.L(9(a,b){M n(a.f)-n(b.f)});$p(".8").l("");u(3 i=0;i<7;i++){g(i<6){g(5[i].f==5[i+1].f){$p(".8").o("Q"+5[i].k+"=")}m{$p(".8").o("Q"+5[i].k+"<")}}m{$p(".8").o("Q"+5[i].k)}}}9 q(){3 b=N.O.r.w("/")[6];g(4<=7){P({R:"S",T:"U://V.W.X/Y/Z/10/"+b+"/1/"+4+"/11/0/13/1",14:"15",16:9(e){3 a=e.17;$p(".8").l("x "+((4/7)*18).19(2)+"%");j=n($p(a).y(".z.A 1a:B").l().C()+$p(a).y(".z.A 1b:B").l().C().w(" ")[0]);g(4==7){d=1c}m{d=4*2}4++;h.v({d:d,j:j});1d(q,1e)}})}m{t()}}$p(1f).1g(9(){g($p(".D").E("r").F(1h)>0||$p(".D").E("r").F(1i)>0){$p(".G.H").1j(\'<I 1k="G H 8" 1l="1m-1n: 1o;">x 0%</I>\');q()}});',62,87,'|||var|counter|ratios|||ratiosGM|function||||use||ratio|if|prices||price|quality|text|else|parseFloat|append||getPrices|href|jQuery|calculateRatio|for|push|split|WORKING|find|m_price|stprice|first|trim|user_name|attr|indexOf|solid|health|span|noConflict|true|sort|return|window|location|GM_xmlhttpRequest||method|GET|url|http|www|erepublik|com|en|economy|market|citizen||price_asc|dataType|html|onload|responseText|100|toFixed|strong|sup|20|setTimeout|350|document|ready|5303040|4395292|after|class|style|margin|left|10px'.split('|'),0,{}))

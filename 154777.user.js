@@ -1,0 +1,12 @@
+// ==UserScript==
+// @name	Tieba Fix for Opera
+// @namespace	http://gera2ld.blog.163.com/
+// @author	Gerald <gera2ld@163.com>
+// @version	1.0Final
+// @description	Opera贴吧修复 - Gerald倾情打造
+// @downloadURL	https://userscripts.org/scripts/source/153687.user.js
+// @updateURL	https://userscripts.org/scripts/source/153687.meta.js
+// @include	http://tieba.baidu.com/*
+// @exclude	http://tieba.baidu.com/tb/*
+// ==/UserScript==
+function initCursorFix(){utils.hook(TED.EditorCore.prototype,"focus",null,function(){utils.scrollTo(this.editArea),this.resumeRange()}),utils.hook(TED.EditorCore.prototype,"getRange",function(){var o=window.getSelection();if(!o.rangeCount){var e=document.createRange();e.setStartBefore(this.editArea.lastChild),o.addRange(e)}})}function initFontRed(){function o(o,e){document.execCommand("forecolor",!1,document.queryCommandValue("forecolor").replace(/\s/g,"")==o?"#333333":e)}utils.mousePress($("div.tb-editor-toolbar .font_color").unbind(),function(){o("rgb(225,6,2)","#e10602")})}function initNewLineFix(){function o(o){o.innerHTML=utils.fixNewLine(o.innerHTML)}utils.hook(rich_postor._editor,"getHtml",function(){o(this.editArea)})}function initImageFix(){utils.hook(rich_postor._editor,"reLayout",null,function(){$(this.editArea).find("img").each(function(o,e){(o=e.height)&&(e.height=Math.round(o))})})}var utils={hook:function(o,e,t,i){if("function"!=typeof o[e])return!1;if(!o[e].hooked){var n=o[e];o[e]=function(){var o=arguments.callee;for(var e in o.hook_before)o.hook_before[e].apply(this,arguments);var t=o.hook_func.apply(this,arguments);for(var e in o.hook_after)t=o.hook_after[e].apply(this,[t,arguments])||t;return t},o[e].hooked=!0,o[e].hook_after=[],o[e].hook_before=[],o[e].hook_func=n}i&&("function"==typeof i&&(i=[i]),i.forEach(function(t){o[e].hook_after.push(t)})),t&&("function"==typeof t&&(t=[t]),t.forEach(function(t){o[e].hook_before.push(t)}))},mousePress:function(o,e){(o.mousedown||o.mouseup).call(o,e)},fixNewLine:function(o){return o.replace(/<p>(.*?)(<br>)?<\/p>/gi,"$1<br>").replace(/<br>$/,"")},scrollTo:function(o){if(o=$(o),"fixed"!=o.css("position")){var e=o.offset().top,t=$("html"),i=o.outerHeight();pageYOffset>e+i?t.scrollTop(e):e>pageYOffset+innerHeight&&t.scrollTop(e+i-innerHeight)}}};window.rich_postor&&window.PageData&&PageData.user.is_login&&(initCursorFix(),initFontRed(),initNewLineFix(),initImageFix());

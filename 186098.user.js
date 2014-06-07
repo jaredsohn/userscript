@@ -1,0 +1,13 @@
+
+// ==UserScript==
+// @name Alpha Userbar v2
+// @namespace This is a test
+// @description Changes alpha userbar!
+// @include      http://leak.sx*
+// @include      http://*.leak.sx*
+// ==/UserScript==
+
+var theImages = document.getElementsByTagName('img');
+for(i=0; i<theImages.length; i++) {
+if(theImages[i].src.indexOf('http://leak.sx/images/groupimages/english/alpha_new.png') != -1) theImages[i].src = 'http://i.imgur.com/emzPCTW.png';
+}

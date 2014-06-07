@@ -1,0 +1,7403 @@
+// ==UserScript==
+// @name OGP
+// @description OGP
+// @include http://facebook.mafiawars.com/*
+// ==/UserScript==
+
+/***************************************
+OGP Mafia Wars Tool Suite v2
+Copyright 2010 OneGuy Productions
+Distribution for profit or financial gain is not permitted.
+****************************************/
+
+/***************************************
+ Global Contstants and Variables
+****************************************/
+var res = new Array(); //Job results array
+
+/***************************************
+ Configuration Contstants and Variables
+****************************************/
+function ogpConfigDef() {
+
+  // Global Constants/Variables
+  this.currentCity = '';
+  this.originalCity = '';
+  this.Session = 1;
+  
+  this.curEnergy;
+  this.curStamina;
+  this.curExp;
+  this.curExpNeeded;
+  this.curRatio;
+  this.curHealth;
+  this.curSkillPoints;
+  this.curLevel;
+  
+  // Track when we're processing something
+  this.functionRunning = false;
+  
+  this.lastStatUpdate = null;
+  this.updateStatInterval = 30000;
+  this.lastSessionUpdate = null;
+  this.updateSessionInterval = 60000;
+
+  this.Version = '2.4.6';
+  this.MWURL = '';
+  this.MWURLAJAX = '';
+  this.MWURLJSON = '';
+  this.tmpkey = '';
+  this.fighttmpkey = '';
+  this.appHung = false;
+  this.local_xw_sig = '';
+  this.local_player_id = '';
+  this.cbvalue = '';
+
+  // Text colors
+  this.clrWarning = '#ff00ff';
+  this.clrAction = '#ffff00';    
+  this.clrGood = '#00ff00';
+  this.clrFatal = '#ff0000';
+  this.clrInfo = '#ffffff';
+  this.clrUserError = '#00ffff';
+  this.clrHighlight = '#ffffff';
+
+  // The following strings are what is used to perform the specific function calls
+  // Parameters specific to the action being performed are added in the individual routines
+  this.FBAPPURL = 'http://apps.facebook.com/inthemafia/';
+
+  this.urlTravel = '&xw_controller=travel&xw_action=travel&from=index';
+  this.urlUpdateStats = '&xw_controller=index&xw_action=view';
+  this.urlUpdateSession = '&xw_controller=index&xw_action=view';
+  this.urlUpdateCurrentCity = '&xw_controller=index&xw_action=view&xw_city=1';
+  this.urlDeposit = '&xw_controller=bank&xw_action=deposit';
+  this.urlVegasDeposit = '&xw_controller=propertyV2&xw_action=doaction&doaction=ActionBankDeposit&building_type=6';
+  this.urlLootList = '&xw_controller=loot&xw_action=view';
+  this.urlProfile = '&xw_controller=stats&xw_action=view';
+  this.urlSendItem = '&xw_controller=stats&xw_action=gift_send';
+  this.urlLottoPage = '&xw_controller=lotto&xw_action=view';
+  this.urlMafiaPage = '&xw_controller=group&xw_action=view';
+  this.urlSafeHousePage = '&xw_controller=safehouse&xw_action=view';
+  this.urlMysteryGiftsPage = '&xw_controller=freegifts&xw_action=view';
+  this.urlLootListPage = '&xw_controller=loot&xw_action=view';
+  this.urlCollectionPage = '&xw_controller=collection&xw_action=view';
+  this.urlSpendSkillPoints = '&xw_controller=stats&xw_action=upgrade&xw_city=1';
+  this.urlSwitchJobTab = '&xw_action=view';
+  this.urlRunJob = '&xw_action=dojob';
+  this.urlAttack = '&xw_controller=fight&xw_action=attack';
+  this.urlPunch = '&xw_controller=fight&xw_action=punch';
+  this.urlHeal = '&xw_controller=hospital&xw_action=heal';
+  this.urlPromotePage = '&xw_controller=group&xw_action=view&promote=yes';
+  this.urlPromote ='&xw_controller=group&xw_action=promote&slot=';
+  this.urlMafiaList = '&xw_controller=recruit&xw_action=view';
+  this.urlAddToMafiaP1 = 'track.php?next_controller=war&next_action=add&next_params={%22friend_id%22:%22'; 
+  this.urlAddToMafiaP2 = '%22}';
+  this.urlLoadRobbing = '&xw_controller=robbing&xw_action=view';
+  this.urlRunRobbing = '&xw_controller=robbing&xw_action=rob&xw_client_id=8';
+  this.urlRobRefresh = '&xw_controller=robbing&xw_action=refresh';
+  this.urlBuildShop = '&xw_controller=propertyV2&xw_action=craft';
+  this.urlAchievements = '&xw_controller=achievement&xw_action=view';
+  this.urlFactionStore = '&xw_controller=item&xw_action=faction_store';
+  this.urlFightList = '&xw_controller=fight&xw_action=view';
+  this.urlVegasJob = '&xw_controller=map&xw_action=dojob&click_origin=sidepanel_button';
+  this.urlVegasCollect = '&xw_action=collectall&xw_client_id=8';
+  this.urlRecruit = '&xw_action=recruit&xw_controller=recruit&xw_client_id=8&ajax=1&liteload=1&fbml_iframe=0&full_width=0';
+
+  this.urlFBProfileLink = 'http://www.facebook.com/profile.php?id=';
+  this.urlMWProfileLink = 'http://apps.facebook.com/inthemafia/remote/html_server.php?xw_controller=stats&xw_action=view&xw_city=1&user=';
+
+};
+
+
+/***************************************
+ MAIN Entry point for tool suite
+****************************************/
+function ogpMainDef() {
+  
+  this.initialize = function()
+  {
+    
+    document.title = 'OGP MW Suite - Play Mafia Wars the right way';
+    OGPConfig.local_xw_sig = local_xw_sig;
+    OGPConfig.local_player_id = OGPParser.getNewPlayerId(document.body.innerHTML);
+    this.initdiv();
+    this.setMWURL();
+    
+    OGPDisplay.buildLayout();
+    OGPDisplay.setHTML('divOGPCSS',OGPDisplay.buildCSS());
+    OGPDisplay.setHTML('divOGPMenu',OGPDisplay.buildMenu());
+
+    OGPItems.init();    
+    OGPConfig.tmpkey = OGPParser.setTempKey('');
+    OGPDisplay.updateCurrentCity();
+    OGPTimers.startAllTimers();
+    OGPItems.loadJobInfoFromCookies();
+    OGPDisplay.addLine('Ready',OGPConfig.clrGood);
+    
+  };
+  
+  this.initdiv = function(){
+    try {
+      if (FB) {
+      FB.CanvasClient.stopTimerToSizeToContent; 
+      window.clearInterval (FB.CanvasClient._timer);
+      FB.CanvasClient._timer=-1; 
+      }
+    }catch(err){}
+    /*
+    try {
+      if (e$('FB_HiddenContainer')) {
+        e$('FB_HiddenContainer').innerHTML = '';
+      }
+    }catch(err){alert('here');}
+    */
+    document.body.style.overflowX='visible';
+    document.body.style.overflowY='visible'; 
+    document.body.parentNode.style.overflow ='scroll';
+    // Hide the Zynga input
+    document.getElementById('TopField').style.display='none';
+    // Move the node to the top
+    // Create a new node in the mainDiv
+    var node = document.createElement('div');
+    node.setAttribute('id','ogpdiv');
+    document.body.insertBefore(node,document.body.firstChild);
+    OGPWindowUtils.MoveNode("ogpdiv","ogpmwsuite",0,document.getElementById('mainDiv').parent);
+    document.getElementById('ogpmwsuite').setAttribute("style","border:0;");
+    // Center the main window
+    //e$('final_wrapper').style.height="1200px";
+    //e$('final_wrapper').style.overflowX='visible';
+    //e$('final_wrapper').style.overflowY='visible';
+    if (e$('mainDiv'))
+    {
+      e$('mainDiv').style.width='760px;';
+      e$('mainDiv').style.position = 'absolute';
+      e$('mainDiv').style.left = '50%';
+      e$('mainDiv').style.marginLeft= '-380px';
+    }
+    if (e$('button_counter')) {
+      e$('button_counter').style.left = 0;
+    }
+    // Hide the new flash div
+    if (e$('zstream_div')) {
+      e$('zstream_div').style.left='-4000px';
+    }
+  };
+
+  
+  this.setMWURL = function() {
+  	str = document.location;
+	str = str.toString();
+	beg = str.substring(0,str.indexOf('?')+1);
+	str = str.substring(str.indexOf('?')+1);
+	str = str.split('&');
+	mid = '';
+	for(var i=0;i<str.length;i++){
+		//if(str[i].indexOf('sf_xw_')==0){ mid=mid+'&' + str[i]; }
+		//if(str[i].indexOf('cb=')==0){ mid=mid+'&' + str[i]; }
+	}
+	OGPConfig.MWURL = beg+mid;
+	if (OGPConfig.MWURL.indexOf('sf_xw_')<0) { 
+	  //OGPConfig.MWURL += '&sf_xw_sig=' + OGPConfig.local_xw_sig;
+	  //OGPConfig.MWURL += '&sf_xw_user_id=' + OGPConfig.local_player_id;
+	}
+	OGPConfig.MWURL = OGPConfig.MWURL.replace('?&','?');
+	OGPConfig.MWURLAJAX = OGPConfig.MWURL;// + '&liteload=1&ajax=1';
+	OGPConfig.MWURLJSON = OGPConfig.MWURL + '&ajax=1&requesttype=json';
+    //OGPConfig.MWURLJSON = OGPConfig.MWURL.replace('html_','json_') + '&requesttype=json&ajax=1&skip_req_frame=1';
+  };
+  
+};
+
+/***************************************
+ TIMER Functions 
+****************************************/
+function ogpTimersDef() {
+  this.updateTimer = null;
+  this.cleanupTimer = null;
+  this.sessionTimer = null;
+  this.cityTimer = null;
+  this.fontTimer = null;
+
+  this.startAllTimers = function() {
+    OGPDisplay.addLine('Starting timers',OGPConfig.clrInfo);
+    OGPTimers.updateStats(0,0);
+    OGPTimers.updateSession(0,0);
+    OGPTimers.cityTimer = setInterval("OGPDisplay.updateCurrentCity()",500);
+    OGPTimers.fontTImer = setInterval("OGPDisplay.fixScreenFonts()",500);
+    OGPTimers.setCleanupInterval();
+  };
+
+  this.stopRunningProcesses = function() {
+    // Stop any current processes that are running.  Used if someone clicks a menu item while something's running
+    if (OGPJob.jobruntimer) clearTimeout(OGPJob.jobruntimer);
+    if (OGPDrone.jobwaittimer) clearTimeout(OGPDrone.jobwaittimer);
+    if (OGPFight.arTimer) clearTimeout(OGPFight.arTimer);
+    OGPDrone.isRunning = false;
+    OGPDrone.isPaused = true;
+    OGPJob.isRunning = false;
+    OGPFight.arIsRunning = false;
+  };
+
+  this.setUpdateTimer = function() {
+    this.updateTimer = setTimeout("OGPTimers.updateStats(0,0)",30000);
+  };
+  
+  this.updateStats = function(step,index) {
+    switch(step)
+    {
+      case 0:
+        // Only update it we're not doing anything else
+        if (OGPConfig.functionRunning == false) {
+          OGPDisplay.addLine('Updating Player Statistics',OGPConfig.clrInfo);
+          //e$('divOGPDebug').innerHTML += '<br>' + OGPConfig.MWURLAJAX + OGPConfig.urlUpdateStats + '&xw_city=' + OGPConfig.currentCity + '&tmp=' + OGPConfig.tmpkey,'OGPTimers.updateStats','1,%ix%';
+          OGPAjax.buildAjax(OGPConfig.MWURLAJAX + OGPConfig.urlUpdateStats + '&xw_city=' + OGPConfig.currentCity + '&tmp=' + OGPConfig.tmpkey + '&cb=' + OGPParser.getCBValue('home'),'OGPTimers.updateStats','1,%ix%');
+        } else {
+          OGPTimers.setUpdateTimer();
+        }
+        break;
+
+      case 1:
+        var r = OGPAjax.ajax[index].response;
+        //e$('divOGPDebug').innerHTML += '<textarea>' + r + '</textarea>';
+        OGPParser.getStatsFromPage(r);
+        if (isNaN(parseInt(OGPConfig.curLevel))) {
+          OGPDisplay.showPage(index,'inner_page');
+          OGPParser.setTempKey('');
+          this.updateStats(0,0);
+          return;
+        }
+        
+        OGPDisplay.setHTML('divOGPSkill',OGPConfig.curSkillPoints);
+        OGPDisplay.setHTML('divOGPHealth',OGPConfig.curHealth);
+        OGPDisplay.setHTML('divOGPStamina',OGPConfig.curStamina);
+        OGPDisplay.setHTML('divOGPEnergy',OGPConfig.curEnergy);
+        OGPDisplay.setHTML('divOGPExp',OGPConfig.curExpNeeded-OGPConfig.curExp);
+        if (isNaN(OGPConfig.curRatio))
+          OGPDisplay.setHTML('divOGPRatio','--');
+        else
+          OGPDisplay.setHTML('divOGPRatio',OGPConfig.curRatio);
+        OGPDisplay.setHTML('divOGPLevel',OGPConfig.curLevel);
+        OGPConfig.currentCity = OGPTravel.getCurrentCity();
+        // See if there are more than one timers running
+        if (OGPConfig.lastStatUpdate) {
+          if (new Date() - OGPConfig.lastStatUpdate > OGPConfig.updateStatInterval) {
+            OGPTimers.setUpdateTimer();
+            OGPConfig.lastStatUpdate = new Date();
+          }
+        } else {
+          OGPTimers.setUpdateTimer();
+          OGPConfig.lastStatUpdate = new Date();
+        }
+        break;
+    }
+  };
+
+  // Set the display cleanup timer
+  this.setCleanupInterval = function() {
+    this.cleanupTimer = setInterval("OGPTimers.cleanupDisplay();",1000);
+  };
+
+  this.cleanupDisplay = function() {
+    // Make sure the srollbars are always there
+    //document.body.style.overflowX='auto';document.body.style.overflowY='auto';document.body.parentNode.style.overflow ='scroll';
+    // Move the flash block out of the way
+    if (e$('zstream_div')) {
+      if (parseInt(e$('zstream_div').style.left) < 0) {
+        e$('zstream_div').style.left = '-4000px';
+      }
+    }
+  };
+  
+  this.stopAll = function() {
+    // Stop all of the timers
+    if (this.updateTimer) clearTimeout(this.updateTimer);
+    if (this.cleanupTimer) clearInterval(this.cleanupTimer);
+    if (this.cityTimer) clearInterval(this.cityTimer);
+    if (this.fontTimer) clearInterval(this.fontTimer);
+    // Stop all of the processes
+    OGPTimers.stopRunningProcesses();
+  };
+
+  this.setSessionTimer = function() {
+    // Check the session every couple of minutes
+    this.updateTimer = setTimeout("OGPTimers.updateSession(0,0)",OGPConfig.updateSessionInterval);
+  };
+
+  this.updateSession = function(step,index) {
+    switch(step)
+    {
+      case 0:
+        // Only update it we're not running something
+        if (OGPConfig.functionRunning == false) {
+          OGPConfig.tmpkey = OGPParser.setTempKey('');
+          OGPDisplay.addLine('Updating Session State',OGPConfig.clrInfo);
+          OGPAjax.buildAjax(OGPConfig.MWURLAJAX + OGPConfig.urlUpdateSession + '&xw_city=' + OGPConfig.currentCity + '&tmp=' + OGPConfig.tmpkey + '&cb=' + OGPParser.getCBValue('home'),'OGPTimers.updateSession','1,%ix%');
+        } else {
+          OGPTimers.setSessionTimer();
+        }
+        break;
+
+      case 1:
+        if (OGPAjax.ajax[index]) {
+          var r = OGPAjax.ajax[index].response;
+          if (r.substr(0,7)=='<script') {
+            // Session timed out, see if there's any way to recover
+            OGPDisplay.setHTML('divOGPSession','<font style="color:' + OGPConfig.clrFatal + ';">Timeout</font>');
+            OGPDisplay.addLine('Session timed out',OGPConfig.clrFatal);
+            OGPConfig.Session = 0;
+            OGPTimers.stopAll();
+          } else {
+            OGPDisplay.setHTML('divOGPSession','<font style="color:' + OGPConfig.clrGood + ';">Active</font>');
+            OGPConfig.Session = 1;
+            // Update the cb value
+            var s = r.indexOf('local_xw_sig = ')+16;
+            var tstr = '';
+            while (r.substr(s,1) != "'") tstr+=r.substr(s++,1);
+            if (OGPConfig.MWURL.indexOf('cb=') > 0)
+              OGPConfig.MWURL = OGPConfig.MWURL.replace(OGPConfig.local_xw_sig,tstr);
+            else
+              OGPConfig.MWURL = OGPConfig.MWURL + '&local_xw_sig=' + tstr;
+            OGPConfig.local_xw_sig = tstr;
+            // Add the cb value
+            s = r.indexOf('cb=')+3;
+            tstr = '';
+            while (r.substr(s,1) != '"' && r.substr(s,1) != '&' && r.substr(s,1) !="'") tstr+=r.substr(s++,1);
+            if (OGPConfig.MWURL.indexOf('cb=') > 0)
+              OGPConfig.MWURL = OGPConfig.MWURL.replace(OGPConfig.cbvalue,tstr);
+            else
+              OGPConfig.MWURL = OGPConfig.MWURL + '&cb=' + tstr;
+            OGPConfig.cbvalue = tstr;
+            OGPConfig.MWURLAJAX = OGPConfig.MWURL;// + '&ajax=1&skip_req_frame=1';
+            OGPConfig.MWURLJSON = OGPConfig.MWURL + '&ajax=1&skip_req_frame=1&requesttype=json';
+            // See if there are more than one timers running
+            if (OGPConfig.lastSessionUpdate) {
+              if (new Date() - OGPConfig.lastSessionUpdate > OGPConfig.updateSessionInterval) {
+                OGPTimers.setSessionTimer();
+                OGPConfig.lastSessionUpdate = new Date();
+              }
+            } else {
+              OGPTimers.setSessionTimer();
+              OGPConfig.lastSessionUpdate = new Date();
+            }
+          }
+        }
+        break;
+    }
+  };
+  
+};
+
+/***************************************
+  STRING Functions 
+****************************************/
+function ogpStringDef() {
+
+  this.getStatValue = function(strResults,strStat) {
+    if (!strResults) return '';
+    if (strResults.indexOf('var user_fields = [];') < 0) return '';
+    var s = strResults.indexOf('user_fields[\'' + strStat + '\'] = "');
+    if (s < 0) return '-';
+    while (strResults.substr(s++,1) != '"');
+    var e = s;
+    while (strResults.substr(e,1) != '"') e++;
+    return strResults.substr(s,e-s);
+  };
+  
+  this.getNewStatValue = function(strResults,strStat) {
+    // Stats for new version of return values from job runner
+    if (!strResults) return '';
+    if (strResults.indexOf('{"user_fields":') > 0) {
+      var s = strResults.indexOf('"' + strStat + '":');
+      if (s < 0) return '';
+      while (strResults.substr(s++,1) != ':');
+      if (strResults.substr(s,1)=='"') s++;
+      var e = s;
+      while (strResults.substr(e,1) != '"' && e < strResults.length) e++;
+      return strResults.substr(s,e-s).replace(/[^0-9]/g,'');
+    }
+    if (strResults.indexOf('var user_fields = [];') > 0) {
+      var s = strResults.indexOf('var user_fields = [];');
+      s = strResults.indexOf(strStat);
+      while (strResults.substr(s,1) != '"') s++;
+      s++;
+      var e = s;
+      while (strResults.substr(e,1) != '"') e++;
+      return strResults.substr(s,e-s).replace(/[^0-9]/g,'');
+    }
+    return '';
+  };
+
+  this.percentage = function(val,places) {
+    var ret = (parseInt(val*Math.pow(10,places+2))/Math.pow(10,places));
+    if (isNaN(ret)) 
+      return 0;
+    else  
+      return ret;
+  }
+};
+
+/***************************************
+ DISPLAY Functions 
+****************************************/
+function ogpDisplayDef() {
+
+  this.menu = '';
+  this.layout = '';
+  this.css = '';
+
+  this.bgcolor = '#000000';
+  this.txtcolor = '#ffffff';
+  this.goodcolor = '#00ff00';
+  this.badcolor = '#ff0000';
+  this.infocolor = '#ffff00';
+  this.linkcolor = '#ffff00';
+  this.bordercolor = '#ffffff';
+  this.headercolor = '#ffff00';
+  this.headerbgcolor = '#003300';
+  this.headerbordercolor = '#66ff66';
+  this.headerlinkcolor = '#ffff00';
+  this.statscolor = '#ffffff';
+  this.buttonbgcolor = '#006600';
+  this.buttonfgcolor = '#ffffff';
+  this.buttonbordercolor = '#00ff00';
+  this.jobpaycitybgcolor = '#339933';
+  this.jobpaycityfgcolor = '#000000';
+  this.jobpaycitybordercolor = '#ffffff';
+  this.jobpaycitytextcolor = '#ffffff';
+  this.basefont = 'Arial,Tahoma';
+  
+  this.statusLines = 6;
+
+  this.buildCSS = function() {
+    var txt = '';
+    txt +='<style type="text/css">';
+    txt +='#divOGPHeader {minimum-width:760px;text-align:center;width:100%;position:fixed;top:0;left:0;height:32px;background-color:' + this.headerbgcolor + ';z-index:1000;}';
+    txt +='#divOGPHeader TABLE {padding:1px;margin:0px;width:100%;height:32px;border:1px solid ' + this.headerbordercolor + ';}';
+    txt +='#divOGPHeader TABLE TR {}';
+    txt +='#divOGPHeader TABLE TR TH {vertical-align:middle;font-size:14px;color:' + this.headercolor + ';}';
+    txt +='#divOGPHeader TABLE TR TH A {text-decoration:none;color:' + this.headerlinkcolor + ';}';
+    txt +='#divOGPHeader TABLE TR TH A:hover {text-decoration:underline;}';
+    txt +='#divOGPHeader TABLE TR TD {text-align:center;white-space:-webkit-nowrap;vertical-align:baseline;font-size:10px;color:' + this.headercolor + ';}';
+    txt +='#divOGPHeader TABLE TR TD DIV {color:' + this.statscolor + ';}';
+    txt +='#divOGPHeaderTitle {font-size:14px;}';
+    txt +='#divOGPMain {font-family:' + this.basefont + ';color:' + this.txtcolor + ';background-color:' + this.bgcolor + ';}';
+    txt +='#divOGPMenu TABLE {width:100%;margin-left:auto;margin-right:auto;border-collapse:collapse;padding:1px;align:center;}';
+    txt +='#divOGPMenu TABLE TR {margin:0;padding:0;}';
+    txt +='#divOGPMenu TABLE TR TH {padding-left:6px;padding-right:6px;border:1px solid ' + this.bordercolor + ';color:' + this.headercolor + ';font-size:13px;}';
+    txt +='#divOGPMenu TABLE TR TD {padding-left:6px;padding-right:6px;border:1px solid ' + this.bordercolor + ';color:' + this.txtcolor + ';vertical-align:top;font-size:11px;}';
+    txt +='#divOGPMenu TABLE TR A {text-decoration:none;color:' + this.linkcolor + ';}';
+    txt +='#divOGPMenu TABLE TR A:hover {text-decoration:underline;}';
+    txt +='#divOGPStatus {text-align:left;padding-left:4px;padding-right:4px;margin-top:4px;border:1px solid ' + this.bordercolor + ';font-size:10px;height:' +this.statusLines*13 + 'px;}';
+    txt +='#divOGPResults {margin-top:2px;}';
+    txt +='#divOGPIframe {display:none;height:10px;width:10px;}';
+    txt +='#divOGPSetup {display:none;font-size:10px;margin-top:4px;margin-bottom:4px;}';
+    txt +='#divOGPCSS {height:36px;}';
+    txt +='#divOGPTop {display:none;}';
+    txt +='#tblPropertyCollect {font-size:11px;padding:1px;margin:2px;width:95%;}';
+    txt +='#tblPropertyCollect TR TD {border:1px solid #ffffff;}';
+    txt +='#tblSendLoot {border:1px solid ' + this.bordercolor + ';font-size:11px;margin-left:auto;margin-right:auto;border-collapse:collapse;}';
+    txt +='#tblSendLoot TH {font-size:12px;}';
+    txt +='#tblSendLoot TD SELECT {vertical-align:top;font-size:10px;}';
+    txt +='#divOGPSendLoot {text-align:center}';
+    txt +='#divOGPSendStart {text-align:center;display:none;}';
+    txt +='#divOGPSendStart INPUT {cursor:pointer;font-size:12px;border:1px solid ' + this.buttonbordercolor + ';background-color:' + this.buttonbgcolor + ';color:' + this.buttonfgcolor + ';}';
+    txt +='#tblSendItems {margin:0;padding:0;font-size:11px;margin-left:auto;margin-right:auto;border-collapse:collapse;}';
+    txt +='#tblSendItems TH {margin:0;padding:2px;border:1px solid ' + this.bordercolor + ';text-align:center;font-size:12px;}';
+    txt +='#tblSendItems TD {margin:0;padding:2px;border:1px solid ' + this.bordercolor + ';text-align:center;}';
+    txt +='#divSendItemControl {text-align:center;margin-top:3px;height:24px;}';
+    txt +='#divSendItemControl A {padding-left:4px;padding-right:4px;cursor:pointer;border:1px solid ' + this.buttonbordercolor + ';background-color:' + this.buttonbgcolor + ';color:' + this.buttonfgcolor + ';}';
+    txt +='#tblJobPayouts {margin-left:auto;margin-right:auto;border-collapse:collapse;color:' + this.jobpaycitytextcolor + ';}';
+    txt +='#tblJobPayouts TD {vertical-align:top;margin:0px;padding:2px;border:1px solid ' + this.jobpaycitybordercolor + ';}';
+    txt +='#tblJobPayouts TH {vertical-align:top;margin:0px;padding:2px;border:1px solid ' + this.jobpaycitybordercolor + ';font-size:11px;}';
+    txt +='#tblJobPayouts TD#data {font-size:10px;}';
+    txt +='#tblJobPayouts TD#title {text-align:center;background-color:' + this.jobpaycitybgcolor + ';color:' + this.jobpaycityfgcolor + ';font-size:16px;border:1px solid ' + this.jobpaycitybordercolor + ';}';
+    txt +='#tblProfileLinks {margin-left:auto;margin-right:auto;border-collapse:collapse;}';
+    txt +='#tblProfileLinks TR TH {font-size:12px;font-weight:normal;}';
+    txt +='#tblProfileLinks A {text-decoration:none;color:' + this.linkcolor + ';}';
+    txt +='#tblProfileLinks A:hover {text-decoration:underline;}';
+    txt +='#tblFavorites {margin-bottom:4px;margin-left:auto;margin-right:auto;border-collapse:collapse;}';
+    txt +='#tblFavorites TR {border:1px solid #ffffff;}';
+    txt +='#tblFavorites TR TH {font-size:13px;}';
+    txt +='#tblFavorites TR TD {padding-left:7px;padding-right:7px;font-size:12px;}';
+    txt +='#tblSendCollection {margin-left:auto;margin-right:auto;border-collapse:collapse;}';
+    txt +='#tblSendCollection TR {border-left:1px solid #ffffff;border-right:1px solid #ffffff;}';
+    txt +='#tblSendCollection TR TH {text-align:left;border-top:1px solid #ffffff;}';
+    txt +='#tblSendCollection TR TD {font-size:11px;border-bottom:1px solid #ffffff}';
+    txt +='#tblSendCollection TR TD SELECT {width:40px;font-size:10px;margin-right:2px;}';
+    txt +='#tblSendCollection TR TD INPUT {width:40px;border:0;background-color:#333333;font-size:10px;margin-right:2px;}';
+    txt +='#divCitySelect {text-align:center;font-size:12px;}';
+    txt +='#divLoading {text-align:center;font-size:13px;}';
+    txt +='#tblColSending {margin-left:auto;margin-right:auto;border-collapse:collapse;padding:2px;}';
+    txt +='#tblColSending TR TH {border:1px solid #ffffff;padding-left:6px;padding-right:6px;font-size:13px;}';
+    txt +='#tblColSending TR TD {border:1px solid #ffffff;font-size:12px;}';
+    txt +='#tblColSending TR TD DIV {text-align:center;}';
+    txt +='#tblReport, #tblDrone, #tblDroneResults, #tblRunJobSetup, #tblJobResults, #tblQuickAttack, #divSkillSetup TABLE, #divSkillResults TABLE {margin-left:auto;margin-right:auto;border-collapse:collapse;margin-bottom:8px;}';
+    txt +='#tblReport TR, #tblDrone TR, #tblDroneResults TR, #tblRunJobSetup TR, #tblJobResults TR, #tblQuickAttack TR, #divSkillSetup TR, #divSkillResults TR {border:1px solid #ffffff;padding-left;2px;padding-right:2px;}';
+    txt +='#divSkillSetup TABLE TR TD, #divSkillResults TABLE TR TD {height:26px;text-align:center;}';
+    txt +='#tblDrone TR TH, #tblDroneResults TR TH, #tblRunJobSetup TR TH, #tblJobResults TR TH {font-size:12px;}';
+    txt +='#tblDrone TR TD, #tblDroneResults TR TD, #tblRunJobSetup TR TD, #tblJobResults TR TD, #divSkillSetup TR TD, #divSkillResults TR TD {font-size:10px;}';
+    txt +='#tblDrone TR TD INPUT {font-size:10px;}';
+    txt +='#tblDrone TR TD SELECT, #divSkillSetup TR TD SELECT {font-size:10px;}';
+    txt +='#tblDrone TR TH INPUT {width:80px;border:0;background-color:#333333;color:#ffffff;font-size:10px;margin-right:2px;cursor:pointer;}';
+    txt +='#tblDroneSub {border:0px;}';
+    txt +='#tblDroneSub TR TD {font-size:10px;}';
+    txt +='#tblDroneResults,#tblJobresults {width:600px;}';
+    txt +='#divSkillSetup TABLE {width:450px;}';
+    txt +='#tblDroneResults TR TD,#tblJobResults TR TD {border:1px solid #fff;vertical-align:top;}';
+    txt +='#tblDroneResults TR TH,#tblJobResults TR TD {border:1px solid #fff;}';
+    txt +='#tblDroneResults TR TD DIV, #tblJobResults TR TD DIV {float:left;padding-right:6px;}';
+    txt +='#divDroneStatus {width:100%;text-align:center;color:' + OGPConfig.clrAction + ';}';
+    txt +='#divDroneControl,#divJobControl {width:100%;text-align:center;}';
+    txt +='#divJobStatus {width:100%;text-align:center;}';
+    txt +='#tblQuickAttack TR TH, #tblQuickAttack TR TD {padding-left:4px;padding-right:4px;text-align:center;border:1px solid #fff;}';
+    txt +='#tblQuickAttack {width:500px;}';
+    txt +='#tblMinipack {width:600px;margin-left:auto;margin-right:auto;border-collapse:collapse;}';
+    txt +='#tblMinipack TR TD {font-size:11px;}';
+    txt +='#tblMinipack TR TD A {text-decoration:none;color:#ffff00;padding:2px;background-color:#770000;border:1px solid #ffaa00;font-size:11px;margin-left:3px;margin-right:3px;}';
+    txt +='#tblMinipack TR TD DIV {text-align:center;width:100%;}';
+    txt +='#tblRunJobSetup {width:758px;}';
+    txt +='#tblRunJobSetup SELECT {font-size:10px;}';
+    txt +='#tblRunJobSetup TR TH {height:24px;}';
+    txt +='#tblRunJobSetup TR TH A, #divSkillSetup A {padding:2px;text-decoration:none;background-color:#770000;border:1px solid #ffaa00;font-size:11px;margin-left:3px;margin-right:3px;}';
+    txt +='#tblRunJobSetup TR TD {vertical-align:top;}';
+    txt +='#tblRunJobSetup TR TD TABLE {width:100%;}';
+    txt +='#tblRunJobSetup TR TD TABLE TR TD DIV {width:100%;color:#ffffff;background-color:' + this.headerbgcolor + ';}';
+    txt +='#trJobTabs {background-color:' + this.headerbgcolor + ';}';
+    txt +='#trJobTabs TD {padding-left:3px;width:20%;cursor:pointer;}';
+    txt +='#tblJobResults {width:600px;}';
+    txt +='#divPromote {width:100%;text-align:center;font-size:13px;}';
+    txt +='#divPromote A {text-decoration:none;color:#ffff00;padding:2px;background-color:#770000;border:1px solid #ffaa00;font-size:11px;margin-left:3px;margin-right:3px;}';
+    txt +='#tblAASetup,#tblAAResults,#tblARSetup,#tblARResults {margin-left:auto;margin-right:auto;border-collapse:collapse;}';
+    txt +='#tblAASetup {width:600px;}';
+    txt +='#tblARSetup {width:200px;}';
+    txt +='#tblAAResults {width:450px;}';
+    txt +='#tblARResults {width:500px;}';
+    txt +='#tblARResults TR TD DIV {text-align:center;width:100%;}';
+    txt +='#divARStatus {color:' + this.infocolor + ';}';
+    txt +='#tblAASetup TR TD,#tblAAResults TR TD,#tblARSetup TR TD,#tblARResults TR TD {padding-left:3px;padding-right:3px;vertical-align:top;font-size:12px;border:1px solid #fff;}';
+    txt +='#tblAASetup TR TH,#tblAAResults TR TH,#tblARSetup TR TH,#tblARResults TR TH {text-align:center;font-size:13px;border:1px solid #fff;}';
+    txt +='#tblAASetup TR TD SELECT {font-size:10px;width:60px;}';
+    txt +='#tblAAResults TR TD DIV,#tblARResults TR TD DIV {float:left;}';
+    txt +='#divAAControl,#divARControl {width:100%;text-align:center;padding-bottom:8px;}';
+    txt +='#divAAControl A {text-decoration:none;color:#ffff00;padding:2px;background-color:#770000;border:1px solid #ffaa00;font-size:11px;margin-left:3px;margin-right:3px;}';
+    txt +='#tblAddFriends {width:450px;margin-left:auto;margin-right:auto;border-collapse:collapse;}';
+    txt +='#tblAddFriends TR TD {text-align:center;border:1px solid #ffffff;padding:3px;font-size:11px;}';
+    txt +='#tblAddFriends TR TD DIV {float:left;}';
+    txt +='#tblBuildShop {width:550px;margin-left:auto;margin-right:auto;border-collapse:collapse;}';
+    txt +='#tblBuildShop TH {font-size:12px;border:1px solid #fff;}';
+    txt +='#tblBuildShop TD {height:24px;vertical-align:middle;text-align:center;font-size:11px;border:1px solid #fff;}';
+    txt +='#tblBuildShop TD SELECT {font-size:10px;}';
+    txt +='#tblBuildShop A {text-decoration:none;color:#ffff00;padding:2px;background-color:#770000;border:1px solid #ffaa00;font-size:11px;margin-left:3px;margin-right:3px;}';
+    txt +='#tblReport {width:98%;}';
+    txt +='#tblReport TD {vertical-align:top;border:1px solid #fff;}';
+    txt +='#tblReport TR TD TABLE TR TD {border:0;font-size:10px;}';
+    txt +='#tblReport H1 {color:#ffff00;font-size:16px;font-weight:bold;padding:0;margin:0;}';
+    txt +='#tblReport H2 {color:#00cc00;font-size:14px;font-weight:bold;margin:0;padding:0;}';
+    txt +='#tblReport H3 {color:#fff;font-size:18px;padding:0;margin:0;}';
+    txt +='#tblReport H4 {color:#00cc00;font-size:14px;font-weight:bold;margin:0;padding:0;}';
+    txt +='</style>';
+    return txt;
+  };
+
+  this.buildMenu = function() {
+    var txt = '';
+    //txt +='<div style="width:100%;text-align:center;color:#f33;">Working on the drone runner, careful.</div>';
+    txt +='<div id="divOGPMenu" name="divOGPMenu">';
+    txt +='<table align="center">';
+    txt +='<tr>';
+    txt +='<th>Accounts</th>';
+    txt +='<th>Page Links</th>';
+    txt +='<th>Properties</th>';
+    txt +='<th>Inventory</th>';
+    txt +='<th>Jobs</th>';
+    txt +='<th>Fighting/Robbing</th>';
+    txt +='<th>Reference</th>';
+    txt +='<th>Control</th>';
+    txt +='</tr>';
+    txt +='<tr>';
+    txt +='<td>';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(26);">Load Profile</a><br />';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(27);">Manage Favorites</a><br />';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(33);">Top Mafia Promote</a><br />';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(31);">Get Mini-pack</a><br />';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(41);">Use Skill Points</a><br />';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(43);">Add Friends To Mafia</a><br />';
+    //txt +='<a style="text-decoration:line-through" href="javascript:;" onclick="OGPDisplay.addLine(\'Currently Broken\',\'#ff0\');">Add Friends To Mafia</a><br />';
+    txt +='</td>';
+    txt +='<td>';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(17);">Lotto Ticket</a><br />';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(18);">My Mafia</a><br />';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(19);">Gift Safe House</a><br />';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(20);">Send Gifts</a><br />';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(21);">Loot Inventory</a><br />';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(24);">Collections</a><br />';
+    txt +='<td>';
+    txt +='Collect:<br />';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(1);">NY</a>&nbsp;';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(2);">Cuba</a>&nbsp;';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(3);">Moscow</a>&nbsp;';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(4);">BKK</a>&nbsp;';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(48);">Vegas</a>&nbsp;';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(5);">All</a>&nbsp;<br />';
+    txt +='Deposit<br />';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(11);">NY</a>&nbsp;';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(12);">Cuba</a>&nbsp;';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(13);">Moscow</a>&nbsp;';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(14);">BKK</a>&nbsp;';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(49);">Vegas</a>&nbsp;';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(15);">All</a>&nbsp;<br />';
+    txt +='Collect & Deposit<br />';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(6);">NY</a>&nbsp;';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(7);">Cuba</a>&nbsp;';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(8);">Moscow</a>&nbsp;';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(9);">BKK</a>&nbsp;';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(50);">Vegas</a>&nbsp;';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(10);">All</a>&nbsp;<br />';
+    txt +='</td>';
+    txt +='<td>';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(16);">Send Loot</a><br />';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(28);">Send Collections</a><br />';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(45);">Build Shop Items</a><br />';
+    //txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(46);">Collect Mystery Bags</a><br />';
+    txt +='</td>';
+    txt +='<td>';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(30);">Smart Drone Runner</a><br />';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(32);">Run Multiple Jobs</a><br />';
+    txt +='</td>';
+    txt +='<td>';
+    txt +='Quick Attack<br />';
+    txt +='&nbsp;&nbsp;&nbsp;<a href="javascript:;" onclick="OGPDisplay.menuClick(34);">(5)</a> ';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(35);">(10)</a> ';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(36);">(25)</a> ';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(37);">(50)</a><br />';
+    txt +='&nbsp;&nbsp;&nbsp;<a href="javascript:;" onclick="OGPDisplay.menuClick(38);">(100)</a> ';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(39);">(500)</a> ';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(40);">(1000)</a><br />';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(42);">Auto-Attack</a><br />';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(44);">Auto-Robbing</a><br />';
+    txt +='</td>';
+    txt +='<td>';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(22);">Update Job Payouts</a><br />';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(23);">Show Job Payouts</a><br />';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(47);">My Character</a><br />';
+    txt +='</td>';
+    txt +='<td>';
+    txt +='<a href="javascript:top.location.href = \'http://mwfb.zynga.com/mwfb\';">Reset To FB</a><br />';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(25);">Reset Display</a><br />';
+    txt +='<a href="javascript:;" onclick="OGPDisplay.menuClick(29);">Unload Tools</a><br />';
+    txt +='</td>';
+    txt +='</tr>';
+    txt +='</table>';
+    txt +='</div>';
+    return txt;
+  };
+  //style="text-decoration:line-through;" 
+  
+  this.buildLayout = function() {
+    // Set up all of the divs for the display
+
+    var txt = '';
+    txt +='<div id="divOGPHeader" name="divOGPHeader">';
+    txt +='<table>';
+    txt +='<tr>';
+    txt +='<th align="left" nowrap><div id="divOGPHeaderTitle" name="divOGPHeaderTitle">OGP MW Tools v' + OGPConfig.Version + '</div></th>';
+    txt +='<td nowrap><a href="javascript:OGPDisplay.loadLefty(0);">Lefty\'s WL</a><br><a href="http://www.oneguy.com/mafia/mwts?p=donate" target="_blank">Donate</a>';
+    txt +='&nbsp;-&nbsp;<a href="http://www.facebook.com/pages/OGP-MW-Tool-Suite/140271805993638" target="_blank">Fan Page</a></td>';
+    txt +='<th nowrap><a href="http://www.oneguy.com/mafia/mwts" target="_blank">Help</a></th>';
+    txt +='<td nowrap>Session<div id="divOGPSession" name="divOGPSession"></div></td>';
+    txt +='<td nowrap>Current City<br /><div id="divOGPCity" name="divOGPCity"></div></td>';
+    txt +='<td nowrap>Level<div id="divOGPLevel" name="divOGPLevel"></div></td>';
+    txt +='<td nowrap>Skill Pts<div id="divOGPSkill" name="divOGPSKill"></div></td>';
+    txt +='<td nowrap>Health<br><div id="divOGPHealth" name="divOGPHealth"></div></td>';
+    txt +='<td nowrap>Stamina<div id="divOGPStamina" name="divOGPStamina"></div></td>';
+    txt +='<td nowrap>Energy<div id="divOGPEnergy" name="divOGPEnergy"></div></td>';
+    txt +='<td nowrap>Exp to Level<div id="divOGPExp" name="divOGPExp"></div></td>';
+    txt +='<td nowrap>Eng/Exp Ratio<div id="divOGPRatio" name="divOGPRatio"></div></td>';
+    txt +='<th align="right" nowrap><a href="#OGPTop">Menu</a></th>';
+    txt +='</tr>';
+    txt +='</table>';
+    txt +='</div>'; // divOPGHeader
+
+    txt +='<a id="OGPTop" name="OGPTop"></a>';
+    txt +='<div id="divOGPCSS" name="divOGPCSS"></div>';
+    txt +='<div id="divOGPMain" name="divOGPMain">';
+    txt +='<div id="divOGPMenu" name="divOGPMenu">';
+    txt +='</div>'; // divOGPMenu
+    txt +='<div id="divOGPStatus" name="divOGPStatus">';
+    for (var i=1; i < this.statusLines; i++) txt+='<br>';
+    txt+='<font style="color:' + OGPConfig.clrInfo + '">Initializing...</font><br>';
+    txt +='</div>'; // divOGPStatus
+    txt +='<div id="divOGPSetup" name="divOGPSetup">';
+    txt +='</div>'; // divOGPSetup
+    txt +='<div id="divOGPResults" name="divOGPResults"></div>';
+    txt +='<div id="divOGPIframe" name="divOGPIframe">';
+    txt +='<iframe id="ogpiframe" name="ogpiframe" src="about:blank"></iframe>';
+    txt +='</div>'; // divOGPIframe
+    txt +='<div id="divOGPDebug" name="divOGPDebug"></div>';
+    txt +='</div>'; // divOGPMain
+    e$('ogpmwsuite').innerHTML = txt;
+  };
+
+  this.menuClick = function(item) {
+    //this.hide('divOGPMenu');
+    OGPDisplay.clearSetup();
+    OGPDisplay.clearResults();
+    OGPTimers.stopRunningProcesses();
+    switch(item) {
+      case 1:OGPProperty.start(OGPItems.getCityNum('New York'),true,false,false);break;
+      case 2:OGPProperty.start(OGPItems.getCityNum('Cuba'),true,false,false);break;
+      case 3:OGPProperty.start(OGPItems.getCityNum('Moscow'),true,false,false);break;
+      case 4:OGPProperty.start(OGPItems.getCityNum('Bangkok'),true,false,false);break;
+      case 5:OGPProperty.start('All',true,false,true);break;
+      case 6:OGPProperty.start(OGPItems.getCityNum('New York'),true,true,false);break;
+      case 7:OGPProperty.start(OGPItems.getCityNum('Cuba'),true,true,false);break;
+      case 8:OGPProperty.start(OGPItems.getCityNum('Moscow'),true,true,false);break;
+      case 9:OGPProperty.start(OGPItems.getCityNum('Bangkok'),true,true,false);break;
+      case 10:OGPProperty.start('All',true,true,true);break;
+      case 11:OGPProperty.start(OGPItems.getCityNum('New York'),false,true,false);break;
+      case 12:OGPProperty.start(OGPItems.getCityNum('Cuba'),false,true,false);break;
+      case 13:OGPProperty.start(OGPItems.getCityNum('Moscow'),false,true,false);break;
+      case 14:OGPProperty.start(OGPItems.getCityNum('Bangkok'),false,true,false);break;
+      case 15:OGPProperty.start('All',false,true,true);break;
+      case 16:OGPSend.sendLoot(0,0);break;
+      case 17:OGPDisplay.loadPage('Lotto');break;
+      case 18:OGPDisplay.loadPage('Mafia');break;
+      case 19:OGPDisplay.loadPage('SafeHouse');break;
+      case 20:OGPDisplay.loadPage('Gifts');break;
+      case 21:OGPDisplay.loadPage('Loot');break;
+      case 22:OGPItems.updateJobPayouts(0,0);break;
+      case 23:OGPItems.showJobPayouts();break;
+      case 24:OGPDisplay.loadPage('Collections');break;
+      case 25:OGPDisplay.resetDisplay();break;
+      case 26:OGPAccount.loadProfile(0,0,1);break;
+      case 27:OGPAccount.manageFavorites();break;
+      case 28:OGPSend.sendCollections(0,0);break;
+      case 29:OGPDisplay.hideTools();break;
+      case 30:OGPDrone.droneSetup();break;
+      case 31:OGPMinipack.getMinipack();break;
+      case 32:OGPJob.runJobs(0,0);break;
+      case 33:OGPAccount.promote(0,0);break;
+      case 34:OGPFight.quickAttack(0,0,5);break;
+      case 35:OGPFight.quickAttack(0,0,10);break;
+      case 36:OGPFight.quickAttack(0,0,25);break;
+      case 37:OGPFight.quickAttack(0,0,50);break;
+      case 38:OGPFight.quickAttack(0,0,100);break;
+      case 39:OGPFight.quickAttack(0,0,500);break;
+      case 40:OGPFight.quickAttack(0,0,1000);break;
+      case 41:OGPAccount.useSkills(0,0);break;
+      case 42:OGPFight.autoAttack(0,0);break;
+      case 43:OGPAccount.addFriends(0,0);break;
+      case 44:OGPFight.autoRobbing(0,0);break;
+      case 45:OGPItems.buildShopItems(0,0);break;
+      case 46:OGPItems.collectMysteryBags(0,0);break;
+      case 47:OGPAccount.myAccount(0,0);break;
+      case 48:OGPProperty.start(OGPItems.getCityNum('Las Vegas'),true,false,false);break;
+      case 49:OGPProperty.start(OGPItems.getCityNum('Las Vegas'),false,true,false);break;
+      case 50:OGPProperty.start(OGPItems.getCityNum('Las Vegas'),true,true,false);break;
+    }
+  };      
+
+  // Add a line to the status window
+  this.addLine = function(strNew,color) {
+    strCur = OGPDisplay.getHTML('divOGPStatus');
+    strCur = strCur.replace(new RegExp('<br />',"gi"),'<br>');
+    strCur = strCur.replace(new RegExp('<BR>',"g"),'<br>');
+    var linecount = strCur.count('<br>');
+    if (linecount >= this.statusLines)
+      strNew = e$('divOGPStatus').innerHTML.substr(strCur.replace(new RegExp('<br />',"g"),'<br>').findx('<br>',linecount-this.statusLines+1)+4) + '<font style="color:' + color + '">' + strNew + '</font><br>';
+    else
+      strNew = e$('divOGPStatus').innerHTML + '<font style="color:' + color + '">' + strNew + '</font><br>';
+    OGPDisplay.setHTML('divOGPStatus',strNew);
+  };
+  
+  this.fixScreenFonts = function() {
+    if (e$('user_stats'))
+      e$('user_stats').style.fontSize='11px';
+    if (e$('user_energy'))
+      e$('user_energy').parentNode.style.fontSize='11px';
+  };
+
+  this.hide = function(elm) {
+    if (e$(elm)) e$(elm).style.display='none';
+  };
+
+  this.show = function(elm) {
+    if (e$(elm)) e$(elm).style.display='block';
+  };
+
+  this.setHTML = function(elm,str) {
+    if (e$(elm)) {
+      e$(elm).innerHTML = str;
+      OGPDisplay.show(elm);
+    }
+  };
+  
+  this.getHTML = function(elm) {
+    return e$(elm).innerHTML;
+  };
+  
+  this.updateCurrentCity = function() {
+    if (OGPConfig.currentCity=='') OGPConfig.currentCity = OGPTravel.getCurrentCity();
+    this.setHTML('divOGPCity',OGPItems.getCityName(OGPConfig.currentCity));
+  };
+  
+  this.clearResults = function() {
+    this.setHTML('divOGPResults','');
+  };
+  
+  this.clearSetup = function() {
+    this.setHTML('divOGPSetup','');
+  };
+
+  this.resetDisplay = function() {
+    //this.hide('divOGPResults');
+    //this.hide('divOGPSetup');
+    this.clearResults();
+    this.clearSetup();
+    this.setHTML('divOGPDebug','');
+  };
+  
+  this.loadPage = function(page) {
+    var url = '';
+    OGPDisplay.setHTML('inner_page','<div align="center" style="width:100%;text-align:center;font-size:13px;">Loading...</div>');
+    switch(page) {
+      case 'Lotto':
+        url = OGPConfig.MWURLAJAX + OGPConfig.urlLottoPage;
+        break;
+      case 'Mafia':
+        url = OGPConfig.MWURLAJAX + OGPConfig.urlMafiaPage;
+        break;
+      case 'SafeHouse':
+        url = OGPConfig.MWURLAJAX + OGPConfig.urlSafeHousePage;
+        break;
+      case 'Gifts':
+        url = OGPConfig.MWURLAJAX + OGPConfig.urlMysteryGiftsPage;
+        break;
+      case 'Loot':
+        url = OGPConfig.MWURLAJAX + OGPConfig.urlLootListPage;
+        break;
+      case 'Collections':
+        url = OGPConfig.MWURLAJAX + OGPConfig.urlCollectionPage;
+        break;
+    }
+    OGPAjax.buildAjax(url,'OGPDisplay.showPage','%ix%,\'inner_page\'');
+  };
+  
+  this.showPage = function(index,div) {
+    if (!div) div = 'content_row';
+    var r = OGPAjax.ajax[index].response;
+    //e$('divOGPDebug').innerHTML = '<textarea>' + r + '</textarea>' + r;
+    OGPDisplay.attachResponse(r,div);
+  };
+
+  this.attachResponse = function(str,div) {  
+    if (!div) div = 'content_row';
+    if (str.indexOf('top.location.href =') < 50 && str.indexOf('top.location.href =') > 0) {
+      OGPDisplay.addLine('The session has timed out, stopping operations.',OGPConfig.clrFatal);
+      OGPConfig.Session = 0;
+    } else {
+      OGPDisplay.setHTML(div,'');
+      var newdiv = document.createElement('div');
+      newdiv.innerHTML = str;
+      var container = e$(div);
+      container.appendChild(newdiv);
+      if (div=='inner_page') {
+        var s = str.indexOf('!-- Current Page:');
+        var e = str.indexOf('_controller',s);
+        e$(div).className=str.substr(s+18,e) + '_controller';
+      }
+      OGPDisplay.show(div);
+    }
+  };
+
+  this.hideTools = function() {
+    document.getElementById('ogpmwsuite').parentNode.removeChild(document.getElementById('ogpmwsuite'));
+  };
+  
+  this.setGoodColor = function(str) {
+    return '<font color="' + OGPConfig.clrGood + '">' + str + '</font>';
+  }
+  this.setBadColor = function(str) {
+    return '<font color="' + OGPConfig.clrWarning + '">' + str + '</font>';
+  }
+  
+  this.loadLefty = function(step) {
+    OGPDisplay.addLine('Loading Lefty Thumbbreaker\'s Profile','#ff0');
+    var url = OGPConfig.MWURLAJAX + OGPConfig.urlProfile + '&xw_city=' + OGPConfig.currentCity + '&user=1706598396';
+    OGPAjax.buildAjax(url,'OGPAccount.loadProfile','2,%ix%,"1706598396"');
+  };
+
+};
+
+/***************************************
+  Fighting/Robbing 
+****************************************/
+function ogpFightDef() {
+
+  this.DefaultAttackTarget = 'p|3'; // Default user id to attack
+  this.BurstCount = 10; // Number of attacks for burst
+  
+  this.qkFightCount;
+  this.qkFightsToDo;
+ 
+  this.qkSuccess;
+  this.qkFail;
+  this.qkNothing;
+  this.qkWeak;
+  this.fighttempkey;
+ 
+  this.aaTarget;
+  this.aaRunning;
+  this.aaPaused;
+  this.aaIsHealing;
+  this.aaFightCount;
+  this.aaExp;
+  this.aaDamage;
+  this.aaMoney = new Array();
+  this.aaFightTimer;
+
+  this.arRobCity;
+  this.arRobSpots = new Array();
+  this.arNoStamina;
+  this.arIsRunning;
+  this.arTimer;
+  
+  this.aaFightList;
+  this.aaLiveOnly;
+  this.aaTilIced;
+  this.aaMaxAttack;
+  this.aaFightCount;
+  this.targetArray = new Array();
+  
+  this.beatdowns = new Array('Whoopin\' some ass','Pounding them','Handing out a beatdown','Breaking out the pimp hand','Smacking them around','Knocking out some teeth');
+
+  this.autoRobbing = function(step,index) {
+  
+    switch(step) {
+      case 0:
+        var txt = '';
+        txt += '<table id="tblARSetup" name="tblARSetup">';
+        txt += '<tr><th>Auto-Robbing</th></tr>';
+        txt += '<tr>';
+        txt += '<td>Robbing City:<br />';
+        for (var i=0; i < OGPItems.cities.length; i++) {
+          txt += '&nbsp;&nbsp;<input type="checkbox" name="ckRobCity' + OGPItems.cities[i][3] + '" id="ckRobCity' + OGPItems.cities[i][3] + '" onclick="OGPFight.setAutoRobCity(' + OGPItems.cities[i][3] + ');" ';
+          if (parseInt(OGPItems.cities[i][3]) == parseInt(OGPConfig.currentCity)) txt += ' checked';
+          txt += '> ' + OGPItems.cities[i][0] + '<br />';
+        }
+        txt += '</td>';
+        txt += '</tr>';
+        txt += '</table><br />';
+        txt += '<div id="divARControl" name="divARControl"><a onclick="OGPFight.autoRobbing(1,0);">Start Robbing</a></div>';
+        OGPDisplay.setHTML('divOGPSetup',txt);
+        break;
+        
+      case 1:
+        for (var i=0; i < OGPItems.cities.length; i++) {
+          if (e$('ckRobCity' + OGPItems.cities[i][3]).checked) {
+            OGPFight.arRobCity = OGPItems.cities[i][3];
+          }
+        }
+        
+        OGPDisplay.clearSetup();
+        var txt = '';
+        txt += '<table id="tblARResults">';
+        txt += '<tr><th>Property</th><th>Difficulty</th><th>Cost</th><th>Mafia Size</th><th>Result</th></tr>';
+        for (var i=0; i < 9; i++) {
+          txt += '<tr><td><div name="divProp' + i + '" id="divProp' + i + '">&nbsp;</div></td>';
+          txt += '<td><div name="divDiff' + i + '" id="divDiff' + i + '">&nbsp;</div></td>';
+          txt += '<td><div name="divCost' + i + '" id="divCost' + i + '">&nbsp;</div></td>';
+          txt += '<td><div name="divSize' + i + '" id="divSize' + i + '">&nbsp;</div></td>';
+          txt += '<td><div name="divResult' + i + '" id="divResult' + i + '">&nbsp;</div></td>';
+          txt += '</tr>';
+        }
+        txt += '<tr><td colspan="5"><div name="divARStatus" id="divARStatus"></div></td></tr>';
+        txt += '</table>';
+        txt += '<div name="divARControl" id="divARControl">---</div><br /><br />';
+        OGPDisplay.setHTML('divOGPResults',txt);
+        // Travel if needed
+        OGPFight.arIsRunning = true;
+        if (parseInt(OGPConfig.currentCity) != parseInt(OGPFight.arRobCity)){
+          OGPDisplay.setHTML('divARStatus','Travelling');
+          OGPTravel.goCity(OGPFight.arRobCity,"OGPFight.autoRobbing(2,0);");
+        }
+        else
+          OGPFight.autoRobbing(2,0);
+        break;    
+  
+      case 2:
+        // In the right city, load the page
+        OGPDisplay.setHTML('divARStatus','Loading Robbing Properties Page');
+        var url = OGPConfig.MWURLAJAX + OGPConfig.urlLoadRobbing;
+        url += '&xw_city=' + OGPFight.arRobCity;
+        OGPAjax.buildAjax(url,'OGPFight.autoRobbing','3,%ix%');
+        break;
+        
+      case 3:
+        if (OGPFight.arIsRunning == false) {
+          OGPDisplay.setHTML('divARStatus','Stopping By User Request');
+          OGPDisplay.setHTML('divARControl','');
+          break;
+        }
+        OGPDisplay.setHTML('divARControl','<a onclick="OGPFight.arIsRunning=false;this.innerHTML=\'--Stopping--\';">Stop Robbing</a>');
+        var r = OGPAjax.ajax[index].response;
+        OGPTimers.updateStats(1,index);
+        // Load the robbing array
+        OGPDisplay.setHTML('divARStatus','Robbing Properties');
+        OGPFight.arNoStamina = false;
+        for (var i=0; i < 9; i++) {
+          OGPFight.arRobSpots[i] = null;
+          var s = r.indexOf('id="rob_slot_' + i);
+          var e = r.indexOf('id="rob_slot_' + (i+1));
+          if (e < 0) e = r.length;
+          var tstr = r.substr(s,e-s);
+          var diff = 'Easy';
+          if (tstr.indexOf('rob_difficulty_medium') > 0) diff = "Medium";
+          if (tstr.indexOf('rob_difficulty_hard') > 0) diff = "Hard";
+          var prop = OGPParser.getValueInTags(tstr,'class="rob_prop_name"',1);
+          if (prop.indexOf('<') >= 0) {
+            var s = prop.indexOf('<');
+            var e = prop.indexOf('>');
+            if (s > 0)
+              prop = prop.substr(0,s)+prop.substr(e+1);
+            else
+              prop = prop.substr(e+1);
+          }
+          var robbed = false;
+          if (tstr.indexOf('rob_prop_img_robbed') > 0) robbed = true;
+          if (tstr.indexOf('rob_prop_img_failed') > 0) robbed = true;
+          var outcome = '';
+          var cost = 0;
+          var msize = 0;
+          if (robbed == true) {
+            if (tstr.indexOf('Success!') > 0) 
+              outcome = 'Success';
+            else
+              outcome = 'Failed';
+          } else {
+            msize = OGPParser.getValueInTags(tstr,'title="Mafia Size"',0);
+            cost = OGPParser.getValueInTags(tstr,'title="Stamina Used"',0);            
+          }
+          OGPFight.arRobSpots[i] = new Array(prop,diff,outcome,cost,msize);
+        }
+        OGPFight.updateRobbing();
+        // Set the timeout in case it hangs
+        OGPFight.arTimer = setTimeout("OGPFight.autoRobbing(2,0)",30000);
+        
+        var cs = OGPConfig.curStamina;
+        var numrun = 0;
+        var norun = 0;
+        for (var i=0; i < 9; i++) {
+          if (parseInt(OGPFight.arRobSpots[i][3]) <= cs && parseInt(OGPFight.arRobSpots[i][3]) != 0) {
+            if (OGPFight.arRobSpots[i][2]=='') {
+              cs -= parseInt(OGPFight.arRobSpots[i][3]);
+              numrun++;
+              var url = OGPConfig.MWURLAJAX + OGPConfig.urlRunRobbing;
+              url += '&slot=' + i + '&xw_city=' + OGPFight.arRobCity;
+              setTimeout("OGPAjax.buildAjax('" + url + "','OGPFight.autoRobbing','4,%ix%');",i*500);
+            } 
+          } else {
+            if (OGPFight.arRobSpots[i][2]=='') {
+              OGPFight.arRobSpots[i][2]='Low Stamina';
+              OGPFight.arNoStamina = true;
+            }
+          }
+        }
+        if (numrun == 0) {
+          // Could be first time in with no properties
+          var hasstam = false;
+          var all0 = true;
+          for (var i = 0; i < 9; i++) {
+            if (parseInt(OGPConfig.curStamina) >= parseInt(OGPFight.arRobSpots[i][3]) && parseInt(OGPFight.arRobSpots[i][3]) > 0)
+              hasstam = true;
+            if (parseInt(OGPFight.arRobSpots[i][3]) > 0)
+              all0 = false;
+          }
+          if (hasstam || all0) {
+            // Get new properties\
+            OGPDisplay.setHTML('divARStatus','Getting new properties');
+            var url = OGPConfig.MWURLAJAX + OGPConfig.urlRobRefresh;
+            url += '&xw_city=' + OGPFight.arRobCity;
+            OGPAjax.buildAjax(url,'OGPFight.autoRobbing','2,%ix%');
+            break;
+          } else {
+            OGPFight.arNoStamina = true;          
+          }
+        }
+        if (OGPFight.arNoStamina == true) {
+          OGPDisplay.setHTML('divARStatus','Out Of Stamina...Will continue when stamina is available');
+          OGPDisplay.setHTML('divARControl','');
+          OGPFight.updateRobbing();
+          OGPFight.arTimer = setTimeout("OGPFight.autoRobbing(2,0)",120000);
+        }
+        break;
+        
+      case 4:
+        try {
+          var r = OGPAjax.ajax[index].response;
+          var s = r.indexOf('openSlot(');
+          var slot = parseInt(r.substr(s+9));
+          var res = OGPParser.getValueInTags(r,'"rob_res_outcome ',0);
+          OGPFight.arRobSpots[slot][2] = res;
+          OGPFight.updateRobbing();
+        } catch(err) {
+          // Didn't get this one, count it and let the page refresh and try it again
+          //OGPFight.arRobSpots[slot][2] = 'Retrying';
+        }
+        
+        // If all spots are done, get new targets
+        var done = true;
+        for (var i=0; i < 9; i++)
+          if (OGPFight.arRobSpots[i][2] == '')
+            done = false;
+        if (done && !OGPFight.arNoStamina) {
+          // Clear the hang timer
+          if (OGPFight.arTimer) clearTimeout(OGPFight.arTimer);
+          for (var i = 0; i < 9; i++) OGPFight.arRobSpots[i][2]='';
+          // Get new properties
+          var url = OGPConfig.MWURLAJAX + OGPConfig.urlRobRefresh;
+          url += '&xw_city=' + OGPFight.arRobCity;
+          OGPAjax.buildAjax(url,'OGPFight.autoRobbing','2,%ix%');
+        }
+        break;
+        
+    }
+  };
+
+  this.updateRobbing = function() {
+    for (var i=0; i < 9; i++) {
+      if (OGPFight.arRobSpots[i] != null) {
+        OGPDisplay.setHTML('divProp' + i,OGPFight.arRobSpots[i][0]);
+        OGPDisplay.setHTML('divDiff' + i,OGPFight.arRobSpots[i][1]);
+        OGPDisplay.setHTML('divResult' + i,OGPFight.arRobSpots[i][2]);
+        OGPDisplay.setHTML('divCost' + i,OGPFight.arRobSpots[i][3]);
+        OGPDisplay.setHTML('divSize' + i,OGPFight.arRobSpots[i][4]);
+      }
+    }
+  };
+  this.setAutoRobCity = function(city) {
+    for (var i=0; i < OGPItems.cities.length; i++)
+      if (city != OGPItems.cities[i][3])
+        e$('ckRobCity' + OGPItems.cities[i][3]).checked = false;
+  };
+
+  
+  this.autoAttackReset = function() {
+    this.aaIsRunning = false;
+    this.aaIsPaused = false;
+    this.aaIsHealing = false;
+    this.aaDamage = 0;
+    this.aaExp = 0;
+    for (var i = 1; i <= OGPItems.cities.length; i++)
+      this.aaMoney[i] = 0;
+  };
+  
+  this.autoAttack = function(step,index) {
+    switch(step) {
+      case 0:
+        OGPFight.autoAttackReset();
+        OGPFight.aaDefaultTarget = false;
+        OGPFight.aaTarget = OGPParser.getTargetUser();
+        if (!OGPFight.aaTarget) {
+          OGPFight.aaTarget = OGPFight.DefaultAttackTarget;
+          OGPFight.aaDefaultTarget = true;
+          OGPFight.autoAttack(20,0); // Load the default user attack page
+          break;
+        } 
+        OGPFight.autoAttack(1,0); // Split for later addition of picking targets
+        break;
+
+      case 1:
+        // Build the options table
+        var txt = '';
+        txt += '<table id="tblAASetup" name="tblAASetup">';
+        txt += '<tr><th colspan="4">Auto-Attack - Attacking User ID ' + OGPFight.aaTarget + '</th></tr>';
+        if (OGPFight.aaDefaultTarget) {
+          txt += '<tr><td colspan="3" style="text-align:center;font-size:12px;color:' + OGPConfig.clrInfo + '">User profile page not loaded, using default attack target</td></tr>';
+        }
+        txt += '<tr><td colspan="2">Times to Attack: <select id="selAttackQty" name="selAttackQty">';
+        txt += '<option value="All">All</option>';
+        for (var i=1; i <= OGPConfig.curStamina; i++) {
+          txt += '<option value="' + i + '">' + i + '</option>';
+        }
+        txt += '</select>';
+        txt += '<td><input type="checkbox" id="ckIced" name="ckIced"> Stop if Dead/Iced</td>';
+        txt += '<td><input type="checkbox" id="ckLose" name="ckLose"> Stop on Fight Loss</td>';
+        txt += '</tr>';
+        txt += '<tr><td>Fight Type:<br />';
+        txt += '&nbsp;&nbsp;<input type="checkbox" name="ckTypeAttack" id="ckTypeAttack" onclick="e$(\'ckTypePunch\').checked=(this.checked==true?false:true);" checked> Attack<br />';
+        txt += '&nbsp;&nbsp;<input type="checkbox" name="ckTypePunch" id="ckTypePunch" onclick="e$(\'ckTypeAttack\').checked=(this.checked==true?false:true);"> Sucker Punch</td>';
+        txt += '<td>Auto-Heal:<br />';
+        txt += '&nbsp;&nbsp;<input type="checkbox" name="ckHealCity0" id="ckHealCity0" onclick="OGPFight.setAutohealCity(0)" checked> Attack City<br />';
+        for (var i=0; i < OGPItems.cities.length; i++) {
+          txt += '&nbsp;&nbsp;<input type="checkbox" name="ckHealCity' + OGPItems.cities[i][3] + '" id="ckHealCity' + OGPItems.cities[i][3] + '" onclick="OGPFight.setAutohealCity(' + OGPItems.cities[i][3] + ');"> ' + OGPItems.cities[i][0] + '<br />';
+        }
+        txt += '</td>';
+        /*
+        txt += '<td>Fight List Attack:<br />';
+        txt += '&nbsp;&nbsp;<input type="checkbox" name="ckFightList" id="ckFightList">Auto-pick Target<br />';
+        txt += '&nbsp;&nbsp;<input type="checkbox" name="ckLiveOnly" id="ckLiveOnly">Only Live Targets<br />';
+        txt += '&nbsp;&nbsp;<input type="checkbox" name="ckTilIced" id="ckTilIced">Attack Til Iced<br />';
+        txt += '&nbsp;&nbsp;&nbsp;Max Target Attacks: ';
+        txt += '<select name="selMaxAttack" id="selMaxAttack">';
+        for (var i=1; i <= 50; i++)
+          txt += '<option value="' + i + '">' + i + '</option>';
+        txt += '</select>';
+        txt += '</td>';
+        */
+        txt += '<td>More Options Soon</td>';
+        txt += '<td></td>';
+        txt += '</tr>';
+        txt += '</table><br />';
+        txt += '<div id="divAAControl" name="divAAControl"><a onclick="OGPFight.autoAttack(2,0);">Start Fighting</a></div>';
+        OGPDisplay.setHTML('divOGPSetup',txt);
+        break;
+
+      case 2:
+        // Save the selected options
+        OGPFight.aaQuantity = e$('selAttackQty').value;
+        OGPFight.aaIced = e$('ckIced').checked;
+        OGPFight.aaLose = e$('ckLose').checked;
+        OGPFight.aaType = (e$('ckTypeAttack').checked==true?'Attack':'Punch');
+        /*
+        OGPFight.aaSelectTarget = e$('ckFightList').checked;
+        OGPFight.aaLiveOnly = e$('ckLiveOnly').checked;
+        OGPFight.aaTilIced = e$('ckTilIced').checked;
+        OGPFight.aaMaxAttack = e$('selMaxAttack').value;
+        OGPFight.aaFightCount = 0;
+        */
+        
+        //OGPFight.aaBurst = e$('ckBurstYes').checked;
+        OGPFight.aaHeal = false;
+        for (var i=0; i < OGPItems.cities.length; i++) {
+          if (e$('ckHealCity' + i).checked) {
+            OGPFight.aaHeal = true;
+            OGPFight.aaHealCity = i;
+          }
+        }
+        OGPFight.isRunning = true;
+        OGPFight.aaFightCount = 0;
+        OGPDisplay.clearSetup();
+        // Build the results table
+        var txt = '';
+        txt += '<table id="tblAAResults" name="tblAAResults">';
+        txt += '<tr><td style="width:50%"><div>Fights: </div><div id="divaaCount" name="divaaCount">0/' + OGPFight.aaQuantity + '</div></td>';
+        txt += '<td><div>Exp Gained: </div><div id="divaaExp" name="divaaExp">0</div></td></tr>';
+        txt += '<tr><td><div>Health: </div><div id="divaaHealth" name="divaaHealth">' + OGPConfig.curHealth + '</div></td>';
+        txt += '<td><div>Exp Needed: </div><div id="divaaExpNeed" name="divaaExpNeed">' + OGPConfig.curExpNeeded + '</div></td>';
+        txt += '<tr><td></td>';
+        txt += '<td><div>Damage Dealt: </div><div id="divaaDamage" name="divaaDamage">0</div></td>';
+        txt += '<tr><td colspan="2"><div>Money: </div><div id="divaaMoney" name="divaaMoney"></div></td></tr>';
+        //txt += '<tr><td colspan="2"><div>Loot: </div><div id="divaaLoot" name="divaaLoot"></div></td></tr>';
+        txt += '<tr><td colspan="2"><div style="width:100%;text-align:center;" id="divaaStatus" name="divaaStatus"></div></td></tr>';
+        txt += '</table><br />';
+        txt += '<div id="divAAControl" name="divAAControl"></div>';
+        OGPDisplay.setHTML('divOGPResults',txt);
+        OGPDisplay.setHTML('divAAControl','<a onclick="javascript:OGPFight.aaPause();">Pause</a>');
+
+        OGPFight.autoAttack(3,0);
+        break;
+
+      case 3:
+        if (OGPFight.aaType == 'Attack') {
+            OGPFight.aaTempkey = OGPParser.setTempKey('','fight');
+        } else {
+            OGPFight.aaTempkey = OGPParser.setTempKey('','punch');
+        }
+        OGPFight.aaIsRunning = true;
+        OGPFight.aaIsPaused = false;
+        OGPDisplay.setHTML('divaaStatus','Running');
+        /*
+        if (OGPFight.aaSelectTarget)
+          OGPFight.autoAttack(40,0);
+        else
+        */
+          OGPFight.autoAttack(4,0);
+        break;
+
+      case 4: // Main loop
+
+        OGPFight.updateAutoAttackTable();
+
+        if (OGPFight.aaIsRunning==false || OGPFight.aaIsPaused==true) return;
+
+        // See if all fights have been completed
+        if (OGPFight.aaQuantity != 'All') {
+          if (parseInt(OGPFight.aaFightCount) >= parseInt(OGPFight.aaQuantity)) {
+            OGPDisplay.setHTML('divaaStatus','All fights run...stopping attacks');
+            OGPDisplay.setHTML('divAAControl','--Done--');
+            OGPFight.aaIsRunning = false;
+            break;
+          }
+        }
+
+        // Check health status
+        if (parseInt(OGPConfig.curHealth) < 25) {
+          if (OGPFight.aaHeal) {
+            if (!OGPFight.aaIsHealing) {
+              OGPDisplay.setHTML('divaaStatus','Health is low...attempting to heal');
+              OGPFight.autoAttack(10,0); // Call heal routine
+              break;
+            }
+          } else {
+            // No auto-heal and health is low
+            OGPFight.isRunning = false;
+            OGPDisplay.setHTML('divaaStatus','Health is low...Stopping attack');
+            OGPDisplay.setHTML('divAAControl','--Done--');
+            break;
+          }
+        }
+
+        if (parseInt(OGPConfig.curStamina) == 0) {
+          OGPFight.isRunning = false;
+          OGPDisplay.setHTML('divaaStatus','No stamina remaining...all attacks completed');
+          OGPDisplay.setHTML('divAAControl','--Done--');
+          break;
+        }
+
+        // Health is fine, check for burst attack
+        if (OGPFight.aaBurst) {
+          // Burst attack          
+
+        } else {
+          // Regular one at a time attack
+          var url = OGPConfig.MWURLAJAX;
+          if (OGPFight.aaType == 'Attack') {
+            url += OGPConfig.urlAttack;
+          } else {
+            url += OGPConfig.urlPunch;
+          }
+          url += '&xw_city=' + OGPConfig.currentCity;
+          url += '&opponent_id=' + OGPFight.aaTarget;
+          url += '&tmp=' + OGPFight.aaTempkey;
+          OGPAjax.buildAjax(url,'OGPFight.autoAttack','5,%ix%');
+        }
+        break;
+
+      case 5: // Parse results for single attack
+        if (OGPAjax.ajax[index]) {
+          var r = OGPAjax.ajax[index].response;
+          // Fight results, parse as necessary
+          OGPParser.parseFightResults(r);
+          if (res['session'] == 'timeout') {
+            OGPFight.aaIsRunning = false;
+            OGPDisplay.setHTML('divaaStatus','Session has timed out...Stopping attack');
+            OGPDisplay.setHTML('divAAControl','--Done--');
+            break;
+          }
+          if (res['aaResults'] == 'Failed') {
+            // Bad fight command, try again
+            OGPDisplay.setHTML('divaaStatus','Bad results returned from Zynga servers...attempting to recover');
+            OGPFight.autoAttack(30,0);
+            break;
+          }
+          if (res['aaResults'] == 'Win' || res['aaResults'] == 'Punch') {
+            OGPFight.aaFightCount++;
+            if (res['aaResults']  == 'Win') {
+              OGPFight.aaExp = parseInt(OGPFight.aaExp) + parseInt(res['aaExp']);
+              OGPFight.aaDamage = parseInt(OGPFight.aaDamage) + parseInt(res['aaDamage']);
+              if (!isNaN(res['aaMoney'])) {
+                OGPFight.aaMoney[OGPConfig.currentCity] = parseInt(OGPFight.aaMoney[OGPConfig.currentCity]) + parseInt(res['aaMoney']);  
+              }
+            } else {
+              OGPFight.aaDamage = parseInt(OGPFight.aaDamage) + parseInt(res['aaDamage']);
+            }
+          }
+          if (res['aaResults'] == 'Lose') {
+            OGPFight.aaFightCount++;
+            
+            if (OGPAttack.aaLose) {
+              OGPFight.isRunning = false;
+              OGPDisplay.setHTML('divaaStatus','Fight lost...Stopping attack');
+              OGPDisplay.setHTML('divAAControl','--Done--');
+              break;
+            }
+          }
+          if (res['aaIced']=='Yes' && OGPFight.aaIced) {
+            OGPFight.isRunning = false;
+            OGPDisplay.setHTML('divaaStatus','User is dead/iced...Stopping attack');
+            OGPDisplay.setHTML('divAAControl','--Done--');
+            break;
+          }
+
+          OGPFight.autoAttack(4,0);
+
+        } else {
+          OGPDisplay.setHTML('divaaStatus','No results from attack...recovering');
+          // Reload profile and try again
+          var url = OGPConfig.MWURLAJAX + OGPConfig.urlProfile + '&xw_city=' + OGPConfig.currentCity + '&user=' + OGPFight.aaTarget;
+          OGPAjax.buildAjax(url,'OGPFight.autoAttack','6,%ix%');
+        }
+        break;
+
+      case 6:
+        // Recovered from no response to attack, continue attacking
+        if (OGPAjax.ajax[index]) {
+          OGPDisplay.showPage(index,'inner_page');
+          OGPFight.autoAttack(4,0);
+        } else {
+          // Couldn't recover, just stop
+          OGPFight.aaIsRunning = false;
+          OGPDisplay.setHTML('divaaStatus','Could not recover from failed call...Stopping attack');
+          OGPDisplay.setHTML('divAAControl','--Done--');
+        }
+        break;
+
+      case 10: // Heal routine
+        // Make sure we're not already healing
+        if (OGPFight.aaIsHealing) return;
+        OGPFight.aaIsHealing = true;
+        OGPFight.aaOrigCity = OGPConfig.currentCity;
+        // Check the city
+        if ((parseInt(OGPFight.aaHealCity) == 0) || (parseInt(OGPFight.aaHealCity) == parseInt(OGPConfig.currentCity))) {
+          OGPFight.autoAttack(11,0);
+        } else {
+          OGPTravel.goCity(OGPFight.aaHealCity,"OGPFight.autoAttack(11,0);");
+        }
+        break;
+ 
+      case 11: 
+        // In the right city, heal
+        var url = OGPConfig.MWURLAJAX + OGPConfig.urlHeal + '&xw_city=' + OGPConfig.currentCity;
+        OGPAjax.buildAjax(url,'OGPFight.autoAttack','12,%ix%');
+        break;
+        
+      case 12:
+        // See if we healed
+        if (OGPAjax.ajax[index]) {
+          OGPTimers.updateStats(1,index);
+          var r = OGPAjax.ajax[index].response;
+          if (parseInt(OGPConfig.curHealth) < 25) {
+            // Couldn't heal, wait 15 seconds and try again
+            OGPFight.aaFightTimer = setTimeout('OGPFight.autoAttack(11,0);',15000);
+            break; 
+          }
+          // Healed, travel back and continue attack
+          OGPDisplay.setHTML('divaaStatus','Healed...continuing attack');
+          if (parseInt(OGPConfig.currentCity) != parseInt(OGPFight.aaOrigCity)) {
+            OGPTravel.goCity(OGPFight.aaOrigCity,'OGPFight.aaIsHealing=false;OGPFight.autoAttack(4,0);');
+          } else {
+            OGPFight.aaIsHealing = false;
+            OGPFight.autoAttack(4,0);
+          }
+        } else {
+          // No response from the call, try again in 15 seconds
+          OGPFight.aaFightTimer = setTimeout('OGPFight.autoAttack(11,0)',15000);
+        }
+        break;
+
+      case 20: // Reload the target
+        var url = OGPConfig.MWURLAJAX + OGPConfig.urlProfile + '&xw_city=' + OGPConfig.currentCity + '&user=' + OGPFight.aaTarget;
+        OGPAjax.buildAjax(url,'OGPFight.autoAttack','21,%ix%');
+        break;
+
+      case 21:
+        OGPDisplay.showPage(index,'inner_page');
+        OGPFight.autoAttack(1,0); // Go back to the setup now that profile is loaded
+        break;
+
+      case 30: // Reload the target
+        var url = OGPConfig.MWURLAJAX + OGPConfig.urlProfile + '&xw_city=' + OGPConfig.currentCity + '&user=' + OGPFight.aaTarget;
+        OGPAjax.buildAjax(url,'OGPFight.autoAttack','21,%ix%');
+        break;
+
+      case 31:
+        OGPDisplay.showPage(index,'inner_page');
+        OGPFight.autoAttack(4,0); // Go back to the setup now that profile is loaded
+        break;
+        
+      case 40: // Pull from the fight list
+        OGPFight.updateAutoAttackTable();
+        OGPDisplay.setHTML('divaaStatus','Loading Target List');
+        var url = OGPConfig.MWURLAJAX + OGPConfig.urlFightList + '&x2_city=' + OGPConfig.currentCity;
+        OGPAjax.buildAjax(url,'OGPFight.autoAttack','41,%ix%');
+        break;
+        
+      case 41:
+        OGPFight.targetArray.length = 0;
+        var r = OGPAjax.ajax[index].response;
+        //e$('divOGPDebug').innerHTML = '<textarea>' + r + '</textarea>' + r;
+        var s = r.indexOf('class="main_table fight_table');
+        while (s > 0) {
+          s = r.indexOf('do_ajax',s);
+          while (r.substr(s,1) != '>') s++;
+          s++;
+          var e = s;
+          while (r.substr(e,1) != '<') e++;
+          var targetName = r.substr(s,e-s);
+          var e = r.substr('xw_controller=fight',s);
+          var isIced = false;
+          if (r.substr(s,e-s).indexOf('(iced)') > 0) isIced = true;
+          s=e;
+          s = r.indexOf('&tmp=',s); s+=5;
+          e=s;
+          while (r.substr(e,1) != '&') e++;
+          var fightTmp = r.substr(s,e-s);
+          s = r.indexOf('&opponent_id=',s); s+=13;
+          e = s;
+          while (r.substr(e,1) != '&') e++;
+          var fightTarget = r.substr(s,e-s);
+          OGPFight.targetArray[OGPFight.targetArray.length] = new Array(targetName,isIced,fightTmp,fightTarget,0);
+        }
+        //e$('divOGPDebug').innerHTML += OGPFight.targetArray;
+        break;
+
+    }
+
+  };
+
+  this.aaPause = function() {
+    OGPFight.aaIsPaused = true;
+    if (OGPFight.aaFightTimer) clearTimeout(OGPFight.aaFightTimer);
+    OGPDisplay.setHTML('divaaStatus','Paused');
+    OGPDisplay.setHTML('divAAControl','<a onclick="OGPFight.aaResume();">Resume</a>');
+  };
+
+  this.aaResume = function() {
+    OGPDisplay.setHTML('divAAControl','<a onclick="OGPFight.aaPause();">Pause</a>');
+    OGPDisplay.setHTML('divaaStatus','Running');
+    OGPFight.aaIsPaused = false;
+    OGPFight.autoAttack(4,0);
+  };
+
+  this.updateAutoAttackTable = function() {
+    OGPDisplay.setHTML('divaaCount',OGPDisplay.setGoodColor(OGPFight.aaFightCount + '/' + OGPFight.aaQuantity));
+    OGPDisplay.setHTML('divaaExp',OGPDisplay.setGoodColor(OGPFight.aaExp));
+    OGPDisplay.setHTML('divaaHealth',OGPDisplay.setGoodColor(OGPConfig.curHealth));
+    OGPDisplay.setHTML('divaaExpNeed',OGPDisplay.setGoodColor(parseInt(OGPConfig.curExpNeeded)-parseInt(OGPConfig.curExp)));
+    var txt = '';
+    for (var i=0; i < OGPItems.cities.length; i++) {
+        txt += OGPItems.cities[i][6] + OGPFight.aaMoney[i+1] + '&nbsp;&nbsp;&nbsp;';
+    }
+    OGPDisplay.setHTML('divaaMoney',OGPDisplay.setGoodColor(txt));
+    OGPDisplay.setHTML('divaaDamage',OGPDisplay.setGoodColor(OGPFight.aaDamage));
+  };
+
+  this.setAutohealCity = function(city) {
+    if (city != 0)
+      e$('ckHealCity0').checked = false;
+    for (var i=0; i < OGPItems.cities.length; i++)
+      if (city != OGPItems.cities[i][3])
+        e$('ckHealCity' + OGPItems.cities[i][3]).checked = false;
+  };
+
+  this.quickAttackReset = function() {
+    OGPFight.qkFightCount = 0;
+    OGPFight.qkFightsToDo = 0;
+    OGPFight.qkSuccess = 0;
+    OGPFight.qkFail = 0;
+    OGPFight.qkNothing = 0;
+    OGPFight.qkWeak = false;
+    this.fighttempkey = null;
+  };  
+
+  this.quickAttack = function(step,index,qty) {
+    switch(step) {
+      case 0:
+        OGPFight.quickAttackReset();
+        OGPFight.qkFightsToDo = qty;
+        if (!OGPParser.getTargetUser()) {
+          OGPDisplay.addLine('This function must be run from a user\'s profile page',OGPConfig.clrWarning);
+          break;
+        }
+        // Get the fight key
+        OGPFight.fighttmpkey = OGPParser.setTempKey(document.body.innerHTML,'fight');
+        if (!OGPFight.fighttmpkey) {
+          OGPDisplay.addLine('Could not locate temporary key, please reload user profile and try again',OGPConfig.clrWarning);
+          break;
+        }
+        var txt = '';
+        txt += '<table id="tblQuickAttack" name="tblQuickAttack">';
+        txt += '<tr><th>Fights Run</th><th>Win</th><th>Lose</th><th>Bad Response</th></tr>';
+        txt += '<tr><td><div id="divQAttackRun" name="divQAttackRun">0</div></td>';
+        txt += '<td><div id="divQAttackSuccess" name="divQAttackSuccess">0</div></td>';
+        txt += '<td><div id="divQAttackFail" name="divQAttackFail">0</div></td>';
+        txt += '<td><div id="divQAttackBad" name="divQAttackBad">0</div></td>';
+        txt += '</tr>';
+        txt += '<tr><td colspan="4"><div id="divQStatus" name="divQStatus"></td></tr>';
+        txt += '</tr></table>';
+        OGPDisplay.setHTML('divOGPResults',txt);
+
+        OGPDisplay.setHTML('divQStatus',OGPFight.beatdowns[parseInt(OGPFight.beatdowns.length * Math.random())] + '...');
+        // Now start blasting them
+        var sendcount = 0;
+        while (sendcount < qty && !OGPFight.qkWeak) {
+          setTimeout("OGPFight.quickAttack(1,0,0)",sendcount * 250);
+          sendcount++;
+        }
+        break;
+      
+      case 1:  
+        // Build the fight url and start it
+        var url = OGPConfig.MWURLAJAX + OGPConfig.urlAttack;
+        url += '&xw_city=' + OGPConfig.currentCity;
+        url += '&opponent_id=' + OGPParser.getTargetUser() + '&tmp=' + OGPFight.fighttmpkey;
+        if (!OGPFight.qkWeak)
+          setTimeout("OGPAjax.buildAjax('" + url + "','OGPFight.quickAttack','2,%ix%," + i + "')",i*200);
+        else  
+          OGPDisplay.setHTML('divQStatus','Health low, stopping after current fights complete');
+        break;
+
+      case 2:
+        // Fight done, parse
+        if (OGPAjax.ajax[index]) {
+          var r = OGPAjax.ajax[index].response;
+          //e$('divOGPDebug').innerHTML = '<textarea>' + r + '</textarea>' + r;
+          OGPFight.qkFightCount = parseInt(OGPFight.qkFightCount) + 1;
+          OGPDisplay.setHTML('divQAttackRun',OGPFight.qkFightCount);
+          if (r.indexOf('You win') > 0) {
+            OGPFight.qkSuccess = parseInt(OGPFight.qkSuccess) + 1;
+            OGPDisplay.setHTML('divQAttackSuccess',OGPFight.qkSuccess);
+          } else if (r.indexOf('You lose') > 0) {
+            OGPFight.qkFail = parseInt(OGPFight.qkFail) + 1;
+            OGPDisplay.setHTML('divQAttackFail',OGPFight.qkFail);
+          } else if (r.indexOf('You do not have enough health to keep fighting') > 0) {
+            if (!OGPFight.qkWeak) OGPDisplay.addLine('Not enough health to continue fighting.',OGPConfig.clrWarning);
+            OGPFight.qkWeak = true;
+          } else {
+            // Something unexplained came back
+            OGPFight.qkNothing = parseInt(OGPFight.qkNothing) + 1;
+            OGPDisplay.setHTML('divQAttackBad',OGPFight.qkNothing);
+          }
+        } else {
+          OGPFight.qkNothing = OGPFight.qkNothing + 1;
+          OGPDisplay.setHTML('divQAttackBad',OGPFight.qkNothing);
+        }
+        if (parseInt(OGPFight.qkFightCount)+parseInt(OGPFight.qkNothing) == parseInt(OGPFight.qkFightsToDo))
+          OGPDisplay.setHTML('divQStatus','Finished');
+        break;
+    }
+  };
+};
+
+/***************************************
+  Single job runner
+****************************************/
+function ogpJobDef() {
+
+  this.jobToRun;
+  this.qtyToRun;
+  this.curJobTab;
+  this.isRunning;
+  this.isPaused;
+  this.lootitems = new Array();
+  this.totalmoney = new Array();
+  this.extramoney;
+  this.extraexp;
+  this.extraexpcount;
+  this.freejobs;
+  this.jobsrun;
+  this.specialcontroller; // Fix for new job layout
+
+  this.reset = function() {
+    this.jobToRun = -1;
+    this.qtyToRun = 0;
+    this.isRunning = false;
+    this.isPaused = false;
+    this.lootitems.length = 0;
+    this.freejobs = 0;
+    this.extramoney = 0;
+    this.extraexp = 0;
+    this.extraexpcount = 0;
+    this.jobsrun = 0;
+    this.curJobTab = -1;
+    this.specialcontroller = '';
+    for (var i=0; i < OGPItems.cities.length; i++) 
+      this.totalmoney[i] = 0;
+
+  };
+
+  this.runJobs = function(step,index) {
+
+    switch(step) {
+
+      case 0: // Initial setup
+        OGPJob.reset();
+        var txt = '';
+        txt += '<table name="tblRunJobSetup" id="tblRunJobSetup">';
+        txt += '<tr><th colspan="' + OGPItems.cities.length + '"><div name="divRunJobParams" id="divRunJobParams">Select quantity and job to run</div></th></tr>';
+        txt += '<tr><td colspan="' + OGPItems.cities.length + '" name="tdQuantity" id="tdQuantity">';
+        txt += 'Quantity to run: <select name="selJobQty" id="selJobQty" onchange="OGPJob.setQty()">';
+        txt += '<option value="999999">All Energy</option>';
+        for (var i=1; i < 100; i++) {txt += '<option value="' + i + '">' + i + '</option>';}        
+        for (var i=100; i < 250; i+=25) {txt += '<option value="' + i + '">' + i + '</option>';}        
+        for (var i=250; i < 500; i+=50) {txt += '<option value="' + i + '">' + i + '</option>';}        
+        for (var i=500; i <= 2000; i+=100) {txt += '<option value="' + i + '">' + i + '</option>';}
+        txt += '</select>'; 
+        txt += '</td></tr>';
+        txt += '<tr name="trJobTabs" id="trJobTabs">';
+        for (var i=0; i < OGPItems.cities.length; i++) {
+          txt += '<td id="tdJobTab' + i + '" name="tdJobTab' + i + '" onclick="OGPJob.showTab(' + i + ');">' + OGPItems.cities[i][0] + '</td>';
+        }
+        txt += '</tr>';
+        txt += '<tr><td colspan="' + OGPItems.cities.length + '" id="tdCityJobs" name="tdCityJobs">';
+        for (var i=0; i < OGPItems.cities.length; i++) {
+          txt += '<div id="divCityJobs' + i + '" name="divCityJobs' + i + '" style="display:none;">';
+          txt += '<table>';
+          var curcol = 0;
+          for (var j=1; j < OGPItems.jobLevels[i].length; j++) {
+            if (curcol == 0) txt += '<tr>';
+            txt += '<td>';
+            txt += '<div>'+ OGPItems.jobLevels[i][j] + '</div>';
+            for (var k=0; k < OGPItems.jobs.length; k++) {
+              if (OGPItems.jobs[k][0]==i && OGPItems.jobs[k][1]==j) {
+                if (parseInt(OGPItems.jobs[k][6]) != 0 && parseInt(OGPItems.jobs[k][7]) != 0) {
+                  txt += '<a onclick="OGPJob.setJob(' + k + ');">' + OGPItems.jobs[k][3] + '</a>';
+                  if (OGPItems.jobs[k][4]!='') {
+                    if (OGPItems.jobs[k][5] == true) {
+                      txt += '<br />&nbsp;&nbsp;<font style="color:' + OGPConfig.clrHighlight + '"> *HEL - ' + OGPItems.jobs[k][4] + '</font>';
+                    } else {
+                      txt += '<br />&nbsp;&nbsp;<font style="color:' + OGPConfig.clrInfo + '"> Loot - ' + OGPItems.jobs[k][4] + '</font>';
+                    }
+                  }
+                  txt += '<br />';
+                }
+              }
+            }
+            txt += '</td>';
+            curcol++;
+            if (curcol == 3) {
+              txt += '</tr>';
+              curcol = 0;
+            }
+          } 
+          txt == '</tr>';
+          txt += '</table>';
+          txt += '</div>';
+        }
+        txt += '</td>';
+        txt += '</tr>';
+        txt += '</table>';
+        OGPDisplay.setHTML('divOGPSetup',txt);
+        OGPJob.showTab(0);
+        break;
+
+      case 1: // Start running the jobs
+        OGPDisplay.clearSetup();
+        var txt = '';
+        txt += '<table id="tblJobResults" name="tblJobResults">';
+        txt += '<tr><th colspan="2">Run Multiple Jobs</th></tr>';
+        txt += '<tr><td style="width:50%"><div>Exp Needed: </div><div id="divExpNeeded" name="divExpNeeded"></div></td>';
+        txt += '<td style="width:50%"><div>Jobs Run: </div><div id="divJobsRun" name="divJobsRun"></div></td>';
+        txt += '</tr>';
+        txt += '<tr><td><div>Eng Remaining: </div><div id="divEngLeft" name="divEngLeft"></div></td>';
+        txt += '<td><div>Free Jobs: </div><div id="divFreeJobs" name="divFreeJobs"></div></td>';
+        txt += '</tr>';
+        txt += '<tr><td><div>Cur Ratio: </div><div id="divCurRatio" name="divCurRatio"></div></td>';
+        txt += '<td><div>Extra Exp: </div><div id="divExtraExp" name="divExtraExp"></div></td>';
+        txt += '</tr>';
+        txt += '<tr>';
+        txt += '<td><div>Extra Money: </div><div id="divExtraMoney" name="divExtraMoney"></div></td>';
+        txt += '<td></td>';
+        txt += '</tr>';
+        txt += '<tr><td colspan="2"><div>Total Money: </div><div id="divTotalMoney" name="divTotalMoney"></div></td></tr>';
+        txt += '<tr><td colspan="2"><div>Loot Items: </div><div id="divLoot" name="divLoot"></div></td></tr>';
+        txt += '<tr><td colspan="2"><div style="text-align:center;" id="divJobStatus" name="divJobStatus"></div></td></tr>';
+        txt += '</table>';
+        txt += '<div id="divJobControl" name="divJobControl"></div>';
+        OGPDisplay.setHTML('divOGPResults',txt);        
+        OGPJob.updateJobResults();
+        OGPDisplay.setHTML('divJobStatus','Running');
+        OGPDisplay.setHTML('divJobControl','<a onclick="javascript:OGPJob.pause();">Pause</a>');
+        OGPJob.isRunning = true;
+        OGPJob.isPaused = false;
+        OGPJob.runJobs(2,-1);
+        break;
+
+      case 2: // Main Loop
+        if (OGPConfig.Session==1 && OGPJob.isRunning && !OGPJob.isPaused) {
+          if (OGPConfig.currentCity != (parseInt(OGPItems.jobs[OGPJob.jobToRun][0])+1)) {
+            // Wrong city, travel
+            OGPTravel.goCity((parseInt(OGPItems.jobs[OGPJob.jobToRun][0])+1),'OGPJob.runJobs(2,-1)');
+            break;
+          }
+  
+          // In the right city, select the job tab
+          if (OGPJob.curJobTab != OGPItems.jobs[OGPJob.jobToRun][1]) {
+            var url = OGPConfig.MWURLAJAX + OGPConfig.urlSwitchJobTab;
+            url += '&xw_city=' + OGPConfig.currentCity;
+            url += '&xw_controller=' + OGPItems.cities[OGPConfig.currentCity-1][2];
+            url += '&' + OGPItems.cities[OGPConfig.currentCity-1][5] + '=' + OGPItems.jobs[OGPJob.jobToRun][1];
+            url += '&tmp=' + OGPConfig.tmpkey;
+            OGPAjax.buildAjax(url,'OGPJob.runJobs','2,%ix%');
+            OGPJob.curJobTab = OGPItems.jobs[OGPJob.jobToRun][1];
+            break;
+          }
+  
+          // Right city and right tab, run the job
+          if (index != -1) {
+            OGPJob.jobtmpkey = OGPParser.setTempKey(OGPAjax.ajax[index].response,'job');
+          }
+          var url  = OGPConfig.MWURLAJAX + OGPConfig.urlRunJob;
+          //url += '&xw_controller=' + OGPItems.cities[OGPConfig.currentCity-1][2];
+          url += '&xw_controller=' + OGPJob.specialcontroller;
+          if (OGPJob.specialcontroller != OGPItems.cities[OGPConfig.currentCity-1][2])
+            url += '&no_load=1';
+          url += '&xw_city=' + OGPConfig.currentCity;
+          url += '&' + OGPItems.cities[OGPConfig.currentCity-1][5] + '=' + OGPItems.jobs[OGPJob.jobToRun][1]; 
+          url += '&job=' + OGPItems.jobs[OGPJob.jobToRun][2];
+          url += '&tmp=' + OGPJob.jobtmpkey;
+          OGPDisplay.setHTML('divJobStatus','Running Job');
+          OGPAjax.buildAjax(url,'OGPJob.runJobs','3,%ix%');
+        }
+        break;
+              
+      case 3: // Job ran, parse results
+        if (OGPAjax.ajax[index]) {
+          var r = OGPAjax.ajax[index].response;
+          OGPParser.parseJobResults(r);
+          if (r.indexOf('class="messages"') > 0) r = r.substr(r.indexOf('class="messages"'));
+          OGPTimers.updateStats(1,index);
+          if (res['jobResults'] == 'Completed') {
+            OGPJob.jobtmpkey = OGPParser.setTempKey(r,'job')?OGPParser.setTempKey(r,'job'):OGPJob.jobtmpkey;
+            OGPJob.jobsrun++;
+            if (res['jobExtraExp']) {OGPJob.extraexpcount++;OGPJob.extraexp+=parseInt(res['jobExtraExp']);}
+            if (res['jobEnergySpent']==0) OGPJob.freejobs++;
+            if (!isNaN(parseInt(res['jobMoney']))) OGPJob.totalmoney[OGPConfig.currentCity-1] += parseInt(res['jobMoney']);
+            if (!isNaN(parseInt(res['jobExtraMoney']))) {OGPJob.extramoney++;OGPJob.totalmoney[OGPConfig.currentCity-1]+=parseInt(res['jobExtraMoney']);}
+            // Check the loot
+            if (res['jobLoot']) {
+              var lindex = -1;
+              for (var i = 0; i < OGPJob.lootitems.length; i++) {
+                if (OGPJob.lootitems[i][1]==res['jobLoot']) 
+                  lindex = i;
+              }
+              if (lindex == -1) {
+                OGPJob.lootitems[OGPJob.lootitems.length] = new Array(1,res['jobLoot']);
+              } else {
+                OGPJob.lootitems[lindex][0] = parseInt(OGPJob.lootitems[lindex][0]) + 1;
+              }
+            }
+            OGPJob.updateJobResults();
+            if (parseInt(OGPJob.jobsrun) < parseInt(OGPJob.qtyToRun)) {
+              if (OGPConfig.currentCity == 5) OGPJob.curJobTab = -1;
+              OGPJob.jobruntimer = setTimeout("OGPJob.runJobs(2,-1);",250);
+            } else {
+              OGPDisplay.setHTML('divJobStatus','<font style="color:' + OGPConfig.clrGood + '">All jobs complete</font>');
+            }
+          } else {
+            // Got return value, but wasn't successful run
+            if (res['timeout']) {
+              OGPJob.isRunning = false;
+              OGPDisplay.setHTML('divJobStatus','<font style="color:' + OGPConfig.clrFatal + '">Session has timed out...stopping</font>');
+              OGPDisplay.addLine('Session has timed out...stopping running jobs',OGPConfig.clrFatal);
+              break;
+            }
+            if (r.indexOf('session has timed out') > 0) {
+              // Wrong temp key, get a new one
+              OGPDisplay.setHTML('divJobStatus','<font style="color:' + OGPConfig.clrWarning + '">Temp key has expired, attempting to refresh key</font>');
+              OGPJob.curJobTab = -1;
+              OGPJob.jobruntimer = setTimeout("OGPJob.runJobs(2,-1);",250);
+              break;
+            }
+            if (r.indexOf('need more energy') > 0) {
+              //e$('divOGPDebug').innerHTML += '<textarea>' + r + '</textarea>' + r;
+              OGPDisplay.setHTML('divJobStatus','No energy remaining...waiting for additional energy');
+              OGPJob.curJobTab = -1; // Force tmpkey refresh
+              OGPJob.jobruntimer = setTimeout("OGPJob.runJobs(2,-1);",30000);
+              break;
+            }
+            if (res['jobResults']=='Failed') {
+              OGPDisplay.setHTML('divJobStatus','<font style="color:' + OGPConfig.clrWarning + '">Job did not run correctly, attempting to recover</font>');
+              // Reload the city and try again
+              var tcity = OGPConfig.currentCity;
+              OGPConfig.currentCity = -1;
+              OGPTravel.goCity(tcity,"OGPJob.runJobs(2,-1)");
+              //OGPJob.jobruntimer = setTimeout("OGPJob.runJobs(2,-1);",5000);
+              break;
+            }
+            OGPDisplay.setHTML('divJobStatus','<font style="color:' + OGPConfig.clrFatal + '">Could not understand response from server.  Stopping job running</font>');
+            OGPJob.isRunning = false;
+            break;
+          }
+        } else {
+          // AJAX non-existant
+          OGPDisplay.setHTML('divJobStatus','<font style="color:' + OGPConfig.clrFatal + '">No response returned from server, attempting to recover</font>');
+          OGPConfig.currentCity = -1; // Force travel to city again
+          OGPJob.curJobTab = -1; // Force tmpkey refresh
+          OGPJob.jobruntimer = setTimeout("OGPJob.runJobs(2,-1);",5000);
+        }
+        break;
+    }
+  };
+
+  this.pause = function() {
+    OGPJob.isPaused = true;
+    if (OGPJob.jobruntimer) clearTimeout(OGPJob.jobruntimer);
+    OGPDisplay.setHTML('divJobStatus','Paused');
+    OGPDisplay.setHTML('divJobControl','<a onclick="OGPJob.resume();">Resume</a>');
+  }
+
+  this.resume = function() {
+    OGPDisplay.setHTML('divJobControl','<a onclick="OGPJob.pause();">Pause</a>');
+    OGPDisplay.setHTML('divJobStatus','Running');
+    OGPJob.isPaused = false;
+    OGPJob.runJobs(2,-1);
+  }
+
+  this.updateJobResults = function() {
+    OGPDisplay.setHTML('divExpNeeded',OGPDisplay.setGoodColor(parseInt(OGPConfig.curExpNeeded) - parseInt(OGPConfig.curExp))); 
+    OGPDisplay.setHTML('divJobsRun',OGPDisplay.setGoodColor(OGPJob.jobsrun + '/' + OGPJob.qtyToRun));
+    OGPDisplay.setHTML('divEngLeft',OGPDisplay.setGoodColor(OGPConfig.curEnergy));
+    OGPDisplay.setHTML('divFreeJobs',OGPDisplay.setGoodColor(OGPJob.freejobs + ' (' + OGPString.percentage(OGPJob.freejobs/OGPJob.jobsrun,2) + '%)'));
+    OGPDisplay.setHTML('divCurRatio',OGPDisplay.setGoodColor(OGPConfig.curRatio));
+    OGPDisplay.setHTML('divExtraExp',OGPDisplay.setGoodColor(OGPJob.extraexpcount + ' for ' + OGPJob.extraexp + ' (' + OGPString.percentage(OGPJob.extraexpcount/OGPJob.jobsrun,2) + '%)'));
+    OGPDisplay.setHTML('divExtrMoney',OGPDisplay.setGoodColor(OGPJob.extramoney));
+    var txt = '';
+    for (var i=0; i < OGPItems.cities.length; i++) {
+        txt += OGPItems.cities[i][6] + OGPJob.totalmoney[i] + '&nbsp;&nbsp;&nbsp;';
+    }
+    OGPDisplay.setHTML('divTotalMoney',OGPDisplay.setGoodColor(txt));
+    var txt = '';
+    for (var i=0; i < OGPJob.lootitems.length; i++) {
+      txt += OGPJob.lootitems[i][1] + ' (x' + OGPJob.lootitems[i][0] + ')';
+      if (i < OGPJob.lootitems.length-1) txt += ' - ';
+    }
+    OGPDisplay.setHTML('divLoot',OGPDisplay.setGoodColor(txt));
+    
+  };
+
+  this.showTab = function(tab) {
+    for (var i=0; i < OGPItems.cities.length; i++) {
+      if (i==tab) {
+        OGPDisplay.show('divCityJobs' + i);
+        e$('tdJobTab' + i).style.backgroundColor= OGPDisplay.buttonbgcolor;
+      } else {
+        OGPDisplay.hide('divCityJobs' + i);
+        e$('tdJobTab' + i).style.backgroundColor = OGPDisplay.headerbgcolor;
+      }
+    } 
+  };
+
+  this.setQty = function() {
+    OGPJob.qtyToRun = e$('selJobQty').value;
+    if (OGPJob.jobToRun != -1 && parseInt(OGPJob.qtyToRun) != 0) {
+      e$('divRunJobParams').innerHTML = 'Ready to run ' + OGPJob.qtyToRun + ' "' + OGPItems.jobs[OGPJob.jobToRun][3] + '" job' + ((parseInt(OGPJob.qtyToRun) > 1)?'s':'');
+      e$('divRunJobParams').innerHTML += '  <a href="javascript:OGPJob.runJobs(1,0)">Start Running</a>';
+    }
+  };
+  this.setJob = function(jobid) {
+    OGPJob.jobToRun = jobid;
+    OGPJob.qtyToRun = e$('selJobQty').value;
+    if (OGPJob.jobToRun != -1 && parseInt(OGPJob.qtyToRun) != 0) {
+      e$('divRunJobParams').innerHTML = 'Ready to run ' + OGPJob.qtyToRun + ' "' + OGPItems.jobs[OGPJob.jobToRun][3] + '" job' + ((parseInt(OGPJob.qtyToRun) > 1)?'s':'');
+      e$('divRunJobParams').innerHTML += '  <a href="javascript:OGPJob.runJobs(1,0)">Start Running</a>';
+    }
+  };
+  
+};
+
+/***************************************
+  Mini-pack
+****************************************/
+function ogpMinipackDef() {
+
+  this.mpurls = new Array();
+  this.mpurls[0] = 'http://toolbar.zynga.com/game_iframe_proxy.php?playing=true';
+  this.mpurls[1] = 'http://www.facebook.com/extern/login_status.php?api_key=a50ad74e9db5f16570a7379d65cb6cee&extern=0&channel=http%3A%2F%2Ftoolbar.zynga.com%2Fxd_receiver.htm&locale=en_US';
+  this.mpurls[2] = 'http://toolbar.zynga.com/click.php?to=mwgamestatsplaynow';
+  this.mpurls[3] = 'http://toolbar.zynga.com/game_iframe_proxy.php';
+
+  this.getMinipack = function() {
+    var txt = '';
+    txt += '<table name="tblMinipack" id="tblMinipack">';
+    txt += '<tr><td>';
+    txt += 'If you have collected a minipack before, all that is needed is to click the <b>Get Minipack</b> link below.  If this is ';
+    txt += 'your first time collecting, or you were not able to collect, click all four links in order.  The first link may require that ';
+    txt += 'you log in.  All pages opened by this process can be closed once they have completely loaded.<br /><br /></td></tr>';
+    txt += '<tr><td><div><a target="minipackwin" href="' + this.mpurls[0] + '">Set Playing Status</a>&nbsp;&nbsp;';
+    txt += '<a target="minipackwin" href="' + this.mpurls[1] + '">Initialize FB Connection</a>';
+    txt += '<a target="minipackwin" href="' + this.mpurls[2] + '">Get Minipack</a>';
+    txt += '<a target="minipackwin" href="' + this.mpurls[3] + '">Clear Playing Status</a>';
+    txt += '</div></td></tr></table>';
+    OGPDisplay.setHTML('divOGPSetup',txt);
+  };
+};
+
+/***************************************
+  Smart Drone Runner
+****************************************/
+function ogpDroneRunnerDef() {
+  this.burnStamina = false;
+  this.stamFight = false;
+  this.stamRob = false;
+  this.useStaminaFirst = false;
+  this.stopForBoss = false;
+  this.stopForLevel = false;
+  this.spendSkillPoints = false;
+  this.skillToSpend = '';
+  this.runHELjobs = false;
+  this.runLootjobs = false;
+  this.HELJobs = new Array();
+  this.LootJobs = new Array();
+  this.ChipsDecksOnly = false;
+  this.BeefPokerOnly = false;
+  this.BigJump = false;
+  this.ForceDelay = false;
+  this.ForceDelayVal = 0;
+  this.depositMoney = false;
+  this.AdjustTime = false;
+  this.BurstMode = false;
+  this.StopRatio = false;
+  this.StopRatioVal = '';
+  this.stamRobCity = '';
+  this.burstCount = 0;
+  this.noReqMoney = false;
+  this.noReqItem = false;
+  this.bestVegas = false;
+  this.jobBest = new Array(0,0,0);
+  this.jobPoker = new Array(0,4,26);
+  this.jobToken = new Array(0,4,24);
+  this.jobDeck = new Array(0,4,25);
+
+  this.last100 = new Array();
+  this.locntr;
+  this.cDelay;
+  
+  this.updateInterval = 1000*60*60*24*7;  // One week
+  this.lootCols = 4;
+  
+  this.jobtmpkey;
+  this.jobsrun;
+  this.freejobs;
+  this.extraexp;
+  this.totalextraexp;
+  this.totalexp;
+  this.totaleng;
+  this.totalstamina;
+  this.extramoney;
+  this.totalmoney = new Array();
+  this.lootitems = new Array();
+  this.bossjobeng;
+  this.bossjobexp;
+  this.bigjumpeng;
+  this.bigjumpexp;
+  this.bigjumpid;
+  this.startinglevel;
+  this.tokencount;
+  this.deckcount;
+  this.isRunning;
+  this.isPaused;
+  this.curJobCity;
+  this.curJobTab;
+  this.currentJob;
+  this.fightkey;
+  this.isburningstamina;
+  this.jobwaittimer; // Timeout for waiting to check for more energy
+  this.specialcontroller; // Fix for the new job layout
+  this.expRatio; // Expected Ratio
+  this.cBonus;
+  this.arNoStamina;
+  this.arRobSpots = new Array();
+  
+  this.resetSettings = function() {
+    this.isRunning = false;
+    this.isPaused = false;
+    this.burnStamina=false;
+    this.stamFight = false;
+    this.stamRob = false;
+    this.useStaminaFirst = false;
+    this.stopForBoss=false;
+    this.stopForLevel=false;
+    this.spendSkillPoints=false;
+    this.skillToSpend='';
+    this.runHELjobs=false;
+    this.runLootjobs=false;
+    this.HELJobs.length=0;
+    this.LootJobs.length=0;
+    this.ChipsDecksOnly=false;
+    this.BeefPokerOnly=false;
+    this.BigJump=false;
+    this.ForceDelay=false;
+    this.ForceDelayVal=0;
+    this.AdjustTime=false;
+    this.BurstMode=false;
+    this.StopRatio=false;
+    this.StopRatioVal='';
+    this.stamRobCity = '';
+    this.burstCount = 0;
+    this.updateWarning = false;
+    this.depositMoney = false;
+    this.bossjobeng = 0;
+    this.bossjobexp = 0;
+    this.bigjumpeng = 0;
+    this.bigjumpexp = 0;
+    this.startinglevel = 0;
+    this.totallevels = 0;
+    this.tokencount = 0;
+    this.deckcount = 0;
+    this.freejobs = 0;
+    this.extraexp = 0;
+    this.extramoney = 0;
+    this.totalextraexp = 0;
+    this.totalexp = 0;
+    this.totaleng = 0;
+    this.startinglevel = OGPConfig.curLevel;
+    this.curJobCity = OGPConfig.currentCity;
+    this.curJobTab = -1;
+    this.currentJob = -1;
+    this.jobsrun=0;
+    this.jobtmpkey = '';
+    this.fightkey = '';
+    this.bigjumpid = -1;
+    this.lootitems.length = 0;
+    this.isburningstamina = false;
+    this.noReqMoney = false;
+    this.noReqItem = false;
+    this.bestVegas = false;
+    this.specialcontroller = OGPItems.cities[OGPConfig.currentCity-1][2];
+    for (var i=0;i<OGPItems.cities.length;i++) this.totalmoney[i]=0;
+    for (var i=0; i < 100; i++) this.last100[i] = 0;
+    this.locntr = 0;
+    this.cDelay = 1; // Assume 1 second per run as a default
+    this.expRatio = 0;
+    this.cBonus = 0;
+  }
+  
+  this.droneSetup = function() {
+    OGPDrone.resetSettings();
+    if (OGPCookie.readCookie('mwjobs_updated'))
+      lastupdate = OGPCookie.readCookie('mwjobs_udated');
+    else
+      lastupdate = new Date().getTime();
+      
+    // See if the job payouts need to be updated
+    if (new Date().getTime() - lastupdate < OGPDrone.updateInterval) {
+      OGPDisplay.addLine('It has been a while since you have updated the job payouts.  For maximum effectiveness, this should be updated.',OGPConfig.clrWarning);
+      OGPDrone.updateWarning = true;
+    }
+    
+    // Load the user preferences
+    if (OGPCookie.readCookie('ogpdrone')) {
+      var dr = OGPCookie.readCookie('ogpdrone');
+      var adr = dr.split('|');
+      for (var i = 0; i < adr.length; i++) {
+        switch(adr[i]) {
+          case 'stamina':this.burnStamina = true;break;
+          case 'stopboss':this.stopForBoss = true;break;
+          case 'stoplevel':this.stopForLevel = true;break;
+          case 'spendskill':this.spendSkillPoints = true;this.skillToSpend = adr[i+1];i++;break;
+          case 'hel':this.runHELJobs=true;break;
+          case 'loot':this.runLootJobs=true;break;
+          case 'chips':this.ChipsDecksOnly=true;break;
+          case 'beef':this.BeefPokerOnly=true;break;
+          case 'jump':this.BigJump=true;break;
+          case 'deposit':this.depositMoney=true;break;
+          case 'delay':this.ForceDelay=true;this.ForceDelayVal=adr[i+1];i++;break;
+          case 'adjust':this.AdjustTime=true;break;
+          case 'burst':this.BurstMode=true;break;
+          case 'stfight':this.stamFight=true;break;
+          case 'strob':this.stamRob=true;break;
+          case 'usestfirst':this.useStaminaFirst=true;break;
+          case 'stopratio':this.StopRatio=true;break;
+          case 'stopratioval':this.StopRatioVal=adr[i+1];i++;break;
+          case 'robcity':this.stamRobCity=adr[i+1];i++;break;
+          case 'nomoney':this.noReqMoney=true;break;
+          case 'noitem':this.noReqItem=true;break;
+          case 'bestvegas':this.bestVegas=true;break;
+        }
+      }
+    }
+    if (!this.stamFight && !this.stamRob) this.stamFight = true;
+    // Build the setup screen
+    var txt = '';
+    txt += '<table id="tblDrone" name="tblDrone">';
+    txt += '<tr><th colspan="4">Smart Drone Runner Options</th></tr>';
+    txt += '<tr>';
+    txt += '<td><input type="checkbox" onclick="e$(\'ckLevel\').checked=(this.checked==true?false:e$(\'ckLevel\').checked);" name="ckBoss" id="ckBoss"' + (this.stopForBoss==true?' checked':'') + '> Stop For Boss Job</td>';
+    txt += '<td><input type="checkbox" onclick="e$(\'ckBoss\').checked=(this.checked==true?false:e$(\'ckBoss\').checked);"name="ckLevel" id="ckLevel"' + (this.stopForLevel==true?' checked':'') + '> Stop For Level Up</td>';
+    txt += '<td><input type="checkbox" onclick="e$(\'ckBeef\').checked=(this.checked==true?false:e$(\'ckBeef\').checked);" name="ckChips" id="ckChips"' + (this.ChipsDecksOnly==true?' checked':'') + '> Get Tokens/Decks Only</td>';
+    txt += '<td><input type="checkbox" onclick="e$(\'ckChips\').checked=(this.checked==true?false:e$(\'ckChips\').checked);" name="ckBeef" id="ckBeef"' + (this.BeefPokerOnly==true?' checked':'') + '> Run Best Job/Poker Game Only</td>';
+    txt += '</tr>';
+    txt += '<tr>';
+    txt += '<td><input type="checkbox" name="ckStamina" id="ckStamina"' + (this.burnStamina==true?' checked':'') + ' onclick="e$(\'ckSTUseFirst\').checked=(this.checked==true?e$(\'ckSTUseFirst\').checked:false);"> Burn Stamina</td>';
+    txt += '<td><input type="checkbox" onclick="e$(\'ckSTRob\').checked=(this.checked==true?false:e$(\'ckSTRob\').checked);" name="ckSTFight" id="ckSTFight"' + (this.stamFight==true?' checked':'') + '> Fight&nbsp;&nbsp;&nbsp;';
+    txt += '<input type="checkbox" onclick="e$(\'ckSTFight\').checked=(this.checked==true?false:e$(\'ckSTFight\').checked);" name="ckSTRob" id="ckSTRob"' + (this.stamRob==true?' checked':'') + '> Rob</td>';
+    txt += '<td><input type="checkbox" name="ckSTUseFirst" id="ckSTUseFirst"' + (this.useStaminaFirst==true?' checked':'') + ' onclick="e$(\'ckStamina\').checked=(this.checked==true?true:e$(\'ckStamina\').checked);"> Use Stamina First</td>';
+    txt += '<td colspan="2">Rob in ';
+    txt += '<select name="selRobCity" id="selRobCity">';
+    txt += '<option value="0">Current</option>';
+    for (var i=0; i < OGPItems.cities.length; i++) {
+      txt += '<option value="' + OGPItems.cities[i][3] + '"' + (parseInt(OGPItems.cities[i][3])==parseInt(this.stamRobCity)?' selected':'') + '>' + OGPItems.cities[i][0] + '</option>';
+    }
+    txt += '</select></td>';
+    txt += '</tr>';
+    txt += '<tr>';
+    txt += '<td><input type="checkbox" name="ckAdjust" id="ckAdjust"' + (this.AdjustTime==true?' checked':'') + '> Adjust Delay for Bonuses</td>';
+    txt += '<td><input type="checkbox" name="ckDelay" id="ckDelay"' + (this.ForceDelay==true?' checked':'') + '> Delay <input type="txt" size="3" name="txtDelay" id="txtDelay" value="' + this.ForceDelayVal + '"> seconds</td>';
+    //txt += '<td><input type="checkbox" name="ckBurst" id="ckBurst"' + (this.BurstMode==true?' checked':'') + '> Burst Mode</td>';
+    txt += '<td></td>';
+    txt += '<td><input type="checkbox" name="ckJump" id="ckJump"' + (this.BigJump==true?' checked':'') + '> Max Jump To Next Level</td>';
+    txt += '<td></td>';
+    txt += '</tr>';
+    txt += '<tr>';
+    txt += '<td colspan="2"><input type="checkbox" name="ckStopRatio" id="ckStopRatio"' + (this.StopRatio==true?' checked':'') + '> Stop When Ratio At <input type="text" name="txtStopRatio" id="txtStopRatio" size="4" value="' + this.StopRatioVal + '"></td>';
+    txt += '<td colspan="2"><input type="checkbox" name="ckSpend" id="ckSpend"' + (this.spendSkillPoints==true?' checked':'') + '> Spend Skill Points on ';
+    txt += '<select name="selSkill" id="selSkill">';
+    for (var i=0; i < OGPAccount.skills.length; i+=2) {
+      txt += '<option value="' + OGPAccount.skills[i] + '"' + (OGPAccount.skills[i]==this.skillToSpend?' selected':'') + '>' + OGPAccount.skills[i+1] + '</option>';
+    }
+    txt += '</select></td>';
+    txt += '</tr>';
+    txt += '<tr>';
+    txt += '<td colspan="2"><input type="checkbox" name="ckNoMoney" id="ckNoMoney"' + (this.noReqMoney==true?' checked':'') + '> Don\'t run jobs that require money</td>';
+    txt += '<td colspan="2"><input type="checkbox" name="ckNoItem" id="ckNoItem"' + (this.noReqItem==true?' checked':'') + '> Don\'t run jobs that require consumables</td>';
+    txt += '</tr>';
+    txt += '<tr>';
+    txt += '<td colspan="4"><input type="checkbox" name="ckBestVegas" id="ckBestVegas"' + (this.bestVegas==true?' checked':'') + '> Run the best Las Vegas Job if possible</td>';
+    txt += '</tr>';
+    txt += '<tr>';
+    txt += '<td>Get HEL</td>';
+    txt += '<td colspan="' + this.lootCols + '">';
+    txt += '<table name="tblDroneSub" id="tblDroneSub">';
+    var ccnt = 0;
+    for (var i=0; i < OGPItems.jobs.length; i++) {
+      if (OGPItems.jobs[i][5]==true && OGPItems.jobs[i][6]!=0) {
+      //if (OGPItems.jobs[i][5]==true) {
+        ccnt+=1;
+        if (ccnt > this.lootCols) {
+          txt += '</tr><tr>';
+          ccnt = 1;
+        }
+        txt += '<td><input type="checkbox" value="' + i + '" name="HEL' + i + '" id="HEL' + i + '"> ' + OGPItems.jobs[i][4] + '</td>';
+      }
+    }
+    txt += '</tr>';
+    txt += '</table>';
+    txt += '</td>';
+    txt += '</tr>';
+    txt += '<tr>';
+    txt += '<td>Get Loot</td>';
+    txt += '<td colspan="' + this.lootCols + '">';
+    txt += '<table name="tblDroneSub" id="tblDroneSub">';
+    var ccnt = 0;
+    for (var i=0; i < OGPItems.jobs.length; i++) {
+      if (OGPItems.jobs[i][5]==false && OGPItems.jobs[i][4]!='' && OGPItems.jobs[i][6]!=0) {
+      //if (OGPItems.jobs[i][5]==false && OGPItems.jobs[i][4]!='') {
+        ccnt+=1;
+        if (ccnt > this.lootCols) {
+          txt += '</tr><tr>';
+          ccnt = 0;
+        }
+        txt += '<td><input type="checkbox" value="' + i + '" name="Loot' + i + '" id="Loot' + i + '"> ' + OGPItems.jobs[i][4] + '</td>';
+      }
+    }
+    txt += '</tr>';
+    txt += '</table>';
+    txt += '</td>';
+    txt += '</tr>';
+    txt += '<tr><th colspan="4><div id="divOGPDroneStart" name="divOGPDroneStart"><input type="button" value="Start Drone" onclick="OGPDrone.run(0,0)"></div></th></tr>';
+    txt += '</table>';
+    OGPDisplay.setHTML('divOGPSetup',txt);
+  
+  };
+  
+
+  this.run = function(step,index) {
+    switch(step) {
+      case 0:
+        OGPDrone.resetSettings();
+        OGPDrone.isRunning = true;
+        var curcookie = '';
+        // Set the robbing settings if robbing city selected.
+        if (e$('ckSTRob').checked && e$('selRobCity').value != '0') e$('ckSTUseFirst').checked=true;
+        if (e$('ckStamina').checked) {OGPDrone.burnStamina = true;curcookie+='stamina|';}
+        if (e$('ckSTFight').checked) {OGPDrone.stamFight = true;curcookie+='stfight|';}
+        if (e$('ckSTRob').checked) {OGPDrone.stamRob = true;curcookie+='strob|';}
+        if (e$('ckSTUseFirst').checked) {OGPDrone.useStaminaFirst = true;curcookie+='usestfirst|';}
+        if (e$('ckBoss').checked) {OGPDrone.stopForBoss = true;curcookie+='stopboss|';}
+        if (e$('ckLevel').checked) {OGPDrone.stopForLevel = true;curcookie+='stoplevel|';}
+        if (e$('ckNoMoney').checked) {OGPDrone.noReqMoney = true;curcookie+='nomoney|'; }
+        if (e$('ckNoItem').checked) {OGPDrone.noReqItem = true;curcookie+='noitem|'; }
+        if (e$('ckBestVegas').checked) {OGPDrone.bestVegas = true;curcookie+='bestvegas|'; }
+        //if (e$('ckBurst').checked) {OGPDrone.BurstMode = true;curcookie+='burst|';}
+        OGPDrone.BurstMode = false;
+        if (e$('ckStopRatio').checked) {OGPDrone.StopRatio = true;curcookie+='stopratio|';}
+        OGPDrone.stamRobCity = e$('selRobCity').value;curcookie+='robcity|' + OGPDrone.stamRobCity + '|';
+        OGPDrone.StopRatioVal = e$('txtStopRatio').value;curcookie+='stopratioval|' + OGPDrone.StopRatioVal + '|';
+        if (isNaN(OGPDrone.StopRatioVal)) {OGPDrone.StopRatio=false;OGPDrone.StopRatioVal='';}
+        OGPDrone.runHELJobs = false;
+        OGPDrone.runLootJobs = false;
+        for (var i=0; i < OGPItems.jobs.length; i++) {
+          if (e$('HEL' + i)) {
+            if (e$('HEL' + i).checked) {
+              OGPDrone.runHELJobs = true;
+              curcookie+='hel|';
+              OGPDrone.HELJobs[OGPDrone.HELJobs.length] = i;
+            }
+          }
+          if (e$('Loot' + i)) {
+            if (e$('Loot' + i).checked) {
+              OGPDrone.runLootJobs = true;
+              curcookie+='loot|';
+              OGPDrone.LootJobs[OGPDrone.LootJobs.length] = i;
+            }
+          }
+        }
+        if (e$('ckChips').checked) {OGPDrone.ChipsDecksOnly = true;curcookie+='chips|';}
+        if (e$('ckBeef').checked) {OGPDrone.BeefPokerOnly = true;curcookie+='beef|';}
+        if (e$('ckSpend').checked) {OGPDrone.spendSkillPoints = true;curcookie+='spendskill|';}
+        OGPDrone.skillToSpend = e$('selSkill').value; curcookie+=e$('selSkill').value + '|';
+        if (e$('ckDelay').checked) {OGPDrone.ForceDelay = true;OGPDrone.ForceDelayVal=e$('txtDelay').value;curcookie+='delay|' + e$('txtDelay').value + '|';}
+        //if (e$('ckDeposit').checked) {OGPDrone.depositMoney = true;curcookie+='deposit|';}
+        if (e$('ckJump').checked) {OGPDrone.BigJump = true;curcookie+='jump|';}
+        if (e$('ckAdjust').checked) {OGPDrone.AdjustTime = true; curcookie+='adjust|';}
+        curcookie=curcookie.substr(0,curcookie.length-1);
+        OGPCookie.createCookie('ogpdrone',curcookie,365);
+        // Got the settings, set up the output
+        var txt = '';
+        txt += '<table id="tblDroneResults" name="tblDroneResults">';
+        txt += '<tr><th colspan="3">Smart Drone Runner</th></tr>';
+        txt += '<tr><td colspan="3">Options:  ';
+        if (OGPDrone.burnStamina) txt += 'Burn Stamina, ';
+        if (OGPDrone.stopForBoss) txt += 'Stop For Boss Job, ';
+        if (OGPDrone.stopForLevel) txt += 'Stop Before Level Up, ';
+        if (OGPDrone.runHELJobs && !OGPDrone.ChipsDecksOnly.checked && !OGPDrone.BeefPokerOnly.checked) txt += 'Run HEL Jobs, ';
+        if (OGPDrone.runLootJobs && !OGPDrone.ChipsDecksOnly.checked && !OGPDrone.BeefPokerOnly.checked) txt += 'Run Loot Jobs, ';
+        if (OGPDrone.ChipsDecksOnly) txt += 'Run Tokens/Decks Jobs Only, ';
+        if (OGPDrone.BeefPokerOnly) txt += 'Run Best/Poker Jobs Only, ';
+        if (OGPDrone.spendSkillPoints) txt += 'Spend Skill Points, ';
+        if (OGPDrone.depositMoney) txt += 'Deposit Money, ';
+        if (OGPDrone.BigJump) txt += 'Max Jump To Next Level, ';
+        if (OGPDrone.AdjustTime) txt += 'Adjust Delay For Bonuses, ';
+        if (OGPDrone.BurstMode) txt += 'Burst Mode, ';
+        if (OGPDrone.useStaminaFirst) txt += 'Use Stamina First, ';
+        if (OGPDrone.stamRob && OGPDrone.burnStamina) txt += 'Use Robbing To Burn Stamina, ';
+        if (OGPDrone.StopRatio) txt += 'Stop At Ratio Of ' + OGPDrone.StopRatioVal + ', ';
+        if (OGPDrone.noReqMoney) txt += 'Don\'t run jobs that cost money, ';
+        if (OGPDrone.noReqItem) txt += 'Don\'t run jobs that require consumables, ';
+        if (OGPDrone.bestVegas) txt += 'Run best Vegas job, ';
+        txt = txt.substr(0,txt.length-2);
+        txt += '</td></tr>';
+        txt += '<tr><td style="width:33%"><div>Exp Needed: </div><div id="divDroneExpNeeded" name="divDroneExpNeeded"></div></td>';
+        txt += '<td style="width:33%"><div>Jobs Run: </div><div id="divDroneJobsRun" name="divDroneJobsRun"></div></td>';
+        txt += '<td style="width:33%"><div>Levels Gained: </div><div id="divDroneLevels" name="divDroneLevels"></div></td>';
+        txt += '</tr>';
+        txt += '<tr><td><div>Eng Remaining: </div><div id="divDroneEngLeft" name="divDroneEngLeft"></div></td>';
+        txt += '<td><div>Free Jobs: </div><div id="divDroneFreeJobs" name="divDroneFreeJobs"></div></td>';
+        txt += '<td><div>Tokens/Decks Left: </div><div id="divDroneTokens" name="divDroneTokens"></div><div>/</div><div id="divDroneDecks" name="divDroneDecks"></div></td>';
+        txt += '</tr>';
+        txt += '<tr><td><div>Cur Ratio: </div><div id="divDroneCurRatio" name="divDroneCurRatio"></div></td>';
+        txt += '<td><div>Extra Exp: </div><div id="divDroneExtraExp" name="divDroneExtraExp"></div></td>';
+        txt += '<td><div>Energy For Boss Job: </div><div id="divDroneBossJob" name="divDroneBossJob"></div></td>';
+        txt += '</tr>';
+        txt += '<tr><td><div>Expected Ratio: </div><div id="divDroneExpRatio" name="divDroneExpRatio"></td>';
+        txt += '<td><div>Extra Money: </div><div id="divDroneExtraMoney" name="divDroneExtraMoney"></div></td>';
+        txt += '<td><div>Energy For Level Jump: </div><div id="divDroneBigJump" name="divDroneBigJump"></div></td>';
+        txt += '</tr>';
+        txt += '<tr><td colspan="3"><div>Total Money: </div><div id="divDroneTotalMoney" name="divDroneTotalMoney"></div></td></tr>';
+        txt += '<tr><td colspan="3"><div>Loot Items: </div><div id="divDroneLoot" name="divDroneLoot"></div></td></tr>';
+        txt += '<tr><td colspan="3"><div style="text-align:center;" id="divDroneStatus" name="divDroneStatus"></div></td></tr>';
+        txt += '</table>';
+        txt += '<div id="divDroneControl" name="divDroneControl"></div>';
+        OGPDisplay.setHTML('divOGPResults',txt);
+        OGPDrone.run(1,0);
+        break;
+    
+      case 1:
+        // Display is all set, fill in the blanks and call functions we need
+        // Find the best job
+        var best = parseFloat(OGPItems.jobs[0][7])/parseFloat(OGPItems.jobs[0][6]);
+        
+        var big = OGPItems.jobs[0][6];
+        for (var i=1; i < OGPItems.jobs.length; i++) {
+          if (parseInt(OGPItems.jobs[i][6]) > 0 && parseInt(OGPItems.jobs[i][6]) > parseInt(OGPItems.jobs[big][6])) {
+            big = i;
+          }
+          if (parseInt(OGPItems.jobs[i][6]) > 0 && parseFloat(OGPItems.jobs[i][7])/parseFloat(OGPItems.jobs[i][6]) > parseFloat(OGPItems.jobs[best][7])/parseFloat(OGPItems.jobs[best][6])) {
+            // Skip Poker game
+            if (OGPItems.jobs[i][0] != 0 || OGPItems.jobs[i][1] != 4 || OGPItems.jobs[i][2] != 26)
+              best = i;
+          }
+        }
+        OGPDrone.jobBest[0] = OGPItems.jobs[best][0];
+        OGPDrone.jobBest[1] = OGPItems.jobs[best][1];
+        OGPDrone.jobBest[2] = OGPItems.jobs[best][2];
+        
+        if (OGPItems.jobs[big][6] > 0) { 
+          OGPDrone.bigjumpid = big;
+          OGPDrone.bigjumpeng = OGPItems.jobs[big][6];
+          OGPDrone.bigjumpexp = OGPItems.jobs[big][7];
+          OGPDisplay.setHTML('divDroneBigJump','<font color="' + OGPConfig.clrGood + '">' + OGPDrone.bigjumpeng + '</font>');
+        } else {
+          OGPDisplay.setHTML('divDroneBigJump','<font color="' + OGPConfig.clrWarning + '">Update Job Payouts</font>');
+        }
+        OGPDisplay.clearSetup();
+        // Check for boss job and tokens/decks
+        if (OGPConfig.currentCity != OGPItems.getCityNum('New York')) {
+          OGPTravel.goCity(OGPItems.getCityNum('New York'),'OGPDrone.run(2,0)');
+        } else {
+            OGPDrone.run(2,0);
+        }
+        break;
+    
+      case 2:
+        // Get the boss job value - Select the boss job tab
+        var url = OGPConfig.MWURLAJAX;
+        url += '&xw_controller=' + OGPItems.cities[OGPConfig.currentCity][2];
+        url += '&xw_action=view&xw_city=' + OGPConfig.currentCity;
+        url += '&tab=4&bar=0';
+        OGPAjax.buildAjax(url,'OGPDrone.run','3,%ix%');
+        break;
+        
+      case 3:
+        var r = OGPAjax.ajax[index].response;
+        OGPDrone.bossjobeng = OGPParser.getSpecificTagValue(r,'bosseng');
+        OGPDrone.bossjobexp = OGPParser.getSpecificTagValue(r,'bossexp');
+        OGPDisplay.setHTML('divDroneBossJob',OGPDrone.stopForBoss?OGPDisplay.setGoodColor(OGPDrone.bossjobeng):'--');
+        // Pull the tokens and decks at the same time
+        OGPDrone.tokencount = OGPParser.getSpecificTagValue(r,'token');
+        OGPDrone.deckcount = OGPParser.getSpecificTagValue(r,'deck');
+        OGPDisplay.setHTML('divDroneTokens',OGPDisplay.setGoodColor(OGPDrone.tokencount));
+        OGPDisplay.setHTML('divDroneDecks',OGPDisplay.setGoodColor(OGPDrone.deckcount));
+        OGPDisplay.setHTML('divDroneControl','<a onclick="javascript:OGPDrone.pause();">Pause</a>');
+        OGPDrone.updateDroneResults();
+        OGPDrone.run(4,0);
+        break;
+        
+      case 4:
+        // Main Loop
+        if (OGPConfig.Session==1 && OGPDrone.isRunning && !OGPDrone.isPaused) {
+          // Calculate the target ratio
+          var tExpNeed = parseInt(OGPConfig.curExpNeeded-OGPConfig.curExp);
+          var tEng = OGPConfig.curEnergy;
+          var canDoBoss = true;
+          var canDoJump = true;
+          
+          // See what our options are at this point
+          if (tEng < OGPDrone.bossjobeng) canDoBoss = false;
+          if (tEng < OGPDrone.bigjumpeng) canDoJump = false;
+
+          // Compute our target ratio based on the settings
+          if (OGPDrone.stopForBoss && canDoBoss) {
+            OGPConfig.curRatio = parseInt((tExpNeed/(tEng-OGPDrone.bossjobeng))*100)/100;
+          } else if ((OGPDrone.BigJump && canDoJump) && (tEng-OGPDrone.bigjumpeng >= 0)) {
+            OGPConfig.curRatio = parseInt((tExpNeed/(tEng-OGPDrone.bigjumpeng))*100)/100;
+          } else { // Regular job
+            OGPConfig.curRatio = parseInt((tExpNeed/tEng)*100)/100;
+          }
+          
+          // Check for Stop For Ratio
+          if (OGPDrone.StopRatio) {
+            if (parseFloat(OGPConfig.curRatio) <= parseFloat(OGPDrone.StopRatioVal)) {
+              OGPDisplay.setHTML('divDroneStatus','Stopping at user selected ratio');
+              OGPDrone.isRunning = false;
+              OGPDrone.isPaused = false;
+              break;
+            }
+          }
+          // Set the most exp and energy we can get/spend
+          var maxexp = tExpNeed-1;
+          var maxeng = tEng;
+
+          if (OGPDrone.burnStamina==true) tExpNeed-=(3*OGPConfig.curStamina);
+
+          // See if skill points need to be used
+          if (OGPDrone.spendSkillPoints==true && OGPConfig.curSkillPoints > 0) {
+            OGPDrone.useSkillPoints(0,0);
+          }
+          
+          // See if stamina needs to be used
+          if (OGPDrone.burnStamina==true && OGPDrone.isburningstamina==false) {
+            // Trap for not enough to rob
+            if ( ((OGPDrone.stamFight==true) && (parseInt(OGPConfig.curStamina) > 0)) || parseInt(OGPConfig.curStamina) >= 20) {
+              OGPDrone.spendStamina(0,0);
+              // Give the flag time to set
+              setTimeout("OGPDrone.run(4,0);",250);
+              break;
+            }
+          }
+
+          // See if we're supposed to be burning stamina before running jobs
+          if (OGPDrone.useStaminaFirst==true && OGPDrone.isburningstamina==true) {
+            OGPDisplay.setHTML('divDroneStatus','Using Stamina Before Running Jobs');
+            // Check again in 3 seconds
+            setTimeout("OGPDrone.run(4,0);",3000);
+            break;
+          }
+          
+          // Adjust the max energy we can spend
+          if (OGPDrone.stopForBoss && canDoBoss) {
+            maxeng -= OGPDrone.bossjobeng;
+          } else if (OGPDrone.BigJump && canDoJump) {
+            maxeng -= OGPDrone.bigjumpeng;
+          }
+
+          // Compute in Mastermind and Wheelman bonuses
+          var mmbonus = parseInt(((maxexp/74)*.03)*37);
+          var wmbonus = parseInt(((maxeng/35)*.03)*74);
+          
+          OGPDrone.curRatio = maxexp/maxeng;
+          OGPDrone.updateDroneResults();
+          
+          // At this point, max energy will have how much energy we can spend without
+          // missing boss or big jump
+
+          // Check for stop for boss
+          if (OGPDrone.stopForBoss && canDoBoss) {
+            if (parseInt(maxeng) <= 15 || parseInt(maxexp) <= 15) {
+              OGPDrone.isRunning = false;
+              OGPDisplay.setHTML('divDroneStatus','Stopping to run boss job.  Reset to FB to avoid running away.');
+              return;
+            }
+          }
+          
+          // Check for stop for level
+          if (OGPDrone.stopForLevel) {
+            if (parseInt(tExpNeed) <= 10) {
+              OGPDrone.isRunning = false;
+              OGPDisplay.setHTML('divDroneStatus','Stopping for level up.');
+              return;
+            }
+          }
+          
+          // See if we can level up
+          var lujob = OGPDrone.findJumpJob(OGPConfig.curEnergy,maxexp);
+          if (lujob > 0) {
+            // Stop if stop for level is checked
+            if (OGPDrone.stopForLevel) {
+              OGPDrone.isRunning = false;
+              OGPDisplay.setHTML('divDroneStatus','Stopping for level up.');
+              return;
+            }
+              
+            // Job that can level us up, if there's less than 5 energy or 5 exp needed, run it
+            if (((parseInt(OGPConfig.curEnergy) - parseInt(OGPItems.jobs[lujob][6])) < 5) || (parseInt(tExpNeed) < 5)) {
+              OGPDrone.runOneJob(0,0,new Array(OGPItems.jobs[lujob][0],OGPItems.jobs[lujob][1],OGPItems.jobs[lujob][2]));
+              return; 
+            }
+          }
+          
+          // Not leveling up, find the right job to run
+          var wrat = parseFloat(maxexp)/parseFloat(maxeng);
+
+          if (OGPDrone.ChipsDecksOnly) {
+            var runit = true;
+            // If Stop for boss or level, make sure we're not going to accidentally level up
+            if ((OGPDrone.stopForBoss && canDoBoss) || OGPDrone.stopForLevel) {
+              if (parseInt(tExpNeed) <= parseInt(OGPDrone.getJobExp(OGPDrone.jobToken)) * 1.5 || parseInt(OGPConfig.curEnergy) <= parseInt(OGPDrone.getJobEng(OGPDrone.jobToken))) {
+                runit = false;              
+              }
+            }
+            if (runit == true) {
+              if (parseInt(OGPDrone.tokencount) > parseInt(OGPDrone.deckcount)) {
+                OGPDrone.runOneJob(0,0,OGPDrone.jobDeck);
+                if (parseInt(OGPConfig.curEnergy) > 400 && parseInt(OGPConfig.curExpNeeded) > 500 && OGPDrone.BurstMode)
+                  OGPDrone.runBurst(0,0,OGPDrone.jobDeck);
+                return;
+              } else {
+                OGPDrone.runOneJob(0,0,OGPDrone.jobToken);
+                if (parseInt(OGPConfig.curEnergy) > 400 && parseInt(OGPConfig.curExpNeeded) > 500 && OGPDrone.BurstMode)
+                  OGPDrone.runBurst(0,0,OGPDrone.jobToken);
+                return;
+              }
+            } 
+          }
+
+          if (OGPDrone.BeefPokerOnly) {
+            var runit = true;
+            // If Stop for boss or level, make sure we're not going to accidentally level up
+            if ((OGPDrone.stopForBoss && canDoBoss) || OGPDrone.stopForLevel) {
+              if (parseInt(tExpNeed) <= parseInt(OGPDrone.getJobExp(OGPDrone.jobToken)) * 1.5 || parseInt(OGPConfig.curEnergy) <= parseInt(OGPDrone.getJobEng(OGPDrone.jobToken))) {
+                runit = false;              
+              }
+            }
+            if (runit == true) {
+              if (parseFloat(OGPConfig.curRatio) >= parseFloat(OGPDrone.getJobRatio(OGPDrone.jobPoker)) && (parseInt(OGPDrone.tokencount) >= 20 && parseInt(OGPDrone.deckcount) >= 20)) {
+                OGPDrone.runOneJob(0,0,OGPDrone.jobPoker);
+                if (parseInt(OGPConfig.curEnergy) > 500 && parseInt(OGPConfig.curExpNeeded) > 1000 && OGPDrone.BurstMode)
+                  OGPDrone.runBurst(0,0,OGPDrone.jobPoker);
+                return;
+              } else {
+                OGPDrone.runOneJob(0,0,OGPDrone.jobBest);
+                if (parseInt(OGPConfig.curEnergy) > 500 && parseInt(OGPConfig.curExpNeeded) > 1000 && OGPDrone.BurstMode)
+                  OGPDrone.runBurst(0,0,OGPDrone.jobBest);
+                return;
+              }
+            }
+          }
+
+          if (OGPDrone.runHELJobs) {
+            for (var i=0; i < OGPDrone.HELJobs.length; i++) {
+              if (parseFloat(OGPDrone.getJobRatio(OGPItems.jobs[OGPDrone.HELJobs[i]])) > parseFloat(OGPConfig.curRatio) && maxexp >= OGPDrone.getJobExp(OGPItems.jobs[OGPDrone.HELJobs[i]])) {
+                OGPDrone.runOneJob(0,0,OGPItems.jobs[OGPDrone.HELJobs[i]]);
+                if (parseInt(OGPConfig.curEnergy) > 2000 && parseInt(OGPConfig.curExpNeeded) > 2500 && OGPDrone.BurstMode)
+                  OGPDrone.runBurst(0,0,OGPItems.jobs[OGPDrone.HELJobs[i]]);
+                return;
+              }
+            }
+          }
+          
+          if (OGPDrone.runLootJobs) {
+            for (var i=0; i < OGPDrone.LootJobs.length; i++) {
+              if (parseFloat(OGPDrone.getJobRatio(OGPItems.jobs[OGPDrone.LootJobs[i]])) >= parseFloat(OGPConfig.curRatio) && maxexp >= OGPDrone.getJobExp(OGPItems.jobs[OGPDrone.LootJobs[i]])) {
+                OGPDrone.runOneJob(0,0,OGPItems.jobs[OGPDrone.LootJobs[i]]);
+                if (parseInt(OGPConfig.curEnergy) > 1500 && parseInt(OGPConfig.curExpNeeded) > 2000 && OGPDrone.BurstMode)
+                  OGPDrone.runBurst(0,0,OGPItems.jobs[OGPDrone.LootJobs[i]]);
+                return;
+              }
+            }
+          }
+          
+          // Check for best Vegas job
+          var bvj = -1;
+          if (OGPDrone.bestVegas == true) {
+            for (var i=0; i < OGPItems.jobs.length; i++ ) {
+              if (parseInt(OGPItems.jobs[i][0])==4) {
+                if (parseInt(OGPItems.jobs[i][8])==0 || OGPDrone.noReqMoney==false) {
+                  if (parseInt(OGPItems.jobs[i][9])==0 || OGPDrone.noReqItem==false) {
+                    if (parseFloat(OGPDrone.getJobRatio(OGPItems.jobs[i])) >= parseFloat(OGPConfig.curRatio) && maxexp >= OGPDrone.getJobExp(OGPItems.jobs[i])) {
+                      if (bvj == -1) 
+                        bvj = i;
+                      else
+                        if (parseFloat(OGPItems.jobs[i][7])/parseFloat(OGPItems.jobs[i][6]) > parseFloat(OGPItems.jobs[bvj][7])/parseFloat(OGPItems.jobs[bvj][6])) {
+                          bvj = i;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          if (bvj != -1) {
+            OGPDrone.runOneJob(0,0,new Array(OGPItems.jobs[bvj][0],OGPItems.jobs[bvj][1],OGPItems.jobs[bvj][2]));
+            return;
+          }
+            
+          // No special circumstances, find the best job
+          var regjob = OGPDrone.findJob(maxeng,maxexp);
+          //if (lujob > 0)
+          //  regjob = OGPDrone.findJob(maxeng-OGPItems.jobs[lujob][6],maxexp);
+          if (regjob >= 0) {
+            OGPDrone.runOneJob(0,0,new Array(OGPItems.jobs[regjob][0],OGPItems.jobs[regjob][1],OGPItems.jobs[regjob][2]));
+            if (parseInt(OGPConfig.curEnergy) > 1500 && parseInt(OGPConfig.curExpNeeded) > 2000 && OGPDrone.BurstMode)
+              OGPDrone.runBurst(0,0,new Array(OGPItems.jobs[regjob][0],OGPItems.jobs[regjob][1],OGPItems.jobs[regjob][2]));
+            return;
+          }
+          
+          // No regular job, no jump job, need more energy
+          OGPDisplay.setHTML('divDroneStatus','No jobs available to run, waiting for energy or stamina');
+          OGPDrone.jobwaittimer = setTimeout("OGPDrone.run(4,0);",30000);
+          return;
+        } else {
+          if (OGPConfig.Session == 0)
+            OGPDisplay.addLine('Stopping Drone Runner - Session Timeout',OGPConfig.clrFatal);
+          else 
+          {
+            OGPDisplay.addLine('Stopping based on user selections',OGPConfig.clrAction);
+          }
+        }
+        break;
+    }
+  
+  };
+  
+  this.runBurst = function(step,index,job) {
+    switch(step) {
+      case 0:
+        var url  = OGPConfig.MWURLAJAX + OGPConfig.urlRunJob;
+        url += '&xw_controller=' + OGPDrone.specialcontroller;
+        if (OGPDrone.specialcontroller != OGPItems.cities[OGPConfig.currentCity-1][2])
+          url += '&no_load=1';
+        url += '&xw_city=' + OGPConfig.currentCity;
+        url += '&' + OGPItems.cities[OGPConfig.currentCity-1][5] + '=' + OGPDrone.currentJob[1];
+        url += '&job=' + OGPDrone.currentJob[2];
+        url += '&tmp=' + OGPDrone.jobtmpkey;
+        if (parseFloat(OGPDrone.expRatio) <= parseFloat(OGPDrone.getJobRatio(OGPDrone.jobPoker)) && (parseInt(OGPDrone.jobsrun) >= 100) || OGPDrone.ChipsDecksOnly || OGPDrone.BeefPokerOnly) {
+          for (var i = 0; i < (5-OGPDrone.burstCount); i++) {
+            OGPDrone.burstCount++;
+            setTimeout("OGPAjax.buildAjax('" + url + "','OGPDrone.runBurst','1,%ix%,0');",i*250);
+          }
+          break;
+        }
+        break;
+      case 1:
+        OGPDrone.burstCount--;
+        if (OGPAjax.ajax[index]) {
+          var r = OGPAjax.ajax[index].response;
+          OGPParser.parseJobResults(r);
+          if (res['jobResults'] == 'Completed') {
+            // Job ran successfully
+            OGPDrone.jobsrun++;
+            if (res['jobExtraExp']) {OGPDrone.extraexp++;OGPDrone.totalextraexp+=res['jobExtraExp'];}
+            if (res['jobEnergySpent']=='0') OGPDrone.freejobs++;
+            if (!isNaN(parseInt(res['jobMoney']))) OGPDrone.totalmoney[OGPConfig.currentCity-1] += parseInt(res['jobMoney']);
+            if (!isNaN(parseInt(res['jobExtraMoney']))) {OGPDrone.extramoney++;OGPDrone.totalmoney[OGPConfig.currentCity-1]+=parseInt(res['jobExtraMoney']);}
+            // Check the loot
+            if (res['jobLoot']) {
+              var lindex = -1;
+              for (var i = 0; i < OGPDrone.lootitems.length; i++) {
+                if (OGPDrone.lootitems[i][1]==res['jobLoot']) 
+                  lindex = i;
+              }
+              if (lindex == -1) {
+                OGPDrone.lootitems[OGPDrone.lootitems.length] = new Array(1,res['jobLoot']);
+              } else {
+                OGPDrone.lootitems[lindex][0] = parseInt(OGPDrone.lootitems[lindex][0]) + 1;
+              }
+            }
+            OGPDrone.tokencount = OGPParser.getSpecificTagValue(r,'token')?OGPParser.getSpecificTagValue(r,'token'):OGPDrone.tokencount;
+            OGPDrone.deckcount = OGPParser.getSpecificTagValue(r,'deck')?OGPParser.getSpecificTagValue(r,'deck'):OGPDrone.deckcount;
+            // Mark the last100 array with the results
+            var tval=0;
+            if (res['jobEnergySpent']=='0') tval+=1;
+            if (res['jobExtraExp']) tval+=2;
+            OGPDrone.last100[OGPDrone.locntr++] = tval;
+            if (OGPDrone.locntr == 100) OGPDrone.locntr = 0;
+            OGPDrone.updateDroneResults();
+          }
+        } 
+        break;
+    }       
+  };
+
+  this.runOneJob = function(step,index,job) {
+    switch(step) {
+      case 0:
+        OGPDrone.currentJob = job;
+        OGPDisplay.setHTML('divDroneStatus','Running ' + OGPDrone.getJobName(job));
+        //if (!confirm('Run job?')) return;
+        if (OGPConfig.currentCity != OGPItems.getCityNum(job[0]))
+          OGPTravel.goCity(OGPItems.getCityNum(job[0]),'OGPDrone.runOneJob(1,0,0)');
+        else
+          OGPDrone.runOneJob(1,0,0);
+        break;
+        
+      case 1:
+        // In the right city, select the job tab
+        if (OGPConfig.currentCity == 5) OGPDrone.curJobTab = -1;
+        if (OGPDrone.curJobTab != OGPDrone.currentJob[1]) {
+          var url = OGPConfig.MWURLAJAX + OGPConfig.urlSwitchJobTab;
+          url += '&xw_city=' + OGPConfig.currentCity;
+          url += '&xw_controller=' + OGPItems.cities[OGPConfig.currentCity-1][2];
+          url += '&' + OGPItems.cities[OGPConfig.currentCity-1][5] + '=' + OGPDrone.currentJob[1];
+          url += '&tmp=' + OGPConfig.tmpkey;
+          OGPAjax.buildAjax(url,'OGPDrone.runOneJob','2,%ix%,0');
+          OGPDrone.curJobTab = OGPDrone.currentJob[1];
+        } else {
+          OGPDrone.runOneJob(2,-1,0);
+        }
+        break;
+    
+      case 2:
+        // On the right tab, run the job
+        if (index != -1) {
+          OGPDrone.jobtmpkey = OGPParser.setTempKey(OGPAjax.ajax[index].response,'job');
+        }
+        var url  = OGPConfig.MWURLAJAX + OGPConfig.urlRunJob;
+        //url += '&xw_controller=' + OGPItems.cities[OGPConfig.currentCity-1][2];
+        url += '&xw_controller=' + OGPDrone.specialcontroller;
+        if (OGPDrone.specialcontroller != OGPItems.cities[OGPConfig.currentCity-1][2])
+          url += '&no_load=1';
+        url += '&xw_city=' + OGPConfig.currentCity;
+        url += '&' + OGPItems.cities[OGPConfig.currentCity-1][5] + '=' + OGPDrone.currentJob[1];
+        url += '&job=' + OGPDrone.currentJob[2];
+        url += '&tmp=' + OGPDrone.jobtmpkey;
+        OGPAjax.buildAjax(url,'OGPDrone.runOneJob','3,%ix%,0');
+        break;
+        
+      case 3:
+        // Job ran, parse the results
+        if (OGPAjax.ajax[index]) {
+          var r = OGPAjax.ajax[index].response;
+          //e$('divOGPDebug').innerHTML = '<textarea>' + r + '</textarea>' + r;
+          //return;
+          OGPParser.parseJobResults(r);
+          OGPTimers.updateStats(1,index);
+          if (res['jobResults'] == 'Completed') {
+            // Update the job tempkey
+            OGPDrone.jobtmpkey = OGPParser.setTempKey(r,'job')?OGPParser.setTempKey(r,'job'):OGPDrone.jobtmpkey;
+            // Job ran successfully
+            OGPDrone.jobsrun++;
+            if (res['jobExtraExp']) {OGPDrone.extraexp++;OGPDrone.totalextraexp+=res['jobExtraExp'];}
+            if (res['jobEnergySpent']=='0') OGPDrone.freejobs++;
+            //if (res['jobBadMoney']) OGPDrone.totalmoney[OGPConfig.currentCity]-=res['jobBadMoney'];
+            if (!isNaN(parseInt(res['jobMoney']))) OGPDrone.totalmoney[OGPConfig.currentCity-1] += parseInt(res['jobMoney']);
+            if (!isNaN(parseInt(res['jobExtraMoney']))) {OGPDrone.extramoney++;OGPDrone.totalmoney[OGPConfig.currentCity-1]+=parseInt(res['jobExtraMoney']);}
+
+            // Check the loot
+            if (res['jobLoot']) {
+              var lindex = -1;
+              for (var i = 0; i < OGPDrone.lootitems.length; i++) {
+                if (OGPDrone.lootitems[i][1]==res['jobLoot']) 
+                  lindex = i;
+              }
+              if (lindex == -1) {
+                OGPDrone.lootitems[OGPDrone.lootitems.length] = new Array(1,res['jobLoot']);
+              } else {
+                OGPDrone.lootitems[lindex][0] = '*' + (parseInt(OGPDrone.lootitems[lindex][0]) + 1);
+              }
+            }
+            OGPDrone.tokencount = OGPParser.getSpecificTagValue(r,'token')?OGPParser.getSpecificTagValue(r,'token'):OGPDrone.tokencount;
+            OGPDrone.deckcount = OGPParser.getSpecificTagValue(r,'deck')?OGPParser.getSpecificTagValue(r,'deck'):OGPDrone.deckcount;
+
+            // Mark the last100 array with the results
+            var tval=0;
+            if (res['jobEnergySpent']=='0') tval+=1;
+            if (res['jobExtraExp']) tval+=2;
+            OGPDrone.last100[OGPDrone.locntr++] = tval;
+            if (OGPDrone.locntr == 100) OGPDrone.locntr = 0;
+
+          } else {
+            // Unsuccesful job run
+            if (res['timeout']) {
+              OGPDrone.isRunning = false;
+              OGPDisplay.setHTML('divDroneStatus','<font style="color:' + OGPConfig.clrFatal + '">Session has timed out...stopping</font>');
+              OGPDisplay.addLine('Session has timed out...stopping drone runner',OGPConfig.clrFatal);
+              return;
+            } 
+            if (r.indexOf('session has timed out') > 0) {
+              // Wrong temp key, need a new one
+              OGPDisplay.setHTML('divDroneStatus','<font style="color:' + OGPConfig.clrWarning + '">Temp key has expired, attempting to refresh key</font>');
+              OGPConfig.currentCity = -1;
+              OGPDrone.run(4,0);
+              return; 
+            }
+            if (r.indexOf('need more energy') > 0 && OGPConfig.curEnergy < 100) {
+              // Out of energy, wait a while and try again
+              //e$('divOGPDebug').innerHTML += '<textarea>' + r + '</textarea>' + r;
+              OGPDisplay.setHTML('divDroneStatus','Not enough energy...waiting');
+              //OGPDrone.jobwaittimer = setTimeout("OGPDrone.run(4,0);",120000);
+              return;
+            }
+            if (res['jobResults']=='Failed') {
+              // Job run hung
+              OGPDisplay.setHTML('divDroneStatus','<font style="color:' + OGPConfig.clrWarning + '">Job did not run correctly, attempting to recover</font>');
+
+              // Catch for Zynga's Episode 7 locking problem
+              if (parseInt(OGPDrone.currentJob[1]) == 8 && parseInt(OGPItems.getCityNum(OGPDrone.currentJob[0]))==4) {
+                // Episode 7 got locked probably
+                //e$('divOGPDebug').innerHTML += '<textarea>' + r + '</textarea>' + r;
+                OGPDrone.fix7Lock(0,0);
+                break;
+              }
+
+              // Reload the city and try again
+              var tcity = OGPConfig.currentCity;
+              OGPConfig.currentCity = -1;
+              //OGPTravel.goCity(tcity,"OGPDrone.run(4,0)");
+              OGPDrone.jobwaittimer = setTimeout("OGPDrone.run(4,0);",2000);
+              return; 
+            }
+            OGPDisplay.addLine('AJAX back, something went horribly wrong',OGPConfig.clrFatal);
+            break;
+          }
+
+        } else {
+          // Really bad result
+          OGPDisplay.addLine('Unexpected result...debug',OGPConfig.clrFatal);
+          break;
+        }
+        //OGPDrone.updateDroneResults();
+ 
+        // Check to see if the delay needs to be adjusted based on the payouts
+        if (parseInt(OGPDrone.jobsrun) >= 100) {
+          // Conditions met, figure out the delay
+          var tbonus = 0;
+          for (var i=0; i < 100; i++) {
+            if (this.last100[i] == 1 || this.last100[i] == 3) tbonus += 1.0;
+            if (this.last100[i] == 2 || this.last100[i] == 3) tbonus += 0.5;
+          }
+          var cp=0;
+          var cr = (OGPConfig.curExpNeeded-OGPConfig.curExp)/OGPConfig.curEnergy;
+          if (tbonus > 0) cp = tbonus/100.0;
+          var joben = OGPDrone.getJobEng(OGPDrone.jobBest);
+          var jobex = OGPDrone.getJobExp(OGPDrone.jobBest);
+          var crun = parseInt(OGPConfig.curEnergy/joben); // Number of jobs we can run
+          var eexp = parseInt(crun * (jobex * cp)); // Expected amount of extra energy based on current bonus percentage
+          var ttr = crun * ((OGPDrone.cDelay/1000) + .25); // Time it will take to burn energy (1/4 sec per job + delay)
+          var eeng = 2 * (ttr/150); // Extra energy gained during run
+          var expneeded = OGPConfig.curExpNeeded-OGPConfig.curExp; // Experience needed to level
+          var totalexp = eexp + (parseInt(.9 * crun) * jobex); // Total exp gained by burning our energy (90% to give more accurate ratios)
+          var expleft = expneeded-totalexp;
+          var engleft = OGPConfig.curEnergy-(parseInt(.9 * crun) *joben); // (90% for more accurate ratio)
+          var er = expleft/engleft;
+          //OGPDisplay.addLine(totalexp + ' ::: ' + expleft + ' ::: ' + engleft + ' ::: ' + er,'#fff');
+          
+          //var er = ((OGPConfig.curExpNeeded-OGPConfig.curExp)-(((OGPConfig.curEnergy/35)*cp)*OGPDrone.getJobExp(OGPDrone.jobBest)))/(OGPConfig.curEnergy + (2 * (ttr/150)));
+          OGPDrone.expRatio = er;
+          OGPDrone.cDelay = (er-cr)*50000;
+          OGPDrone.cBonus = parseInt(cp*10000)/100;
+          
+          if (OGPDrone.cDelay < 0) OGPDrone.cDelay = 0;
+          // Adjust for ratio below Beef
+          if (parseFloat(OGPConfig.curRatio) <= OGPDrone.getJobRatio(OGPDrone.jobBest))
+            OGPDrone.cDelay = 0;
+          else {
+            if (OGPDrone.cDelay > 5000) OGPDrone.cDelay = 5000; // Max 5 second wait
+            if (OGPDrone.cDelay > 500 && OGPDrone.AdjustTime)
+              OGPDisplay.setHTML('divDroneStatus','Waiting ' + parseInt(OGPDrone.cDelay)/1000 + ' seconds based on bonus ratio');
+          }
+          //e$('divOGPDebug').innerHTML += 'TBonus: ' + tbonus + ' ::: CR: ' + cr + ' ::: CP: ' + cp + ' ::: TTR: ' + ttr + ' ::: ER: ' + er + ' ::: Delay: ' + OGPDrone.cDelay + '<br>';
+          if (OGPDrone.AdjustTime) {
+            setTimeout("OGPDrone.run(4,0);",OGPDrone.cDelay);
+            break;
+          }
+        }
+        // If we're forcing a delay, wait the right number of seconds
+        if (OGPDrone.ForceDelay==true) {
+          OGPDisplay.setHTML('divDroneStatus','Waiting ' + OGPDrone.ForceDelayVal + ' seconds to run next job');
+          setTimeout("OGPDrone.run(4,0);",parseFloat(OGPDrone.ForceDelayVal)*1000);
+          break;
+        }
+        // This job has been processed, start the next one
+        if (parseInt(OGPConfig.curExpNeeded)-parseInt(OGPConfig.curExp) < 350)
+          setTimeout("OGPDrone.run(4,0);",25);
+        else
+          setTimeout("OGPDrone.run(4,0);",25);
+        break;
+    }
+  
+  };
+
+  this.fix7Lock = function(step,index) {
+    switch (step) {
+      case 0:
+        OGPDisplay.setHTML('divDroneStatus','Level 7 may have locked...attempting to unlock');
+        OGPTravel.goCity(1,'OGPDrone.fix7Lock(1,0)');
+        break;
+
+      case 1:
+        OGPTravel.goCity(4,'OGPDrone.fix7Lock(2,0)');
+        break;
+                      
+      case 2:
+        // Select tab 4
+        var url = OGPConfig.MWURLAJAX + OGPConfig.urlSwitchJobTab;
+        url += '&xw_city=' + OGPConfig.currentCity;
+        url += '&xw_controller=' + OGPItems.cities[OGPConfig.currentCity-1][2];
+        url += '&' + OGPItems.cities[OGPConfig.currentCity-1][5] + '=4';
+        url += '&tmp=' + OGPConfig.tmpkey;
+        OGPAjax.buildAjax(url,'OGPDrone.fix7Lock','3,%ix%');
+        OGPDrone.curJobTab = OGPDrone.currentJob[1];
+        break;
+
+      case 3:
+        // Select tab 6
+        OGPDisplay.showPage(index,'inner_page');
+        var url = OGPConfig.MWURLAJAX + OGPConfig.urlSwitchJobTab;
+        url += '&xw_city=' + OGPConfig.currentCity;
+        url += '&xw_controller=' + OGPItems.cities[OGPConfig.currentCity-1][2];
+        url += '&' + OGPItems.cities[OGPConfig.currentCity-1][5] + '=6';
+        url += '&tmp=' + OGPConfig.tmpkey;
+        OGPAjax.buildAjax(url,'OGPDrone.fix7Lock','4,%ix%');
+        OGPDrone.curJobTab = OGPDrone.currentJob[1];
+        break;
+
+      case 4:
+        // Select tab 6
+        OGPDisplay.showPage(index,'inner_page');
+        var url = OGPConfig.MWURLAJAX + OGPConfig.urlSwitchJobTab;
+        url += '&xw_city=' + OGPConfig.currentCity;
+        url += '&xw_controller=' + OGPItems.cities[OGPConfig.currentCity-1][2];
+        url += '&' + OGPItems.cities[OGPConfig.currentCity-1][5] + '=7';
+        url += '&tmp=' + OGPConfig.tmpkey;
+        OGPAjax.buildAjax(url,'OGPDrone.fix7Lock','5,%ix%');
+        OGPDrone.curJobTab = OGPDrone.currentJob[1];
+        break;
+
+      case 5:
+        // Go back and try to run the real job again
+        OGPDisplay.showPage(index,'inner_page');
+        OGPDrone.run(4,0);
+        break;
+    }
+  };
+
+  this.pause = function() {
+    OGPDrone.isPaused = true;
+    if (OGPDrone.jobwaittimer) clearTimeout(OGPDrone.jobwaittimer);
+    OGPDisplay.setHTML('divDroneControl','<a onclick="OGPDrone.resume();">Resume</a>');
+  };
+
+  this.resume = function() {
+    OGPDisplay.setHTML('divDroneControl','<a onclick="OGPDrone.pause();">Pause</a>');
+    OGPDrone.isPaused = false;
+    OGPDrone.run(4,0);
+  };
+  
+  this.findJumpJob = function(eng,exp) {
+    // Find the biggest job that can be run with the energy
+    var goodjob = -1;
+    for (var i = 0; i < OGPItems.jobs.length; i++) {
+      if (parseInt(OGPItems.jobs[i][6]) > 0 && parseInt(OGPItems.jobs[i][6]) <= parseInt(eng)) {
+        if (parseInt(OGPItems.jobs[i][7]) >= parseInt(exp)) {
+          if (goodjob == -1)
+            goodjob = i;
+          else
+            if (parseInt(OGPItems.jobs[i][7]) > parseInt(OGPItems.jobs[goodjob][7]))
+              goodjob = i;
+        }
+      }
+    } 
+    return goodjob;
+  };
+  
+  this.canRunTokenDeck = function(job,eng,exp) {
+    // Not with HEL
+    if (OGPDrone.runHELJobs || OGPDrone.runLootJobs) return false;
+    for (var i=0; i < OGPItems.jobs.length; i++) {
+      if (OGPItems.jobs[i][0] == job[0] && OGPItems.jobs[i][1] == job[1] && OGPItems.jobs[i][2]==job[2]) {
+        if ((parseFloat(OGPItems.jobs[i][7])/parseFloat(OGPItems.jobs[i][6])) >= (parseFloat(exp)/parseFloat(eng))) {
+          if (parseFloat(OGPItems.jobs[i][7]*1.5) < parseFloat(exp))
+            return i;
+        }
+      }
+    }
+    return false;
+  };
+  
+  this.findJob = function(eng,exp) {
+    // Find a job for eng or less that won't give back more than exp
+    var goodjob = -1;
+
+    if (parseInt(OGPDrone.tokencount) <= parseInt(OGPDrone.deckcount)) {
+      var job = OGPDrone.canRunTokenDeck(OGPDrone.jobToken,eng,exp);
+      if (job != false) {
+        return job;
+      } 
+    } else {
+      var job = OGPDrone.canRunTokenDeck(OGPDrone.jobDeck,eng,exp);
+      if (job != false) {
+        return job;
+      }
+    }
+
+    for (var i = 0; i < OGPItems.jobs.length; i++) {
+      if (parseInt(OGPItems.jobs[i][6]) > 0 && parseInt(OGPItems.jobs[i][6]) <= parseInt(eng) && (parseFloat(OGPItems.jobs[i][7])*1.5) < parseFloat(exp)) {
+        var usejob = true;
+        // Skip jobs that require money or consumables if selected
+        if (parseInt(OGPItems.jobs[i][8])==1 && OGPDrone.noReqMoney==true) usejob = false;
+        if (parseInt(OGPItems.jobs[i][9])==1 && OGPDrone.noReqItem==true) usejob = false; 
+        
+        // Avoid poker if no chips or decks or ratio is below poker
+        //e$('divOGPDebug').innerHTML += (OGPItems.jobs[i][3]) + ' - ' + (OGPItems.jobs[i][0]==OGPDrone.jobPoker[0]) + ' - ' + (OGPItems.jobs[i][1]==OGPDrone.jobPoker[1]) + ' - ' + (OGPItems.jobs[i][2]==OGPDrone.jobPoker[2]) + '<br>';
+        if (parseInt(OGPItems.jobs[i][0])==parseInt(OGPDrone.jobPoker[0]) && parseInt(OGPItems.jobs[i][1])==parseInt(OGPDrone.jobPoker[1]) && parseInt(OGPItems.jobs[i][2])==parseInt(OGPDrone.jobPoker[2])) {
+          if (parseInt(OGPDrone.deckcount) < parseInt(20) || parseInt(OGPDrone.tokencount) < parseInt(20)) usejob = false;
+          if (parseFloat(OGPConfig.curRatio) <= (parseFloat(OGPDrone.getJobRatio(OGPDrone.jobPoker)))) usejob = false;
+        }
+        if (usejob == true) {
+          if (goodjob==-1) {
+            goodjob = i;
+          }
+          else
+            if (parseFloat(OGPItems.jobs[i][7])/parseFloat(OGPItems.jobs[i][6]) > parseFloat(OGPItems.jobs[goodjob][7])/parseFloat(OGPItems.jobs[goodjob][6])) {
+              goodjob = i;
+            }
+        }
+      }
+    }
+    /*
+    // If no viable job, run Poker or Settle A Beef if it won't put us over the top
+    if (goodjob == -1) {
+      if (OGPDrone.deckcount >= 20 && OGPDrone.tokencount >= 20 && exp <= OGPDrone.getJobEng(OGPDrone.jobPoker)) {
+        goodjob = OGPDrone.getJobNumber(OGPDrone.jobPoker);
+      } 
+    }
+    if (goodjob == -1) {
+      if (exp <= OGPDrone.getJobEng(OGPDrone.jobBest)) {
+        goodjob = OGPDrone.getJobNumber(OGPDrone.jobPoker);
+      }
+    }
+    */
+    return goodjob;
+  }
+
+  this.setBigJump = function() {
+    // Set up for the big jump to the next level
+    var bEng = parseInt(OGPConfig.curEnergy) - parseInt(OGPDrone.bigjumpeng);
+    var bExp = parseInt(OGPConfig.curExpNeeded) - parseInt(OGPConfig.curExp);
+    // Try to find a job to run
+    var job = OGPDrone.findJob(bEng,bExp);
+    if (job >= 0 && bExp > 1) {
+      // Run the good job unless we're low on energy
+      // *** TODO - Add code to handle waiting to avoid mugging job
+      OGPDrone.runOneJob(0,0,new Array(OGPItems.jobs[job][0],OGPItems.jobs[job][1],OGPItems.jobs[job][2]));
+    } else { 
+      // Only thing left to do is the big job if it gets us there
+      if (bEng >= 0 && bExp <= parseInt(OGPItems.jobs[OGPDrone.bigjumpid][7])) {
+        OGPDisplay.addLine('Running Big Job - ' + OGPItems.jobs[OGPDrone.bigjumpid][3],OGPConfig.clrAction);
+        OGPDrone.runOneJob(0,0,new Array(OGPItems.jobs[OGPDrone.bigjumpid][0],OGPItems.jobs[OGPDrone.bigjumpid][1],OGPItems.jobs[OGPDrone.bigjumpid][2]));
+      } else {
+        OGPDisplay.addLine('Not enough exp from big job to level, running normal jobs',OGPConfig.clrAction);
+        OGPDrone.runOneJob(0,0,OGPDrone.jobBest);
+      }
+    }
+  };
+  
+  this.getJobName = function(arJob) {
+    for (var i=0; i < OGPItems.jobs.length; i++)
+      if (OGPItems.jobs[i][0]==arJob[0] && OGPItems.jobs[i][1]==arJob[1] && OGPItems.jobs[i][2]==arJob[2])
+        return(OGPItems.jobs[i][3]);
+    return ' - Job name not available';
+  };
+  
+  this.getJobNumber = function(arJob) {
+    for (var i=0; i < OGPItems.jobs.length; i++)
+      if (OGPItems.jobs[i][0]==arJob[0] && OGPItems.jobs[i][1]==arJob[1] && OGPItems.jobs[i][2]==arJob[2]) {
+        return(i);
+      }
+    return -1;
+  };
+  
+  this.getJobRatio = function(arJob) {
+    for (var i=0; i < OGPItems.jobs.length; i++)
+      if (OGPItems.jobs[i][0]==arJob[0] && OGPItems.jobs[i][1]==arJob[1] && OGPItems.jobs[i][2]==arJob[2]) {
+        return(parseFloat((OGPItems.jobs[i][7]/OGPItems.jobs[i][6])*100)/100);
+      }
+    return 999999;
+  };
+
+  this.getJobEng = function(arJob) {
+    for (var i=0; i < OGPItems.jobs.length; i++)
+      if (OGPItems.jobs[i][0]==arJob[0] && OGPItems.jobs[i][1]==arJob[1] && OGPItems.jobs[i][2]==arJob[2])
+        return(parseInt(OGPItems.jobs[i][6]));
+    return 0;
+  };
+  
+  this.getJobExp = function(arJob) {
+    for (var i=0; i < OGPItems.jobs.length; i++)
+      if (OGPItems.jobs[i][0]==arJob[0] && OGPItems.jobs[i][1]==arJob[1] && OGPItems.jobs[i][2]==arJob[2])
+        return(parseInt(OGPItems.jobs[i][7]));
+    return 0;
+  };
+  
+  this.useSkillPoints = function(step,index) {
+    if (OGPDrone.isRunning == false || OGPDrone.isPaused==true) return;
+    switch(step) {
+      case 0:
+        var url = OGPConfig.MWURLAJAX + OGPConfig.urlSpendSkillPoints;
+        url += '&upgrade_key=' + OGPDrone.skillToSpend + '&upgrade_amt=';
+        if (parseInt(OGPConfig.curSkillPoints) >= 5)
+          url += '5';
+        else 
+          url += '1';
+        //for (var i=0; i < 10; i++)
+        OGPAjax.buildAjax(url,'OGPDrone.useSkillPoints','1,%ix%');
+        break;
+      case 1:
+        // Skill points spend, update the stats
+        OGPTimers.updateStats(1,index);
+        if (parseInt(OGPConfig.curSkillPoints) > 0)
+          OGPDrone.useSkillPoints(0,0);
+        break;
+    }
+  };
+  
+  this.spendStamina = function(step,index) {
+    // Make sure that we aren't spending when it could cause us to level up accidentally
+    if (OGPConfig.curExpNeeded < 25) return;
+    if (OGPDrone.isRunning == false || OGPDrone.isPaused==true) return;
+    switch(step) {
+      case 0:
+        OGPDrone.isburningstamina = true;
+        // Set the timeout to reset every 2 minutes to false to keep from hanging
+        setTimeout("OGPDrone.isburningstamina=false;",15000);
+        // Check if we're robbing. If so, jump to the other section
+        if (OGPDrone.stamRob == true) {
+          OGPDrone.spendStamina(10,0);
+          break;
+        }
+        
+        // Check for healing
+        if (parseInt(OGPConfig.curHealth) < 25) {
+          OGPDrone.spendStamina(1,0);
+          break;
+        }
+          
+        if (parseInt(OGPConfig.curStamina) > 0) {
+          // Load the user profile
+          var url = OGPConfig.MWURLAJAX + OGPConfig.urlProfile;
+          url += '&xw_city=' + OGPConfig.currentCity + '&user=2&tmp=' + OGPConfig.tmpkey;
+          OGPAjax.buildAjax(url,'OGPDrone.spendStamina','3,%ix%');
+        } else {
+          OGPDrone.isburningstamina = false;
+        }
+        break;
+      
+      case 1:
+        // Heal wherever we are
+        var url = OGPConfig.MWURLAJAX + OGPConfig.urlHeal + '&xw_city=' + OGPConfig.currentCity;
+        OGPAjax.buildAjax(url,'OGPDrone.spendStamina','2,%ix%');
+        break;
+        
+      case 2:
+        // See if we healed
+        if (OGPAjax.ajax[index]) {
+          OGPTimers.updateStats(1,index);
+          var r = OGPAjax.ajax[index].response;
+          if (parseInt(OGPConfig.curHealth) < 25) {
+            // Couldn't heal, wait 15 seconds and try again
+            setTimeout('OGPDrone.spendStamina(1,0)',15000);
+            break; 
+          }
+          // Healed, start over
+          OGPDrone.spendStamina(0,0);
+        } else {
+          // No response from the call, try again in 15 seconds
+          setTimeout('OGPDrone.spendStamina(1,0)',15000);
+        }
+        break;
+          
+      case 3:
+        // Get the ID and temp fight key
+        if (OGPAjax.ajax[index]) {
+          var r = OGPAjax.ajax[index].response;
+          OGPDrone.fightkey = OGPParser.setTempKey(r,'fight');
+          
+          // No healing necessary attack once
+          var url = OGPConfig.MWURLAJAX + OGPConfig.urlAttack;
+          url += '&xw_city=' + OGPConfig.currentCity;
+          url += '&opponent_id=p|3&tmp=' + OGPDrone.fightkey;
+          OGPAjax.buildAjax(url,'OGPDrone.spendStamina','4,%ix%');
+          break;
+        }
+        break; 
+      
+      case 4:
+        if (OGPAjax.ajax[index]) {
+          OGPTimers.updateStats(1,index);
+          // Go again
+          OGPDrone.spendStamina(0,0);
+        }
+        break;
+
+      case 10: // Robbing section
+        // If stamina is too low, just bail
+        if (OGPConfig.curStamina < 3) {
+          OGPDrone.isburningstamina = false;
+          break;
+        }
+        
+        // If we're not in the robbing city, go back there
+        if (parseInt(OGPDrone.stamRobCity) != 0) {
+          if (parseInt(OGPConfig.currentCity) != parseInt(OGPDrone.stamRobCity)) {
+            OGPTravel.goCity(OGPDrone.stamRobCity,'OGPDrone.spendStamina(10,0)');
+            break;
+          }
+        }
+        
+        // Load the robbing page
+        var url = OGPConfig.MWURLAJAX + OGPConfig.urlLoadRobbing;
+        url += '&xw_city=' + OGPConfig.currentCity;
+        OGPAjax.buildAjax(url,'OGPDrone.spendStamina','11,%ix%');
+        break;
+        
+      case 11:
+        if (OGPDrone.isRunning == false) {
+          break;
+        }
+        var r = OGPAjax.ajax[index].response;
+        OGPTimers.updateStats(1,index);
+        // Load the robbing array
+        OGPDrone.arNoStamina = false;
+        for (var i=0; i < 9; i++) {
+          OGPDrone.arRobSpots[i] = null;
+          var s = r.indexOf('id="rob_slot_' + i);
+          var e = r.indexOf('id="rob_slot_' + (i+1));
+          if (e < 0) e = r.length;
+          var tstr = r.substr(s,e-s);
+          var diff = 'Easy';
+          if (tstr.indexOf('rob_difficulty_medium') > 0) diff = "Medium";
+          if (tstr.indexOf('rob_difficulty_hard') > 0) diff = "Hard";
+          var prop = OGPParser.getValueInTags(tstr,'class="rob_prop_name"',1);
+          if (prop.indexOf('<') >= 0) {
+            var s = prop.indexOf('<');
+            var e = prop.indexOf('>');
+            if (s > 0)
+              prop = prop.substr(0,s)+prop.substr(e+1);
+            else
+              prop = prop.substr(e+1);
+          }
+          var robbed = false;
+          if (tstr.indexOf('rob_prop_img_robbed') > 0) robbed = true;
+          if (tstr.indexOf('rob_prop_img_failed') > 0) robbed = true;
+          var outcome = '';
+          var cost = 0;
+          var msize = 0;
+          if (robbed == true) {
+            if (tstr.indexOf('Success!') > 0) 
+              outcome = 'Success';
+            else
+              outcome = 'Failed';
+          } else {
+            msize = OGPParser.getValueInTags(tstr,'title="Mafia Size"',0);
+            cost = OGPParser.getValueInTags(tstr,'title="Stamina Used"',0);            
+          }
+          OGPDrone.arRobSpots[i] = new Array(prop,diff,outcome,cost,msize);
+        }
+        var cs = OGPConfig.curStamina;
+        var numrun = 0;
+        var norun = 0;
+        for (var i=0; i < 9; i++) {
+          if (parseInt(OGPDrone.arRobSpots[i][3]) <= cs && parseInt(OGPDrone.arRobSpots[i][3]) != 0) {
+            if (OGPDrone.arRobSpots[i][2]=='') {
+              cs -= parseInt(OGPDrone.arRobSpots[i][3]);
+              numrun++;
+              var url = OGPConfig.MWURLAJAX + OGPConfig.urlRunRobbing;
+              url += '&slot=' + i + '&xw_city=' + OGPConfig.currentCity;
+              setTimeout("OGPAjax.buildAjax('" + url + "','OGPDrone.spendStamina','12,%ix%');",i*0);
+            } 
+          } else {
+            if (OGPDrone.arRobSpots[i][2]=='') {
+              OGPDrone.arRobSpots[i][2]='Low Stamina';
+              OGPDrone.arNoStamina = true;
+            }
+          }
+        }
+        if (numrun == 0) {
+          // Could be first time in with no properties
+          var hasstam = false;
+          var all0 = true;
+          for (var i = 0; i < 9; i++) {
+            if (parseInt(OGPConfig.curStamina) >= parseInt(OGPDrone.arRobSpots[i][3]) && parseInt(OGPDrone.arRobSpots[i][3]) > 0)
+              hasstam = true;
+            if (parseInt(OGPDrone.arRobSpots[i][3]) > 0)
+              all0 = false;
+          }
+          if (hasstam || all0) {
+            // Get new properties\
+            var url = OGPConfig.MWURLAJAX + OGPConfig.urlRobRefresh;
+            url += '&xw_city=' + OGPConfig.currentCity;
+            OGPAjax.buildAjax(url,'OGPDrone.spendStamina','11,%ix%');
+            break;
+          } else {
+            OGPDrone.arNoStamina = true;          
+          }
+        }
+        if (OGPDrone.arNoStamina == true) {
+          OGPDrone.isburningstamina = false;
+        }
+        break;
+        
+      case 12:
+        var r = OGPAjax.ajax[index].response;
+        var s = r.indexOf('openSlot(');
+        var slot = parseInt(r.substr(s+9));
+        var res = OGPParser.getValueInTags(r,'"rob_res_outcome ',0);
+        OGPDrone.arRobSpots[slot][2] = res;
+        
+        // If all spots are done, get new targets
+        var done = true;
+        for (var i=0; i < 9; i++)
+          if (OGPDrone.arRobSpots[i][2] == '')
+            done = false;
+        if (done && !OGPDrone.arNoStamina) {
+          for (var i = 0; i < 9; i++) OGPDrone.arRobSpots[i][2]='';
+          // Get new properties
+          var url = OGPConfig.MWURLAJAX + OGPConfig.urlRobRefresh;
+          url += '&xw_city=' + OGPConfig.currentCity;
+          OGPAjax.buildAjax(url,'OGPDrone.spendStamina','11,%ix%');
+        }
+        break;
+        
+    }
+  };
+  
+  this.updateDroneResults = function() {
+    OGPDisplay.setHTML('divDroneJobsRun',OGPDisplay.setGoodColor(OGPDrone.jobsrun));
+    var tval = parseInt((OGPDrone.freejobs/OGPDrone.jobsrun)*10000)/100;
+    if (isNaN(tval)) tval = 0;
+    OGPDisplay.setHTML('divDroneFreeJobs',OGPDisplay.setGoodColor(OGPDrone.freejobs) + ' (' + tval + '%)');
+    tval = parseInt((OGPDrone.extraexp/OGPDrone.jobsrun)*10000)/100;
+    if (isNaN(tval)) tval = 0;
+    OGPDisplay.setHTML('divDroneExtraExp',OGPDisplay.setGoodColor(OGPDrone.extraexp) + ' for ' + OGPDisplay.setGoodColor(OGPDrone.totalextraexp) + ' (' + tval + '%)');
+    OGPDisplay.setHTML('divDroneExtraMoney',OGPDisplay.setGoodColor(OGPDrone.extramoney));
+    var txt = '';
+    for (var i=0; i < OGPItems.cities.length; i++) {
+        txt += OGPItems.cities[i][6] + OGPDrone.totalmoney[i] + '&nbsp;&nbsp;&nbsp;';
+    }
+    OGPDisplay.setHTML('divDroneTotalMoney',OGPDisplay.setGoodColor(txt));
+    var txt = '';
+    for (var i=0; i < OGPDrone.lootitems.length; i++) {
+      var t = OGPDrone.lootitems[i][0].toString();  if (t==null)t='  ';
+      if (t.substr(0,1)=='*') {
+        t = t.substr(1);
+        OGPDrone.lootitems[i][0] = OGPDrone.lootitems[i][0].toString().substr(1);
+        txt += OGPDrone.lootitems[i][1] + ' (<font style="color:#ffff00">x' + t + '</font>)';
+      }
+      else
+        txt += OGPDrone.lootitems[i][1] + ' (x' + OGPDrone.lootitems[i][0] + ')';
+      if (i < OGPDrone.lootitems.length-1) txt += ' - ';
+    }
+    OGPDisplay.setHTML('divDroneLoot',OGPDisplay.setGoodColor(txt));
+    OGPDisplay.setHTML('divDroneLevels',OGPDisplay.setGoodColor(parseInt(OGPConfig.curLevel)-parseInt(OGPDrone.startinglevel)));
+    OGPDisplay.setHTML('divDroneExpNeeded',OGPDisplay.setGoodColor(OGPConfig.curExpNeeded-OGPConfig.curExp));
+    OGPDisplay.setHTML('divDroneEngLeft',OGPDisplay.setGoodColor(OGPConfig.curEnergy));
+    if (parseFloat(OGPConfig.curRatio) >= 0)
+      OGPDisplay.setHTML('divDroneCurRatio',OGPDisplay.setGoodColor(OGPConfig.curRatio));
+    else
+      OGPDisplay.setHTML('divDroneCurRatio','Waiting...');
+    var bonusText = '<font style="color:#ff0000">' + OGPDrone.cBonus + '%</font>';
+    if (parseFloat(OGPDrone.cBonus) >= 6.0) bonusText = '<font style="color:#ffff00">' + OGPDrone.cBonus + '%</font>';
+    if (parseFloat(OGPDrone.cBonus) >= 10.0) bonusText = '<font style="color:#00ff00">' + OGPDrone.cBonus + '%</font>';
+    if (parseFloat(OGPDrone.expRatio) >= OGPDrone.getJobRatio(OGPDrone.jobPoker))
+      OGPDisplay.setHTML('divDroneExpRatio',OGPDisplay.setGoodColor(parseInt(OGPDrone.expRatio*100)/100) + ' (' + bonusText + ')');
+    else  
+      OGPDisplay.setHTML('divDroneExpRatio',OGPDisplay.setGoodColor('Level Up') + ' (' + bonusText + ')');
+    OGPDisplay.setHTML('divDroneTokens',OGPDisplay.setGoodColor(OGPDrone.tokencount));
+    OGPDisplay.setHTML('divDroneDecks',OGPDisplay.setGoodColor(OGPDrone.deckcount));
+  };
+  
+};
+
+/***************************************
+  Player/Account Functions
+****************************************/
+function ogpAccountDef() {
+
+  this.topmafia = new Array('Mastermind','mastermind','Wheelman','wheelman','Button Man','buttonman','Bodyguard','bodyguard','Safecracker','safecracker','Bagman','bagman');
+  this.skills = new Array('attack','Attack','defense','Defense','max_health','Health','max_stamina','Stamina','max_energy','Energy');
+
+  this.skillQty=0;
+  this.skillCat='';
+  this.skillStart = 0;
+
+  this.currentMafia = new Array();
+  this.friends = new Array();
+  this.friendCount;
+
+  this.account = {
+    name:'',
+    title:'',
+    skills:new Array(),
+    level:0,
+    mafiasize:0,
+    stats:new Array(),
+    hiddenloot:new Array(),
+    specialloot:new Array(),
+    preploot:new Array(),
+    weapons:new Array(),
+    armor:new Array(),
+    vehicles:new Array(),
+    animals:new Array(),
+    boosts:new Array(),
+    achievements:new Array(),
+    fightattack:0,
+    fightdefense:0
+    
+  };
+  
+  this.myAccount = function(step,index) {
+    switch(step) {
+      case 0:
+        OGPAccount.account.skills.length = 0;
+        OGPAccount.account.hiddenloot.length = 0;
+        OGPAccount.account.specialloot.length = 0;
+        OGPAccount.account.preploot.length = 0;
+        OGPAccount.account.weapons.length = 0;
+        OGPAccount.account.armor.length = 0;
+        OGPAccount.account.weapons.length = 0;
+        OGPAccount.account.vehicles.length = 0;
+        OGPAccount.account.boosts.length = 0;
+        OGPAccount.account.achievements.length = 0;
+        var txt = 'Please wait, loading your account information...<br>';
+        txt += 'Loading profile information...';
+        OGPDisplay.setHTML('divOGPSetup',txt);
+        var url = OGPConfig.MWURLAJAX + OGPConfig.urlProfile;
+        url += '&xw_city=' + OGPConfig.currentCity;
+        OGPAjax.buildAjax(url,'OGPAccount.myAccount','1,%ix%');
+        break;
+        
+      case 1:
+        var r = OGPAjax.ajax[index].response;
+        //e$('divOGPDebug').innerHTML = '<textarea>' + r + '</textarea>';
+        var s,e;
+        var tmp = OGPParser.getValueInTags(r,'<div class="title"',0);
+        tmp = tmp.split('&#34;');
+        OGPAccount.account.name = tmp[1];
+        OGPAccount.account.title = tmp[0];
+        OGPAccount.account.level = OGPParser.getUserFieldValue(r,'user_level');
+        OGPAccount.account.mafiasize = OGPParser.getUserFieldValue(r,'user_group_size');
+        OGPAccount.account.skills['energy'] = OGPParser.getUserFieldValue(r,'user_max_energy');
+        OGPAccount.account.skills['stamina'] = OGPParser.getUserFieldValue(r,'user_max_stamina');
+        OGPAccount.account.skills['health'] = OGPParser.getUserFieldValue(r,'user_max_health');
+        s = r.indexOf('Attack:');
+        while (r.substr(s,4) != '<td>') s++;
+        OGPAccount.account.skills['attack'] = parseInt(r.substr(s+4));
+        s = r.indexOf('Defense:');
+        while (r.substr(s,4) != '<td>') s++;
+        OGPAccount.account.skills['defense'] = parseInt(r.substr(s+4));
+        s = r.indexOf('class="main_table stats"');
+        var next = s;
+        while (s < next) {
+          s = r.indexOf('<td>',s); s+=4;
+          e = r.indexOf('<',s);
+          var tname = r.substr(s,e-s);
+          s = r.indexOf('<td ',e);
+          while (r.substr(s,1) != '>') s++;
+          s++; e=s;
+          while (r.substr(e,1) != '<') e++;
+          OGPAccount.account.stats[OGPAccount.account.stats.length]=new Array(tname,r.substr(s,e-s));
+          s = r.indexOf('<tr>',e);
+          i++;
+        }
+        OGPDisplay.setHTML('divOGPSetup','Loading Achievements...');
+        var url = OGPConfig.MWURLAJAX + OGPConfig.urlAchievements;
+        url += '&xw_city=' + OGPConfig.currentCity;
+        OGPAjax.buildAjax(url,'OGPAccount.myAccount','2,%ix%');
+        break; 
+        
+      case 2:
+        var e;
+        var r = OGPAjax.ajax[index].response;
+        var s = r.indexOf('ach_ach_img');
+        while (s > 0) {
+          s+= 12;
+          var earned = false;
+          if (r.substr(s,8)=='ach_earn') earned = true;
+          var atitle = OGPParser.getValueInTags(r.substr(s),'ach_ach_name',0);
+          var adesc = OGPParser.getValueInTags(r.substr(s),'ach_ach_description',0);
+          OGPAccount.account.achievements[OGPAccount.account.achievements.length] = new Array(atitle,adesc,earned);
+          s = r.indexOf('ach_ach_img',s);
+        }
+        OGPDisplay.setHTML('divOGPSetup','Loading Equipment...');
+        var url = OGPConfig.MWURLAJAX + OGPConfig.urlLootListPage;
+        url += '&xw_city=' + OGPConfig.currentCity;
+        OGPAjax.buildAjax(url,'OGPAccount.myAccount','3,%ix%');
+        break;
+        
+      case 3:
+        var r = OGPAjax.ajax[index].response;
+        
+        var swpn = r.indexOf('<h3><span class="text">Weapons</span></h3>');
+        var sarm = r.indexOf('<h3><span class="text">Armor</span></h3>');
+        var sveh = r.indexOf('<h3><span class="text">Vehicles</span></h3>');
+        var sspc = r.indexOf('<h3><span class="text">Special Loot</span></h3>');
+        var sani = r.indexOf('<h3><span class="text">Animals</span></h3>');
+        var shid = r.indexOf('<h3><span class="text">Hidden Loot</span></h3>');
+        var spre = r.indexOf('<h3><span class="text">Prep Loot</span></h3>');
+
+        // Determine ending points
+        var endlist = r.indexOf('Job Mastery Items');
+
+        var ewpn = OGPAccount.lootgetlow(swpn,sarm,sveh,sspc,sani,shid,spre,endlist);
+        var earm = OGPAccount.lootgetlow(sarm,swpn,sveh,sspc,sani,shid,spre,endlist);
+        var eveh = OGPAccount.lootgetlow(sveh,swpn,sarm,sspc,sani,shid,spre,endlist);
+        var espc = OGPAccount.lootgetlow(sspc,swpn,sarm,sveh,sani,shid,spre,endlist);
+        var eani = OGPAccount.lootgetlow(sani,sspc,swpn,sarm,sveh,shid,spre,endlist);
+        var ehid = OGPAccount.lootgetlow(shid,sspc,swpn,sarm,sveh,spre,sani,endlist);
+        var epre = OGPAccount.lootgetlow(spre,sspc,swpn,sarm,sveh,shid,sani,endlist);
+        
+        var s = swpn;
+        s = r.indexOf('<strong>',s);
+        while (s < ewpn) {
+          var title = OGPParser.getValueInTags(r.substr(s),'strong');
+          s = r.indexOf('table',s);
+          s = r.indexOf('<img',s);
+          var attack = parseInt(OGPParser.getValueInTags(r.substr(s),'img'));
+          s = r.indexOf('<img',++s);
+          var defense = parseInt(OGPParser.getValueInTags(r.substr(s),'img'));
+          s = r.indexOf('Owned:',s);s+=6;
+          var qt = parseInt(r.substr(s));
+          OGPAccount.account.weapons[OGPAccount.account.weapons.length] = new Array(title,attack,defense,qt,0,0);
+          s = r.indexOf('<strong>',s);
+        }
+        var s = sarm;
+        s = r.indexOf('<strong>',s);
+        while (s < earm) {
+          var title = OGPParser.getValueInTags(r.substr(s),'strong');
+          s = r.indexOf('table',s);
+          s = r.indexOf('<img',s);
+          var attack = parseInt(OGPParser.getValueInTags(r.substr(s),'img'));
+          s = r.indexOf('<img',++s);
+          var defense = parseInt(OGPParser.getValueInTags(r.substr(s),'img'));
+          s = r.indexOf('Owned:',s);s+=6;
+          var qt = parseInt(r.substr(s));
+          OGPAccount.account.armor[OGPAccount.account.armor.length] = new Array(title,attack,defense,qt,0,0);
+          s = r.indexOf('<strong>',s);
+        }
+        var s = sveh;
+        s = r.indexOf('<strong>',s);
+        while (s < eveh) {
+          var title = OGPParser.getValueInTags(r.substr(s),'strong');
+          s = r.indexOf('table',s);
+          s = r.indexOf('<img',s);
+          var attack = parseInt(OGPParser.getValueInTags(r.substr(s),'img'));
+          s = r.indexOf('<img',++s);
+          var defense = parseInt(OGPParser.getValueInTags(r.substr(s),'img'));
+          s = r.indexOf('Owned:',s);s+=6;
+          var qt = parseInt(r.substr(s));
+          OGPAccount.account.vehicles[OGPAccount.account.vehicles.length] = new Array(title,attack,defense,qt,0,0);
+          s = r.indexOf('<strong>',s);
+        }
+        var s = sani;
+        s = r.indexOf('<strong>',s);
+        while (s < eani) {
+          var title = OGPParser.getValueInTags(r.substr(s),'strong');
+          s = r.indexOf('table',s);
+          s = r.indexOf('<img',s);
+          var attack = parseInt(OGPParser.getValueInTags(r.substr(s),'img'));
+          s = r.indexOf('<img',++s);
+          var defense = parseInt(OGPParser.getValueInTags(r.substr(s),'img'));
+          s = r.indexOf('Owned:',s);s+=6;
+          var qt = parseInt(r.substr(s));
+          OGPAccount.account.animals[OGPAccount.account.animals.length] = new Array(title,attack,defense,qt,0,0);
+          s = r.indexOf('<strong>',s);
+        }
+        var s = shid;
+        s = r.indexOf('<strong>',s);
+        while (s < ehid) {
+          var title = OGPParser.getValueInTags(r.substr(s),'strong');
+          s = r.indexOf('Owned:',s);s+=6;
+          var qt = parseInt(r.substr(s));
+          OGPAccount.account.hiddenloot[OGPAccount.account.hiddenloot.length] = new Array(title,qt);
+          s = r.indexOf('<strong>',s);
+        }
+        var s = sspc;
+        s = r.indexOf('<strong>',s);
+        while (s < espc) {
+          var title = OGPParser.getValueInTags(r.substr(s),'strong');
+          s = r.indexOf('Owned:',s);s+=6;
+          var qt = parseInt(r.substr(s));
+          OGPAccount.account.specialloot[OGPAccount.account.specialloot.length] = new Array(title,qt);
+          s = r.indexOf('<strong>',s);
+        }
+        var s = spre;
+        s = r.indexOf('<strong>',s);
+        while (s < epre) {
+          var title = OGPParser.getValueInTags(r.substr(s),'strong');
+          s = r.indexOf('Owned:',s);s+=6;
+          var qt = parseInt(r.substr(s));
+          OGPAccount.account.preploot[OGPAccount.account.preploot.length] = new Array(title,qt);
+          s = r.indexOf('<strong>',s);
+        }
+        OGPDisplay.setHTML('divOGPSetup','Loading Faction Items...');
+        if (OGPConfig.currentCity != 4) {
+          OGPTravel.goCity(OGPItems.getCityNum('Bangkok'),'OGPAccount.myAccount(4,0)')
+        } else {
+          OGPAccount.myAccount(4,0);
+        }
+        break;
+      case 4:
+        var url = OGPConfig.MWURLAJAX + OGPConfig.urlFactionStore + '&xw_city=' + OGPConfig.currentCity;
+        OGPAjax.buildAjax(url,'OGPAccount.myAccount','5,%ix%');
+        break;
+       
+      case 5:
+        var r = OGPAjax.ajax[index].response;
+        var s = r.indexOf('Yakuza Store');
+        if (s < 0) { OGPAccount.myAccount(6,0); break; }
+        OGPAccount.account.weapons[OGPAccount.account.weapons.length] = OGPAccount.getFactionItem(r,'Raion Assault Rifle');
+        OGPAccount.account.armor[OGPAccount.account.armor.length] = OGPAccount.getFactionItem(r,'Yakuza Assassin');
+        OGPAccount.account.vehicles[OGPAccount.account.vehicles.length] = OGPAccount.getFactionItem(r,'Fugama Hasu');
+        OGPAccount.account.animals[OGPAccount.account.animals.length] = OGPAccount.getFactionItem(r,'Banded Krait');
+        OGPAccount.account.weapons[OGPAccount.account.weapons.length] = OGPAccount.getFactionItem(r,'Cheng-Wei X94 Machine Gun');
+        OGPAccount.account.armor[OGPAccount.account.armor.length] = OGPAccount.getFactionItem(r,'Shaolin Bodyguard');
+        OGPAccount.account.vehicles[OGPAccount.account.vehicles.length] = OGPAccount.getFactionItem(r,'PLA Armored Car');
+        OGPAccount.account.animals[OGPAccount.account.animals.length] = OGPAccount.getFactionItem(r,'Xiamen Tiger');
+        OGPDisplay.setHTML('divOGPSetup','Computing used equipment...');
+        OGPAccount.myAccount(6,0);
+        break;
+        
+      case 6:
+        // Compute the equipment
+        OGPAccount.account.weapons = OGPAccount.setUsedLoot(OGPAccount.account.weapons,1,4);
+        OGPAccount.account.weapons = OGPAccount.setUsedLoot(OGPAccount.account.weapons,2,5);
+        OGPAccount.account.armor = OGPAccount.setUsedLoot(OGPAccount.account.armor,1,4);
+        OGPAccount.account.armor = OGPAccount.setUsedLoot(OGPAccount.account.armor,2,5);
+        OGPAccount.account.vehicles = OGPAccount.setUsedLoot(OGPAccount.account.vehicles,1,4);
+        OGPAccount.account.vehicles = OGPAccount.setUsedLoot(OGPAccount.account.vehicles,2,5);
+        OGPAccount.account.animals = OGPAccount.setUsedLoot(OGPAccount.account.animals,1,4);
+        OGPAccount.account.animals = OGPAccount.setUsedLoot(OGPAccount.account.animals,2,5);
+        
+        // Compute attack/defense number
+        var ta = 0,td = 0;
+        for (var i=0; i < OGPAccount.account.weapons.length; i++) {
+          ta += parseInt(OGPAccount.account.weapons[i][1]) * parseInt(OGPAccount.account.weapons[i][4]);
+          td += parseInt(OGPAccount.account.weapons[i][2]) * parseInt(OGPAccount.account.weapons[i][5]);
+        }
+        for (var i=0; i < OGPAccount.account.armor.length; i++) {
+          ta += parseInt(OGPAccount.account.armor[i][1]) * parseInt(OGPAccount.account.armor[i][4]);
+          td += parseInt(OGPAccount.account.armor[i][2]) * parseInt(OGPAccount.account.armor[i][5]);
+        }
+        for (var i=0; i < OGPAccount.account.vehicles.length; i++) {
+          ta += parseInt(OGPAccount.account.vehicles[i][1]) * parseInt(OGPAccount.account.vehicles[i][4]);
+          td += parseInt(OGPAccount.account.vehicles[i][2]) * parseInt(OGPAccount.account.vehicles[i][5]);
+        }
+        for (var i=0; i < OGPAccount.account.animals.length; i++) {
+          ta += parseInt(OGPAccount.account.animals[i][1]) * parseInt(OGPAccount.account.animals[i][4]);
+          td += parseInt(OGPAccount.account.animals[i][2]) * parseInt(OGPAccount.account.animals[i][5]);
+        }
+        OGPAccount.account.fightattack = ta;
+        OGPAccount.account.fightdefense = td;
+        
+        OGPAccount.myAccount(10,0);
+        break;
+        
+        case 10:
+          // Build the report
+          var txt = '';
+          txt += '<table id="tblReport">';
+          txt += '<tr><td><h3>' + OGPAccount.account.name + '</h3></td>';
+          txt += '<td id="tdTitle"><h3>' + OGPAccount.account.title + '</h3></td>';
+          txt += '<td id="tdTitle"><h3>Level: ' + OGPAccount.account.level + '</h3></td>';
+          txt += '<td id="tdTitle"><h3>Mafia Size: ' + OGPAccount.account.mafiasize + '</h3></td></tr>';
+          txt += '<tr>';
+          txt += '<td colspan="4" id="tdSkills" style="text-align:center;">'
+          txt += 'Attack: ' + OGPAccount.account.skills['attack'];
+          txt += '&nbsp;-&nbsp;Defense: ' + OGPAccount.account.skills['defense'];
+          txt += '&nbsp;-&nbsp;Health: ' + OGPAccount.account.skills['health'];
+          txt += '&nbsp;-&nbsp;Stamina: ' + OGPAccount.account.skills['stamina'];
+          txt += '&nbsp;-&nbsp;Energy: ' + OGPAccount.account.skills['energy'];
+          txt += '</td></tr>';
+          txt += '<tr>';
+          
+          // Sort by attack
+          OGPAccount.account.weapons = OGPAccount.sortArrayDesc(OGPAccount.account.weapons,1);
+          OGPAccount.account.armor = OGPAccount.sortArrayDesc(OGPAccount.account.armor,1);
+          OGPAccount.account.vehicles = OGPAccount.sortArrayDesc(OGPAccount.account.vehicles,1);
+          OGPAccount.account.animals = OGPAccount.sortArrayDesc(OGPAccount.account.animals,1);
+
+          txt += '<td><h1>Attack Items: (' + OGPAccount.account.fightattack + ')</h1>';
+          txt += '<table><tr><td><h2>Weapons</h2></td></tr>';
+          for (var i=0; i < OGPAccount.account.weapons.length; i++) {
+            if (OGPAccount.account.weapons[i][4] > 0) {
+              txt += '<tr><td>' + OGPAccount.account.weapons[i][0] + ' (' + OGPAccount.account.weapons[i][1] + ')</td><td>' + OGPAccount.account.weapons[i][4] + '</td></tr>';
+            }
+          }
+          txt += '<tr><td><h2>Armor</h2></td></tr>';
+          for (var i=0; i < OGPAccount.account.armor.length; i++) {
+            if (OGPAccount.account.armor[i][4] > 0) {
+              txt += '<tr><td>' + OGPAccount.account.armor[i][0] + ' (' + OGPAccount.account.armor[i][1] + ')</td><td>' + OGPAccount.account.armor[i][4] + '</td></tr>';
+            }
+          }
+          txt += '<tr><td><h2>Vehicles</h2></td></tr>';
+          for (var i=0; i < OGPAccount.account.vehicles.length; i++) {
+            if (OGPAccount.account.vehicles[i][4] > 0) {
+              txt += '<tr><td>' + OGPAccount.account.vehicles[i][0] + ' (' + OGPAccount.account.vehicles[i][1] + ')</td><td>' + OGPAccount.account.vehicles[i][4] + '</td></tr>';
+            }
+          }
+          txt += '<tr><td><h2>Animals</h2></td></tr>';
+          for (var i=0; i < OGPAccount.account.animals.length; i++) {
+            if (OGPAccount.account.animals[i][4] > 0) {
+              txt += '<tr><td>' + OGPAccount.account.animals[i][0] + ' (' + OGPAccount.account.animals[i][1] + ')</td><td>' + OGPAccount.account.animals[i][4] + '</td></tr>';
+            }
+          }
+          txt += '</table>';
+          txt += '</td>';
+
+          // Sort by attack
+          OGPAccount.account.weapons = OGPAccount.sortArrayDesc(OGPAccount.account.weapons,2);
+          OGPAccount.account.armor = OGPAccount.sortArrayDesc(OGPAccount.account.armor,2);
+          OGPAccount.account.vehicles = OGPAccount.sortArrayDesc(OGPAccount.account.vehicles,2);
+          OGPAccount.account.animals = OGPAccount.sortArrayDesc(OGPAccount.account.animals,2);
+
+          txt += '<td><h1>Defense Items: (' + OGPAccount.account.fightdefense + ')</h1>';
+          txt += '<table><tr><td><h2>Weapons</h2></td></tr>';
+          for (var i=0; i < OGPAccount.account.weapons.length; i++) {
+            if (OGPAccount.account.weapons[i][5] > 0) {
+              txt += '<tr><td>' + OGPAccount.account.weapons[i][0] + ' (' + OGPAccount.account.weapons[i][2] + ')</td><td>' + OGPAccount.account.weapons[i][5] + '</td></tr>';
+            }
+          }
+          txt += '<tr><td><h2>Armor</h2></td></tr>';
+          for (var i=0; i < OGPAccount.account.armor.length; i++) {
+            if (OGPAccount.account.armor[i][5] > 0) {
+              txt += '<tr><td>' + OGPAccount.account.armor[i][0] + ' (' + OGPAccount.account.armor[i][2] + ')</td><td>' + OGPAccount.account.armor[i][5] + '</td></tr>';
+            }
+          }
+          txt += '<tr><td><h2>Vehicles</h2></td></tr>';
+          for (var i=0; i < OGPAccount.account.vehicles.length; i++) {
+            if (OGPAccount.account.vehicles[i][5] > 0) {
+              txt += '<tr><td>' + OGPAccount.account.vehicles[i][0] + ' (' + OGPAccount.account.vehicles[i][2] + ')</td><td>' + OGPAccount.account.vehicles[i][5] + '</td></tr>';
+            }
+          }
+          txt += '<tr><td><h2>Animals</h2></td></tr>';
+          for (var i=0; i < OGPAccount.account.animals.length; i++) {
+            if (OGPAccount.account.animals[i][5] > 0) {
+              txt += '<tr><td>' + OGPAccount.account.animals[i][0] + ' (' + OGPAccount.account.animals[i][2] + ')</td><td>' + OGPAccount.account.animals[i][5] + '</td></tr>';
+            }
+          }
+          txt += '</table>';
+          txt += '</td>';
+          txt += '<td><h1>Statistics:</h1>';
+          txt += '<table>';
+          for (var i=0; i < OGPAccount.account.stats.length; i++) {
+            txt += '<tr><td>' + OGPAccount.account.stats[i][0] + '</td>';
+            txt += '<td>' + OGPAccount.account.stats[i][1] + '</td></tr>';
+          }
+          txt += '<tr><td colspan=2><br /><h1>Computed Stats:</h1></td>';
+          var me = OGPAccount.account.skills['energy'];
+          txt += '<tr><td>Ratio on Level Up (No jump)</td>';
+          var rat = (parseInt(OGPAccount.account.level) * 12.5)/parseInt(me);
+          txt += '<td>' + parseInt(rat*100)/100 + '</td></tr>';
+          txt += '<tr><td>Ratio on Level Up (Big Job)</td>';
+          var big = 0;
+          for (var i=1; i < OGPItems.jobs.length; i++) {
+            if (parseInt(OGPItems.jobs[i][6]) > 0 && parseInt(OGPItems.jobs[i][6]) > parseInt(OGPItems.jobs[big][6])) {
+              big = i;
+            }
+          }
+          var rat = ((parseInt(OGPAccount.account.level) * 12.5)-OGPItems.jobs[big][7])/parseInt(me);
+          txt += '<td>' + parseInt(rat*100)/100 + '</td></tr>';
+          txt += '</table></td>';
+          txt += '<td rowspan="3"><h1>Achievements:</h1>';
+          txt += '<table>';
+          for (var i=0; i < OGPAccount.account.achievements.length; i++) {
+            txt += '<tr><td style="cursor:help;" title="' + OGPAccount.account.achievements[i][1] + '">' + OGPAccount.account.achievements[i][0] + '</td>';
+            if (OGPAccount.account.achievements[i][2]==true)
+              txt += '<td>Earned</td>';
+            else 
+              txt += '<td nowrap>-----</td>';
+          }
+          txt += '</table>';
+          txt += '</td>';
+          txt += '</tr>';
+
+          // Sort by name
+          OGPAccount.account.weapons = OGPAccount.sortArrayAsc(OGPAccount.account.weapons,0);
+          OGPAccount.account.armor = OGPAccount.sortArrayAsc(OGPAccount.account.armor,0);
+          OGPAccount.account.vehicles = OGPAccount.sortArrayAsc(OGPAccount.account.vehicles,0);
+          OGPAccount.account.animals = OGPAccount.sortArrayAsc(OGPAccount.account.animals,0);
+
+          txt += '<tr><td colspan="3"><h1>Unused Loot</h1></td></tr>';
+          txt += '<tr><td colspan="3"><table><tr>';
+          txt += '<td><h4>Weapons</h4><table>';
+          for (var i=0; i < OGPAccount.account.weapons.length; i++) {
+            var aused = parseInt(OGPAccount.account.weapons[i][4]);
+            var dused = parseInt(OGPAccount.account.weapons[i][5]);
+            var qt = parseInt(OGPAccount.account.weapons[i][3]);
+            if (qt > aused && qt > dused) {
+              txt +='<tr><td>' + OGPAccount.account.weapons[i][0] + '(';
+              txt +=OGPAccount.account.weapons[i][1] + '/' + OGPAccount.account.weapons[i][2] + ')</td>';
+              if (aused > dused)
+                txt += '<td>' + (qt-aused) + '</td>';
+              else
+                txt += '<td>' + (qt-dused) + '</td>';
+            }
+          }
+          txt += '</table></td>';
+          txt += '<td><h4>Armor</h4><table>';
+          for (var i=0; i < OGPAccount.account.armor.length; i++) {
+            var aused = parseInt(OGPAccount.account.armor[i][4]);
+            var dused = parseInt(OGPAccount.account.armor[i][5]);
+            var qt = parseInt(OGPAccount.account.armor[i][3]);
+            if (qt > aused && qt > dused) {
+              txt +='<tr><td>' + OGPAccount.account.armor[i][0] + '(';
+              txt +=OGPAccount.account.armor[i][1] + '/' + OGPAccount.account.armor[i][2] + ')</td>';
+              if (aused > dused)
+                txt += '<td>' + (qt-aused) + '</td>';
+              else
+                txt += '<td>' + (qt-dused) + '</td>';
+            }
+          }
+          txt += '</table></td>';
+          txt += '<td><h4>Vehicles</h4><table>';
+          for (var i=0; i < OGPAccount.account.vehicles.length; i++) {
+            var aused = parseInt(OGPAccount.account.vehicles[i][4]);
+            var dused = parseInt(OGPAccount.account.vehicles[i][5]);
+            var qt = parseInt(OGPAccount.account.vehicles[i][3]);
+            if (qt > aused && qt > dused) {
+              txt +='<tr><td>' + OGPAccount.account.vehicles[i][0] + '(';
+              txt +=OGPAccount.account.vehicles[i][1] + '/' + OGPAccount.account.vehicles[i][2] + ')</td>';
+              if (aused > dused)
+                txt += '<td>' + (qt-aused) + '</td>';
+              else
+                txt += '<td>' + (qt-dused) + '</td>';
+            }
+          }
+          txt += '</table></td>';
+          txt += '<td><h4>Animals</h4><table>';
+          for (var i=0; i < OGPAccount.account.animals.length; i++) {
+            var aused = parseInt(OGPAccount.account.animals[i][4]);
+            var dused = parseInt(OGPAccount.account.animals[i][5]);
+            var qt = parseInt(OGPAccount.account.animals[i][3]);
+            if (qt > aused && qt > dused) {
+              txt +='<tr><td>' + OGPAccount.account.animals[i][0] + '(';
+              txt +=OGPAccount.account.animals[i][1] + '/' + OGPAccount.account.animals[i][2] + ')</td>';
+              if (aused > dused)
+                txt += '<td>' + (qt-aused) + '</td>';
+              else
+                txt += '<td>' + (qt-dused) + '</td>';
+            }
+          }
+          txt += '</table></td>';
+          txt += '</tr></table>';
+          txt += '</td>';
+          txt += '</tr>';
+          txt += '</table>';
+          OGPDisplay.clearSetup();
+          OGPDisplay.setHTML('divOGPResults',txt);
+          break;
+    }
+  };
+
+  this.sortArrayDesc = function(ar,pos) {
+    for (var i=0; i < ar.length-1; i++)
+      for (var j=i+1; j < ar.length; j++)
+        if (ar[i][pos] < ar[j][pos]) {
+          var t = ar[i];
+          ar[i] = ar[j];
+          ar[j] = t;
+        }
+    return ar;
+  };
+  
+  this.sortArrayAsc = function(ar,pos) {
+    for (var i=0; i < ar.length-1; i++)
+      for (var j=i+1; j < ar.length; j++)
+        if (ar[i][pos] > ar[j][pos]) {
+          var t = ar[i];
+          ar[i] = ar[j];
+          ar[j] = t;
+        }
+    return ar;
+  };
+  
+  this.setUsedLoot = function(ar,ad,pos) {
+    var msize = parseInt(OGPAccount.account.mafiasize);
+    if (msize > 501) msize = 501;
+    var tu = 0;
+    var allused = 0;
+    while (tu < msize && allused == 0) {
+      var biga = 0;bigi = -1;
+      for (var i=0; i < ar.length; i++) {
+        if (ar[i][pos]==0 && parseInt(ar[i][ad]) >= biga && parseInt(ar[i][3]) > 0) {
+          biga = ar[i][ad]; 
+          bigi=i;
+        }
+      }
+      if (bigi >= 0) {
+        if ((parseInt(ar[bigi][3])+parseInt(tu)) > msize) {
+          ar[bigi][pos] = parseInt(msize)-parseInt(tu);
+        }
+        else
+          ar[bigi][pos] = ar[bigi][3];
+        tu += parseInt(ar[bigi][pos]);
+      }
+      else
+        allused = 1;
+    }
+    return ar;
+  };
+  
+  this.getFactionItem = function(r,str) {
+    var s = r.indexOf(str);
+    s = r.indexOf('<img',s);
+    var attack = parseInt(OGPParser.getValueInTags(r.substr(s),'img'));
+    s = r.indexOf('<img',++s);
+    var defense = parseInt(OGPParser.getValueInTags(r.substr(s),'img'));
+    s = r.indexOf('Owned:',s);s+=6;
+    var qt = parseInt(r.substr(s));
+    return new Array(str,attack,defense,qt,0,0);
+  };
+  
+  this.lootgetlow = function(s1,v1,v2,v3,v4,v5,v6,defval) {
+    var ev = defval;
+    if (v1 < ev && v1 > s1) ev = v1-1;
+    if (v2 < ev && v2 > s1) ev = v2-1;
+    if (v3 < ev && v3 > s1) ev = v3-1;
+    if (v4 < ev && v4 > s1) ev = v4-1;
+    if (v5 < ev && v5 > s1) ev = v5-1;
+    if (v6 < ev && v6 > s1) ev = v6-1;
+    return(ev);
+  };
+  
+  this.loadFBFriends = function(retfunction) {
+    var qry = "SELECT uid,name FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1=" + FB.Facebook.apiClient.get_session().uid + ") ORDER BY name";
+    FB.Facebook.apiClient.fql_query(qry,
+      function(rows) {
+        OGPDisplay.setHTML('divCurFriends',rows.length);
+        for (var i=0; i < rows.length; i++)
+        {
+          OGPAccount.friends[i] = new Array(rows[i].uid,rows[i].name,0);
+        }
+        if (retfunction != '') eval(retfunction);
+      });
+  };
+
+  this.addFriends = function(step,index) {
+
+    switch(step) {
+      case 0:
+        var txt = '';
+        txt += '<table id="tblAddFriends" name="tblAddFriends">';
+        txt += '<tr><td style="width:50%"><div>Current Friends: </div><div id="divCurFriends" name="divCurFriends"></div></td>';
+        txt += '<td><div>Current Mafia Members: </div><div id="divCurMafia" name="divCurMafia"></div></td></tr>';
+        txt += '<tr><td colspan="2"><div id="divAFStatus">&nbsp;</div></td></tr>';
+        txt += '</table>';
+        OGPDisplay.setHTML('divOGPResults',txt);
+        OGPAccount.addFriends(1,0);
+        break;
+
+      case 1:
+        // Get the FB friend list from the API interface
+        OGPDisplay.setHTML('divAFStatus','Loading your Facebook friend list');
+        OGPAccount.loadFBFriends('OGPAccount.addFriends(2,0)');
+        break;
+    
+      case 2:
+        OGPDisplay.setHTML('divAFStatus','Loading current mafia member list');
+        //var url = OGPConfig.MWURLAJAX + OGPConfig.urlMafiaList;
+        var url = OGPConfig.MWURLAJAX + OGPConfig.urlRecruit + '&xw_city=' + OGPConfig.currentCity + '&tmp=' + OGPConfig.tmpkey;
+        OGPAjax.buildAjax(url,'OGPAccount.addFriends','3,%ix%');
+        break;
+
+      case 3:
+        if (OGPAjax.ajax[index]) {
+          var r = OGPAjax.ajax[index].response;
+          if (r.indexOf('exclude_ids="') > 0) {
+            var s = r.indexOf('exclude_ids="');
+            s+=13;
+            var str = '';
+            while (r.substr(s,1) != '"') str+=r.substr(s++,1);
+            OGPAccount.currentMafia = str.split(',');
+            OGPDisplay.setHTML('divCurMafia',OGPAccount.currentMafia.length);
+            OGPAccount.friendCount = -1;
+            OGPAccount.addFriends(4,0); // Add a friend
+            break;
+          }
+        }
+        OGPDisplay.addLine('Could not load current mafia member list...Stopping',OGPConfig.clrFatal);
+        break;
+ 
+      case 4:
+        OGPAccount.friendCount++;
+        if (OGPAccount.friendCount < OGPAccount.friends.length) {
+          var idFound = false;
+          for (var i=0; i < OGPAccount.currentMafia.length; i++) {
+            if (parseInt(OGPAccount.friends[OGPAccount.friendCount][0]) == parseInt(OGPAccount.currentMafia[i])) idFound = true;
+          }
+          if (idFound == false) {
+            OGPDisplay.setHTML('divAFStatus','Attempting to add ' + OGPAccount.friends[OGPAccount.friendCount][1] + ' (' + OGPAccount.friends[OGPAccount.friendCount][0] + ')');
+            OGPParser.setTempKey(document.body.innerHTML,'');
+            var url = OGPConfig.FBAPPURL + OGPConfig.urlAddToMafiaP1 + OGPAccount.friends[OGPAccount.friendCount][0] + OGPConfig.urlAddToMafiaP2;
+            e$('ogpiframe').src = url;
+            // Wait 5 seconds and load the next one
+            setTimeout("OGPAccount.addFriends(4,0)",5000);
+          } else {
+            // This friend already in our mafia, move to the next
+            OGPAccount.addFriends(4,0);
+            break;
+          }
+        } else {
+          OGPDisplay.setHTML('divAFStatus','Completed attempts to add all friends to your mafia');
+          break;
+        }
+        break;       
+ 
+    }
+  };
+
+  this.useSkills = function(step,index) {
+    
+    switch(step) {
+      case 0:
+        if (OGPConfig.curSkillPoints == 0) {
+          OGPDisplay.addLine('You have no skill points to spend',OGPConfig.clrWarning);
+          break;
+        } 
+        OGPAccount.useSkills(1,0);
+        break;
+
+      case 1:
+        var txt = '';
+        txt += '<div id="divSkillSetup" name="divSkillSetup">';
+        txt += '<table>';
+        txt += '<tr>';
+        txt += '<td>Add <select id="selSkillQty" name="selSkillQty">';
+        for (var i=1; i <= OGPConfig.curSkillPoints; i++) {
+          txt += '<option value="' + i + '">' + i + '</option>';
+        }
+        txt += '</select> points to ';
+        txt += '<select id="selSkillCat" name="selSkillCat">';
+        for (var i=0; i < OGPAccount.skills.length; i+=2) {
+          txt += '<option value="' + OGPAccount.skills[i] + '">' + OGPAccount.skills[i+1] + '</option>';
+        }
+        //txt += '&nbsp;&nbsp;&nbsp;<input type="checkbox" id="ckExtra" name="ckExtra">Try for extras';
+        txt += '<br />Selecting try for extras will ignore your quantity selection and could spend up to 250 points';
+        txt += '</td></tr>';
+        txt += '<tr><td><a onclick="OGPAccount.useSkills(2,0)">Use Skill Points</a></td></tr>';
+        txt += '</table>';
+        txt += '</div>';
+        OGPDisplay.setHTML('divOGPSetup',txt);
+        break;
+
+      case 2:
+        /*
+        if (e$('ckExtra').checked) {
+          OGPAccount.useSkills(5,0);
+          break;
+        }
+        */
+        var qty = parseInt(e$('selSkillQty').value);
+        var cat = e$('selSkillCat').value;
+        OGPDisplay.clearSetup();
+        var txt = '';
+        txt += '<div id="divSkillResults" name="divSkillResults">';
+        txt += '<table><tr><td>Skill Points Left:</td>';
+        txt += '<td><div id="divSkillsLeft" name="divSkillsLeft">' + qty + '</div>';
+        txt += '</td></tr></table>';
+        txt += '</div>';
+        OGPDisplay.setHTML('divOGPResults',txt);
+        this.skillQty = qty;
+        this.skillCat = cat;
+        OGPAccount.useSkills(3,0);
+        break;
+        
+      case 3:
+        var url = OGPConfig.MWURLAJAX + OGPConfig.urlSpendSkillPoints;
+        url += '&upgrade_key=' + OGPAccount.skillCat + '&upgrade_amt=';
+        if (parseInt(OGPAccount.skillQty) >= 5) {
+          url += '5'; 
+          OGPAccount.skillQty -= 5;
+        } else {
+          url += '1'; 
+          OGPAccount.skillQty--;
+        }
+        //e$('divOGPDebug').innerHTML += url + '<br />';
+        OGPAjax.buildAjax(url,'OGPAccount.useSkills','4,%ix%');
+        break;
+
+      case 4:
+        if (OGPAjax.ajax[index]) {
+          OGPTimers.updateStats(1,index);          
+          e$('divSkillsLeft').innerHTML = OGPAccount.skillQty;
+          if (parseInt(OGPAccount.skillQty) > 0) {
+            OGPAccount.useSkills(3,0);
+          } else {
+            e$('divSkillsLeft').innerHTML = '--Done--';
+            OGPAccount.skillQty = 0;
+            OGPAccount.skillCat = '';
+            if (parseInt(OGPConfig.curSkillPoints) > 0)
+              OGPAccount.useSkills(1,0);
+          }
+        } else {
+          OGPDisplay.addLine('Could not spend skill point');
+        }
+        break;
+
+      case 5:
+        var cat = e$('selSkillCat').value;
+        var qty = parseInt(e$('selSkillQty').value);
+        var txt = '';
+        txt += '<div id="divSkillResults" name="divSkillResults">';
+        txt += 'Trying to add extra points...please wait for about 10 seconds';
+        txt += '</div>';
+        OGPDisplay.clearSetup();
+        OGPDisplay.setHTML('divOGPResults',txt);
+        var url = OGPConfig.MWURLAJAX + OGPConfig.urlSpendSkillPoints;
+        url += '&upgrade_key=' + cat + '&upgrade_amt=';
+        if (parseInt(OGPConfig.curSkillPoints) >= 5) {
+          url += '5'; 
+        } else {
+          url += '1'; 
+        }
+        for (var i=0; i < 10; i++)
+          OGPAjax.buildAjax(url,'OGPAccount.useSkills','6,%ix%');
+        break;
+      
+      case 6:
+        OGPTimers.updateStats(1,index);
+        break;
+    }
+  };  
+
+  this.loadProfile = function(step,index,id) {
+
+    switch(step) {
+      case 0:
+        var txt = '<table name="tblLoadProfile" id="tblLoadProfile">';
+        txt += '<tr><td>Enter a UserID, paste a FB or MW link, or just drag a link here:';
+        txt += '<input type="text" id="txtProfile" size="30">&nbsp;';
+        txt += '<a href="javascript:;" onclick="OGPAccount.loadProfile(1,0,0);">Load Profile</a>';
+        txt += '</td></tr></table>';
+        OGPDisplay.setHTML('divOGPSetup',txt);
+        OGPDisplay.show('divOGPSetup');
+        OGPDisplay.clearResults();
+        break;
+
+      case 1:
+        var v = unescape(e$('txtProfile').value);
+        var idToLoad = '';
+        if (v != '') {
+          if (OGPParser.isNumeric(v)) {
+            idToLoad = v;
+          } else if (v.indexOf('next_params=') > 0) {
+            var s = v.indexOf('next_params=') + 12;
+            var x = '';
+            while (s < v.length && v.substr(s,1)!='&') x+=v.substr(s++,1);
+            x = OGPParser.decodeBase64(x);
+            if (x.indexOf('user=') > 0) {
+              e$('txtProfile').value = x;
+              OGPAccount.loadProfile(1,0,0);
+              return;
+            } 
+          }
+          else if (v.indexOf('user=') > 0) {idToLoad=OGPParser.findId(v,'user=');}
+          else if (v.indexOf('{"user":"') > 0) {idToLoad=OGPParser.findId(v,'{"user":"');}
+          else if (v.indexOf('target_id=') > 0) {idToLoad=OGPParser.findId(v,'target_id=');}
+          else if (v.indexOf('fid=') > 0) {idToLoad=OGPParser.findId(v,'fid=');}
+          else if (v.indexOf('leader_id=') > 0) {idToLoad=OGPParser.findId(v,'leader_id=');}
+          else if (v.indexOf('id=') > 0) {idToLoad=OGPParser.findId(v,'id=');}
+        }
+        if (idToLoad == '') {
+          OGPDisplay.addLine('The entered value does not contain profile information.',OGPConfig.clrWarning);
+        } else {
+          var url = OGPConfig.MWURLAJAX + OGPConfig.urlProfile + '&xw_city=' + OGPConfig.currentCity + '&user=' + idToLoad;
+          OGPAjax.buildAjax(url,'OGPAccount.loadProfile','2,%ix%,\'' + idToLoad + '\'');
+        }          
+        break;
+      
+      case 2:
+        //e$('divOGPDebug').innerHTML = '<textarea>' + OGPAjax.ajax[index].response + '</textarea>';
+        OGPDisplay.showPage(index,'inner_page');
+        var r = OGPAjax.ajax[index].response;
+        var UName = OGPParser.getUserNameFromProfile(OGPAjax.ajax[index].response);
+        var txt='<table name="tblProfileLinks" id="tblProfileLinks">';
+        txt+='<tr><th colspan="2">The following links can be used to save as bookmarks, or you can save them to your MW Tools Favorites.</th></tr>';
+        txt+='<tr><th colspan="2">(You are currently using ' + OGPAccount.getUsedFavoriteSize() + ' of your available 4000 characters.)</th></tr>';
+        txt+='<tr><th colspan="2"><a href="javascript:OGPAccount.saveFavorite(\'' + UName + '\',' + id + ');">Save To My Favorites</a></td></tr>';
+        txt+='<tr><td colspan="2">&nbsp;</td></tr>';
+        if (id.indexOf('p|') < 0)
+          txt+='<tr><td>FB Link:</td><td><a href="' + OGPConfig.urlFBProfileLink + id + '" target="_blank">' + OGPConfig.urlFBProfileLink + id + '</a></td></tr>';
+        txt+='<tr><td>MW Link:</td><td><a href="' + OGPConfig.urlMWProfileLink + id + '" target="_blank">' + OGPConfig.urlMWProfileLink + id + '</a></td></tr>';
+        txt+='</table>';
+        OGPDisplay.setHTML('divOGPResults',txt);
+        //OGPDisplay.show('');
+        break;
+    }    
+
+  };
+
+
+  this.getUsedFavoriteSize = function() {
+    if (OGPCookie.readCookie('ogp_favorites'))
+      return OGPCookie.readCookie('ogp_favorites').length;
+    else
+      return 0;
+  };
+  
+  this.saveFavorite = function(name,id) {
+    var curcookie = OGPCookie.readCookie('ogp_favorites');
+    if (!curcookie) {
+      curcookie = name + ':|:' + id;
+      OGPCookie.createCookie('ogp_favorites',curcookie,365);
+      OGPDisplay.addLine('User account saved to your favorites.',OGPConfig.clrGood);
+    } else {
+      // Check for duplicate
+      var arFav = curcookie.split(':|:');
+      var duplicate = false;
+      for (var i=0; i < arFav.length; i++)
+        if (arFav[i]==id) duplicate = true;
+      if (duplicate) {
+        OGPDisplay.addLine('This account is already saved in your favorites.',OGPConfig.clrWarning);
+        return;
+      } else {
+        if (curcookie.length + name.length + id.length + 6 > 4000) {
+          OGPDisplay.addLine('Saving favorite would exceed cookie limit',OGPConfig.clrWarning);
+          return;
+        } else {
+          if (curcookie != '') curcookie += ':|:';
+          curcookie += name + ':|:' + id;
+          OGPCookie.createCookie('ogp_favorites',curcookie,365);
+          OGPDisplay.addLine('User account saved to your favorites.',OGPConfig.clrGood);
+        }
+      }
+    }
+  };
+
+  this.manageFavorites = function(edit) {
+    OGPDisplay.clearSetup();
+    var curcookie = OGPCookie.readCookie('ogp_favorites');
+    if (!curcookie) {
+      OGPDisplay.addLine('You do not have any saved profiles.',OGPConfig.clrWarning);
+      OGPDisplay.clearResults();
+      OGPDisplay.clearSetup();
+      return;
+    }
+
+    var favs = curcookie.split(':|:');
+    if (favs.length <= 1) {
+      OGPDisplay.addLine('Your saved favorites links are corrupt.  The current content is displayed below.',OGPConfig.clrError);
+      var txt = 'The saved favorites do not match the proper format.  The cookie may have become corrupt.';
+      txt += 'The contents of the current cookie are displayed below to allow you to save the contents ';
+      txt += 'of your saved profiles.  The cookie has been cleared and will need to be recreated.<br /><br />';
+      txt += 'Saved Favorites Content:';
+      txt += '<div>' + curcookie + '</div>';
+      OGPDisplay.setHTML('divOGPResults',txt);
+    } else {
+      var txt = '<input type="hidden" name="txtProfile" id="txtProfile" value="">';
+      txt += '<table name="tblFavorites" id="tblFavorites">';
+      txt += '<tr><th>Mafia Member</th><th>MW Link</th><th>FB Link</th><th>Delete</th></tr>';
+      for (var i = 0; i < parseInt(favs.length/2); i++) {
+        txt += '<tr><td>' + favs[i*2] + '</td>';
+        txt += '<td><a href="javascript:OGPAccount.loadFavorite(' + favs[(i*2)+1] + ');">Load MW Profile</a></td>';
+        txt += '<td><a href="http://www.facebook.com/profile.php?id=' + favs[(i*2)+1] + '" target="_blank">Load FB Profile</a></td>';
+        txt += '<td><a href="javascript:OGPAccount.deleteFavorite(' + favs[(i*2)+1] + ')";>Delete</a></td></tr>';
+      }
+      OGPDisplay.setHTML('divOGPResults',txt);
+    }
+  };
+
+  this.loadFavorite = function(id) {
+    e$('txtProfile').value = id;
+    OGPAccount.loadProfile(1,0);  
+  };
+
+  this.deleteFavorite = function(id) {
+    var curcookie = OGPCookie.readCookie('ogp_favorites');
+    if (!curcookie) {
+      OGPDisplay.addLine('No saved profiles were found.',OGPConfig.clrError);
+      OGPDisplay.resetDisplay();
+      return;
+    }
+
+    var favs = curcookie.split(':|:');
+    for (var i = 0; i < parseInt(favs.length/2); i++) {
+      if (favs[(i*2)+1]==id) {
+        favs[i*2] = '';
+        favs[(i*2)+1] = '';
+      }
+    }
+    curcookie = '';
+    for (var i = 0; i < parseInt(favs.length/2); i++) {
+      if (favs[i*2] != '') {
+        if (curcookie != '') curcookie += ':|:';
+        curcookie+=favs[i*2] + ':|:' + favs[(i*2)+1];
+      }
+    }
+    OGPCookie.createCookie('ogp_favorites',curcookie,365);
+    OGPAccount.manageFavorites();
+  };      
+
+
+  this.promote = function(step,index,val) {
+
+    switch(step) {
+
+      case 0:
+        if (!OGPParser.getTargetUser()) {
+          OGPDisplay.addLine('This function must be run from a user\'s profile page',OGPConfig.clrWarning);
+          break;
+        }
+        var txt='';
+        txt += '<div name="divPromote" id="divPromote">';
+        txt += 'Select the position to promote this user to: <br />';
+        for (var i=0; i < OGPAccount.topmafia.length; i+=2) {
+          txt += '<a onclick="OGPAccount.promote(1,0,\'' + OGPAccount.topmafia[i+1] + '\');">' + OGPAccount.topmafia[i] + '</a>';
+        }
+        txt += '</div>';
+        OGPDisplay.setHTML('divOGPSetup',txt);
+
+        break;
+
+      case 1: 
+        OGPDisplay.clearSetup();
+        OGPDisplay.setHTML('divOGPResults','<div style="width:100%;text-align:center;">Attempting to Promote...</div>');
+        var url = OGPConfig.MWURLAJAX + OGPConfig.urlPromotePage;
+        url += '&xw_city=' + OGPConfig.currentCity;
+        url += '&pid=' + OGPParser.getTargetUser();
+        url += '&tmp=' + OGPConfig.tmpkey;
+        OGPAjax.buildAjax(url,'OGPAccount.promote','2,%ix%,"' + val + '"');
+        break;
+        
+      case 2:
+        var r = OGPAjax.ajax[index].response;
+        var promotekey = OGPParser.setTempKey(r,'promote');
+
+        // Promote and display the results
+        var url = OGPConfig.MWURLAJAX + OGPConfig.urlPromote + val;
+        url += '&xw_city=' + OGPConfig.currentCity;
+        url += '&pid=' + OGPParser.getTargetUser();
+        url += '&tmp=' + promotekey;
+        OGPAjax.buildAjax(url,'OGPAccount.promote','3,%ix%,""');
+        break;
+        
+      case 3:
+        // Display the top mafia
+        var url = OGPConfig.MWURLAJAX + OGPConfig.urlMafiaPage;
+        url += '&xw_city=' + OGPConfig.currentCity;
+        url += '&tmp=' + OGPConfig.tmpkey;
+        OGPAjax.buildAjax(url,'OGPAccount.promote','4,%ix%,""');
+        break;
+        
+      case 4:
+        OGPDisplay.setHTML('divOGPResults','<div style="width:100%;text-align:center;">-- Done --</div>');
+        if (OGPAjax.ajax[index]) {
+          OGPDisplay.showPage(index,'inner_page');
+          OGPDisplay.addLine('Promotion Attempted.  Your current Top Mafia is shown below',OGPConfig.clrGood);
+        }
+        break;
+    }
+  }
+
+};
+
+
+/***************************************
+  Send Loot, Gifts, Collections 
+****************************************/
+function ogpSendDef() {
+  
+  this.giftkey = null;
+  this.tmpkey = null;
+  this.recipient = null;
+  this.weapons = new Array();
+  this.armor = new Array();
+  this.vehicles = new Array();
+  this.special = new Array();
+  
+  this.amountToSend = '';
+  this.itemToSend = '';
+  this.itemToSendDesc = '';
+  this.sentItemCount = 0;
+  this.sentRetryCount = 0;
+  this.triedGiftKey = false;
+  this.sendDelay = 500;
+  this.sendDelayFlag = false;
+  this.pauseSending = false;
+  
+  this.colSendCity = 0;
+  this.colSendItems = new Array();
+  this.colSendRetries = 0;
+  
+  this.sendLoot = function(step,index) {
+    switch(step) {
+      case 0: // See if the user is on a profile page
+        if (!OGPParser.getTargetUser()) {
+          OGPDisplay.addLine('The ID for the user to send loot to could not be found on this page.  Be sure you have loaded a user profile page.',OGPConfig.clrUserError);
+          return;
+        }
+        // Valid user to send to, save the id and try to get the tempkey and gift key
+        OGPSend.recipient = OGPParser.getTargetUser();
+        if (!OGPSend.getGiftTempKey()) {
+          OGPDisplay.addLine('Could not get gifting temp key.  Reload the user profile and try again',OGPConfig.clrWarning);
+          break;
+        }
+        if (!OGPSend.giftkey) {
+          var r = document.body.innerHTML;
+          var s = r.indexOf('gift_key=');
+          if (s < 0) {
+            // Handle reloading here
+            if (OGPSend.triedGiftKey==false) {
+              OGPDisplay.addLine('Can not find gift key, reloading profile',OGPConfig.clrInfo);
+              OGPSend.triedGiftKey = true;
+              OGPAjax.buildAjax(OGPConfig.MWURLAJAX + OGPConfig.urlProfile + '&xw_city=' + OGPConfig.currentCity + '&id=' + OGPSend.recipient + '&tmp=' + OGPConfig.tmpkey, 'OGPSend.reloadProfile','%ix%,OGPSend.sendLoot(0,0)');
+            } else {
+              OGPDisplay.addLine('Can not retrieve the gift key for this user.  Make sure they have an item on their wishlist.',OGPConfig.clrWarning);
+              break;
+            }
+          }
+          s+=9;
+          var x = '';
+          while (r.substr(s,1) != '&' && r.substr(s,1) != '"') x+=r.substr(s++,1);
+          OGPSend.giftkey = x;
+        }
+        
+        // Build the table
+        OGPSend.triedGiftKey = false;
+        var txt = '';
+        txt += '<table name="tblSendLoot" id="tblSendLoot">';
+        txt += '<tr>';
+        txt += '<td>Quantity:<br /><select name="selOGPSendQty" id="selOGPSendQty" onchange="OGPSend.updateSendGiftSelections(-1)">';
+        txt += '<option value="">--</option>';
+        for (var i=1; i <= 100; i++) txt+='<option value="' + i + '">' + i + '</option>';
+        for (var i=125; i <= 500; i+=25) txt+='<option value="' + i + '">' + i + '</option>';
+        for (var i=600; i <= 2000; i+=100) txt+='<option value="' + i + '">' + i + '</option>';
+        for (var i=2500; i <= 10000; i+=500) txt+='<option value="' + i + '">' + i + '</option>';
+        for (var i=15000; i <= 50000; i+=5000) txt+='<option value="' + i + '">' + i + '</option>';
+        txt += '</select></td>\n';
+        for (var i = 0; i < OGPItems.lootTypes.length; i++) {
+          if (i==4) txt += '</tr><tr><th></th>';
+          txt += '<td>' + OGPItems.lootTypes[i] + '<br />';
+          var tarray = new Array();
+          tarray.length = 0;
+          for (var j = 0; j < OGPItems.lootItems.length; j++) {
+            if (OGPItems.lootItems[j][2] == i) {
+              if (tarray.length == 0) {
+                tarray[0] = OGPItems.lootItems[j];
+              } else {
+                var insert = tarray.length;
+                for (var k = tarray.length-1; k >= 0; k--) {
+                  if (OGPItems.lootItems[j][0] < tarray[k][0]) {
+                    insert = k;
+                  }
+                }
+                for (var l = tarray.length; l > insert; l--) {
+                      tarray[l] = tarray[l-1];
+                }
+                tarray[insert] = OGPItems.lootItems[j];
+              }
+            }
+          }
+          txt += '<select name="selOGPLootType' + i + '" id="selOGPLootType' + i + '" onchange="OGPSend.updateSendGiftSelections(' + i + ')">';
+          txt += '<option value="">--</option>';
+          for (var j=0; j < tarray.length; j++) {
+            txt += '<option value="' + tarray[j][1] + '">' + tarray[j][0].replace(/@/g,"'") + '</option>';
+          }
+          txt += '</select>';
+          txt += '</td>\n';
+        }
+        txt += '</tr>';
+        txt += '<tr><td colspan="' + OGPItems.lootTypes.length+1 + '"><div id="divOGPSendLoot" name="divOGPSendLoot">Select the quantity and gift to send</div></td></tr>';
+        txt += '<tr><td colspan="' + OGPItems.lootTypes.length+1 + '"><div id="divOGPSendStart" name="divOGPSendStart"><input type="button" value="Send Loot" onclick="OGPSend.sendLoot(1,0)"></div></td></tr>';
+        txt += '</table>';
+        OGPDisplay.setHTML('divOGPSetup',txt);
+        OGPDisplay.show('divOGPSetup');
+        break;
+        
+      case 1:
+        OGPDisplay.clearSetup();
+        OGPSend.sentItemCount = 0;
+        var txt = '';
+        txt +='<table name="tblSendItems" id="tblSendItems">';
+        txt +='<tr><th>Item To Send</th><th>Sent</th><th>Remaining</th><th>Retries</th></tr>';
+        txt +='<tr><td><div name="divItemToSend" id="divItemToSend">' + OGPSend.itemToSendDesc + '</div></td>';
+        txt +='<td><div name="divSentCount" id="divSentCount">0</div></td>';
+        txt +='<td><div name="divRemaining" id="divRemaining">' + OGPSend.amountToSend + '</div></td>';
+        txt +='<td><div name="divRetries" id="divRetries">0</div></td>';
+        txt +='</tr></table>';
+        txt +='<div name="divSendItemControl" id="divSendItemControl"><a onclick="OGPSend.toggleSendRun()">Pause Sending</a></div>';
+        OGPDisplay.setHTML('divOGPResults',txt);
+        OGPSend.sendDelay = 500;
+        OGPSend.sendDelayFlag = false;
+        OGPSend.sentRetryCount = 0;
+        OGPSend.sentItemCount = 0;
+        OGPSend.pauseSending = false;
+        OGPSend.sendLoot(2,0);
+        break;
+      
+      case 2: // Send one item
+        if (parseInt(OGPSend.sentItemCount) >= parseInt(OGPSend.amountToSend)) {
+          OGPDisplay.addLine('All items have been sent',OGPConfig.clrGood);
+          OGPDisplay.setHTML('divSendItemControl','--Done--');
+          break;
+        }
+        var url = OGPConfig.MWURLAJAX + OGPConfig.urlSendItem;
+        url += '&recipients%5b0%5d=' + OGPSend.recipient;
+        // Get the gift category
+        var cat = 0;
+        for (var i=0; i < OGPItems.lootItems.length; i++) {
+          if (OGPItems.lootItems[i][0] == OGPSend.itemToSendDesc)
+            cat = i;
+        }
+        url += '&gift_category=' + OGPItems.lootItems[cat][3];
+        url += '&gift_id=' + OGPSend.itemToSend + '&gift_key=' + OGPSend.giftkey;
+        OGPAjax.buildAjax(url,'OGPSend.sendLoot','3,%ix%');
+        break;
+        
+      case 3:
+        var r=' ';
+        if (OGPAjax.ajax[index]) r = OGPAjax.ajax[index].response;
+        if (!r) r=' ';
+        var s = r.indexOf('class="message_body"');
+        var e = r.indexOf('id="popup_fodder"',s);
+        var results = '';
+        if (s>-1 && e>-1) results = r.substr(s,e-s);
+        //var results = OGPParser.getValueInTags(r,'class="message_body"',0);
+        if (OGPSend.pauseSending==true)
+          OGPDisplay.setHTML('divSendItemControl','<a onclick="OGPSend.toggleSendRun()">Resume Sending</a>');
+        else
+          OGPDisplay.setHTML('divSendItemControl','<a onclick="OGPSend.toggleSendRun()">Pause Sending</a>');
+        if (results.indexOf('You gave') >= 0) {
+          // Success
+          OGPSend.sentItemCount++;
+          OGPDisplay.setHTML('divSentCount',OGPSend.sentItemCount);
+          OGPDisplay.setHTML('divRemaining',OGPSend.amountToSend-OGPSend.sentItemCount);
+          if (parseInt(OGPSend.sentItemCount) < parseInt(OGPSend.amountToSend)) {
+            OGPSend.sendDelay -= 10; if (OGPSend.sendDelay < 0) OGPSend.sendDelay = 0;
+            if (OGPSend.pauseSending==false) setTimeout('OGPSend.sendLoot(2,0)',OGPSend.sendDelay);
+          } else {
+            OGPDisplay.addLine('All items have been sent',OGPConfig.clrGood);
+            OGPDisplay.setHTML('divSendItemControl','--Done--');
+          }
+        } else if (results.indexOf('You don') >= 0) {
+          // Not enough
+          OGPDisplay.addLine('You do not have enough of those left to send...stopping',OGPConfig.clrWarning);
+          OGPDisplay.setHTML('divRemaining','0');
+          OGPDisplay.setHTML('divSendItemControl','--Done--');
+        } else if (results.indexOf('Please wait a moment') >= 0) {
+          // Too quick, try again
+            OGPSend.sendDelay += 100;
+            OGPSend.sendDelayFlag = true;
+            OGPSend.sentRetryCount++;
+            OGPDisplay.setHTML('divRetries',OGPSend.sentRetryCount);
+            if (OGPSend.pauseSending==false) OGPSend.sendLoot(2,0);
+        } else {
+          // Something else, trap for now
+          if (OGPConfig.Session == 0) {
+            OGPDisplay.addLine('Session has timed out, stopping sending items.',OGPConfig.clrFatal);
+          } else {
+            OGPDisplay.addLine('Unrecognized Response, Attempting to Continue.',OGPConfig.clrWarning); 
+            if (OGPSend.pauseSending==false) OGPSend.sendLoot(2,0);
+          }
+        }
+        break;
+    }
+  };
+
+  this.updateSendGiftSelections = function(dd) {
+    OGPSend.amountToSend = e$('selOGPSendQty').options[e$('selOGPSendQty').selectedIndex].value;
+    if (dd >= 0) {
+      OGPSend.itemToSend = e$('selOGPLootType' + dd).options[e$('selOGPLootType' + dd).selectedIndex].value;
+      OGPSend.itemToSendDesc = e$('selOGPLootType' + dd).options[e$('selOGPLootType' + dd).selectedIndex].text;
+    }
+    if (OGPSend.itemToSend == '' || OGPSend.amountToSend == '') {
+      OGPDisplay.setHTML('divOGPSendLoot','Select the quantity and gift to send');
+      OGPDisplay.hide('divOGPSendStart');
+    } else {
+      OGPDisplay.setHTML('divOGPSendLoot','Ready to send ' + OGPSend.amountToSend + ' ' + OGPSend.itemToSendDesc + '(s)');
+      OGPDisplay.show('divOGPSendStart');
+    }
+  };
+  
+  this.toggleSendRun = function() {
+    if (this.pauseSending == true) {
+      this.pauseSending = false;
+      OGPDisplay.addLine('Loot sending resuming',OGPConfig.clrInfo);
+      OGPDisplay.setHTML('divSendItemControl',' -- Wait -- ');
+      OGPSend.sendLoot(2,0); 
+    } else {
+      this.pauseSending = true;
+      OGPDisplay.addLine('Loot sending paused...current send operation will complete.',OGPConfig.clrInfo);
+      OGPDisplay.setHTML('divSendItemControl',' -- Wait -- ');
+    }
+  }
+  this.reloadProfile = function(index,retfunction) {
+    var r = OGPAjax.ajax[index].response;
+    OGPDisplay.setHTML('content_row','');
+    var newdiv = document.createElement('div');
+    newdiv.innerHTML = r;
+    var container = e$('content_row');
+    container.appendChild(newdiv);
+    eval(retfunction);
+  };
+  
+  this.getGiftTempKey = function() {
+    var r = document.body.innerHTML;
+    var s = r.indexOf('var wishlist_urls');
+    if (s < 0) return null;
+    s = r.indexOf('gift_key=',s);
+    if (s < 0) return null;
+    s = r.indexOf('=',s) + 1;
+    var x = '';
+    while (r.substr(s,1) != '&' && r.substr(s,1) != '"') x += r.substr(s++,1);
+    return x;
+  };
+  
+  this.sendCollections = function(step,index) {
+    
+    this.sendCity = 0;
+    this.colItems = new Array();
+    
+    switch(step) {
+      case 0:
+        if (!OGPParser.getTargetUser()) {
+          OGPDisplay.addLine('The ID for the user to send collection items to could not be found on this page.  Be sure you have loaded a user profile page.',OGPConfig.clrUserError);
+          return;
+        }
+        // Valid user to send to, save the id and try to get the tempkey and gift key
+        OGPSend.recipient = OGPParser.getTargetUser();
+        if (!OGPSend.getGiftTempKey()) {
+          OGPDisplay.addLine('Could not get gifting temp key.  Reload the user profile and try again',OGPConfig.clrWarning);
+          break;
+        }
+        if (!OGPSend.giftkey) {
+          var r = document.body.innerHTML;
+          var s = r.indexOf('gift_key=');
+          if (s < 0) {
+            // Handle reloading here
+            if (OGPSend.triedGiftKey==false) {
+              OGPDisplay.addLine('Can not find gift key, reloading profile',OGPConfig.clrInfo);
+              OGPSend.triedGiftKey = true;
+              OGPAjax.buildAjax(OGPConfig.MWURLAJAX + OGPConfig.urlProfile + '&xw_city=' + OGPConfig.currentCity + '&id=' + OGPSend.recipient + '&tmp=' + OGPConfig.tmpkey, 'OGPSend.reloadProfile','%ix%,OGPSend.sendCollections(0,0)');
+            } else {
+              OGPDisplay.addLine('Can not retrieve the gift key for this user.  Make sure they have an item on their wishlist.',OGPConfig.clrWarning);
+              break;
+            }
+          }
+          s+=9;
+          var x = '';
+          while (r.substr(s,1) != '&' && r.substr(s,1) != '"') x+=r.substr(s++,1);
+          OGPSend.giftkey = x;
+        }
+        OGPSend.colSendCity = 0;
+        OGPSend.colItems.length = 0;
+        OGPConfig.originalCity = OGPConfig.currentCity;
+        var txt = '<div id="divCitySelect" name="divCitySelect">';
+        txt += 'Select the city for the collection items:<br />';
+        for (var i=0; i < OGPItems.cities.length; i++) {
+          txt += '&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:OGPSend.colSendCity=' + OGPItems.cities[i][3] + ';OGPSend.sendCollections(1,0);">';
+          txt += OGPItems.cities[i][0] + '</a>';
+        }
+        txt += '&nbsp;&nbsp;&nbsp;&nbsp;';
+        OGPDisplay.setHTML('divOGPSetup',txt);
+        break;
+     
+      case 1:
+        OGPDisplay.setHTML('divOGPSetup','<div name="divLoading" id="divLoading">Loading Collection Quantities...</div>');
+        var txt = '';
+        if (OGPConfig.currentCity != OGPSend.colSendCity) {
+          OGPTravel.goCity(OGPSend.colSendCity,'OGPSend.sendCollections(2,0)')
+        } else {
+          OGPSend.sendCollections(2,0);
+        }
+        break;
+        
+      case 2:
+        // Select the collection tab
+        var url = OGPConfig.MWURLAJAX + OGPConfig.urlCollectionPage;
+        OGPAjax.buildAjax(url,'OGPSend.sendCollections','3,%ix%');
+        break;
+        
+      case 3:
+        // Load the collection items
+        OGPDisplay.addLine('Parsing Location Items',OGPConfig.clrInfo);
+        var r = OGPAjax.ajax[index].response;
+        var s = r.indexOf('class="loot_vault"');
+        var s = r.indexOf('<div style="height:35', s);
+        while (s > 0) {
+          var qty = OGPParser.getValueInTags(r.substr(s),'<div style="float:left',0);
+          s = r.indexOf('gift_id=',s) + 8;
+          var cid = '';
+          while (r.substr(s,1) != '"') cid+=r.substr(s++,1);
+          while (qty.substr(0,1) < '0' || qty.substr(0,1) > '9') qty = qty.substr(1);
+          OGPSend.colItems[OGPSend.colItems.length] = new Array(cid,qty);
+          s = r.indexOf('<div style="height:35',s);
+        }
+        var txt = '<form name="frmSendCollection" id="frmSendCollection">';
+        txt += '<table name="tblSendCollection" id="tblSendCollection">';
+        for (var i=0; i < OGPItems.collectionTitles.length; i++) {
+          if (OGPItems.collectionTitles[i][0]==OGPSend.colSendCity) {
+            txt += '<tr><td style="border:0;border-top:1px solid #ffffff;"></td><th colspan="7">' + OGPItems.collectionTitles[i][1] + '</th></tr>';
+            for (var j=0; j < OGPItems.collections.length; j++) {
+              if (OGPItems.collections[j][0]==i) {
+                txt += '</tr>';
+                txt += '<td><input type="checkbox" name="chkCollection_' + j + '" id="chkCollection_' + j + '" onChange="OGPSend.toggleCollectionItems(' + j + ');"></td>';
+                for (var k = 0; k < parseInt(OGPItems.collections[j].length/2); k++) {
+                  txt += '<td>';
+                  for (var l=0; l < OGPSend.colItems.length; l++) {
+                    if (OGPSend.colItems[l][0]==OGPItems.collections[j][1+(k*2)] && parseInt(OGPSend.colItems[l][1]) > 0) {
+                      txt += '<select name="selCollection_' + j + '_' + OGPItems.collections[j][1+(k*2)] + '" id="selCollection_' + j + '_' + OGPItems.collections[j][1+(k*2)] + '">';
+                      for (var m = 0; m <= OGPSend.colItems[l][1]; m++) {
+                        txt += '<option value="' + m + '">' + m + '</option>';
+                      }
+                      txt += '</select>';
+                    } else if (OGPSend.colItems[l][0]==OGPItems.collections[j][1+(k*2)]) {
+                      txt += '<input type="text" style="" disabled value="--"></select>';
+                    } 
+                  }
+                  txt += OGPItems.collections[j][1+((k*2)+1)];
+                  txt += '</td>';
+                }
+                txt += '</tr>';
+              }
+            }
+          }
+        }
+        txt += '</table>';
+        txt += '<div style="display:block" id="divOGPSendStart" name="divOGPSendStart"><input type="button" value="Send Collection Items" onclick="OGPSend.sendCollections(5,0)"></div>';
+        txt += '</form>';
+        OGPDisplay.setHTML('divOGPSetup',txt);
+        // Travel back if needed
+        if (OGPConfig.currentCity != OGPConfig.originalCity) {
+          OGPTravel.goCity(OGPConfig.originalCity,'OGPSend.sendCollections(4,0)');
+        } else {
+          OGPSend.sendCollections(4,0);
+        }
+        break;
+        
+      case 4:
+        break;
+        
+      case 5:
+        scroll(0,0);
+        var elms = e$('frmSendCollection').getElementsByTagName('select');
+        OGPSend.colSendItems.length = '';
+        for (var i=0; i < elms.length; i++) {
+          var cid = elms[i].name.split('_')[2];
+          for (var j=0; j < OGPItems.collections.length; j ++) {
+            for (var k = 0; k < parseInt(OGPItems.collections[j].length/2); k++) {
+              if (OGPItems.collections[j][1+(k*2)]==cid)
+                OGPSend.colSendItems[OGPSend.colSendItems.length] = new Array(cid,elms[i].value,OGPItems.collections[j][1+(k*2)+1],OGPItems.collectionTitles[OGPItems.collections[j][0]][1]);
+            }
+          }
+        }
+        OGPDisplay.clearSetup();
+        // Build the send table
+        var txt='<table name="tblColSending" id="tblColSending">';
+        txt += '<tr><th>Current Item</th><th>Total Items</th><th>Items Remaining</th><th>Retries</th><tr>';
+        txt += '<tr><td><div style="width:340px;" id="divColSendName" name="divColSendName"></div></td>';
+        txt += '<td><div id="divColSendTotal" name="divColSendTotal"></div></td>';
+        txt += '<td><div id="divColSendRemain" name="divColSendRemain"></div></td>';
+        txt += '<td><div id="divColSendRetries" name="divColSendRetries"></div></td>';
+        txt += '</tr>';
+        txt += '</table>';
+        txt += '<div id="divSendItemControl" name="divSendItemControl"></div>';
+        OGPDisplay.setHTML('divOGPResults',txt);
+        var total = 0;
+        for (var i=0; i < OGPSend.colSendItems.length; i++)
+          total += parseInt(OGPSend.colSendItems[i][1]);
+        OGPDisplay.setHTML('divColSendTotal',total);
+        OGPSend.pauseSending = false;
+        OGPSend.colSendRetries = 0;
+        OGPSend.sendCollections(6,0);
+        break;
+        
+      case 6:
+        if (OGPSend.pauseSending==true)
+          OGPDisplay.setHTML('divSendItemControl','<a onclick="OGPSend.toggleSendColRun()">Resume Sending</a>');
+        else
+          OGPDisplay.setHTML('divSendItemControl','<a onclick="OGPSend.toggleSendColRun()">Pause Sending</a>');
+        if (OGPSend.pauseSending == false) {
+          // Send one item
+          var remaining = 0;
+          for (var i=0; i < OGPSend.colSendItems.length; i++)
+            remaining += parseInt(OGPSend.colSendItems[i][1]);
+          OGPDisplay.setHTML('divColSendRemain',remaining);
+          OGPDisplay.setHTML('divColSendRetries',OGPSend.colSendRetries);
+          // Find the next item to send
+          var sitem = -1;
+          for (var i=OGPSend.colSendItems.length-1; i >= 0; i--)
+            if (OGPSend.colSendItems[i][1] > 0)
+              sitem = i;
+          if (sitem < 0) {
+            OGPDisplay.addLine('All Collection Items Sent',OGPConfig.clrGood);
+            OGPDisplay.setHTML('divSendItemControl','');
+          } else {
+            OGPDisplay.setHTML('divColSendName',OGPSend.colSendItems[sitem][2] + ' (' + OGPSend.colSendItems[sitem][3] + ')');
+            var url = OGPConfig.MWURLAJAX + OGPConfig.urlSendItem;
+            url += '&recipients%5b0%5d=' + OGPSend.recipient;
+            url += '&gift_category=0';
+            url += '&gift_id=' + OGPSend.colSendItems[sitem][0] + '&gift_key=' + OGPSend.giftkey;
+            OGPAjax.buildAjax(url,'OGPSend.sendCollections','7,%ix%');
+          }
+        }
+        break;
+        
+      case 7:
+        var r = OGPAjax.ajax[index].response;
+        var results = OGPParser.getValueInTags(r,'class="message_body"',0);
+        if (OGPSend.pauseSending==true)
+          OGPDisplay.setHTML('divSendItemControl','<a onclick="OGPSend.toggleSendColRun()">Resume Sending</a>');
+        else
+          OGPDisplay.setHTML('divSendItemControl','<a onclick="OGPSend.toggleSendColRun()">Pause Sending</a>');
+        if (results.indexOf('You gave') >= 0) {
+          // Success
+          for (var i=0; i < OGPSend.colSendItems.length; i++) {
+            if (OGPSend.colSendItems[i][1] > 0) {
+              OGPSend.colSendItems[i][1]--;
+              break;
+            }
+          }
+          if (OGPSend.sendDelayFlag==false) {
+            OGPSend.sendDelay -= 100; if (OGPSend.sendDelay < 0) OGPSend.sendDelay = 0;
+          }
+          if (OGPSend.pauseSending==false) setTimeout('OGPSend.sendCollections(6,0)',OGPSend.sendDelay);
+        } else if (results.indexOf('You don') >= 0) {
+          // Not enough
+          OGPDisplay.addLine('You do not have enough of those left to send...stopping',OGPConfig.clrWarning);
+        } else if (results.indexOf('Please wait a moment') >= 0) {
+          // Too quick, try again
+          OGPSend.sendDelay += 100;
+          OGPSend.sendDelayFlag = true;
+          OGPSend.colSendRetries++;
+          if (OGPSend.pauseSending==false) OGPSend.sendCollections(6,0);
+        } else {
+          // Something else, trap for now
+          if (OGPConfig.Session == 0) {
+            OGPDisplay.addLine('Session has timed out, stopping sending items.',OGPConfig.clrFatal);
+          } else {
+            OGPDisplay.addLine('Something Else!',OGPConfig.clrFatal);  
+          }
+        }
+        break;
+    }
+  
+  };
+  
+  this.toggleSendColRun = function() {
+    if (this.pauseSending == true) {
+      this.pauseSending = false;
+      OGPDisplay.addLine('Loot sending resuming',OGPConfig.clrInfo);
+      OGPDisplay.setHTML('divSendItemControl',' -- Wait -- ');
+      OGPSend.sendCollections(6,0); 
+    } else {
+      this.pauseSending = true;
+      OGPDisplay.addLine('Loot sending paused...current send operation will complete.',OGPConfig.clrInfo);
+      OGPDisplay.setHTML('divSendItemControl',' -- Wait -- ');
+    }
+  }
+  
+  this.toggleCollectionItems = function(col) {
+    var setval = e$('chkCollection_' + col).checked;
+    for (var i=0; i < parseInt(OGPItems.collections[col].length/2); i++) {
+      var elm = e$('selCollection_' + col + '_' + OGPItems.collections[col][1+(i*2)]);
+      if (elm) {
+        if (setval == true) {
+          elm.selectedIndex = elm.options.length-1;
+        }
+        else
+          elm.selectedIndex = 0;
+      }
+    }
+  };
+};
+
+/***************************************
+  AJAX Call Functions 
+****************************************/
+function ogpAJAXDef() {
+  this.ajax = new Array();
+  this.ajaxtimers = new Array(); 
+ 
+  this.buildAjax = function(url,retfunction,params) {
+  
+    if (url.indexOf('xw_client_id') < 0) url += '&xw_client_id=8';
+    url = url.replace('?&','?');
+    // Find an available index
+    var index = 0;
+    while (index < this.ajax.length && this.ajax[index] != 'free') index++;
+    this.ajax[index] = new sack(url);
+    this.ajax[index].onCompletion = function(){OGPAjax.buildAjaxRun(index,retfunction,params)};
+    this.ajax[index].onFail = function(){OGPAjax.ajaxFailed(index,url,retfunction,params)};
+    this.ajax[index].onError = function(){OGPAjax.ajaxFailed(index,url,retfunction,params)};
+    // Add the parameters
+    this.ajax[index].setVar('ajax','1');
+    this.ajax[index].setVar('liteload','1');
+    this.ajax[index].setVar('sf_xw_user_id',OGPConfig.local_player_id);
+    this.ajax[index].setVar('sf_xw_sig',OGPConfig.local_xw_sig);
+    // Set the timeout for the call
+    this.ajaxtimers[index] = setTimeout("OGPAjax.ajaxTimedOut(" + index + ",'" + retfunction + "','" + params + "')",20000);
+    //e$('divOGPDebug').innerHTML += url + '<br>';
+    this.ajax[index].runAJAX();
+  };
+
+  this.buildAjaxRun = function(index,retfunction,params) {
+    // Clear the ajax call timeout handler
+    clearTimeout(this.ajaxtimers[index]);
+
+    // Replace the index in the results and pass back to the return function
+    params = params.replace(/%ix%/,index);
+    var x = retfunction + '(' + params + ')';
+    eval(x);
+
+    // Give the calling function 5 seconds to process the results
+    setTimeout("OGPAjax.ajax[" + index + "]='free';",5000);
+  };
+
+  this.ajaxTimedOut = function(index,retfunction,params) {
+    // Ajax call hung, set the flags and return to the calling function
+    OGPDisplay.addLine('AJAX Call hung',OGPConfig.clrWarning);
+    OGPConfig.appHung = true;  
+    if (retfunction != '') eval(retfunction + '(' + params.replace(/%ix%/,index) + ')');
+  };
+
+  this.ajaxFailed = function(index,url,retfunction,params) {
+    // Something went horribly wrong, give it a few seconds and try again
+    OGPDisplay.addLine('AJAX Call failed',OGPConfig.clrFatal);
+    clearTimeout(this.ajaxtimers[index]);
+    try {
+      this.ajax[index].reset();
+    } catch(err) {}
+    setTimeout("OGPAjax.ajax[" + index + "]='free';",5000);
+    setTimeout("OGPAjax.buildAjax('" + url + "','" + retfunction + "','" + params + "');",1000);
+  };
+
+};
+
+/***************************************
+ TRAVEL Functions 
+****************************************/
+function ogpTravelDef() {
+  
+  this.goCity = function(city,retfunction) {
+    OGPDisplay.addLine('Travelling to ' + OGPItems.getCityName(city),OGPConfig.clrAction);
+    var url =  OGPConfig.MWURLAJAX + OGPConfig.urlTravel;
+    url += '&xw_city=' + OGPConfig.currentCity + '&destination=' + city + '&tmp=' + OGPConfig.tmpkey;
+    OGPAjax.buildAjax(url,'OGPTravel.travelComplete','%ix%,"' + retfunction +'",' + city);
+  };
+
+  this.travelComplete = function(index,retfunction,newCity) {
+    var r = OGPAjax.ajax[index].response;
+    //e$('divOGPDebug').innerHTML = '<textarea>' + r + '</textarea>' + r;
+    OGPDisplay.showPage(index,'inner_page');
+    e$('mw_city_wrapper').className = 'mw_city' + newCity;
+    OGPDisplay.addLine('Arrived in ' + OGPItems.getCityName(newCity),OGPConfig.clrInfo);
+    OGPConfig.currentCity = newCity;
+    // Clear out the tabs
+    OGPDrone.curJobTab = -1;
+    OGPJob.curJobTab = -1;
+    // Give it some time to update the page
+    setTimeout("eval('" + retfunction + "');",2000);
+  };
+  
+  this.getCurrentCity = function() {
+    if(e$('mw_city_wrapper')) {
+      return(OGPItems.getCityNum(e$('mw_city_wrapper').className));
+    }
+    return(OGPConfig.currentCity);
+  };
+  
+};
+
+/***************************************
+ PARSER Functions 
+****************************************/
+function ogpParserDef() {
+
+  this.keyStr = "ABCDEFGHIJKLMNOP" +
+              "QRSTUVWXYZabcdef" +
+              "ghijklmnopqrstuv" +
+              "wxyz0123456789+/" +
+              "=";
+
+  this.setTempKey = function(str,type) {
+    var tmpkey = '';
+    if (str=='') str = document.body.innerHTML;
+    switch(type)
+    {
+      case 'job':
+        if (str.indexOf('class="job_list"') > 0) {
+          var s = str.indexOf('class="job_list"');
+          s = str.indexOf('tryDoJob(',s+1);
+          var x = '';
+          while (str.substr(s,1) != '"' && s < str.length) x+= str.substr(s++,1);
+          var str = x;
+          OGPDrone.specialcontroller = OGPItems.cities[OGPConfig.currentCity-1][2];
+          OGPJob.specialcontroller = OGPItems.cities[OGPConfig.currentCity-1][2];
+        } else if (str.indexOf('doJob: function(') > 0) {
+          // Vegas
+          var s = str.indexOf('doJob: function(');
+          s = str.indexOf('&tmp',s);
+          s = str.indexOf('&tmp',s);
+          var x = '';
+          while (str.substr(s,1) != '+' && s < str.length) x+= str.substr(s++,1);
+          var str = x;
+          OGPDrone.specialcontroller = 'map';
+          OGPJob.specialcontroller = 'map';
+        } else {
+          // New job selection page
+          var s = str.indexOf('id="new_user_jobs"');
+          s = str.indexOf('class="title_results"',s);
+          s = str.indexOf('do_ajax(',s);
+          var x = '';
+          while (str.substr(s,1) != '"' && s < str.length) x+= str.substr(s++,1);
+          var str = x;
+          OGPDrone.specialcontroller = 'story'; // Fix for new job layout
+          OGPJob.specialcontroller = 'story'; // Fix for new job layout
+        }
+        break; 
+        
+      case 'fight':
+        var s = str.indexOf('inner_page');
+        s = str.indexOf('?xw_controller=fight&xw_action=attack',s);
+        if (s<0) s=str.indexOf('?xw_controller=fight&amp;xw_action=attack');
+        if (s > 0)
+        {
+           x = '';
+           while (str.substr(s,1)!='"' && s < str.length) x+=str.substr(s++,1);
+           var str = x;
+        }
+        else
+          var str = '';
+        break;
+
+      case 'punch':
+        var s = str.indexOf('inner_page');
+        s = str.indexOf('?xw_controller=fight&xw_action=punch',s);
+        if (s<0) s=str.indexOf('?xw_controller=fight&amp;xw_action=punch');
+        if (s > 0)
+        {
+           x = '';
+           while (str.substr(s,1)!='"' && s < str.length) x+=str.substr(s++,1);
+           var str = x;
+        }
+        else
+          var str = '';
+        OGPDisplay.addLine("FK:" + str,'#fff');
+        break;
+        
+      case 'promote':
+        var s = str.indexOf('inner_page');
+        s = str.indexOf('xw_action=promote',s);
+        s = str.indexOf('do_ajax',s);
+        if (s > 0) {
+          s = str.indexOf('xw_controller=group&xw_action=promote',s);
+          x = '';
+          while (str.substr(s,1) != '"' && s < str.length) x+=str.substr(s++,1);
+          var str = x;
+        }
+        else 
+          var str = '';
+        break;
+        
+      default:
+        tmpkey = this.getTmpKeyFromOnClick(document.body.innerHTML,'id="nav_link_home_unlock"');
+        return tmpkey;
+        break;
+    }
+    var s = str.indexOf('tmp=');
+    if (s > 0)
+    {
+      s += 4;
+      tmpkey = '';
+      while (str.substr(s,1) !='&' && s < str.length) tmpkey+= str.substr(s++,1);
+    }
+    else
+    {
+    tmpkey='';
+    }
+
+    return tmpkey;
+  };
+
+  this.getCBValue = function(loc) {
+    var str = document.body.innerHTML;
+    switch(loc) {
+      case 'home':
+        var s = str.indexOf('nav_link_home_unlock');
+        s = str.indexOf('cb=',s);
+        s+=3;
+        var e = s;
+        while (str.substr(e,1) != '"' && str.substr(e,1) != '&') e++;
+        return str.substr(s,e-s);
+        break;
+    
+    }
+    return '';
+  };
+  this.getNewPlayerId = function(str) {
+    var s = str.indexOf('sf_xw_user_id');
+    if (s < 0) return '';
+    s = str.indexOf(':',s);
+    s = str.indexOf("'",s);
+    s++;
+    var e = s;
+    while (str.substr(e,1)!="'" && e < str.length) e++;
+    return str.substr(s,e-s);
+  
+  };
+  
+  this.getTmpKeyFromOnClick = function(str,id) {  
+    var s = str.indexOf(id);
+    if (s >= 0) {
+      s = str.indexOf('onclick=',s);
+      s = str.indexOf('tmp=',s); s+=4;
+      var e = s;
+      while (str.substr(e,1) != "&" && str.substr(e,1) !="'" && e < str.length) e++;
+      if (e > s)
+      {
+        return str.substr(s,e-s);
+      }
+    }
+    return '';
+  };
+
+  this.getValueInTags = function(str,tag,skip) {
+    var s = str.indexOf(tag);
+    if (s < 0) return '';
+    while (str.substr(s,1) != '>' && s < str.length) s++;
+    s++;
+    var e = s;
+    while ((str.substr(e,1) != '<' && e < str.length) || skip > 0)
+    {
+      if (str.substr(e,1) == '<') skip--;
+      e++;
+    }
+    return str.substr(s,e-s);
+  };
+  
+  this.getValueInQuotes = function(str,tag) {
+    var s = str.indexOf(tag);
+    if (s < 0) return '';
+    s++;
+    var e = s;
+    while (str.substr(e,1) != '"' && e < str.length) e++;
+    var tstr = str.substr(s,e-s);
+    if (tstr.substr(tstr.length-1,1)=='\\') tstr = tstr.substr(0,tstr.length-1);
+    return tstr;
+  };
+  
+  this.getValueInJSONResults = function(str,tag) {
+    str = str.replace(/\\/g,'');
+    var s = str.indexOf(tag);
+    if (s < 0) return '';
+    s = str.indexOf('":"',s);
+    if (s < 0) return '';
+    s+=3;
+    var e = s;
+    while (str.substr(e,1) != '"' && e < str.length) e++;
+    var tstr = str.substr(s,e-s);
+    if (tstr.substr(tstr.length-1,1)=='\\') tstr = tstr.substr(0,tstr.length-1);
+    return tstr;
+  };    
+  
+  this.getTargetUser = function() {
+    try {
+      var content=document.getElementById('content_row');
+      var as=content.getElementsByTagName('a');
+      for (var i=0; i < as.length; i++){
+        if(as[i].innerHTML=='Profile') { 
+          match=/[;&]user=p\|(\d+)/.exec(as[i].href);
+          if(match) return 'p|' + match[1];
+        }
+      }
+    } catch(err){}
+    try {
+      var content=document.getElementById('app_content_16421175101').innerHTML;
+      return/[?;&]opponent_id=p\|(\d+)/.exec(content)[1];
+    } catch(err){}
+    return null;
+  };
+
+  this.findId = function(str,srch) {
+    var id = '';
+    if (str.indexOf(srch) > 0)
+    {
+      var s = str.indexOf(srch) + srch.length;
+      while (s < str.length && str.substr(s,1)!='"' && str.substr(s,1)!='&') id+=str.substr(s++,1);
+      if (id.substr(0,2)=='p|') return id;
+      if (!OGPParser.isNumeric(id))
+        id = OGPParser.decodeBase64(id);
+    }
+    return id;
+  };
+
+  this.decodeBase64 = function(input) {
+    var output = "";
+    var chr1, chr2, chr3 = "";
+    var enc1, enc2, enc3, enc4 = "";
+    var i = 0;
+  
+    // remove all characters that are not A-Z, a-z, 0-9, +, /, or =
+    var base64test = /[^A-Za-z0-9\+\/\=]/g;
+    if (base64test.exec(input)) {
+       OGPDisplay.addLine("There were invalid base64 characters in the input text.\n" +
+             "Valid base64 characters are A-Z, a-z, 0-9, '+', '/',and '='\n" +
+             "Expect errors in decoding.",OGPConfig.clrError);
+    }
+    input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+    do {
+       enc1 = this.keyStr.indexOf(input.charAt(i++));
+       enc2 = this.keyStr.indexOf(input.charAt(i++));
+       enc3 = this.keyStr.indexOf(input.charAt(i++));
+       enc4 = this.keyStr.indexOf(input.charAt(i++));
+  
+       chr1 = (enc1 << 2) | (enc2 >> 4);
+       chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+       chr3 = ((enc3 & 3) << 6) | enc4;
+   
+       output = output + String.fromCharCode(chr1);
+   
+       if (enc3 != 64) {
+          output = output + String.fromCharCode(chr2);
+       }
+       if (enc4 != 64) {
+          output = output + String.fromCharCode(chr3);
+       }
+   
+       chr1 = chr2 = chr3 = "";
+       enc1 = enc2 = enc3 = enc4 = "";
+   
+    } while (i < input.length);
+   
+    return unescape(output);
+  };
+  
+  this.isNumeric = function(str) {
+    var ValidChars = '0123456789.';
+    var IsNumber = true;
+    for (var i=0; i < str.length; i++) {
+      if (ValidChars.indexOf(str.charAt(i))==-1)
+        IsNumber = false;
+    }
+    return IsNumber;
+  };
+  
+  this.getUserNameFromProfile = function(str) {
+    var fname = OGPParser.getValueInTags(str,'div class="title">',0);
+    var s = fname.indexOf('&#34;')+5;
+    if (s < 0) return '';
+    var last = s;
+    var e = fname.indexOf('&#34;',s+1);
+    while (e != -1) {
+      last = e;
+      e = fname.indexOf('&#34;',e+1);
+    }
+    if (s==-1 || last==-1 || s==last || s>=last) 
+      fname = '';
+    else
+      fname = fname.substr(s,last-s);
+    return fname;
+  };
+  
+  this.getSpecificTagValue = function(r,tag) {
+    if (!r) return;
+    switch(tag) {
+      case 'bosseng':
+        var s = r.indexOf('Requires:');
+        s = r.indexOf('bullet_list',s);
+        s = r.indexOf('"bold_number',s);
+        return (OGPParser.getValueInTags(r.substr(s,100),'"bold_number',0));
+        break;
+        
+      case 'bossexp':
+        var s = r.indexOf('Payout:');
+        s = r.indexOf('bullet_list',s);
+        s = r.indexOf('"bold_number',s);
+        return (OGPParser.getValueInTags(r.substr(s,100),'"bold_number',0));
+        break;
+                
+      case 'token':
+        s = r.indexOf('Jobs preparation');
+        if (s < 0) return '';
+        s = r.indexOf('Manufacture Tokens',s);
+        var nj = r.indexOf('class="job_name"',s);
+        s = r.indexOf('Owned:',s);
+        if (parseInt(s) > parseInt(nj)) return '0';
+        if (s > 0)
+          return(parseInt(r.substr(s+6)));
+        else
+          return '0';
+        break;
+        
+      case 'deck':
+        s = r.indexOf('Jobs preparation');
+        if (s < 0) return '';
+        s = r.indexOf('Get Cheating Deck',s);
+        var nj = r.indexOf('class="job_name"',s);
+        s = r.indexOf('Owned:',s);
+        if (parseInt(s) > parseInt(nj)) return '0';
+        if (s > 0)
+          return(parseInt(r.substr(s+6)));
+        else
+          return '0';
+        break;
+    }
+    return '';
+  };
+
+  this.getStatsFromPage = function(r) {
+    if (!r) return;
+    var s = r.indexOf('{"user_fields":');
+    if (s < 0) s = r.indexOf('var user_fields = [];');
+    if (s >0) {
+      // New version
+      OGPConfig.curExpNeeded = parseInt(OGPString.getNewStatValue(r,'exp_for_next_level'));
+      OGPConfig.curExp = parseInt(OGPString.getNewStatValue(r,'user_experience'));
+      OGPConfig.curEnergy = parseInt(OGPString.getNewStatValue(r,'user_energy'));
+      OGPConfig.curRatio = parseInt(((OGPConfig.curExpNeeded-OGPConfig.curExp)/OGPConfig.curEnergy)*100)/100;
+      OGPConfig.curStamina = OGPString.getNewStatValue(r,'user_stamina');
+      OGPConfig.curHealth = OGPString.getNewStatValue(r,'user_health');
+      OGPConfig.curSkillPoints = OGPString.getNewStatValue(r,'user_skill');
+      OGPConfig.curLevel = OGPString.getNewStatValue(r,'user_level');
+    } else {
+      OGPConfig.curExpNeeded = parseInt(OGPString.getStatValue(r,'exp_for_next_level'));
+      OGPConfig.curExp = parseInt(OGPString.getStatValue(r,'user_experience'));
+      OGPConfig.curEnergy = parseInt(OGPString.getStatValue(r,'user_energy'));
+      OGPConfig.curRatio = parseInt(((OGPConfig.curExpNeeded-OGPConfig.curExp)/OGPConfig.curEnergy)*100)/100;
+      OGPConfig.curStamina = OGPString.getStatValue(r,'user_stamina');
+      OGPConfig.curHealth = OGPString.getStatValue(r,'user_health');
+      OGPConfig.curSkillPoints = OGPString.getStatValue(r,'user_skill');
+      OGPConfig.curLevel = OGPString.getStatValue(r,'user_level');
+    }
+  };
+
+  this.parseJobResults = function(r) {
+    // Clear the res array
+    res['timeout'] = false;
+    res['jobEnergySpent'] = null;
+    res['jobResults'] = null;
+    res['jobExp'] = null;
+    res['jobMoney'] = null;
+    res['jobExtraMoney'] = null;
+    res['jobBadMoney'] = null;
+    res['jobExtraExp'] = null;
+    res['jobLoot'] = null;
+
+    // Check for session timeout
+    try {
+      if (r.substr(0,7)=='<script') {
+        res['timeout'] = true;
+        return;
+      }
+    } catch(err) {
+      res['jobResults'] = 'Failed';
+      return;
+    }
+    
+    
+    // Get the regular stats
+    OGPParser.getStatsFromPage(r);
+    
+    // Check to see what kind of results we got back
+    var s = r.indexOf('{"user_fields":');
+    if (s >= 0 && s < 20) {
+      // New job running type, parse differently
+      if (r.indexOf('Job Success!') > 0) res['jobResults']='Completed';
+      if (res['jobResults']=='Completed') {
+        res['jobExp'] = parseInt(OGPParser.getValueInTags(r,'class=\"experience\">',0));
+        var tmoney = OGPParser.getValueInTags(r,'class=\"cash',0);
+        if (tmoney.indexOf('+') > 0) {
+          tmoney = tmoney.split('+');
+          res['jobMoney'] = tmoney[0].replace(/[^0-9]/g,'');
+          res['jobExtraMoney'] = tmoney[1].replace(/[^0-9]/g,'');
+        } else {        
+          res['jobMoney'] = tmoney.replace(/[^0-9]/g,'');
+        }
+      } else if (r.indexOf('Success!') > 0) {
+        // Vegas
+        res['jobResults']='Completed';
+        res['jobExp'] = parseInt(OGPParser.getValueInJSONResults(r,'exp_gained'));
+        var tmoney = OGPParser.getValueInJSONResults(r,'cash_gained');
+        if (tmoney.indexOf('+') > 0) {
+          tmoney = tmoney.split('+');
+          res['jobMoney'] = tmoney[0].replace(/[^0-9]/g,'');
+          res['jobExtraMoney'] = tmoney[1].replace(/[^0-9]/g,'');
+        } else {        
+          res['jobMoney'] = tmoney.replace(/[^0-9]/g,'');
+        }
+        res['jobEnergySpent'] = parseInt(OGPParser.getValueInJSONResults(r,'energy_consumed'));
+        // Check for loot
+        // "loot\":{\"type\":1,\"id\":2027,\"quantity\":1,\"name\":\"Alarm Code\",\"image\":\"item_AlarmCode_01.gif\"}
+        if (r.indexOf('"loot\\":{') > 0) {
+          var s = r.indexOf('"loot\\":{');
+          var e = s;
+          while (r.substr(e,1) != '}') e++;
+          var li = r.substr(s,e-s);
+          res['jobLoot'] = OGPParser.getValueInJSONResults(li,'name');
+        }
+      } else {
+        // Job failed, new version
+        //e$('divOGPDebug').innerHTML += '<textarea>' + r + '</textarea>' + r;
+        return;
+      }
+     
+    } else {
+      // Old job running type
+      if (r.indexOf('You cannot do jobs for the opposing gang') > 0) res['jobWrongGang'] = 'yes';
+      res['jobEnergySpent'] = parseInt(OGPParser.getValueInTags(r,'class="message_energy">',0));
+      res['jobResults'] = OGPParser.getValueInTags(r,'class="job_outcome">',0);
+      if (res['jobResults'].indexOf('Completed') > 0) {
+        // Job ran successfully fill in the rest of the stats
+        res['jobResults'] = 'Completed';
+        res['jobExp'] = parseInt(OGPParser.getValueInTags(r,'class="message_experience">',0));
+        var tmoney = OGPParser.getValueInTags(r,'class="money">',0);
+        if (tmoney.indexOf('+') > 0) {
+          tmoney = tmoney.split('+');
+          res['jobMoney'] = tmoney[0].replace(/[^0-9]/g,'');
+          res['jobExtraMoney'] = tmoney[1].replace(/[^0-9]/g,'');
+        } else {        
+          res['jobMoney'] = tmoney.replace(/[^0-9]/g,'');
+        }
+        res['jobBadMoney'] = OGPParser.getValueInTags(r,'class="message_cash bad">',0).replace(/[^0-9]/g,'');
+        // Find any loot, bonuses, etc
+        if (r.indexOf('As a Top Mafia Mastermind you gained') > 0) res['jobExtraExp'] = parseInt(parseInt(res['jobExp'])/2);
+        // if (r.indexOf('As a Top Mafia Bagman') > 0) res['jobExtraMoney'] = parseInt(parseInt(res['jobMoney'])/2);
+        var lstr = '';
+        r = r.replace(/ found an item from/g,'');
+        if (r.indexOf(' gained a ') > 0) lstr = ' gained a ';
+        if (r.indexOf(' gained an ') > 0) lstr=' gained an ';
+        if (r.indexOf(' found a ') > 0) lstr=' found a ';
+        if (r.indexOf(' found an ') > 0) lstr=' found an ';
+        var extraloot = '';
+        if (r.indexOf(' secret stash') > 0) lstr = '';
+        if (lstr != '')
+        {
+          s = r.indexOf(lstr);
+          extraloot = OGPParser.findLootItemInResults(r.substr(s,100),lstr);
+          extraloot = extraloot.replace(' on the job.','');
+          res['jobLoot'] = extraloot;
+        }
+      } else {
+        // Job didn't run successfully, try it again
+        res['jobResults'] = 'Failed';
+      }
+    }
+  };
+  
+  this.parseFightResults = function(r) {
+    // Clear the res array
+    res['timeout'] = false;
+    res['aaResults'] = null;
+    res['aaExp'] = 0;
+    res['aaMoney'] = 0;
+    res['aaLoot'] = null;
+    res['aaDamage'] = 0;
+    res['aaIced'] = 'No';
+
+    // Check for session timeout
+    try {
+      if (r.substr(0,7)=='<script') {
+        res['timeout'] = true;
+        return;
+      }
+    } catch(err) {
+      res['aaResults'] = 'Failed';
+      return;
+    }
+
+    // Get the regular stats
+    OGPParser.getStatsFromPage(r);
+
+    // Get the fight specific stats
+    if (r.indexOf('You win!') > 0) {
+      res['aaResults'] = 'Win';
+      var s = r.indexOf('class="fight_results"');
+      s = r.indexOf('$',s);
+      res['aaMoney'] = parseInt(r.substr(s+1));
+      s = r.indexOf('+',s);
+      res['aaExp'] = parseInt(r.substr(s+1));
+      s = r.indexOf('dealt',s);
+      res['aaDamage'] = parseInt(r.substr(s+5));
+    }
+    if (r.indexOf('You lose!') > 0) {
+      res['aaResults'] = 'Lose';
+    }
+    if (r.indexOf('Attack Again!') < 0) {
+      res['aaIced'] = 'Yes';
+    }
+    if (r.indexOf('Your opponent is already iced or too weak to fight') > 0) {
+      res['aaIced'] = 'Yes';
+    }
+    if (r.indexOf('You punched') > 0) {
+      res['aaResults'] = 'Punch';
+      var s = r.indexOf('in the face');
+      s = r.indexOf('<strong>',s);
+      res['aaDamage'] = parseInt(OGPParser.getValueInTags(r.substr(s,50),'<strong',0));
+    }  
+    
+   
+  };
+
+  this.findLootItemInResults = function(res,str) {
+    var s = res.indexOf(str);
+    if(s < 0) return ('');
+    s+=str.length;
+    while (res.substr(s,1) == ' ') s++;
+    var e = s+1;
+    while (res.substr(e,1) != '<' && res.substr(e,1) != '.' && e < res.length) e++;
+    return(res.substr(s,e-s));
+  };
+  
+  this.getUserFieldValue = function(res,str) {
+    var s = res.indexOf("user_fields['" + str + "'] =");
+    if (s < 0) return '';
+    while (res.substr(s,1) != '=') s++;
+    while (res.substr(s,1) != '"') s++;
+    s++;
+    var e = s;
+    while (res.substr(e,1) != '"') e++;
+    return (res.substr(s,e-s));
+  };
+};
+
+/***************************************
+ PROPERTY Functions 
+****************************************/
+function ogpPropertyDef() {
+  this.reset = function() {
+    this.currentCity = 1;
+    this.cityMoney = 0;
+    this.collectFlag = false;
+    this.depositFlag = false;
+    this.processAll = false;
+    this.isRunning = false;
+    this.curCityProperties = 0;
+    this.curCityCollected = 0;
+  };
+
+  // Main Entry Point 
+  this.start = function(city,collect,deposit,all) {
+    OGPConfig.functionRunning = true;
+    this.reset();
+    OGPConfig.originalCity = OGPConfig.currentCity;
+    this.collectFlag = collect;
+    this.depositFlag = deposit;
+    this.processAll = all;
+    if (city=='All')
+      this.currentCity = 1;
+    else 
+      this.currentCity = city;
+
+    // Process the current city
+    this.processCity(0);
+  };
+   
+  this.processCity = function(step,index) {
+    switch(step) {
+      case 0:
+        //OGPDisplay.addLine('Processing ' + OGPItems.getCityName(OGPProperty.currentCity),OGPConfig.clrInfo);
+        if (OGPConfig.currentCity != OGPProperty.currentCity) {
+          OGPTravel.goCity(OGPProperty.currentCity,'OGPProperty.processCity(1,0)');
+        } else {
+          OGPProperty.processCity(1,0);
+        }
+        break;
+
+      case 1: // Traveled (if necessary to property city) - Set up and collect from the properties
+        OGPProperty.currentCity = OGPConfig.currentCity;
+        OGPProperty.curCityProperties = 0;
+        OGPProperty.curCityCollected = 0;
+        if (OGPProperty.collectFlag) {
+          var txt = '<table id="tblPropertyCollect" name="tblPropertyCollect">';
+          for (var i=0; i < OGPItems.cityProperties.length; i++) {
+            if (OGPItems.cityProperties[i][0] == OGPProperty.currentCity) {
+              OGPProperty.curCityProperties++;
+              txt += '<tr><td style="width:240px;">' + OGPItems.cityProperties[i][2] + '</td><td><div style="color:' + OGPConfig.clrAction + '" id="divPropCol' + i + '"></div></td></tr>';
+            }
+          }
+          txt += '</table>';
+          OGPDisplay.setHTML('divOGPResults',txt);
+          for (var i=0; i < OGPItems.cityProperties.length; i++) {
+            if (OGPItems.cityProperties[i][0] == OGPProperty.currentCity) {
+              if (OGPProperty.currentCity == 5) { // Hack for Vegas
+                var url = OGPConfig.MWURLAJAX + OGPConfig.urlVegasCollect;
+              }
+              else if (OGPItems.cities[OGPItems.getCityIndex(OGPProperty.currentCity)][4]=='business')
+                var url = OGPConfig.MWURLAJAX + '&xw_action=sell&business=' + OGPItems.cityProperties[i][1];
+              else
+                var url = OGPConfig.MWURLJSON + '&xw_action=collect&building_type=' + OGPItems.cityProperties[i][1] + '&business=' + OGPItems.cityProperties[i][1];
+              url += '&xw_controller=' + OGPItems.getCityBusinessType(OGPProperty.currentCity);
+              url += '&xw_city=' + OGPProperty.currentCity + '&tmp=' + OGPConfig.tmpkey;
+              setTimeout("OGPAjax.buildAjax('" + url + "','OGPProperty.productSold','%ix%," + i + "');",1000);
+            }
+          }
+        } else {
+          // Didn't collect, load the index page to pass the values to the next step
+          OGPAjax.buildAjax(OGPConfig.MWURLAJAX + OGPConfig.urlUpdateStats + '&tmp=' + OGPConfig.tmpkey,'OGPProperty.processCity','2,%ix%');
+        }
+        break;
+        
+      case 2: // See if we need to deposit
+        if (OGPProperty.depositFlag) {
+          // Deposit the money
+          var r = OGPAjax.ajax[index].response;
+          //e$('divOGPDebug').innerHTML += '<br>Deposit!<textarea>' + r + '</textarea>';
+          var tamount = OGPString.getStatValue(r,'user_cash_nyc');
+          if (tamount == '') tamount = OGPParser.getValueInJSONResults(r,'user_cash_nyc');
+          var amount='';
+          for (var i=0; i < tamount.length; i++)
+            if (tamount.substr(i,1) >= '0' && tamount.substr(i,1) <='9') amount += tamount.substr(i,1);
+          OGPDisplay.addLine('Depositing ' + tamount.replace('$',''),OGPConfig.clrAction);
+          if (OGPProperty.currentCity == 5)
+            var url = OGPConfig.MWURLAJAX + OGPConfig.urlVegasDeposit + '&city=5&xw_client_id=8';
+          else
+            var url = OGPConfig.MWURLAJAX + OGPConfig.urlDeposit + '&city=' + OGPItems.cities[OGPProperty.currentCity-1][7];;
+          url += '&xw_city=' + OGPProperty.currentCity + '&amount=' + amount;
+          OGPAjax.buildAjax(url,'OGPProperty.processCity','3,%ix%');
+        } else {
+          OGPProperty.processCity(4,0);
+        }
+        break;
+        
+      case 3: // Money deposited
+        // Parse the results and move on
+        //OGPDisplay.addLine('Money Desposited.',OGPConfig.clrInfo);
+        OGPProperty.processCity(4,0);
+        break;
+        
+      case 4: // Check for the next city
+        if (OGPProperty.processAll) {
+          OGPProperty.currentCity++;
+          if (OGPProperty.currentCity <= OGPItems.cities.length)
+            OGPProperty.processCity(0,0);
+          else {
+            // Go back to original city
+            if (OGPConfig.currentCity != OGPConfig.originalCity) {
+              OGPTravel.goCity(OGPConfig.originalCity,'OGPProperty.processFinished()');
+            }
+            else
+              OGPProperty.processFinished();
+          }
+        } else {
+          // Go back to original city
+          if (OGPConfig.currentCity != OGPConfig.originalCity)
+          {
+            OGPTravel.goCity(OGPConfig.originalCity,'OGPProperty.processFinished()');
+          }
+          else
+            OGPProperty.processFinished();
+        }
+        break;
+    } // switch
+  };
+
+  this.productSold = function(index,business) {
+    if (OGPAjax.ajax[index].response) {
+      var r = OGPAjax.ajax[index].response;
+      //e$('divOGPDebug').innerHTML += '<textarea>' + r + '</textarea>';
+      OGPProperty.curCityCollected++;
+      if (r.indexOf('class="message_body"') > 0) {
+        OGPDisplay.setHTML("divPropCol" + business,OGPParser.getValueInTags(r,'class="message_body"',0));
+      } else {
+        if (r.indexOf('<div>You collected on') > 0) {
+           OGPDisplay.setHTML("divPropCol" + business,OGPParser.getValueInTags(r,'<div>You collected on',1));
+        } else {
+          if (r.indexOf('"You have collected') > 0) {
+            OGPDisplay.setHTML("divPropCol" + business,OGPParser.getValueInQuotes(r,'"You have collected')); 
+          } else {
+            OGPDisplay.setHTML("divPropCol" + business,'Collected');
+          }
+        }
+      }
+    } else {
+      // Didn't get a result, something went wrong
+      OGPDisplay.addLine('Could not collect on a property, something went wrong...continuing',OGPConfig.clrWarning);
+      OGPProperty.curCityCollected++;
+    }
+    
+    // See if this city is done and what to do next
+    if (OGPProperty.curCityCollected == OGPProperty.curCityProperties) {
+      // All businesses collected from this city check for deposit and/or move to the next city
+      OGPProperty.processCity(2,index);
+    } 
+  };
+  
+  this.processFinished = function() {
+    OGPDisplay.clearResults();
+    OGPDisplay.addLine('All processing finished',OGPConfig.clrGood);
+    // Reset the global running flag
+    OGPConfig.functionRunning = false;
+  };
+}
+
+/***************************************
+ ITEM and OBJECT Functions 
+****************************************/
+function ogpItemsDef() {
+
+  // Internal arrays to hold city, job, collection, loot information
+  this.cities = new Array();
+  this.cityProperties = new Array();
+  this.jobLevels = new Array();
+  this.jobs = new Array();
+  this.collectionTitles = new Array();
+  this.collections = new Array();
+  this.lootTypes = new Array();
+  this.lootItems = new Array();
+  this.shopItems = new Array();
+
+  // Flags to avoid reloading information
+  this.citiesLoaded = false;
+  this.jobLevelsLoaded = false;
+  this.jobsLoaded = false;
+  this.collectionTitlesLoaded = false;
+  this.collectionsLoaded = false;
+  this.lootTypesLoaded = false;
+  this.lootItemsLoaded = false;
+  this.shopItemsLoaded = false;
+  
+  // Variables to track the job payout updates
+  this.currentJobLevel = 0;
+  this.currentJobTab = 0;
+  this.currentJobCity = 0;
+  
+  // Variables to track multiple jobs on the shop build
+  this.shop1 = 0;
+  this.shop2 = 0;
+  this.shoptries = 1;
+  
+  // Variables for mystery bag collection
+  this.mysbags = new Array();
+
+  // External Methods
+  this.init = function() {
+    OGPDisplay.addLine('Loading Cities, Jobs, Properties, Loot, Collections',OGPConfig.clrInfo);
+    this.loadCities();
+    this.loadProperties();
+    this.loadJobLevels();
+    this.loadJobs();
+    this.loadCollectionTitles();
+    this.loadCollections();
+    this.loadLootTypes();
+    this.loadLootItems();
+    this.loadShopItems();
+  };
+
+  // Collect Mystery Bags
+  this.collectMysteryBags = function(step,index) {
+    switch(step) {
+      case 0:
+        var txt = '';
+        txt += '<div id="divMysBag" name="divMysBag">';
+        txt += 'From your Facebook Requests page, view the source and paste it here<br />';
+        txt += '<textarea id="taMysBag" name="taMysBag" rows="3" cols="40"></textarea><br />';
+        txt += '<input type="button" value="Collect!" onclick="OGPItems.collectMysteryBags(1,0);">';
+        txt += '</div>';
+        OGPDisplay.setHTML('divOGPSetup',txt);
+        break;
+        
+      case 1:
+        OGPItems.mysbags.length = 0;
+        var txt = e$('taMysBag').value;
+        OGPDisplay.setHTML('divOGPSetup','<div>Finding Mystery Bags</div>');
+        var s = txt.indexOf('Claim Rewards');
+        while (s > 0) {
+          s = txt.indexOf('[',s);
+          s++; var e=s;
+          while (txt.substr(e,1) != ']' && e < txt.length) e++;
+          var url = txt.substr(s,e-s);
+          OGPItems.mysbags[OGPItems.mysbags.length] = url;
+          s = txt.indexOf('Claim Rewards',s);
+        }
+        OGPDisplay.clearSetup();
+        var txt = '';
+        txt += '<table id="tblMysBag" name="tblMysBag">';
+        for (var i=0; i < OGPItems.mysbags.length; i++) {
+          txt += '<tr><td>' + (i+1) + '</td><td><div id="divMB' + i + '" name="divMB' + i + '">Waiting...</td></tr>';
+        }
+        txt += '</table>';
+        OGPDisplay.setHTML('divOGPResults',txt);
+        OGPItems.collectMysteryBags(2,0);
+        break;
+        
+      case 2:
+        OGPItems.curbag = -1;
+        for (var i=OGPItems.mysbags.length-1; i >= 0; i--)
+          if (OGPItems.mysbags[i] != '') OGPItems.curbag = i;
+        if (OGPItems.curbag >= 0) {
+          e$('divMB' + OGPItems.curbag).innerHTML = 'Collecting Bag From Facebook';
+          e$('ogpiframe').src = OGPItems.mysbags[OGPItems.curbag];
+          setTimeout('OGPItems.collectMysteryBags(3,0)',5000);
+          break;
+        } else {
+          OGPDisplay.setHTML('divOGPSetup','All Mystery Bags Collected');
+        }
+        break;
+      
+      case 3:
+        e$('divMB' + OGPItems.curbag).innerHTML = 'Opening Mystery Bag';
+
+        OGPItems.mysbags[OGPItems.curbag] = '';        
+        //OGPItems.collectMysteryBags(2,0);
+        break;
+    }
+  };
+  
+  // Build shop items
+  this.buildShopItems = function(step,index,prop) {
+    switch(step) {
+      case 0:
+        OGPItems.shop1 = 0;
+        OGPItems.shop2 = 0;
+        var txt = '';
+        txt += '<table id="tblBuildShop" name="tblBuildShop">';
+        txt += '<tr><th colspan="2">Build Shop Items</th></tr>';
+        txt += '<tr><td style="width:50%;">Chop Shop</td><td>Weapons Depot</td></tr>';
+        txt += '<tr><td><select id="selChopShop" name="selChopShop"><option value ="">-- Select --</option>';
+        for (var i=0; i < OGPItems.shopItems.length; i++) {
+          if (OGPItems.shopItems[i][2] == 11)
+            txt += '<option value="' + OGPItems.shopItems[i][1] + '">' + OGPItems.shopItems[i][0].replace(/@/g,"'") + '</option>';
+        }
+        txt += '</select></td>';
+        txt += '<td><select id="selWeapons" name="selWeapons"><option value ="">-- Select --</option>';
+        for (var i=0; i < OGPItems.shopItems.length; i++) {
+          if (OGPItems.shopItems[i][2] == 12)
+          txt += '<option value="' + OGPItems.shopItems[i][1] + '">' + OGPItems.shopItems[i][0].replace(/@/g,"'") + '</option>';
+        }
+        txt += '</select></td>';
+        txt += '<tr><td colspan="2"><a onclick="OGPItems.buildShopItems(1,0,0)">Build Items</a></td></tr>';
+        txt += '</table>';
+        OGPDisplay.setHTML('divOGPSetup',txt);
+        break;
+        
+      case 1:
+        var item1 = e$('selChopShop').value;
+        var item2 = e$('selWeapons').value;
+        OGPDisplay.clearSetup();
+        var txt = '';
+        txt += '<table id="tblBuildShop" name="tblBuildShop">';
+        txt += '<tr><th colspan="2">Build Shop Items Results</th></tr><tr><td style="width:120px;">Chop Shop:</td><td><div id="divItem1" name="divItem1"></div></td></tr><tr><td>Weapons Depot:</td><td><div id="divItem2" name="divItem2"></div></td></tr>';
+        txt += '</table>';
+        OGPDisplay.setHTML('divOGPResults',txt);
+        var url = OGPConfig.MWURLAJAX + OGPConfig.urlBuildShop;
+        if (item1 != '')
+          for (var i=0; i < OGPItems.shoptries; i++)
+            OGPAjax.buildAjax(url + '&recipe=' + item1 + '&building_type=11','OGPItems.buildShopItems','2,%ix%,' + 1);
+        else
+          OGPDisplay.setHTML('divItem1','No item selected to build');
+        if (item2 != '')
+          for (var i=0; i < OGPItems.shoptries; i++)
+            OGPAjax.buildAjax(url + '&recipe=' + item2 + '&building_type=12','OGPItems.buildShopItems','2,%ix%,' + 2);
+        else
+          OGPDisplay.setHTML('divItem2','No item selected to build');
+        break;
+        
+      case 2:
+        var r = OGPAjax.ajax[index].response;
+        if (prop == 1) OGPItems.shop1++;
+        if (prop == 2) OGPItems.shop2++;
+        if (r.indexOf('You built') > 0) {
+          var s = r.indexOf('You built');
+          var e = s;
+          while (r.substr(e,1) != '<') e++;
+          e$('divItem' + prop).innerHTML += r.substr(s,e-s) + '<br />';
+        } else {
+          if (prop == 1 && OGPItems.shop1 == OGPItems.shoptries && e$('divItem1').innerHTML == '')
+            OGPDisplay.setHTML('divItem1',OGPParser.getValueInTags(r,'class="message_body"',0));
+          if (prop == 2 && OGPItems.shop1 == OGPItems.shoptries && e$('divItem2').innerHTML == '')
+            OGPDisplay.setHTML('divItem2',OGPParser.getValueInTags(r,'class="message_body"',0));
+        }
+        break;
+    }
+  };
+  
+  // City related methods
+  this.getCityName = function(tag) {
+    for (var i=0; i < this.cities.length; i++)
+      if (this.cities[i][1]==tag || this.cities[i][3]==tag) return this.cities[i][0];
+    return('Unknown');
+  };
+  this.getCityTag = function(id) {
+    for (var i=0; i < this.cities.length; i++)
+      if (this.cities[i][3]==id) return this.cities[i][1];
+  };
+  this.getCityNum = function(tag) {
+    for (var i=0; i < this.cities.length; i++)
+      if (this.cities[i][0]==tag || this.cities[i][1]==tag) return this.cities[i][3];
+    if (this.cities[tag][3])
+      return(this.cities[tag][3]);
+    else 
+      return(tag);
+  };
+  this.getCityBusinessType = function(tag) {
+    for (var i=0; i < this.cities.length; i++) {
+      if (this.cities[i][0]==tag || this.cities[i][2]==tag || this.cities[i][3]==tag) {
+        return this.cities[i][4];
+      }
+    }
+    return('0');
+  };
+  this.updateCurrentCity = function() {
+    OGPConfig.currentCity = OGPTravel.getCurrentCity();
+  };
+  this.getCityIndex = function(tag) {
+    for (var i=0; i < this.cities.length; i++) {
+      if (this.cities[i][0]==tag || this.cities[i][1]==tag || this.cities[i][3]==tag) {
+        return i;
+      }
+    }
+    return('-1');
+  };
+  
+  // Job related methods
+  
+  this.updateJobPayouts = function(step,index) {
+    switch(step) {
+      case 0:
+        OGPDisplay.clearResults();
+        OGPDisplay.addLine('Updating job energy and experience information, this will take a minute...',OGPConfig.clrAction);
+        OGPItems.currentJobLevel = 0;
+        OGPItems.currentJobTab = 1;
+        OGPItems.currentJobCity = OGPItems.jobLevels[0][0];
+        OGPConfig.originalCity = OGPConfig.currentCity;
+        for (var i=0; i < OGPItems.jobs.length; i++) {
+          OGPItems.jobs[i][6] = 0;
+          OGPItems.jobs[i][7] = 0;
+        }
+        if (OGPConfig.currentCity != OGPItems.currentJobCity) {
+          OGPConfig.currentCity = OGPItems.currentJobCity;
+          OGPTravel.goCity(OGPItems.currentJobCity,'OGPItems.updateJobPayouts(1,0)');
+        } else {
+          OGPItems.updateJobPayouts(1,0);
+        }
+        break;
+  
+      case 1:
+        var url = OGPConfig.MWURLAJAX;
+        url += '&xw_controller=' + OGPItems.cities[OGPItems.currentJobLevel][2];
+        url += '&xw_action=view&xw_city=' + OGPItems.currentJobCity;
+        url += '&tab=' + OGPItems.currentJobTab;
+        if (OGPItems.currentJobCity == 2) url += '&bar=0';
+        if (OGPItems.currentJobCity == 1) 
+          if (OGPItems.currentJobLevel <= 5)
+            url += '&bar=0';
+          else
+            url += '&bar=1';
+        OGPAjax.buildAjax(url,'OGPItems.updateJobPayouts','2,%ix%');
+        break;
+        
+      case 2:
+        var r = OGPAjax.ajax[index].response;
+        OGPDisplay.addLine(OGPItems.getCityName(OGPItems.currentJobCity) + ' - Tab ' + OGPItems.currentJobTab,OGPConfig.clrInfo);
+        //OGPDisplay.attachResponse(r);
+        
+        if (r.indexOf('div id="new_user_jobs"') > 0) {
+          var s = r.indexOf('div id="new_user_jobs"');
+          s = r.indexOf('class="title_results"',s);
+          while (s > 0) {
+            var e = r.indexOf('class="title_results"',s+1);
+            if (e < 0) e = r.length;
+            var jobname = OGPParser.getValueInTags(r.substr(s,e-s),'<h3>',0);
+            s = r.indexOf('&job=',s) + 5;
+            var jobnum = parseInt(r.substr(s));
+            var texp = parseInt(OGPParser.getValueInTags(r.substr(s,e-s),'class="energy"',0));
+            var teng = parseInt(OGPParser.getValueInTags(r.substr(s,e-s),'class="experience"',0));
+            
+            for (var i=0; i < OGPItems.jobs.length; i++) {
+              if (OGPItems.jobs[i][0] == OGPItems.currentJobLevel && OGPItems.jobs[i][1]==OGPItems.currentJobTab && OGPItems.jobs[i][2]==jobnum) {
+                if (jobname != '') OGPItems.jobs[i][3] = jobname.replace(/^\s+|\s+$/g, '');
+                OGPItems.jobs[i][6] = teng;
+                OGPItems.jobs[i][7] = texp;
+              }
+            }
+            s = r.indexOf('class="title_results"',s+1);
+          }
+        } else if (r.indexOf('<div class="job_title">' > 0) && r.indexOf('class="job_name"') < 0) {
+          // Vegas jobs
+          var s = r.indexOf('class="job_title"');
+          var x = 0;
+          while (s > 0) {
+            var goodJob = true;
+            var e = r.indexOf('class="job_title"',s+1);
+            if (e < 0) e = r.length;
+            var jobname = OGPParser.getValueInTags(r.substr(s,e-s),'<h3>',0);
+            s = r.indexOf('class="experience"',s);
+            if (s < 0 || s > e) goodJob = false;
+            var texp = parseInt(OGPParser.getValueInTags(r.substr(s,e-s),'class="experience"',0));
+            s = r.indexOf('class="energy"',s);
+            if (s < 0 || s > e) goodJob = false;
+            var teng = parseInt(OGPParser.getValueInTags(r.substr(s,e-s),'class="energy"',0));
+            s = r.indexOf('panelButtonDoJob(',s);
+            if (s < 0 || s > e) goodJob = false;
+            while (r.substr(s,1) != '(') s++;
+            var jobnum = parseInt(r.substr(s+1));
+            if (goodJob) {
+              for (var i=0; i < OGPItems.jobs.length; i++) {
+                if (OGPItems.jobs[i][0] == OGPItems.currentJobLevel && OGPItems.jobs[i][1]==OGPItems.currentJobTab && OGPItems.jobs[i][2]==jobnum) {
+                  if (jobname != '') OGPItems.jobs[i][3] = jobname.replace(/^\s+|\s+$/g, '');
+                  if (OGPConfig.currentCity == 5) { // Vegas hack for 10% exp
+                    texp = Math.round((texp * 1.1)-.01);
+                  }
+                  OGPItems.jobs[i][6] = teng;
+                  OGPItems.jobs[i][7] = texp;
+                }
+              }
+              s = e; 
+            }
+            else
+              if (e == r.length)
+                s = -1; 
+              else 
+                s = e;
+          }
+        } else {
+          var s = r.indexOf('class="job_name');
+          var goodJob = true;
+          while (s > 0) {
+            goodJob = true;
+            //e$('divOGPResults').innerHTML += OGPParser.getValueInTags(r.substr(s,100),'class="job_name"',0) + ' -- ';
+            var e = r.indexOf('class="job_name',s+1);
+            if (e-s > 0 && e-s < 1000) e= r.indexOf('class="job_name',e+1);
+            if (e < 0) e = r.length;
+            // Check for locked job
+            if (r.substr(s,e-s).indexOf('sexy_lock') > 0) {
+              s = r.indexOf('class="job_name',s+1);
+              e = r.indexOf('class="job_name',s+1);
+              if (e-s > 0 && e-s < 1000) e = r.indexOf('class="job_name',e+1);
+              if (e < 0) e = r.length;
+            }
+            var jobname = OGPParser.getValueInTags(r.substr(s,e-s),'class="job_name',0);
+            s = r.indexOf('class="job_reward',s);
+            s = r.indexOf('class="bold_number"',s);
+            // Correction for boss jobs
+            if (s <= e) {
+              var texp = parseInt(OGPParser.getValueInTags(r.substr(s,e-s),'class="bold_number"',0));
+              s = r.indexOf('class="bold_number"',s+1);
+              var teng = OGPParser.getValueInTags(r.substr(s,e-s),'class="bold_number"',0);
+              if (r.substr(s,e-s).indexOf('NEED') > 0) goodJob = false;
+              s = r.indexOf('class="job_action',s+1);
+              s = r.indexOf('lbox_job_',s+1);
+              while (r.substr(s,1) < '0' || r.substr(s,1) > '9') s++;
+              var jobnum = parseInt(r.substr(s));
+              // ALWAYS include Poker game
+              if (parseInt(OGPConfig.currentCity) == 1 && parseInt(jobnum) == parseInt(OGPDrone.jobPoker[2]))
+                goodJob = true;
+              if (goodJob == true) {
+                for (var i=0; i < OGPItems.jobs.length; i++) {
+                  if (OGPItems.jobs[i][0] == OGPItems.currentJobLevel && OGPItems.jobs[i][1]==OGPItems.currentJobTab && OGPItems.jobs[i][2]==jobnum) {
+                    if (jobname != '') OGPItems.jobs[i][3] = jobname.replace(/^\s+|\s+$/g, '');
+                    OGPItems.jobs[i][6] = teng;
+                    OGPItems.jobs[i][7] = texp;
+                  }
+                }
+              }
+            }
+            else
+            {
+              // Correct for choice point
+              s = e;
+            }
+            s = r.indexOf('class="job_name',s);
+          }
+        }
+        
+        OGPItems.currentJobTab++;
+        if (OGPItems.currentJobTab >= OGPItems.jobLevels[OGPItems.currentJobLevel].length) {
+          OGPItems.currentJobLevel++;
+          if (OGPItems.currentJobLevel >= OGPItems.jobLevels.length) {
+            // All Done
+            if (OGPConfig.originalCity != OGPConfig.currentCity) 
+              OGPTravel.goCity(OGPConfig.originalCity,'OGPItems.updateJobPayouts(3,0)');
+            else
+              OGPItems.updateJobPayouts(3,0);
+          } else {
+            // Travel to the next city
+            OGPItems.currentJobCity = OGPItems.jobLevels[OGPItems.currentJobLevel][0];
+            OGPItems.currentJobTab = 1;
+            OGPTravel.goCity(OGPItems.currentJobCity,'OGPItems.updateJobPayouts(1,0)');
+          }
+        } else {
+          setTimeout("OGPItems.updateJobPayouts(1,0);",250);
+        }
+        break;
+        
+      case 3:
+        OGPAjax.buildAjax(OGPConfig.MWURLAJAX + OGPConfig.urlUpdateStats,'OGPItems.updateJobPayouts','4,%ix%');
+        break;
+      
+      case 4:
+        OGPDisplay.showPage(index,'inner_page');
+        OGPDisplay.addLine('Saving job payouts',OGPConfig.clrAction);
+        OGPItems.saveJobInfoToCookies();
+        OGPDisplay.addLine('All Updated',OGPConfig.clrGood);
+        break;
+
+    }
+  };
+  
+  this.showJobPayouts = function() {
+    OGPDisplay.setHTML('divOGPResults','Loading...');
+    var txt = '<table name="tblJobPayouts" id="tblJobPayouts">';
+    for (var i=0; i < this.jobLevels.length; i++) {
+      txt += '<tr><td name="title" id="title" colspan="9">' + OGPItems.cities[i][0] + '</td></tr>';
+      txt += '<tr><th>Job Level</th><th>Job Title</th><th>Energy</th><th>Exp.</th><th>Ratio</th><th>Loot Item</th><th>HEL</th><th>Req. Money</th><th>Req. Consumable</th></tr>';
+      for (var j = 1; j < this.jobLevels[i].length; j++) {
+        for (var k=0; k < this.jobs.length; k++) {
+          if (this.jobs[k][0]==i && this.jobs[k][1]==j) {
+            txt += '<tr><td name="data" id="data">' + this.jobLevels[i][j] + '</td>';
+            txt +='<td name="data" id="data">' + this.jobs[k][3] + '</td>';
+            txt +='<td name="data" id="data">' + this.jobs[k][6] + '</td>';
+            txt +='<td name="data" id="data">' + this.jobs[k][7] + '</td>';
+            if (this.jobs[k][7] != 0)
+              txt +='<td name="data" id="data">' + parseInt((this.jobs[k][7]/this.jobs[k][6])*1000)/1000.0 + '</td>';
+            else
+              txt +='<td name="data" id="data">-</td>';
+            txt +='<td name="data" id="data">' + this.jobs[k][4] + '</td>';
+            txt +='<td name="data" id="data">' + (this.jobs[k][5]==true?'Yes':'&nbsp;') + '</td>';
+            txt +='<td name="data" id="data">' + (this.jobs[k][8]==true?'Yes':'&nbsp;') + '</td>';
+            txt +='<td name="data" id="data">' + (this.jobs[k][9]==true?'Yes':'&nbsp;') + '</td>';
+            txt +='</tr>';
+          }
+        }
+      }
+    }
+    OGPDisplay.setHTML('divOGPResults',txt);
+  };
+  
+  this.loadJobInfoFromCookies = function() {
+    for (var i = 0; i < this.jobLevels.length; i++) {
+      if (OGPCookie.readCookie('mwjobs_' + i) != '' && OGPCookie.readCookie('mwjobs_' + i) != null) {
+        var jobInfo = OGPCookie.readCookie('mwjobs_' + i);
+        for (var j = 1; j < this.jobLevels[i].length; j++) {
+          var arInfo = jobInfo.split('|');
+          for (var k = 0; k < arInfo.length; k++) {
+            var arJob = arInfo[k].split(',');
+            for (var l = 0; l < this.jobs.length; l++) {
+              if (this.jobs[l][0]==i && this.jobs[l][1]==j && this.jobs[l][2]==arJob[0]) {
+                this.jobs[l][6] = arJob[1];
+                this.jobs[l][7] = arJob[2];
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+  
+  this.saveJobInfoToCookies = function() {
+    for (var i = 0; i < this.jobLevels.length; i++) {
+      var str = '';
+      for (var j = 1; j < this.jobLevels[i].length; j++) {
+        for (var k = 0; k < this.jobs.length; k++) {
+          if (this.jobs[k][0] == i && this.jobs[k][1] == j) {
+            if (str != '') str += '|';
+            str += this.jobs[k][2] + ',' + this.jobs[k][6] + ',' + this.jobs[k][7];
+          }
+        }
+      }
+      OGPCookie.createCookie('mwjobs_' + i,str,365);
+    }
+    OGPCookie.createCookie('mwjobs_updated',new Date(),365);
+  };
+  
+  // Load Functions 
+
+  // Name, Wrapper Tag, Job Controller, CityNum, Property Controller, Money Display
+  this.loadCities = function() {
+    if (this.citiesLoaded == true) return;
+    this.cities[this.cities.length] = new Array('New York','mw_city1','job',1,'propertyV2','tab','$','new_york');
+    this.cities[this.cities.length] = new Array('Cuba','mw_city2','job',2,'propertyV2','tab','C$','cuba');
+    this.cities[this.cities.length] = new Array('Moscow','mw_city3','story',3,'propertyV2','story_tab','R$','moscow');
+    this.cities[this.cities.length] = new Array('Bangkok','mw_city4','story',4,'propertyV2','story_tab','B$','bangkok');
+    this.cities[this.cities.length] = new Array('Las Vegas','mw_city5','story',5,'propertyV2','tab','V$','vegas_beta');
+    this.citiesLoaded = true;
+  };
+
+  // City, Property ID, Property Name
+  this.loadProperties = function() {
+    if (this.cityPropertiesLoaded == true) return;
+    this.cityProperties[this.cityProperties.length] = new Array(1,1,'Louie\'s Deli');
+    this.cityProperties[this.cityProperties.length] = new Array(1,2,'Flophouse');
+    this.cityProperties[this.cityProperties.length] = new Array(1,3,'Pawnshop');
+    this.cityProperties[this.cityProperties.length] = new Array(1,4,'Tenement');
+    this.cityProperties[this.cityProperties.length] = new Array(1,5,'Warehouse');
+    this.cityProperties[this.cityProperties.length] = new Array(1,6,'Restaurant');
+    this.cityProperties[this.cityProperties.length] = new Array(1,7,'Dockyard');
+    this.cityProperties[this.cityProperties.length] = new Array(1,8,'Office Park');
+    this.cityProperties[this.cityProperties.length] = new Array(1,9,'Uptown Hotel');
+    this.cityProperties[this.cityProperties.length] = new Array(1,10,'Mega Casino');
+    this.cityProperties[this.cityProperties.length] = new Array(1,11,'Chop Shop');
+    this.cityProperties[this.cityProperties.length] = new Array(1,12,'Weapons Depot');
+    this.cityProperties[this.cityProperties.length] = new Array(2,1,'Tobacco Plantation');
+    this.cityProperties[this.cityProperties.length] = new Array(2,2,'Sugar Plantation');
+    this.cityProperties[this.cityProperties.length] = new Array(2,3,'Factory');
+    this.cityProperties[this.cityProperties.length] = new Array(2,4,'Coca Field');
+    this.cityProperties[this.cityProperties.length] = new Array(2,5,'Bodega');
+    this.cityProperties[this.cityProperties.length] = new Array(2,6,'Bribery Ring');
+    this.cityProperties[this.cityProperties.length] = new Array(3,1,'Unlicensed Taxi Stand');
+    this.cityProperties[this.cityProperties.length] = new Array(3,2,'Cigarette Smuggling Ring');
+    this.cityProperties[this.cityProperties.length] = new Array(3,3,'Black-Market Car Lot');
+    this.cityProperties[this.cityProperties.length] = new Array(3,4,'Munitions Camp');
+    this.cityProperties[this.cityProperties.length] = new Array(3,6,'Trafficking Operation');
+    this.cityProperties[this.cityProperties.length] = new Array(4,1,'Fighting Fish Arena');
+    this.cityProperties[this.cityProperties.length] = new Array(4,2,'Cockfighting Pen');
+    this.cityProperties[this.cityProperties.length] = new Array(4,3,'Tourist Guide Scam');
+    this.cityProperties[this.cityProperties.length] = new Array(4,4,'Gambling Den');
+    this.cityProperties[this.cityProperties.length] = new Array(4,5,'Piracy Operation');
+    this.cityProperties[this.cityProperties.length] = new Array(4,6,'Drug Smuggling Ring');
+    this.cityProperties[this.cityProperties.length] = new Array(4,7,'Ammo Trading Camp');
+    this.cityProperties[this.cityProperties.length] = new Array(4,8,'Yaa Baa Parlor');
+    this.cityProperties[this.cityProperties.length] = new Array(5,1,'My Casino');
+    this.cityPropertiesLoaded = true;
+  };
+  // Null, Tab 1 Title, Tab 2 Title, ...
+  this.loadJobLevels = function() {
+    if (this.jobLevelsLoaded == true) return;
+    this.jobLevels[0] = new Array(1,'Street Thug','Associate','Soldier','Enforcer','Hitman','Capo','Consigliere','Underboss','Boss');
+    this.jobLevels[1] = new Array(2,'El Soldado','El Capitan','El Jefe','El Patron','El Padrino','El Cacique');
+    this.jobLevels[2] = new Array(3,'Episode 1','Episode 2','Episode 3','Episode 4','Episode 5','Episode 6');
+    this.jobLevels[3] = new Array(4,'Episode 1 - Brawler','Episode 2 - Criminal','Episode 3 - Pirate','Episode 4 - Commandant','Episode 5a - Oyabun','Episode 5b - Dragon Head','Episode 6 - Saboteur','Episode 7 - Assassin');
+    this.jobLevels[4] = new Array(5,'District 1 - North Las Vegas','District 2 - Paradise City','District 3 - The Lower Strip','District 4 - Shogun Casino','District 5 - Mojave Desert','District 6 - ');
+
+    /*
+    this.jobLevels[0] = new Array(1,'Street Thug');
+    this.jobLevels[1] = new Array(2,'El Soldado');
+    this.jobLevels[2] = new Array(3,'Episode 1');
+    this.jobLevels[3] = new Array(4,'Episode 1 - Brawler');
+    this.jobLevels[4] = new Array(5,'District 1 - North Las Vegas');
+    */
+
+    this.jobLevelsLoaded = true;
+  };
+
+  // City, Job Level (Tab), Job ID, Title, Loot, HEL, Energy, Exp, Requires Money, Requires Loot
+  this.loadJobs = function() {
+    if (this.jobsLoaded) return;
+    this.jobs[this.jobs.length] = new Array(0,1,1,'Chase Away Thugs','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,1,2,'Rob A Drug Runner','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,1,3,'Rough Up Dealers','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,1,4,'Rob The Warehouse','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,1,5,'Collect Protection Money','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,1,8,'Grow Your Family','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,1,37,'Perform A Hit','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,2,6,'Mugging','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,2,7,'Auto Theft','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,2,9,'Take Out A Rogue Cop','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,2,10,'Collect On A Loan','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,2,11,'Bank Heist','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,2,12,'Jewelry Store Job','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,2,38,'Hijack A Semi','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,3,13,'Destroy Enemy Mob Hideout','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,3,14,'Kill A Protected Snitch','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,3,15,'Bust A Made Man Out Of Prison','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,3,16,'Museum Break-in','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,3,17,'Fight A Haitian Gang','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,3,39,'Clip The Irish Mobs Local Enforcer','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,3,40,'Steal A Tanker Truck','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,4,18,'Federal Reserve Raid','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,4,19,'Smuggle Across The Border','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,4,22,'Liquor Smuggling','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(0,4,26,'Run Illegal Poker Game','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,4,28,'Wiretap The Cops','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(0,4,41,'Rob An Electronics Store','UCP/Camera/Computer',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,4,42,'Burn Down A Tenament','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,4,23,'Distill Some Liquor','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,4,24,'Manufacture Tokens','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,4,25,'Get Cheating Deck','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,4,27,'Overtake Phone Central','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,5,29,'Repel The Yakuza','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,5,30,'Disrupt Rival Smuggling Ring','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,5,31,'Invade Tong-controlled Neighborhood','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,5,32,'Sell Guns To The Russian Mob','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,5,33,'Protect Your City Against A Rival Family','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,5,34,'Assassinate A Political Figure','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,5,35,'Exterminate A Rival Family','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,5,43,'Obtain Comprimising Photos','Blackmail Photos',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(0,5,44,'Frame A Rival Capo','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(0,6,45,'Steal An Air Freight Delivery','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,6,46,'Run A Biker Gang Out Of Town','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,6,47,'Flip A Snitch','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(0,6,48,'Steal Bank Records','Transaction Records',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,6,49,'Loot The Police Impound Lot','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,6,50,'Recruit A Rival Crew Member','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,6,51,'Dodge An FBI Tail','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(0,6,52,'Whack A Rival Crew Leader','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,7,53,'Influence A Harbor Official','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(0,7,54,'Move Stolen Merchandise','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,7,55,'Snuff A Rat','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,7,56,'Help A Fugitive Flee The Country','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,7,57,'Dispose Of A Body','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,7,58,'Ransom A Businessmans Kids','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(0,7,59,'Fix The Big Game','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(0,7,60,'Steal An Arms Shipment','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,8,61,'Extort A Corrupt Judge','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(0,8,62,'Embezzle Funds Through A Phony Company','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(0,8,63,'Break Into The Armory','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,8,64,'Rip Off The Armenian Mob','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,8,65,'Muscle In On A Triad Operation','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,8,66,'Ambush A Rival At A Sit Down','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,8,67,'Order A Hit On A Public Official','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(0,8,68,'Take Over An Identity Theft Ring','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(0,9,69,'Settle A Beef...Permanently','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,9,70,'Buy Off A Federal Agent','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(0,9,71,'Make A Deal With The Mexican Cartel','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,9,72,'Blackmail The District Attorney','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(0,9,73,'Shake Down A City Council Member','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(0,9,74,'Make Arrangements For A Visiting Don','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,9,75,'Take Control Of A Casino','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(0,9,76,'Travel To The Old Country','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,1,1,'Rob Your Cab Driver','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,1,2,'Secure A Safehouse','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,1,3,'Intimidate The Locals','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,1,4,'Silence A Noisy Neighbor','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,1,5,'Smuggle In Some Supplies','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,1,6,'Set Up A Numbers Racket','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,1,7,'Establish Contract With The FRG','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,1,8,'Take Out The Local Police Chief','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,1,41,'Persuade A Local To Talk','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,1,42,'Assault A Snitchs Hideout','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,2,9,'Transport A Shipment Of US Arms','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,2,10,'Meet With The FRG Leadership','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,2,11,'Hold Up A Tour Bus','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,2,12,'Ambush A Military Patrol','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,2,13,'Capture An Army Outpost','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,2,14,'Sneak A Friend Of The Family Into The Country','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,2,15,'Ransack A Local Plantation','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,2,16,'Burn Down A Hacienda','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,3,17,'Offer Protection To A Nightclub','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,3,18,'Rob The Banco Nacional Branch','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,3,19,'Shake Down A Hotel Owner','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,3,20,'Bring The Local Teamsters Under Your Control','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(1,3,21,'Help The FRG Steal A Truckload Of Weapons','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,3,22,'Hijack A Booze Shipment','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,3,23,'Pillage A Shipyard','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,3,24,'Take Over The Docks','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,4,25,'Muscle In On A Local Casino','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,4,26,'Establish A LoanSharking Business','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(1,4,27,'Eliminate A Rival Familys Agent','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,4,28,'Pass On Some Intel To The FRG','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,4,29,'Execute A Regional Arms Dealer','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,4,30,'Sink A Competing Smugglers Ship','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,4,31,'Gun Down An Enemy Crew At The Airport','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,4,32,'Assassinate An Opposing Consigliere','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,5,33,'Raid The Arms Depot','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,5,34,'Supply The FRG With Some Extra Muscle','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,5,35,'Capture The Airport','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,5,36,'Knock Off A Visiting Head Of State','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,5,37,'Set Up A High Volume Smuggling Operation','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(1,5,38,'Blow Up A Rail Line','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,5,39,'Attack The Army Command Post','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,5,40,'Storm The Presidential Palace','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,6,43,'Arrange A New York Drug Shipment','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,6,44,'Launder Money Through A Resort','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,6,45,'Loot The National Museum','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,6,46,'Send Some Help Home To New York','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(1,6,47,'Take Over The Havana Reconstruction','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,6,48,'Help Get An Associate A No Bid Contract','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(1,6,49,'Trans-ship A Container Full Of Refugees','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(1,6,50,'Meet With The Russian','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(2,1,3,'Fight Off An Ultra-National Gang','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,1,2,'Arrange A Drug Shipment for the Mafiya','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,1,1,'Smuggle Consumer Electronics for the Vory','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,1,6,'Receive Vory Intel On Dmitri','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,1,5,'Collect The Ransom','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,1,4,'Kidnap A Local Gang Leader for the Vory','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,1,11,'Hijack An Arms Shipment From A Militant Gang','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,1,10,'Threaten A Gang\'s Supplier','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,1,12,'Hospitalize Some Nationalists','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(2,2,14,'Bribe An Election Official','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,2,15,'Silence A Political Critic','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,2,16,'Violently Break Up A Campaign Rally','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,2,20,'Abduct A Candidate\'s Wife For the Mafiya','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,2,21,'"Convince" The Candidate To Withdraw','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,2,22,'Kill An Investigative Reporter','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,2,23,'Pay Off The Port Authority In Arkhangelsk','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,2,24,'Re-route An Equipment Shipment','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,2,25,'Circulate Damaging Photos','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(2,3,33,'Rob The RossijaBanc Central Repository','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,3,32,'Map Out The Escape Route','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,3,31,'Case The RossijaBanc Building','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,3,39,'Strip A Uniform Off The Corpse','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,3,38,'Steal The Bank President\'s Car Keys','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,3,37,'Execute A Bank Guard During Your Escape','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,3,41,'Dispose Of A RossijaBanc Exec At Sea','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,3,40,'Blackmail A Secretary For An Exec\'s Itinerary','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,3,42,'Replace A Guard With Your Own Man','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(2,4,46,'Ransack A Defense Contractor\'s Office','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,4,45,'Support The Habit Of A Procurement Officer','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,4,44,'Manage An Escort Service Catering to Soldiers','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,4,49,'Intercept The Base\'s Pay Shipment','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,4,48,'Rob A Troop Convoy','Shturmovik',true,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,4,47,'Fly To The Siberian Military District','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,4,54,'Transport Some Stolen Military Hardware','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,4,53,'Make Connections With An Arms Dealer','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,4,55,'Buy Off The General\'s Command Team','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(2,5,72,'Start An Avalanche Above The Terrorist Camp','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(2,5,70,'Torture a ULF Leiutenant','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,5,71,'Look For The Boss\'s Mountain Hideout','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,5,64,'Infiltrate The ULF Cell','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,5,65,'Help Plan The Next Attack','Ubijca Assault Rifle',true,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,5,66,'Sabotage The Plan From The Inside','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,5,67,'Discover The Location Of The Next ULF Attack','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,5,68,'Kill A Lookout','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,5,69,'Stop The ULF Attack','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,5,61,'Stop A Terrorist Attack In Moscow','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,5,62,'Discover Who Was Responsible','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,5,63,'Hunt Down A Ural Liberation Front Contact','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,6,85,'Assault The Mansion Walls','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(2,6,83,'Take Over A West-Bound Trafficking Pipeline','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,6,84,'Ship Black-Market Caviar To London','Zoloto Sports Car',true,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,6,77,'Attack A Mafiya Business','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,6,78,'Hijack A Mafiya Cargo','Konstantin Cargo Carrier',true,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,6,79,'Threaten A Mafiya Moneyman\'s Family','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,6,80,'Burn Down A Vory Safehouse','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,6,81,'Hit A Vory Nightclub','Zmeya Carbon Blade',true,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,6,82,'Break Into An Architect\'s Office','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,6,74,'Foil The Sabotage Of Your Moscow Holdings','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,6,75,'Acquire Classified Files On Crime Syndicates','Executive Overcoat',true,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(2,6,76,'Gun Down Some Russian Muscle','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,1,1,'Move Stolen Art Through Suvarnabhumi Airport','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,1,2,'Show A Cocky Biker Who\'s In Charge','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,1,3,'Take On Local Motorcycle Thugs','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,1,5,'(Yakuza) Meet A Gang\'s Rep In A Go-Go Bar','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(3,1,8,'(Triad) Meet A Gang\'s Rep In A Go-Go Bar','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(3,1,6,'Arrange An Accident For A Witness','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,1,7,'Take On Local Motorcycle Thugs','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,1,9,'Raid One Of Suchart\'s Gambling Dens','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,1,10,'Trash The Low-Rent Casino','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,1,11,'(Yakuza) Intercept An Ammo Shipment','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,1,14,'(Triad) Intercept An Ammo Shipment','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,1,12,'Deliver It To A Japanese Front Company','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,1,13,'Pay Off A Corrupt Police Officer','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,1,15,'Sneak It On To A Chinese Cargo Ship','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,1,16,'Bribe A Dock Guard','',false,0,0,1,0);
+    this.jobs[this.jobs.length] = new Array(3,1,17,'Blow Up Suchart\'s Warehouse','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,1,18,'Take Down Boss Suchart','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,2,20,'Force A Local Landowner To Sell','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,2,21,'Receive A Kickback From The Buyer','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,2,22,'Attack A Paramilitary Police Post','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,2,24,'(Yakuza) Set Up A Phony Business','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,2,27,'(Triad) Set Up A Phony Business','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,2,25,'Re-Route A Van Full Of Medical Supplies','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,2,26,'Resell The Stolen Supplies','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,2,28,'Set Up A Bogus Chess Tournament','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,2,29,'Rob The Chess Masters','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,2,30,'(Yakuza) Pay Off The Guards At Bangkwang Prison','',false,0,0,1,0);
+    this.jobs[this.jobs.length] = new Array(3,2,33,'(Triad) Pay Off The Guards At Bangkwang Prison','',false,0,0,1,0);
+    this.jobs[this.jobs.length] = new Array(3,2,31,'Sneak A Yakuza Enforcer In','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,2,32,'Help Stage An Accident For A Tong Inmate Triad','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,2,34,'Break A Triad Hitman Out','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,2,35,'Help Rub Out A Bosozoku Leader','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,2,36,'Expose A Crooked Royal Thai Police Officer','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,2,37,'Discredit Police Commissioner Chatri','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,3,39,'Secure A Pirate Vessel','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,3,40,'Hire An Unsavory Crew','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,3,41,'Take Down A Rival Pirate Outfit','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,3,43,'Hijack A Boat Load Of Electronics (Yakuza)','Satellite Phone',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,3,46,'Hijack A Boat Load Of Electronics (Triad)','Satellite Phone',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,3,44,'Truck The Cargo To Kuala Lumpur','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,3,45,'Smuggle Cigarettes Back Into Thailand','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,3,47,'Ship The Cargo To Jakarta','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,3,48,'Return With A Shipment Of Weapons','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,3,49,'Steal Shipping Manifests (Yakuza)','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,3,52,'Steal Shipping Manifests (Triad)','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,3,50,'Sink A Chinese Metals Freighter','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(3,3,51,'Hire Divers To Retrieve The Gold Bars','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,3,53,'Steal Japanese Auto Shipping Containers','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,3,54,'Offload The Cars Onto A Waiting Barge','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,3,55,'Sink A Fleet Vessel','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,3,56,'Send Captain Mok Overboard','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,4,58,'Buy Some Chemicals On The Black Market','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,4,59,'Make Contact WIth The United Wa State Army','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(3,4,60,'Ambush A Burmese Army Convoy','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,4,62,'Establish Contact With A CIA Agent (Yakuza)','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(3,4,65,'Establish Contact With A CIA Agent (Triad)','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(3,4,66,'Set Up The Import Of Illegal Chinese Arms','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,4,67,'Ship The Yaa Baa Payment To Phuket','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,4,63,'Set Up An Opium Shipment','Forest Scorpion',true,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(3,4,64,'Arrange To Process It In Bangkok','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,4,69,'Pass On Information To The Thai Police','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(3,4,70,'Steal A Seized Drug Shipment','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,4,71,'Betray Commander Change And The UWSA','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,4,72,'Eliminate An Insurgent Escort','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,4,73,'Make Off With Stolen Miltary Hardware','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,4,74,'Attack Chang\'s Heroin-Processing Facility','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(3,4,75,'Kill Commander Chang','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,5,77,'Ship Burmese Sapphires Into Thailand','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,5,78,'Smuggle The Sapphires Into Tokyo','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(3,5,79,'Fight Off A Minato-Kai Sponsored Hit','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,5,81,'Meet With Boss Matsumura\'s Advisor (Yakuza)','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,5,84,'Meet With Boss Matsumura\'s Advisor (Triad)','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,5,82,'Help Broker A Minato-Matsumura Peace','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,5,83,'Take A Piece of the Kabukicho Action','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,5,85,'Assassinate the Minato-Kai Family Head','Kage Jet',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,5,86,'Frame An Enemy For the Murder','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(3,5,87,'Talk with a Police Insider About Matsumura (Yakuza)','',false,0,0,1,0);
+    this.jobs[this.jobs.length] = new Array(3,5,90,'Talk with a Police Insider About Matsumura (Triad)','',false,0,0,1,0);
+    this.jobs[this.jobs.length] = new Array(3,5,88,'Gather More Evidence Of A Betrayal','Tanto',true,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,5,89,'Get The Support Of The Yakuza Families','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,5,91,'Spread Distrust Among The Yakuza Families','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,5,92,'Start A War Between Matsumura And Minato','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,5,93,'Remove Matsumura\'s Loyal Lieutenants','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(3,5,94,'Execute Oyabum Matsumura','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,6,96,'Set Up A Drug Shipment To China','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(3,6,97,'Dodge Customs At The POrt of Hong Kong','',false,0,0,1,0);
+    this.jobs[this.jobs.length] = new Array(3,6,98,'Win A Shoot-Out With The Kowloon Police','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,6,100,'Intimidate Wealthy Expatriates (Yakuza)','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,6,103,'Intimidate Wealthy Expatriates (Triad)','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,6,101,'Make a Example of a Wealthy Industrialist','Lloyds Spectre',true,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(3,6,102,'Fence the Goods Stolen From the Mansion','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,6,104,'Extort the Head of the Hong Kong Polo Club','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,6,105,'Fix the Hong Kong Polo Invitational','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,6,106,'Talk With Wei\'s Disloyal Followers (Yakuza)','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(3,6,109,'Talk With Wei\'s Disloyal Followers (Triad)','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(3,6,107,'Sneak an Industrial Spy into Hong Kong','Cleaver',true,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,6,108,'Break In To Cheng-We Ballistics','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,6,110,'Kidnap One of Wei\'s Trusted Advisors','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,6,111,'Bury the Body Under A Construction Site','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,6,112,'Attack Wei\'s Gambling Halls','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,6,113,'Dispose of Mountain Master Wei','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,7,115,'Shore Up Control Of Your New Territory','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(3,7,116,'Spread The Wealth To Your New Lieutenants','',false,0,0,1,0);
+    this.jobs[this.jobs.length] = new Array(3,7,117,'Eliminate The Last Traces Of Resistance','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,7,119,'Get A Gang Member Back Into Thailand (Yakuza)','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,7,122,'Get A Gang Member Back Into Thailand (Triad)','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,7,120,'Break Into A Government Research Facility','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,7,121,'Steal An Experimental Armor Prototype','Titanium Mesh Jacket',true,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,7,123,'Kidnap A Trade Consortium Leader','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,7,124,'Extort The Consortium\'s Remaining Officers','Raed Armored Sedan',true,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(3,7,125,'Undermine Nongchai\'s Support (Yakuza)','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,7,128,'Undermine Nongchai\'s Support (Triad)','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,7,129,'Bribe A Royal Thai Army Colonel','Nak Kha Shotgun',true,0,0,1,0);
+    this.jobs[this.jobs.length] = new Array(3,7,130,'Route A Drug Shipment Through An Army Post','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,7,126,'Acquire Information On A Government Supporter','Ninja',true,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,7,127,'Assassinate A Bangkok Council Member','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,7,131,'Infiltrate The Parliament House','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,7,132,'Depose Prime Minister Nongchai','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,8,134,'Consolidate Political Power In Bangkok','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,8,135,'Take Over The Royal Bank Of Thailand','Royal Thai Marine',true,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,8,136,'Foil An Attempt On Your Life','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,8,138,'Question The Surviving Assassin','Titanium Katar',true,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,8,139,'Gather Information On The Shadow King','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,8,140,'Eliminate A Spy For The Shadow King','Lamang Motorcycle',true,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,8,141,'Hire A Guide To Find The Temple of Shadows','',false,0,0,1,0);
+    this.jobs[this.jobs.length] = new Array(3,8,142,'Fight Off A Hill Tribe Loyal To The Shadow King','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,8,143,'Silence A Shadow Kingdom Patrol','Chain Viper',true,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,8,144,'Battle Your Way Through The Temple','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(3,8,145,'Overthrow The Shadow King','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,1,1,'Move Your Crew Into A Safehouse','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,1,2,'Blackmail A Car Dealer','Car Key Copy',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,1,3,'Steal A Truckload Of Slots','Slot Machine',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,1,4,'Secure Some Wheels','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(4,1,6,'Break Into A Gun Shop','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,1,7,'Scout Out Alphabet City','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,1,8,'Open Fire On Victor\'s Crew','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,2,10,'Help A Bookie Out Of A Jam','Hot Tip',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,2,13,'Fix A Boxing Match','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,2,14,'Clean Up At A Rigged Table','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(4,2,15,'Recruit A Table Game Dealer','Casino Dealer',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,2,16,'Strong-arm A Limo Company','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,2,17,'Shut Down An Uncooperative Club','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,2,18,'Hit Up A Nightclub','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,3,21,'Buy Some Black-Market Info','Alarm Code',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,3,22,'Steal An SUV','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,3,24,'Do Some Late Night Shopping','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(4,3,25,'Rob A Gem Broker','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,3,26,'Convince A Restaurateur To Leave Town','Chef',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,3,27,'Arrange A Hardware Delivery','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,3,28,'Break Into A Luxury Suite','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,4,30,'Bribe A Casino Pit Boss','',false,0,0,1,0);
+    this.jobs[this.jobs.length] = new Array(4,4,31,'Steal A Valet\'s Uniform','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,4,32,'Swipe A Security Keycard','Hotel Security Key Card',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,4,34,'Create A Distraction On The Floor','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,4,35,'Hack The Casino Security System','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(4,4,36,'Break Into The Vault','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,4,37,'Get To An Exit','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,4,38,'Hijack A Poker Table Delivery','Poker Table',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,5,40,'Move The Take Out Of Town','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,5,42,'Run A Highway Patrol Blockade','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,5,43,'Buy Off A Crooked Border Agent','',false,0,0,1,0);
+    this.jobs[this.jobs.length] = new Array(4,5,44,'Stash The Take','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,5,45,'Arrange A Cartel Sale','',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,5,47,'Create A Diversion','Unwanted Evidence',false,0,0,0,0);
+    this.jobs[this.jobs.length] = new Array(4,5,48,'Dispose Of The Evidence','',false,0,0,0,1);
+    this.jobs[this.jobs.length] = new Array(4,5,50,'Rescue A Hotelier','Bellhop',false,0,0,0,0);
+    this.jobsLoaded = true;
+  };
+
+  // City, Collection Title
+  this.loadCollectionTitles = function() {
+    if (this.collectionTitlesLoaded == true) return;
+    this.collectionTitles[this.collectionTitles.length] = new Array(1,'Diamond Flush');
+    this.collectionTitles[this.collectionTitles.length] = new Array(1,'Heart Flush');
+    this.collectionTitles[this.collectionTitles.length] = new Array(1,'Sculptures');
+    this.collectionTitles[this.collectionTitles.length] = new Array(1,'Poker Chips');
+    this.collectionTitles[this.collectionTitles.length] = new Array(1,'Club Flush');
+    this.collectionTitles[this.collectionTitles.length] = new Array(1,'Boxing');
+    this.collectionTitles[this.collectionTitles.length] = new Array(1,'Cigars');
+    this.collectionTitles[this.collectionTitles.length] = new Array(1,'Spade Flush');
+    this.collectionTitles[this.collectionTitles.length] = new Array(1,'Billiards');
+    this.collectionTitles[this.collectionTitles.length] = new Array(1,'Rings');
+    this.collectionTitles[this.collectionTitles.length]= new Array(1,'Ties');
+    this.collectionTitles[this.collectionTitles.length]= new Array(1,'Paintings');
+    this.collectionTitles[this.collectionTitles.length]= new Array(1,'Cufflinks');
+    this.collectionTitles[this.collectionTitles.length]= new Array(1,'Barber');
+    this.collectionTitles[this.collectionTitles.length]= new Array(1,'Great Race Horses');
+    this.collectionTitles[this.collectionTitles.length]= new Array(1,'Daily Chance');
+    this.collectionTitles[this.collectionTitles.length]= new Array(1,'Money Laundering');
+    this.collectionTitles[this.collectionTitles.length]= new Array(1,'Valentine\'s Massacre');
+    this.collectionTitles[this.collectionTitles.length]= new Array(1,'Mystery Bag: Chinese New Year');
+    this.collectionTitles[this.collectionTitles.length]= new Array(2,'Rum Drinks');
+    this.collectionTitles[this.collectionTitles.length]= new Array(2,'Tropical Fruits');
+    this.collectionTitles[this.collectionTitles.length]= new Array(2,'Entertainers');
+    this.collectionTitles[this.collectionTitles.length]= new Array(2,'Tropical Fish');
+    this.collectionTitles[this.collectionTitles.length]= new Array(2,'Beards');
+    this.collectionTitles[this.collectionTitles.length]= new Array(3,'Prison Tattoos');
+    this.collectionTitles[this.collectionTitles.length]= new Array(3,'Matryoshka Dolls');
+    this.collectionTitles[this.collectionTitles.length]= new Array(3,'Russian Leaders');
+    this.collectionTitles[this.collectionTitles.length]= new Array(3,'Vodka Drinks');
+    this.collectionTitles[this.collectionTitles.length]= new Array(3,'Soviet Memorabilia');
+    this.collectionTitles[this.collectionTitles.length]= new Array(3,'Faberge Egg');
+    this.collectionTitles[this.collectionTitles.length]= new Array(4,'Chess Set');
+    this.collectionTitles[this.collectionTitles.length]= new Array(4,'Masks');
+    this.collectionTitles[this.collectionTitles.length]= new Array(4,'Spices');
+    this.collectionTitles[this.collectionTitles.length]= new Array(4,'Carvings');
+    this.collectionTitles[this.collectionTitles.length]= new Array(4,'Orchids');
+    this.collectionTitles[this.collectionTitles.length]= new Array(1,'Prototype Carjacking');
+    this.collectionTitles[this.collectionTitles.length]= new Array(1,'Theft Of A Drone');
+    this.collectionTitles[this.collectionTitles.length]= new Array(1,'Weapons Shipment Hijacking');
+    this.collectionTitles[this.collectionTitles.length]= new Array(1,'Tools Of The Trade');
+    this.collectionTitles[this.collectionTitles.length]= new Array(1,'Stolen Diamond');
+    this.collectionTitles[this.collectionTitles.length]= new Array(1,'Easter Crime Basket');
+    this.collectionTitles[this.collectionTitles.length]= new Array(1,'St Paddy\'s Day');
+    this.collectionTitles[this.collectionTitles.length]= new Array(1,'Global Cup Collection');
+    this.collectionTitles[this.collectionTitles.length]= new Array(1,'Slots Collection');
+    this.collectionTitlesLoaded = true;
+  };
+
+  // Collection Title ID, (Item ID, Item Name), (Item ID, Item Name), ...
+  this.loadCollections = function() {
+    if (this.collectionsLoaded) return;
+    this.collections[this.collections.length] = new Array(0,1036,'Eight',1037,'Nine',1038,'Ten',1039,'Jack',1040,'Queen',1041,'King',1042,'Ace');
+    this.collections[this.collections.length] = new Array(1,1043,'Eight',1044,'Nine',1045,'Ten',1046,'Jack',1047,'Queen',1048,'King',1049,'Ace');
+    this.collections[this.collections.length] = new Array(2,1022,'Rat',1023,'Sheep',1024,'Rooster',1025,'Monkey',1026,'Tiger',1027,'Snake',1028,'Dragon');
+    this.collections[this.collections.length] = new Array(3,1029,'White',1030,'Brown',1031,'Red',1032,'Blue',1033,'Green',1034,'Purple',1035,'Gold');
+    this.collections[this.collections.length] = new Array(4,1050,'Eight',1051,'Nine',1052,'Ten',1053,'Jack',1054,'Queen',1055,'King',1056,'Ace');
+    this.collections[this.collections.length] = new Array(5,1085,'Hand Tape',1086,'Gloves',1087,'Headgear',1088,'Boxing Trunks',1089,'Speed Bag',1090,'Heavy Bag',1091,'Boxing Ring');
+    this.collections[this.collections.length] = new Array(6,1001,'Ebony',1002,'Sky',1003,'Rose',1004,'Ivory',1005,'Turquoise',1006,'Gold',1007,'Royal');
+    this.collections[this.collections.length] = new Array(7,1057,'Eight',1058,'Nine',1059,'Ten',1060,'Jack',1061,'Queen',1062,'King',1063,'Ace');
+    this.collections[this.collections.length] = new Array(8,1092,'One',1093,'Two',1094,'Three',1095,'Four',1096,'Five',1097,'Six',1098,'Seven');
+    this.collections[this.collections.length] = new Array(9,1008,'Topaz',1009,'Opal',1010,'Amethyst',1011,'Emerald',1012,'Sapphire',1013,'Ruby',1014,'Diamond');
+    this.collections[this.collections.length] = new Array(10,1064,'Solid',1065,'Striped',1066,'Checked',1067,'Geometric',1068,'Dot',1069,'Paisley',1070,'Knitted');
+    this.collections[this.collections.length] = new Array(11,1015,'Warhol',1016,'Cezanne',1017,'Matisse',1018,'Van Gogh',1019,'Dali',1020,'Monet',1021,'Rembrandt');
+    this.collections[this.collections.length] = new Array(12,1071,'Silver',1072,'Gold',1073,'Amber',1074,'Jasper',1075,'Agate',1076,'Onyx',1077,'Pearl');
+    this.collections[this.collections.length] = new Array(13,1099,'Barber Pole',1100,'Razor',1101,'Brush',1102,'Seat',1103,'Towel',1104,'Scissors',1105,'Cream');
+    this.collections[this.collections.length] = new Array(14,1078,'Mill Reef',1079,'Sea Bird',1080,'Arkle',1081,'Golden Miller',1082,'St Simon',1083,'Ormonde',1084,'Eclipse');
+    this.collections[this.collections.length] = new Array(15,1106,'Bingo Card',1107,'Deck of Cards',1108,'Dice',1109,'Roulette Wheel',1110,'Slot Machine',1111,'Craps Table',1112,'Baccarat Shoe');
+    this.collections[this.collections.length] = new Array(16,1113,'Money Iron',1114,'Dirty Laundry',1115,'Dryer Sheets',1116,'Money Line',1117,'Roll of Quarters',1118,'Death by Detergent',1119,'Dirty Bra');
+    this.collections[this.collections.length] = new Array(17,100001,'Heart Tattoo',100002,'Shoot The Moon',100003,'Stolen Heart',100004,'Heart Locket',100005,'Box of Chocolates',100006,'Love Bear',100007,'Valentine');
+    this.collections[this.collections.length] = new Array(18,400001,'Baoding Balls',400002,'Cricket Cage',400003,'Dragon Mask',400004,'Four Toed Dragon',400005,'Money Envelope',400006,'Year Of The Tiger',400007,'Money Frog');
+    this.collections[this.collections.length] = new Array(19,2001,'Pina Colada',2002,'Hurricane',2003,'Bahama Mama',2004,'Mojito',2005,'Rum Runner',2006,'Long Island',2007,'Cuba Libre');
+    this.collections[this.collections.length] = new Array(20,2008,'Banana',2009,'Lime',2010,'Pineapple',2011,'Papaya',2012,'Coconut',2013,'Passion Fruit',2014,'Dragon Fruit');
+    this.collections[this.collections.length] = new Array(21,2015,'Magician',2016,'Fan Dancer',2017,'Comedian',2018,'Band Leader',2019,'Cabaret Singer',2020,'Crooner',2021,'Burlesque Dancer');
+    this.collections[this.collections.length] = new Array(22,2022,'Pufferfish',2023,'Sergeant Major',2024,'Yellowtail Snapper',2025,'Great Barracuda',2026,'Queen Angelfish',2027,'Reef Shark',2028,'Blue Marlin');
+    this.collections[this.collections.length] = new Array(23,2029,'Garibaldi',2030,'Hulihee',2031,'Vandyke',2032,'Mutton Chops',2033,'Soul Patch',2034,'French Fork',2035,'Fidel');
+    this.collections[this.collections.length] = new Array(24,3001,'Rose',3002,'Church',3003,'Star',3004,'Spider',3005,'Tiger',3006,'Skull',3007,'Crucifix');
+    this.collections[this.collections.length] = new Array(25,3008,'Natayla',3009,'Olga',3010,'Oksana',3011,'Svetlana',3012,'Tatyana',3013,'Anastasiya',3014,'Ekaterina');
+    this.collections[this.collections.length] = new Array(26,3015,'Gorbachev',3016,'Yeltsin',3017,'Brezhnev',3018,'Kruschev',3019,'Putin',3020,'Stalin',3021,'Lenin');
+    this.collections[this.collections.length] = new Array(27,3022,'Cosmopolitan',3023,'Screwdriver',3024,'Sex on the Beach',3025,'Bloody Mary',3026,'Black Russian',3027,'White Russian',3028,'Soviet');
+    this.collections[this.collections.length] = new Array(28,3029,'Red Star',3030,'Kremlin',3031,'Communist Manifesto',3032,'Propaganda Poster',3033,'Hammer',3034,'Sickle',3035,'Bust of Lenin');
+    this.collections[this.collections.length] = new Array(29,3036,'Diamond Trellis',3037,'Jade',3038,'Military',3039,'Pansy',3040,'Rainbow',3041,'Winter',3042,'Peter the Great');
+    this.collections[this.collections.length] = new Array(30,4001,'Chessboard',4002,'Pawn',4003,'Knight',4004,'Bishop',4005,'Rook',4006,'Queen',4007,'King');
+    this.collections[this.collections.length] = new Array(31,4008,'Agat-Talai',4009,'Sukreep',4010,'Palee',4011,'Phra Ram',4012,'Indrachit',4013,'Hanuman',4014,'Tosakanth');
+    this.collections[this.collections.length] = new Array(32,4015,'Coriander',4016,'Garlic',4017,'Turmeric',4018,'Green Peppercorn',4019,'Holy Basil',4020,'Lemongrass',4021,'Thai Chili');
+    this.collections[this.collections.length] = new Array(33,4022,'Wall Carving',4023,'Floral Statue',4024,'Dragon Statue',4025,'Nightstand',4026,'Lotus Bloom',4027,'Elephant',4028,'Stone Buddha');
+    this.collections[this.collections.length] = new Array(34,4029,'Marco Polo',4030,'Grace Pink',4031,'Misteen',4032,'Jade Siam',4033,'Bom Gold',4034,'Bom Blue',4035,'Fatima');
+    this.collections[this.collections.length] = new Array(35,300001,'GPS Signal Scambler',300002,'Tank of Gasoline',300003,'Ignition Device',300004,'Microchip Fitted Key',300005,'Map Of The Garage',300006,'Counterfeit ID Badges',300007,'Security Hacker');
+    this.collections[this.collections.length] = new Array(36,300008,'Classified Report',300009,'Hijacked Transmitter',300010,'Access Code',300011,'Guards Schedule',300012,'Calibration Manual',300013,'Guidance Module',300014,'UltraLite Fuel Cell');
+    this.collections[this.collections.length] = new Array(37,300015,'Shipment Info',300016,'Schedule Of Truck Route',300017,'Road Block',300018,'Container Key',300019,'Rocket Ammo',300020,'Tracking Laser Sight',300021,'Carrying Case');
+    this.collections[this.collections.length] = new Array(38,500001,'Lock Picks',500002,'Diamond Drill',500003,'Flashlight',500004,'Walkie Talkie',500005,'Safecrackers Stethoscope',500006,'Black Ski Masks',500007,'Grappling Hooks');
+    this.collections[this.collections.length] = new Array(39,500008,'Hope',500009,'Koh-I-Noor',500010,'Great Star Of Africa',500011,'The Orloff',500012,'The Sancy',500013,'The Idols Eye',500014,'The Regent');
+    this.collections[this.collections.length] = new Array(40,100015,'Striped Egg',100016,'Polka Dot Egg',100017,'Checkered Egg',100018,'Plaid Egg',100019,'Paisley Egg',100020,'Last Years Egg',100021,'Golden Egg');
+    this.collections[this.collections.length] = new Array(41,100008,'Irish Flag',100009,'Leprechaun',100010,'Green Fireworks',100011,'Green Bowlers Hat',100012,'Pot of Gold',100013,'Bag Pipes',100014,'Paddy@s Pint Glass');
+    this.collections[this.collections.length] = new Array(42,100022,'English Ball',100023,'French Ball',100024,'Brazilian Ball',100025,'German Ball',100026,'Italian Ball',100027,'Argentinean Ball',100028,'Spanish Ball');
+    this.collections[this.collections.length] = new Array(43,100029,'Liberty Bell',100030,'Lucky 7',100031,'Plum',100032,'Lime',100033,'Triple Bar',100034,'Cherry',100035,'Orange');
+    this.collectionsLoaded = true;
+  };
+
+  this.loadLootTypes = function() {
+    if (this.lootTypesLoaded == true) return;
+    this.lootTypes[0] = 'Weapon';
+    this.lootTypes[1] = 'Armor';
+    this.lootTypes[2] = 'Vehicle';
+    this.lootTypes[3] = 'Consumable';
+    this.lootTypes[4] = 'Boost';
+    this.lootTypes[5] = 'Hidden Loot';
+    this.lootTypes[6] = 'Animals';
+    this.lootTypes[7] = 'Special Loot';
+    this.lootTypesLoaded = true;
+  };
+  
+  // Loot Name, Item ID, Loot Type, Gift Type, Attack, Defense, Giftable
+  this.loadLootItems = function() {
+    if (this.lootItemsLoaded == true) return;
+    this.lootItems[this.lootItems.length] = new Array('.22 Pistol',1,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Butterfly Knife',2,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Brass Knuckles',3,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('9mm Semi-Automatic',4,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('.45 Revolver',5,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Tactical Shotgun',6,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('C4',7,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Automatic Rifle',9,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Semi-Automatic Shotgun',10,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Grenade Launcher',14,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('.50 Caliber Rifle',15,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('RPG Launcher',17,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Napalm',20,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Firebomb',61,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Bookie@s Holdout Pistol',71,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('AR-15 Assault Rifle',73,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Garza 9',194,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('RA-92',195,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('M16A1',196,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Ru-38',197,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Cane Knife',198,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Para 322',199,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Gaff Hook',200,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('ASC45 "Conquistador"',201,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Aguila HV .50 Sniper Rifle',202,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('TNT',203,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Canonazo',261,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('BA-12 Assault Rifle',73,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Flintlock Pistols',222,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Cannon',229,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Bayonet',223,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Saber',227,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Musket',226,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('RAS-15',1003,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('RU-7 .45 Pistol',1001,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Molotok Pistol',1000,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Ballistic Knife',1002,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Zmeya Carbon Blade',1034,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Ubijca Assault Rifle',1032,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Attack Cobra',1500,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Jade Inlaid Pistols',1502,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('BRM-38',1509,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Tanto',1506,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Stab-Proof Vest',8,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Bodyguards',18,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Night Vision Goggles',19,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Lucky Shamrock Medallion',60,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Falsified Documents',74,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Federal Agent',78,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Street Gang Member',204,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Camouflage Body Armor',205,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Guerilla Squad',174,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Tri-Point Hat',224,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Red Coat',228,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Davy Crockett Hat',225,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('PNV',1005,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Armored Briefcase',1014,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Shturmovik',1020,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Executive Overcoat',1026,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Royal Thai Army Beret',1515,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Silk Scarf',1513,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Muai Thai Bodyguard',1512,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Armored Truck',11,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Armored Car',2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Prop plane',66,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Chopper',67,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Luxury Yacht',69,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Humvee',72,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Porsche 911',70,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Private Jet',75,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Armored LImousine',77,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Police Cruiser',76,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Mara Serpiente',175,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Chucho FAV',176,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Ocelot Armored Truck',177,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Montaine 320',178,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Cigarette Boat',179,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Mini-Sub',180,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Si-14 Cargo Plane',181,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Hu-9 Helicopter',182,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Armored State Car',183,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Track Loader',262,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('GX9',70,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Multi-Purpose Truck',72,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Cherepakha Compact',1007,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Severnyy Olen Snowbike',1008,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Orel Armored Helicopter',1021,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Konstantin Cargo Carrier',1029,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Zoloto Sports Car',1030,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Shchuka Speed Boat',1017,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Volk Luxury Sedan',1016,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Mystery Van',327,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Treat Bag',328,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Arkticheskij Gus',1028,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Osa 17 Snowmobile',1027,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Riding Elephant',1519,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Dirt Bike',1521,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Bosozoku Convertible',1523,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('LLoyds Spectre',1522,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Red Angel',569,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Trio Napoli',568,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Computer Set-up',63,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Concealable Camera',62,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Untraceable Cell Phone',64,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Transaction Records',68,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Politico Corrupto',245,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Blackmail Photos',65,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Dossier on Dmitri',1010,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Photos of Karapov',1011,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Officer Corps Paycheck',1018,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Bank Guard Uniform',1012,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Stick of Dynamite',1024,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Mansion Details',1025,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Treasure Chest',466,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Pirate',1536,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Envelope Of Thai Baht',1537,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Satellite Phone',1534,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Drug Shipment',1535,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Acetylene Torches',535,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Shipping Containers',536,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Cement Blocks',532,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Car Lift',534,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Power Tools',533,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Russian Car Part',560,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Thai Car Part',561,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Cuban Car Part',559,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Car Part',558,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Solar Panel',571,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Bulletproof Glass',570,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Extra Pair of Eyes',25,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Hot Coffee',26,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Mutt',27,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Temporary Tattoo',28,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Hidden Matryoshka',29,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Handy Man',30,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Throwing Knives',31,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Hollow Points',32,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Political Favor',41,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Boxer',33,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Bullmastiff',34,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Mr. Hot Sauce',35,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Lookout',36,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Reinforced Door',37,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Surveillance Camera',38,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Free Ride',39,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Liquid Courage',42,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Berlin Wall Section',43,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Faberge Hen',44,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Money Sock',45,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Bola',46,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Car Bomb',47,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Flash Bang',48,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Smoke Grenade',49,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Champagne Bottle',50,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Chess Master',51,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('War Paint',52,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Pepper Spray',53,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Chisel',54,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Boutonniere',55,4,2,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Tripwire',1,4,2,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Cappuccino',2,4,2,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Alarm System',3,4,2,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Bulldog',4,4,2,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Problem Solver',5,4,2,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Semi-Pro Boxer',6,4,2,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Fixer',7,4,2,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Sting Grenade',8,4,2,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Bouncer',9,4,2,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Blueprints',10,4,2,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Injunction',11,4,2,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Motion Detector',12,4,2,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Corporate Muscle',13,4,2,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Shave and a Haircut',14,4,2,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Inside Tip',15,4,2,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Flaming Shot',16,4,2,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Boosted Smoothie',17,4,2,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Sandbag Wall',18,4,2,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Blowfish Dart',19,4,2,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Hobo Lookout',20,4,2,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Truck Driver',40,4,2,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Hyper Alert Sentry',57,4,2,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Black Market Ammo',56,4,2,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Treasure Chest',466,5,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Cleaver',1505,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('High-tech Car Part',635,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Gun Drill',659,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Gunpowder',658,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Weapon Part',668,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Laser Rangefinder',671,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Buzzsaw',657,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Railgun Barrel',654,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Explosive Arrow',669,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Forge',660,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Portable Fusion Reactor',655,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Boomerang',672,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Sonic Emitter',670,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Arc Welder',656,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Grapple',673,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Taiga Combat Shotgun',1013,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('RU-78 Machine Gun',1019,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Razoreiter Grenade Launcher',1022,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Klyk-9 Machine Pistol',1033,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Komodo Dragon',1501,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Hung Fa RPG',1504,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Type-103 Machine Gun',1507,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Scalding Hot Tea',1508,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Monk@s Robe',1514,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Optical Camo Suit',1516,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Royal Thai Army Jeep',1520,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('MalayMobil Helang',1524,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Seua Daao Sub',1525,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Kage Jet',1526,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Fugama Kame SUV',1529,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Ghost Thug',326,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Big Bad Wolf',675,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Ninja Sai',661,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('First Blood',662,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Ultrasonic Gun',663,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Laser Guided RPG',664,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Robber@s Utility Belt',665,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Railgun',666,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Plasma Rifle',6673,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Tasmanian',562,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('CM Santiago R10',563,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Solar Flare',564,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Russian Dazatz 45',565,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Rebel 2',566,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Thai XS Max',567,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Trio Napoli',568,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Red Angel',569,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Sirroco 9Z',631,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Andresen 420si',632,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Mugati Sport',633,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Hunter @Spy@ XS',634,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Titanium Mesh Jacket',1544,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Royal Thai Marine',1546,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Chain Viper',1550,6,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Ninja',1545,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Nak Kha Shotgun',1542,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Titanium Katar',1543,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Raed Armored Sedan',1547,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Lamang Motorcycle',1548,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Forest Scorpion',1503,6,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Riding Elephant',1519,6,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Security Camera',762,7,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Reinforced Steel',763,7,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Deposit Box',764,7,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Motion Sensor',765,7,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Magnetic Lock',766,7,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Day Rider 2K',1836,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Range Finder Rifle',2013,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Football Jersey',2016,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Moving Truck',2019,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Road Tractor',2026,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Car Key Copy',2028,3,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('24K Chainsaw',2057,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Rhinestone Cowboy',2061,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Mojave Mike',2070,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Precision SMG',2024,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Gilded RPG',2060,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Belt Fed Shotgun',2010,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Pump Shotgun',2059,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Two Pair',2012,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Biohazard',2011,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Reinforced Boots',2062,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('El Scorpion',2058,0,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Set of Biker Leathers',2015,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Femme Fatale',2063,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Reinforced Tuxedo',2014,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Ventilated Blast Cap',2064,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Motorcyle Helmet',2017,1,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Goldsmobile',2071,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Highrise Sport',2068,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Hard Four',2069,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Dune Buggy',2022,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('High Society',2025,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Classic Convertible',2021,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Sand Storm',2020,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('All Terrain',2067,2,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Diamondback',2076,6,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Bark Scorpion',2073,6,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Bighorn Ram',2074,6,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Bison',2072,6,1,0,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Security Camera',762,3,1,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Reinforced Steel',763,3,1,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Deposit Box',764,3,1,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Motion Sensor',765,3,1,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Magnetic Lock',766,3,1,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Cinder Block',1575,3,1,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Steel Girder',1576,3,1,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Concrete',1577,3,1,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Construction Tool',1578,3,1,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Slot Machine',1574,3,1,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Casino Dealer',1579,3,1,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Chef',1580,3,1,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Poker Table',1581,3,1,0,true);
+    this.lootItems[this.lootItems.length] = new Array('Bellhop',1582,3,1,0,true);
+    this.lootItemsLoaded = true;
+  };
+
+  this.loadShopItems = function() {
+    if (this.shopItemsLoaded == true) return;
+    this.shopItems[this.shopItems.length] = new Array('Common Car',1,11);
+    this.shopItems[this.shopItems.length] = new Array('Rare Car',2,11);
+    this.shopItems[this.shopItems.length] = new Array('Tasmanian',3,11);
+    this.shopItems[this.shopItems.length] = new Array('CM Santiago R10',4,11);
+    this.shopItems[this.shopItems.length] = new Array('Sirroco 9Z',11,11);
+    this.shopItems[this.shopItems.length] = new Array('Rebel 2',5,11);
+    this.shopItems[this.shopItems.length] = new Array('Russian Dazantz 45',6,11);
+    this.shopItems[this.shopItems.length] = new Array('Solar Flare',7,11);
+    this.shopItems[this.shopItems.length] = new Array('Andressen 420si',12,11);
+    this.shopItems[this.shopItems.length] = new Array('Thai XS Max',8,11);
+    this.shopItems[this.shopItems.length] = new Array('Trio Napoli',9,11);
+    this.shopItems[this.shopItems.length] = new Array('Red Angel',10,11);
+    this.shopItems[this.shopItems.length] = new Array('Mugati Sport',13,11);
+    this.shopItems[this.shopItems.length] = new Array('Hunter @Spy@ XS',14,11);
+    this.shopItems[this.shopItems.length] = new Array('Common Weapon',15,12);
+    this.shopItems[this.shopItems.length] = new Array('Uncommon Weapon',16,12);
+    this.shopItems[this.shopItems.length] = new Array('Rare Weapon',17,12);
+    this.shopItems[this.shopItems.length] = new Array('Ninja Sai',18,12);
+    this.shopItems[this.shopItems.length] = new Array('First Blood',19,12);
+    this.shopItems[this.shopItems.length] = new Array('Ultrasonic Gun',20,12);
+    this.shopItems[this.shopItems.length] = new Array('Laser Guided RPG',21,12);
+    this.shopItems[this.shopItems.length] = new Array('Robber@s Utility Belt',22,12);
+    this.shopItems[this.shopItems.length] = new Array('Railgun',23,12);
+    this.shopItems[this.shopItems.length] = new Array('Plasma Rifle',24,12);
+    this.shopItems[this.shopItems.length] = new Array('Day Rider 2K',27,11);
+    this.shopItemsLoaded = true;
+  };
+};
+
+/***************************************
+ Global Functions 
+****************************************/
+// Replaces getElementById
+function e$(str)  {
+  var obj=document.getElementById(str);return obj?obj:null;
+}
+
+/***************************************
+ String prototype functions 
+****************************************/
+// Existing Library Extensions
+String.prototype.count=function(s1) {return (this.length - this.replace(new RegExp(s1,"g"), '').length) / s1.length;};
+String.prototype.findx=function(s1,numtofind) {
+  var indices=[],data,exp=(typeof s1=='string'?new RegExp(s1,'g'):s1);
+  while ((data=exp.exec(this)))
+    indices.push(data.index);
+  return(indices[numtofind-1]>=0?indices[numtofind-1]:null);
+};
+
+/***************************************
+ AJAX Library 
+****************************************/
+/* Simple AJAX Code-Kit (SACK) v1.6.1 */
+/* ©2005 Gregory Wild-Smith */
+/* www.twilightuniverse.com */
+/* Software licenced under a modified X11 licence,
+   see documentation or authors website for more details */
+
+function sack(file) {
+  this.xmlhttp = null;
+
+  this.resetData = function() {
+    this.method = "POST";
+    this.queryStringSeparator = "?";    
+    this.argumentSeparator = "&";
+    this.URLString = "";
+    this.encodeURIString = true;
+    this.execute = false;
+    this.element = null;
+    this.elementObj = null;
+    this.requestFile = file;
+    this.vars = new Object();
+    this.responseStatus = new Array(2);
+  };
+
+  this.resetFunctions = function() {
+    this.onLoading = function() { };
+    this.onLoaded = function() { };
+    this.onInteractive = function() { };
+    this.onCompletion = function() { };
+    this.onError = function() { };
+    this.onFail = function() { };
+  };
+
+  this.reset = function() {
+    this.resetFunctions();
+    this.resetData();
+  };
+
+  this.createAJAX = function() {
+    try {
+      this.xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+    } catch (e1) {
+      try {
+        this.xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      } catch (e2) {
+        this.xmlhttp = null;
+      }
+    }
+
+    if (! this.xmlhttp) {
+      if (typeof XMLHttpRequest != "undefined") {
+        this.xmlhttp = new XMLHttpRequest();
+      } else {
+        this.failed = true;
+      }
+    }
+  };
+
+  this.setVar = function(name, value){
+    this.vars[name] = Array(value, false);
+  };
+
+  this.encVar = function(name, value, returnvars) {
+    if (true == returnvars) {
+      return Array(encodeURIComponent(name), encodeURIComponent(value));
+    } else {
+      this.vars[encodeURIComponent(name)] = Array(encodeURIComponent(value),true);
+    }
+  };
+
+  this.processURLString = function(string, encode) {
+    encoded = encodeURIComponent(this.argumentSeparator);
+    regexp = new RegExp(this.argumentSeparator + "|" + encoded);
+    varArray = string.split(regexp);
+    for (i = 0; i < varArray.length; i++){
+      urlVars = varArray[i].split("=");
+      if (true == encode){
+        this.encVar(urlVars[0], urlVars[1]);
+      } else {
+        this.setVar(urlVars[0], urlVars[1]);
+      }
+    }
+  };
+
+  this.createURLString = function(urlstring) {
+    if (this.encodeURIString && this.URLString.length) {
+      this.processURLString(this.URLString, true);
+    }
+
+    if (urlstring) {
+      if (this.URLString.length) {
+        this.URLString += this.argumentSeparator + urlstring;
+      } else {
+        this.URLString = urlstring;
+      }
+    }
+
+    // prevents caching of URLString
+    this.setVar("rndval", new Date().getTime());
+    urlstringtemp = new Array();
+    for (key in this.vars) {
+      if (false == this.vars[key][1] && true == this.encodeURIString) {
+        encoded = this.encVar(key, this.vars[key][0], true);
+        delete this.vars[key];
+        this.vars[encoded[0]] = Array(encoded[1], true);
+        key = encoded[0];
+      }
+
+      urlstringtemp[urlstringtemp.length] = key + "=" + this.vars[key][0];
+    }
+    if (urlstring){
+      this.URLString += this.argumentSeparator + urlstringtemp.join(this.argumentSeparator);
+    } else {
+      this.URLString += urlstringtemp.join(this.argumentSeparator);
+    }
+  };
+
+  this.runResponse = function() {
+    eval(this.response);
+  }
+
+  this.runAJAX = function(urlstring) {
+    if (this.failed) {
+      this.onFail();
+    } else {
+      this.createURLString(urlstring);
+      if (this.element) {
+        this.elementObj = document.getElementById(this.element);
+      }
+      if (this.xmlhttp) {
+        var self = this;
+        if (this.method == "GET") {
+          totalurlstring = this.requestFile + this.queryStringSeparator + this.URLString;
+          this.xmlhttp.open(this.method, totalurlstring, true);
+        } else {
+          this.xmlhttp.open(this.method, this.requestFile, true);
+          try {
+            this.xmlhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded")
+          } catch (e) { }
+        }
+
+        this.xmlhttp.onreadystatechange = function() {
+          switch (self.xmlhttp.readyState) {
+            case 1:
+              self.onLoading();
+              break;
+            case 2:
+              self.onLoaded();
+              break;
+            case 3:
+              self.onInteractive();
+              break;
+            case 4:
+              self.response = self.xmlhttp.responseText;
+              self.responseXML = self.xmlhttp.responseXML;
+              self.responseStatus[0] = self.xmlhttp.status;
+              self.responseStatus[1] = self.xmlhttp.statusText;
+
+              if (self.execute) {
+                self.runResponse();
+              }
+
+              if (self.elementObj) {
+                elemNodeName = self.elementObj.nodeName;
+                elemNodeName.toLowerCase();
+                if (elemNodeName == "input" || elemNodeName == "select" || elemNodeName == "option" || elemNodeName == "textarea") {
+                  self.elementObj.value = self.response;
+                } else {
+                  self.elementObj.innerHTML = self.response;
+                }
+              }
+              if (self.responseStatus[0] == "200") {
+                self.onCompletion();
+              } else {
+                self.onError();
+              }
+
+              self.URLString = "";
+              break;
+          }
+        };
+
+        this.xmlhttp.send(this.URLString);
+      }
+    }
+  };
+
+  this.reset();
+  this.createAJAX();
+};
+
+/***************************************
+ WINDOW UTILITY Functions 
+****************************************/
+function ogpWindowUtilsDef() {
+
+  this.MoveNode = function(oldElement, newElement, newAsClone, optionalWhere){
+    if(typeof oldElement=="string"){oldElement=document.getElementById(oldElement);};
+    if(typeof newElement=="string"){newElement=document.getElementById(newElement);};
+    if(!oldElement || !newElement){return null;};
+    var optionalWhereWasPassedAsNode=(typeof optionalWhere=="object" && optionalWhere/*not object NULL*/)?true:false;
+    var removed=(!newAsClone)?
+    newElement.parentNode.removeChild(newElement):newElement.cloneNode(true);
+    optionalWhere=(optionalWhere==="")?null:optionalWhere;
+    if(!isNaN(parseFloat(optionalWhere))){
+    optionalWhere=parseFloat(optionalWhere);
+	    if(optionalWhere<0 || optionalWhere>=oldElement.childNodes.length){optionalWhere=null;}
+	    else{optionalWhere=oldElement.childNodes[optionalWhere];};
+    };
+    if(typeof optionalWhere!="undefined" && typeof optionalWhere!="object"/*includes null*/){optionalWhere=null;};
+    if(optionalWhereWasPassedAsNode){/*maybe optionalWhere does not belong to oldElement, therefore is unfit for: oldElement.insertBefore; verify:*/
+    var optionalWhereBelongsTo_oldElement=false;
+    var optionalWhere2=optionalWhere;
+	    while(optionalWhere2.parentNode){
+	    optionalWhere2=optionalWhere2.parentNode;
+		    if(optionalWhere2==oldElement){optionalWhereBelongsTo_oldElement=true; break;};
+	    }
+	    if(!optionalWhereBelongsTo_oldElement){optionalWhere=null;/*null defaults to: append*/};
+    };
+    return (typeof optionalWhere=="undefined")?
+    oldElement.parentNode.replaceChild(removed, oldElement)/*oldElement replaced by newElement (or its clone)*/:
+    (optionalWhere===null)?oldElement.appendChild(removed)/*newElement (or its clone) appended after optionalWhere*/:
+    oldElement.insertBefore(removed, optionalWhere)/*newElement (or its clone) inserted before optionalWhere*/;
+    /* keep this comment to reuse freely:
+    http://www.fullposter.com/?1 */
+  };
+};
+
+/********************
+  COOKIE Functions 
+********************/
+function OGPCookieDef() {
+  this.createCookie = function(name,value,days) {
+	if (days) {
+		var date = new Date();
+		date.setTime(date.getTime()+(days*24*60*60*1000));
+		var expires = "; expires="+date.toGMTString();
+	}
+	else var expires = "";
+	document.cookie = name+"="+value+expires+"; domain=.facebook.mafiawars.com; path=/";
+  };
+
+  this.readCookie = function(name) {
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for(var i=0;i < ca.length;i++) {
+		var c = ca[i];
+		while (c.charAt(0)==' ') c = c.substring(1,c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+	}
+	return null;
+  };
+
+  this.eraseCookie = function(name) {
+	createCookie(name,"",-1);
+  };
+};
+
+/***************************************
+  SCRIPT Initialization Function Calls 
+****************************************/
+// Create all of the objects
+var OGPMain = new ogpMainDef();
+var OGPConfig = new ogpConfigDef();
+var OGPItems = new ogpItemsDef();
+var OGPDisplay = new ogpDisplayDef();
+var OGPProperty = new ogpPropertyDef();
+var OGPParser = new ogpParserDef();
+var OGPAjax = new ogpAJAXDef();
+var OGPTimers = new ogpTimersDef();
+var OGPString = new ogpStringDef();
+var OGPTravel = new ogpTravelDef();
+var OGPWindowUtils = new ogpWindowUtilsDef();
+var OGPSend = new ogpSendDef();
+var OGPCookie = new OGPCookieDef();
+var OGPAccount = new ogpAccountDef();
+var OGPDrone = new ogpDroneRunnerDef();
+var OGPMinipack = new ogpMinipackDef();
+var OGPJob = new ogpJobDef();
+var OGPFight = new ogpFightDef();
+
+// Setup the tools
+OGPMain.initialize();

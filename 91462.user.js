@@ -1,0 +1,1826 @@
+// ==UserScript==
+// @name        MouseHunt AutoBot
+// @author      Ooi Keng Siang
+// @version    	1.21
+// @namespace   http://ooiks.com/blog/mousehunt-autobot
+// @description An advance user script to automate sounding the hunter horn in MouseHunt application in Facebook with MouseHunt version 3.0 (Longtail) supported and many other features.
+// @include		http://mousehunt.hi5.hitgrab.com/*
+// @include		http://mousehuntgame.com/*
+// @include		http://www.mousehuntgame.com/*
+// @include		http://apps.facebook.com/mousehunt/*
+// @include		https://apps.facebook.com/mousehunt/*
+// @include		http://hi5.com/friend/games/MouseHunt*
+// ==/UserScript==
+
+
+
+
+
+// == Basic User Preference Setting (Begin) ==
+// // The variable in this section contain basic option will normally edit by most user to suit their own preference
+// // Reload MouseHunt page manually if edit this script while running it for immediate effect.
+
+// // Extra delay time before sounding the horn. (in seconds)
+// // Default: 5 - 180
+var hornTimeDelayMin = 5;
+var hornTimeDelayMax = 30;
+
+// // Ignore all safety measure such as check horn image visible before sounding it. (true/false)
+// // Note: Highly recommanded to turn off because it increase the chances of getting caugh in botting.
+// // Note: It will ignore the hornTimeDelayMin and hornTimeDelayMax.
+// // Note: It may take a little bit extra of CPU processing power.
+var aggressiveMode = false;
+
+// // Enable trap check once an hour. (true/false)
+var enableTrapCheck = true;
+
+// // Trap check time different value (00 minutes - 45 minutes)
+// // Note: Every player had different trap check time, set your trap check time here. It only take effect if enableTrapCheck = true;
+// // Example: If you have XX:00 trap check time then set 00. If you have XX:45 trap check time, then set 45.
+var trapCheckTimeDiff = 00;
+
+// // Extra delay time to trap check. (in seconds)
+// // Note: It only take effect if enableTrapCheck = true;
+var checkTimeDelayMin = 15;
+var checkTimeDelayMax = 30;
+
+// // Play sound when encounter king's reward (true/false)
+var isKingWarningSound = false;
+
+// // Reload the the page according to kingPauseTimeMax when encount King Reward. (true/false)
+// // Note: No matter how many time you refresh, the King's Reward won't go away unless you resolve it manually.
+var reloadKingReward = false;
+
+// // Duration of pausing the script before reload the King's Reward page (in seconds)
+// // Note: It only take effect if reloadKingReward = true;
+var kingPauseTimeMax = 18000;
+
+// == Basic User Preference Setting (End) ==
+
+
+
+
+
+// == Advance User Preference Setting (Begin) ==
+// // The variable in this section contain some advance option that will change the script behavior.
+// // Edit this variable only if you know what you are doing 
+// // Reload MouseHunt page manually if edit this script while running it for immediate effect.
+
+// // Display timer and message in page title. (true/false)
+var showTimerInTitle = true;
+
+// // Embed a timer in page to show next hunter horn timer, highly recommanded to turn on. (true/false)
+// // Note: You may not access some option like pause at invalid location if you turn this off.
+var showTimerInPage = true;
+
+// // The script will pause if player at different location that hunt location set before. (true/false)
+// // Note: Make sure you set showTimerInPage to true in order to know what is happening.
+var pauseAtInvalidLocation = false;
+
+// // Display the last time the page did a refresh or reload. (true/false)
+var showLastPageLoadTime = true;
+
+// // Default time to reload the page when bot encounter error. (in seconds)
+var errorReloadTime = 60;
+
+// // Time interval for script timer to update the time. May affact timer accuracy if set too high value. (in seconds)
+var timerRefreshInterval = 1;
+
+// == Advance User Preference Setting (End) ==
+
+
+
+
+
+// WARNING - Do not modify the code below unless you know how to read and write the script.
+
+// All global variable declaration and default value
+var scriptVersion = "1.21";
+var fbPlatform = false;
+var hiFivePlatform = false;
+var mhPlatform = false;
+var hornTime = 900;
+var hornTimeDelay = 0;
+var checkTimeDelay = 0;
+var isKingReward = false;
+var lastKingRewardSumTime;
+var kingPauseTime;
+var baitQuantity = -1;
+var huntLocation;
+var currentLocation;
+var today = new Date();
+var checkTime = (today.getMinutes() >= trapCheckTimeDiff) ? 3600 + (trapCheckTimeDiff * 60) - (today.getMinutes() * 60 + today.getSeconds()) : (trapCheckTimeDiff * 60) - (today.getMinutes() * 60 + today.getSeconds());
+today = null;
+var hornRetryMax = 10;
+var hornRetry = 0;
+
+// element in page
+var titleElement;
+var nextHornTimeElement;
+var checkTimeElement;
+var kingTimeElement;
+var lastKingRewardSumTimeElement;
+var optionElement;
+var travelElement;
+
+// start executing script
+exeScript();
+
+function exeScript()
+{
+	// check the trap check setting first
+	if (trapCheckTimeDiff == 60)
+	{
+		trapCheckTimeDiff = 00;
+	}
+	else if (trapCheckTimeDiff < 0 || trapCheckTimeDiff > 60)
+	{
+		// invalid value, just disable the trap check
+		enableTrapCheck = false;
+	}
+	
+	if (showTimerInTitle)
+	{
+		// check if they are running in iFrame
+		if (window.location.href.indexOf("apps.facebook.com/mousehunt/") != -1)
+		{
+			var contentElement = document.getElementById('pagelet_canvas_content');
+			if (contentElement)
+			{
+				var breakFrameDivElement = document.createElement('div');
+				breakFrameDivElement.setAttribute('id', 'breakFrameDivElement');
+				breakFrameDivElement.innerHTML = "Timer cannot show on title page. You can <a href='http://www.mousehuntgame.com/canvas/'>run MouseHunt without iFrame (Facebook)</a> to enable timer on title page";
+				contentElement.parentNode.insertBefore(breakFrameDivElement, contentElement);
+			}
+			contentElement = null;
+		}
+		else if (window.location.href.indexOf("hi5.com/friend/games/MouseHunt") != -1)
+		{
+			var contentElement = document.getElementById('apps-canvas-body');
+			if (contentElement)
+			{
+				var breakFrameDivElement = document.createElement('div');
+				breakFrameDivElement.setAttribute('id', 'breakFrameDivElement');
+				breakFrameDivElement.innerHTML = "Timer cannot show on title page. You can <a href='http://mousehunt.hi5.hitgrab.com/'>run MouseHunt without iFrame (Hi5)</a> to enable timer on title page";
+				contentElement.parentNode.insertBefore(breakFrameDivElement, contentElement);
+			}
+			contentElement = null;
+		}
+	}
+	
+	// check user running this script from where
+	if (window.location.href.indexOf("mousehuntgame.com/canvas/") != -1)
+	{
+		// from facebook
+		fbPlatform = true;
+	}
+	else if (window.location.href.indexOf("mousehuntgame.com") != -1)
+	{
+		// from mousehunt game
+		mhPlatform = true
+	}
+	else if (window.location.href.indexOf("mousehunt.hi5.hitgrab.com") != -1)
+	{
+		// from hi5
+		hiFivePlatform = true;
+	}
+	
+	if (fbPlatform)
+	{
+		if (window.location.href == "http://www.mousehuntgame.com/canvas/" ||
+			window.location.href == "http://www.mousehuntgame.com/canvas/#" ||
+			window.location.href.indexOf("mousehuntgame.com/canvas/index.php") != -1 ||
+			window.location.href.indexOf("mousehuntgame.com/canvas/turn.php") != -1 ||
+			window.location.href.indexOf("mousehuntgame.com/canvas/?ref=") != -1 ||
+			window.location.href.indexOf("mousehuntgame.com/canvas/?code=") != -1 ||
+			window.location.href.indexOf("mousehuntgame.com/canvas/?hglogin=") != -1)
+		{
+			// page to execute the script!
+		
+			// this is the page to execute the script
+			if (!checkIntroContainer() && retrieveDataFirst())
+			{
+				// embed a place where timer show
+				embedTimer(true);
+				
+				// embed script to horn button
+				embedScript();
+				
+				// start script action
+				action();
+			}
+			else
+			{
+				// fail to retrieve data, display error msg and reload the page
+				document.title = "Fail to retrieve data from page. Reloading in " + timeformat(errorReloadTime);
+				window.setTimeout(function () { reloadPage(false) }, errorReloadTime * 1000);
+			}
+		}
+		else
+		{
+			// not in huntcamp, just show the title of autobot version
+			embedTimer(false);
+		}
+	}
+	else if (mhPlatform)
+	{
+		if (window.location.href == "http://www.mousehuntgame.com/" ||
+			window.location.href == "http://www.mousehuntgame.com/#" ||
+			window.location.href.indexOf("mousehuntgame.com/turn.php") != -1 ||
+			window.location.href.indexOf("mousehuntgame.com/index.php") != -1)
+		{
+			// page to execute the script!
+		
+			// this is the page to execute the script
+			if (!checkIntroContainer() && retrieveDataFirst())
+			{
+				// embed a place where timer show
+				embedTimer(true);
+				
+				// embed script to horn button
+				embedScript();
+					
+				// start script action
+				action();
+			}
+			else
+			{
+				// fail to retrieve data, display error msg and reload the page
+				document.title = "Fail to retrieve data from page. Reloading in " + timeformat(errorReloadTime);
+				window.setTimeout(function () { reloadPage(false) }, errorReloadTime * 1000);
+			}
+		}
+		else
+		{
+			// not in huntcamp, just show the title of autobot version
+			embedTimer(false);
+		}
+	}
+	else if (hiFivePlatform)
+	{
+		if (window.location.href == "http://mousehunt.hi5.hitgrab.com/#" ||
+			window.location.href.indexOf("http://mousehunt.hi5.hitgrab.com/?") != -1 ||
+			window.location.href == "http://mousehunt.hi5.hitgrab.com/" ||
+			window.location.href.indexOf("http://mousehunt.hi5.hitgrab.com/turn.php") != -1 ||
+			window.location.href.indexOf("http://mousehunt.hi5.hitgrab.com/index.php") != -1)
+		{
+			// page to execute the script!
+		
+			// this is the page to execute the script
+			if (!checkIntroContainer() && retrieveDataFirst())
+			{
+				// embed a place where timer show
+				embedTimer(true);
+				
+				// embed script to horn button
+				embedScript();
+					
+				// start script action
+				action();
+			}
+			else
+			{
+				// fail to retrieve data, display error msg and reload the page
+				document.title = "Fail to retrieve data from page. Reloading in " + timeformat(errorReloadTime);
+				window.setTimeout(function () { reloadPage(false) }, errorReloadTime * 1000);
+			}
+		}
+		else
+		{
+			// not in huntcamp, just show the title of autobot version
+			embedTimer(false);
+		}
+	}
+}
+
+function checkIntroContainer()
+{
+	var introContainerDiv = document.getElementById('introContainer');
+	if (introContainerDiv != null)
+	{
+		introContainerDiv = null;
+		return (true);
+	}
+	else
+	{
+		return (false);
+	}
+}
+
+function retrieveDataFirst()
+{
+	var gotHornTime = false;
+	var gotPuzzle = false;
+	var gotBaitQuantity = false;
+	var retrieveSuccess = false;
+	
+	var scriptElementList = document.getElementsByTagName('script');
+	if (scriptElementList)
+	{
+		var i;
+		for (i = 0; i < scriptElementList.length; ++i)
+		{
+			var scriptString = scriptElementList[i].innerHTML;
+			
+			// get next horn time
+			var hornTimeStartIndex = scriptString.indexOf("next_activeturn_seconds");
+			if (hornTimeStartIndex >= 0)
+			{
+				var nextActiveTime = 900;
+				hornTimeStartIndex += 25;
+				var hornTimeEndIndex = scriptString.indexOf(",", hornTimeStartIndex);
+				var hornTimerString = scriptString.substring(hornTimeStartIndex, hornTimeEndIndex);
+				nextActiveTime = parseInt(hornTimerString);
+				
+				hornTimeDelay = hornTimeDelayMin + Math.round(Math.random() * (hornTimeDelayMax - hornTimeDelayMin));
+				
+				if (!aggressiveMode)
+				{
+					// calculation base on the js in Mousehunt
+					var additionalDelayTime = Math.ceil(nextActiveTime * 0.1);
+				
+					// need to found out the mousehunt provided timer interval to determine the additional delay
+					var timerIntervalStartIndex = scriptString.indexOf("hud.timer_interval");
+					if (timerIntervalStartIndex >= 0)
+					{
+						timerIntervalStartIndex += 21;
+						var timerIntervalEndIndex = scriptString.indexOf(";", timerIntervalStartIndex);
+						var timerIntervalString = scriptString.substring(timerIntervalStartIndex, timerIntervalEndIndex);
+						var timerInterval = parseInt(timerIntervalString);
+						
+						// calculation base on the js in Mousehunt
+						if (timerInterval == 1)
+						{
+							additionalDelayTime = 2;
+						}
+						
+						timerIntervalStartIndex = null;
+						timerIntervalEndIndex = null;
+						timerIntervalString = null;
+						timerInterval = null;
+					}
+					
+					// safety mode, include extra delay like time in horn image appear
+					//hornTime = nextActiveTime + additionalDelayTime + hornTimeDelay;
+					hornTime = nextActiveTime + hornTimeDelay;
+					
+					additionalDelayTime = null;
+				}
+				else
+				{
+					// aggressive mode, no extra delay like time in horn image appear
+					hornTime = nextActiveTime;
+				}
+				
+				gotHornTime = true;
+				
+				hornTimeStartIndex = null;
+				hornTimeEndIndex = null;
+				hornTimerString = null;
+				nextActiveTime = null;
+			}
+			
+			// get is king's reward or not
+			var hasPuzzleStartIndex = scriptString.indexOf("has_puzzle");
+			if (hasPuzzleStartIndex >= 0)
+			{
+				hasPuzzleStartIndex += 12;
+				var hasPuzzleEndIndex = scriptString.indexOf(",", hasPuzzleStartIndex);
+				var hasPuzzleString = scriptString.substring(hasPuzzleStartIndex, hasPuzzleEndIndex);
+				isKingReward = (hasPuzzleString == 'false') ? false : true;
+				
+				gotPuzzle = true;
+				
+				hasPuzzleStartIndex = null;
+				hasPuzzleEndIndex = null;
+				hasPuzzleString = null;
+			}
+			
+			// get cheese quantity
+			var baitQuantityStartIndex = scriptString.indexOf("bait_quantity");
+			if (baitQuantityStartIndex >= 0)
+			{
+				baitQuantityStartIndex += 15;
+				var baitQuantityEndIndex = scriptString.indexOf(",", baitQuantityStartIndex);
+				var baitQuantityString = scriptString.substring(baitQuantityStartIndex, baitQuantityEndIndex);
+				baitQuantity = parseInt(baitQuantityString);
+				
+				gotBaitQuantity = true;
+				
+				baitQuantityStartIndex = null;
+				baitQuantityEndIndex = null;
+				baitQuantityString = null;
+			}
+			
+			var locationStartIndex;
+			var locationEndIndex;
+			locationStartIndex = scriptString.indexOf("location\":\"");
+			if (locationStartIndex >= 0)
+			{
+				locationStartIndex += 11;
+				locationEndIndex = scriptString.indexOf("\"", locationStartIndex);
+				var locationString = scriptString.substring(locationStartIndex, locationEndIndex);
+				currentLocation = locationString;
+				
+				locationStartIndex = null;
+				locationEndIndex = null;
+				locationString = null;
+			}
+			
+			scriptString = null;
+		}
+		i = null;
+	}
+	scriptElementList = null;
+	
+	if (gotHornTime && gotPuzzle && gotBaitQuantity)
+	{
+		// get trap check time
+		if (enableTrapCheck)
+		{
+			var today = new Date();
+			checkTimeDelay = checkTimeDelayMin + Math.round(Math.random() * (checkTimeDelayMax - checkTimeDelayMin));
+			checkTime = (today.getMinutes() >= trapCheckTimeDiff) ? 3600 + (trapCheckTimeDiff * 60) - (today.getMinutes() * 60 + today.getSeconds()) : (trapCheckTimeDiff * 60) - (today.getMinutes() * 60 + today.getSeconds());
+			checkTime += checkTimeDelay;
+			today = null;
+		}
+		
+		// get last location
+		var huntLocationCookie = getStorage("huntLocation");
+		if (huntLocationCookie == null)
+		{
+			huntLocation = currentLocation;
+			setStorage("huntLocation", currentLocation);
+		}
+		else
+		{
+			huntLocation = huntLocationCookie;
+			setStorage("huntLocation", huntLocation);
+		}
+		huntLocationCookie = null;
+		
+		// get last king reward time
+		var lastKingRewardDate = getStorage("lastKingRewardDate");
+		if (lastKingRewardDate == null)
+		{
+			lastKingRewardSumTime = -1;
+		}
+		else
+		{
+			var lastDate = new Date(lastKingRewardDate);
+			lastKingRewardSumTime = parseInt((new Date() - lastDate) / 1000);
+			lastDate = null;
+		}
+		
+		retrieveSuccess = true;
+	}
+	else
+	{
+		retrieveSuccess = false;
+	}
+	
+	// clean up
+	gotHornTime = null;
+	gotPuzzle = null;
+	gotBaitQuantity = null;
+	
+	return (retrieveSuccess);
+}
+
+function retrieveData()
+{
+	// get next horn time
+	var nextActiveTime;
+	var timerInterval;
+	try
+	{
+		// for firefox + greasmonkey
+		nextActiveTime = unsafeWindow.user.next_activeturn_seconds;
+		timerInterval = unsafeWindow.hud.timer_interval;
+		isKingReward = unsafeWindow.user.has_puzzle;
+		baitQuantity = unsafeWindow.user.bait_quantity;
+		currentLocation = unsafeWindow.user.location;
+	}
+	catch(e)
+	{
+		try
+		{
+			// for opera
+			nextActiveTime = user.next_activeturn_seconds;
+			timerInterval = hud.timer_interval;
+			isKingReward = user.has_puzzle;
+			baitQuantity = user.bait_quantity;
+			currentLocation = user.location;
+		}
+		catch(e)
+		{
+			try
+			{
+				// chrome
+				nextActiveTime = parseInt(getPageVariableForChrome("user.next_activeturn_seconds"));
+				timerInterval = parseInt(getPageVariableForChrome("hud.timer_interval"));
+				isKingReward = (getPageVariableForChrome("user.has_puzzle").toString() == "false") ? false : true;
+				baitQuantity = parseInt(getPageVariableForChrome("user.bait_quantity"));
+				currentLocation = getPageVariableForChrome("user.location");
+			}
+			catch(e)
+			{
+				// if everything fail... refresh the page...
+				window.setTimeout(function () { reloadWithMessage("Fail to retrieve data. Reloading...", false); }, 5000);
+			}
+		}
+	}
+	
+	if (nextActiveTime == "" || isNaN(nextActiveTime))
+	{
+		// fail to retrieve data, might be due to slow network
+		
+		// reload the page to see it fix the problem
+		window.setTimeout(function () { reloadWithMessage("Fail to retrieve data. Reloading...", false); }, 5000);
+	}
+	else
+	{
+		// got the timer right!
+	
+		// calculate the delay
+		hornTimeDelay = hornTimeDelayMin + Math.round(Math.random() * (hornTimeDelayMax - hornTimeDelayMin));
+	
+		if (!aggressiveMode)
+		{
+			// calculation base on the js in Mousehunt
+			var additionalDelayTime = Math.ceil(nextActiveTime * 0.1);
+			if (timerInterval != "" && !isNaN(timerInterval) && timerInterval == 1)
+			{
+				additionalDelayTime = 2;
+			}
+			
+			// safety mode, include extra delay like time in horn image appear
+			//hornTime = nextActiveTime + additionalDelayTime + hornTimeDelay;
+			hornTime = nextActiveTime + hornTimeDelay;
+			
+			additionalDelayTime = null;
+		}
+		else
+		{
+			// aggressive mode, no extra delay like time in horn image appear
+			hornTime = nextActiveTime;
+		}
+	}
+	nextActiveTime = null;
+	timerInterval = null;
+	
+	// get trap check time
+	if (enableTrapCheck)
+	{
+		var today = new Date();
+		checkTimeDelay = checkTimeDelayMin + Math.round(Math.random() * (checkTimeDelayMax - checkTimeDelayMin));
+		checkTime = (today.getMinutes() >= trapCheckTimeDiff) ? 3600 + (trapCheckTimeDiff * 60) - (today.getMinutes() * 60 + today.getSeconds()) : (trapCheckTimeDiff * 60) - (today.getMinutes() * 60 + today.getSeconds());
+		checkTime += checkTimeDelay;
+		today = null;
+	}
+}
+
+function checkJournalDate()
+{
+	var reload = false;
+
+	var journalDateDiv = document.getElementsByClassName(' journaldate');
+	if (journalDateDiv)
+	{
+		var journalDateStr = journalDateDiv[0].innerHTML.toString();
+		var midIndex = journalDateStr.indexOf(":", 0);
+		var spaceIndex = journalDateStr.indexOf(" ", midIndex);
+		
+		if (midIndex > 2)
+		{
+			var hrStr = journalDateStr.substring(0, midIndex);
+			var minStr = journalDateStr.substring(midIndex + 1, 2);
+			
+			var nowDate = new Date();
+			var lastHuntDate = new Date();
+			lastHuntDate.setHours(parseInt(hrStr), parseInt(minStr), 0, 0);
+			
+			if (parseInt(nowDate - lastHuntDate) / 1000 > 900)
+			{
+				reload = true;
+			}
+		}
+		else
+		{
+			reload = true;
+		}
+	}
+	
+	if (reload)
+	{
+		reloadWithMessage("Timer error. Try reload to fix.", true);
+	}
+	
+	return (reload);
+}
+
+function action()
+{
+	if (isKingReward)
+	{
+		kingRewardAction();
+	}
+	else if (pauseAtInvalidLocation && (huntLocation != currentLocation))
+	{
+		// update timer
+		displayTimer("Out of pre-defined hunting location...", "Out of pre-defined hunting location...", "Out of pre-defined hunting location...");
+		
+		if (fbPlatform)
+		{
+			displayLocation("<font color='red'>" + currentLocation + "</font> [<a onclick='window.localStorage.removeItem(\"huntLocation\");' href='http://www.mousehuntgame.com/canvas/\'>Hunt Here</a>] - <i>Script pause because you had move to a different location recently, click hunt here to continue hunt at this location.</i>");
+		}
+		else if (hiFivePlatform)
+		{
+			displayLocation("<font color='red'>" + currentLocation + "</font> [<a onclick='window.localStorage.removeItem(\"huntLocation\");' href='http://mousehunt.hi5.hitgrab.com/\'>Hunt Here</a>] - <i>Script pause because you had move to a different location recently, click hunt here to continue hunt at this location.</i>");
+		}
+		else if (mhPlatform)
+		{
+			displayLocation("<font color='red'>" + currentLocation + "</font> [<a onclick='window.localStorage.removeItem(\"huntLocation\");' href='http://www.mousehuntgame.com/\'>Hunt Here</a>] - <i>Script pause because you had move to a different location recently, click hunt here to continue hunt at this location.</i>");
+		}
+		
+		displayKingRewardSumTime(null);
+		
+		// pause script
+	}
+	else if (baitQuantity == 0)
+	{
+		// update timer
+		displayTimer("No more cheese!", "Cannot hunt without the cheese...", "Cannot hunt without the cheese...");
+		displayLocation(huntLocation);
+		displayKingRewardSumTime(null);
+		
+		// pause the script
+	}
+	else
+	{
+		// update location
+		displayLocation(huntLocation);
+	
+		var isHornSounding = false;
+	
+		// check if the horn image is visible
+		var headerElement;
+		headerElement = document.getElementById('header');
+		if (headerElement)
+		{
+			var headerStatus = headerElement.getAttribute('class');
+			if (headerStatus.indexOf("hornready") != -1)
+			{
+				// if the horn image is visible, why do we need to wait any more, sound the horn!
+				soundHorn();
+				
+				// make sure the timer don't run twice!
+				isHornSounding = true;
+			}
+			headerStatus = null;
+		}
+		headerElement = null;
+	
+		if (isHornSounding == false)
+		{
+			// start timer
+			window.setTimeout(function () { countdownTimer() }, timerRefreshInterval * 1000);
+		}
+		
+		isHornSounding = null;
+	}
+}
+
+function countdownTimer()
+{
+	if (isKingReward)
+	{
+		// update timer
+		displayTimer("King's Reward!", "King's Reward!", "King's Reward");
+		displayKingRewardSumTime("Now");
+		
+		
+		// record last king's reward time
+		var nowDate = new Date();
+		setStorage("lastKingRewardDate", nowDate.toString());
+		nowDate = null;
+		lastKingRewardSumTime = 0;
+		
+		// reload the page so that the sound can be play
+		// simulate mouse click on the camp button
+		fireEvent(document.getElementsByClassName('campbutton')[0].firstChild, 'click');
+		
+		// reload the page if click on camp button fail
+		window.setTimeout(function () { reloadWithMessage("Fail to click on camp button. Reloading...", false); }, 5000);
+	}
+	else if (pauseAtInvalidLocation && (huntLocation != currentLocation))
+	{
+		// update timer
+		displayTimer("Out of pre-defined hunting location...", "Out of pre-defined hunting location...", "Out of pre-defined hunting location...");
+		if (fbPlatform)
+		{
+			displayLocation("<font color='red'>" + currentLocation + "</font> [<a onclick='window.localStorage.removeItem(\"huntLocation\");' href='http://www.mousehuntgame.com/canvas/\'>Hunt Here</a>] - <i>Script pause because you had move to a different location recently, click hunt here to continue hunt at this location.</i>");
+		}
+		else if (hiFivePlatform)
+		{
+			displayLocation("<font color='red'>" + currentLocation + "</font> [<a onclick='window.localStorage.removeItem(\"huntLocation\");' href='http://mousehunt.hi5.hitgrab.com/\'>Hunt Here</a>] - <i>Script pause because you had move to a different location recently, click hunt here to continue hunt at this location.</i>");
+		}
+		else if (mhPlatform)
+		{
+			displayLocation("<font color='red'>" + currentLocation + "</font> [<a onclick='window.localStorage.removeItem(\"huntLocation\");' href='http://www.mousehuntgame.com/\'>Hunt Here</a>] - <i>Script pause because you had move to a different location recently, click hunt here to continue hunt at this location.</i>");
+		}
+		displayKingRewardSumTime(null);
+		
+		// pause script
+	}
+	else if (baitQuantity == 0)
+	{
+		// update timer
+		displayTimer("No more cheese!", "Cannot hunt without the cheese...", "Cannot hunt without the cheese...");
+		displayLocation(huntLocation);
+		displayKingRewardSumTime(null);
+		
+		// pause the script
+	}
+	else
+	{
+		if (enableTrapCheck)
+		{
+			// update time
+			hornTime -= timerRefreshInterval;
+			checkTime -= timerRefreshInterval;
+			if (lastKingRewardSumTime != -1)
+			{
+				lastKingRewardSumTime += timerRefreshInterval;
+			}
+		}
+		else
+		{
+			// update time
+			hornTime -= timerRefreshInterval;
+			if (lastKingRewardSumTime != -1)
+			{
+				lastKingRewardSumTime += timerRefreshInterval;
+			}
+		}
+	
+		if (hornTime <= 0)
+		{
+			// blow the horn!
+			soundHorn();
+		}
+		else if (enableTrapCheck && checkTime <= 0)
+		{
+			// trap check!
+			trapCheck();
+		}
+		else
+		{
+			if (enableTrapCheck)
+			{
+				// update timer
+				if (!aggressiveMode)
+				{
+					displayTimer("Horn: " + timeformat(hornTime) + " | Check: " + timeformat(checkTime), 
+						timeformat(hornTime) + "  <i>(included extra " + timeformat(hornTimeDelay) + " delay & +/- 5 seconds different from MouseHunt timer)</i>", 
+						timeformat(checkTime) + "  <i>(included extra " + timeformat(checkTimeDelay) + " delay)</i>");
+				}
+				else
+				{
+					displayTimer("Horn: " + timeformat(hornTime) + " | Check: " + timeformat(checkTime), 
+						timeformat(hornTime) + "  <i>(lot faster than MouseHunt timer)</i>", 
+						timeformat(checkTime) + "  <i>(included extra " + timeformat(checkTimeDelay) + " delay)</i>");
+				}
+			}
+			else
+			{
+				// update timer
+				if (!aggressiveMode)
+				{
+					displayTimer("Horn: " + timeformat(hornTime), 
+						timeformat(hornTime) + "  <i>(included extra " + timeformat(hornTimeDelay) + " delay & +/- 5 seconds different from MouseHunt timer)</i>", 
+						"-");
+					
+					// check if user manaually sounded the horn
+					var soundedHorn = getStorage("soundedHorn");
+					if (soundedHorn != null && soundedHorn == "true")
+					{
+						soundedHorn = null;
+					
+						// sound horn function do the rest
+						soundHorn();
+						
+						// stop loopping
+						return;
+					}
+				}
+				else
+				{
+					displayTimer("Horn: " + timeformat(hornTime), 
+						timeformat(hornTime) + "  <i>(lot faster than MouseHunt timer)</i>", 
+						"-");
+					
+					// agressive mode should sound the horn whenever it is possible to do so.
+					var headerElement = document.getElementById('header');
+					if (headerElement)
+					{
+						// the horn image appear before the timer end
+						if (headerElement.getAttribute('class').indexOf("hornready") != -1)
+						{
+							// who care, blow the horn first!
+							soundHorn();
+							
+							headerElement = null;
+							
+							// skip all the code below
+							return;
+						}
+					}
+					headerElement = null;
+				}
+			}
+			
+			// set king reward sum time
+			displayKingRewardSumTime(timeFormatLong(lastKingRewardSumTime));
+			
+			window.setTimeout(function () { (countdownTimer)() }, timerRefreshInterval * 1000);
+		}
+	}
+}
+
+function loadPreferenceSettingFromStorage()
+{
+	var aggressiveModeTemp = getStorage("AggressiveMode");
+	if (aggressiveModeTemp == null)
+	{
+		setStorage("AggressiveMode", aggressiveMode);
+	}
+	else if (aggressiveModeTemp == true || aggressiveModeTemp == "True")
+	{
+		aggressiveMode = true;
+	}
+	else
+	{
+		aggressiveMode = false;
+	}
+	
+	var hornTimeDelayMinTemp = getStorage("HornTimeDelayMin");
+	var hornTimeDelayMaxTemp = getStorage("HornTimeDelayMax");
+	if (hornTimeDelayMinTemp == null || hornTimeDelayMaxTemp == null)
+	{
+		setStorage("HornTimeDelayMin", hornTimeDelayMin);
+		setStorage("HornTimeDelayMax", hornTimeDelayMax);
+	}
+	else
+	{
+		hornTimeDelayMin = parseInt(hornTimeDelayMinTemp);
+		hornTimeDelayMax = parseInt(hornTimeDelayMaxTemp);
+	}
+	
+	var trapCheckTemp = getStorage("TrapCheck");
+	if (trapCheckTemp == null)
+	{
+		setStorage("TrapCheck", enableTrapCheck);
+	}
+	else if (trapCheckTemp == true || trapCheckTemp == "True")
+	{
+		enableTrapCheck = true;
+	}
+	else
+	{
+		enableTrapCheck = false;
+	}
+	
+	var trapCheckTimeOffsetTemp = getStorage("TrapCheckTimeOffset");
+	if (trapCheckTimeOffsetTemp == null)
+	{
+		setStorage("TrapCheckTimeOffset", trapCheckTimeDiff);
+	}
+	else
+	{
+		trapCheckTimeDiff = parseInt(trapCheckTimeOffsetTemp);
+	}
+	
+	var trapCheckTimeDelayMinTemp = getStorage("TrapCheckTimeDelayMin");
+	var trapCheckTimeDelayMaxTemp = getStorage("TrapCheckTimeDelayMax");
+	if (trapCheckTimeDelayMinTemp == null || trapCheckTimeDelayMaxTemp == null)
+	{
+		setStorage("TrapCheckTimeDelayMin", checkTimeDelayMin);
+		setStorage("TrapCheckTimeDelayMax", checkTimeDelayMax);
+	}
+	else
+	{
+		checkTimeDelayMin = parseInt(trapCheckTimeDelayMinTemp);
+		checkTimeDelayMax = parseInt(trapCheckTimeDelayMaxTemp);
+	}
+	
+	var playKingRewardSoundTemp = getStorage("PlayKingRewardSound");
+	if (playKingRewardSoundTemp == null)
+	{
+		setStorage("PlayKingRewardSound", isKingWarningSound);
+	}
+	else if (playKingRewardSoundTemp == true || playKingRewardSoundTemp == "True")
+	{
+		isKingWarningSound = true;
+	}
+	else
+	{
+		isKingWarningSound = false;
+	}
+	
+	var kingRewardResumeTemp = getStorage("KingRewardResume");
+	if (kingRewardResumeTemp == null)
+	{
+		setStorage("KingRewardResume", reloadKingReward);
+	}
+	else if (kingRewardResumeTemp == true || kingRewardResumeTemp == "True")
+	{
+		reloadKingReward = true;
+	}
+	else
+	{
+		reloadKingReward = false;
+	}
+	
+	var kingRewardResumeTimeTemp = getStorage("KingRewardResumeTime");
+	if (kingRewardResumeTimeTemp == null)
+	{
+		setStorage("KingRewardResumeTime", kingPauseTimeMax);
+	}
+	else
+	{
+		kingPauseTimeMax = parseInt(kingRewardResumeTimeTemp);
+	}
+}
+
+function embedTimer(targetPage)
+{
+	// make sure all the preference already loaded
+	loadPreferenceSettingFromStorage();
+
+	if (showTimerInPage)
+	{
+		var headerElement;
+		headerElement = document.getElementById('noscript');
+		if (headerElement)
+		{
+			var timerDivElement = document.createElement('div');
+			
+			var hr1Element = document.createElement('hr');
+			timerDivElement.appendChild(hr1Element);
+			
+			// show bot title and version
+			titleElement = document.createElement('div');
+			titleElement.setAttribute('id', 'titleElement');
+			if (targetPage && aggressiveMode)
+			{
+				titleElement.innerHTML = "<a href=\"http://ooiks.com/blog/category/mousehunt-autobot\" target=\"_blank\"><b>MouseHunt AutoBot (version " + scriptVersion + ")</b></a> - <font color='red'>Aggressive Mode</font>";
+			}
+			else
+			{
+				titleElement.innerHTML = "<a href=\"http://ooiks.com/blog/category/mousehunt-autobot\" target=\"_blank\"><b>MouseHunt AutoBot (version " + scriptVersion + ")</b></a>";
+			}
+			timerDivElement.appendChild(titleElement);
+			
+			if (targetPage)
+			{
+				nextHornTimeElement = document.createElement('div');
+				nextHornTimeElement.setAttribute('id', 'nextHornTimeElement');
+				nextHornTimeElement.innerHTML = "<b>Next Hunter Horn Time:</b> Loading...";
+				timerDivElement.appendChild(nextHornTimeElement);
+				
+				checkTimeElement = document.createElement('div');
+				checkTimeElement.setAttribute('id', 'checkTimeElement');
+				checkTimeElement.innerHTML = "<b>Next Trap Check Time:</b> Loading...";
+				timerDivElement.appendChild(checkTimeElement);
+				
+				if (pauseAtInvalidLocation)
+				{
+					// location information only display when enable this feature
+					travelElement = document.createElement('div');
+					travelElement.setAttribute('id', 'travelElement');
+					travelElement.innerHTML = "<b>Target Hunt Location:</b> Loading...";
+					timerDivElement.appendChild(travelElement);
+				}
+				
+				var lastKingRewardDate = getStorage("lastKingRewardDate");
+				var lastDateStr;
+				if (lastKingRewardDate == null)
+				{
+					lastDateStr = "-";
+				}
+				else
+				{
+					var lastDate = new Date(lastKingRewardDate);
+					lastDateStr = lastDate.toDateString() + " " + lastDate.toTimeString().substring(0, 8);
+					lastDate = null;
+				}
+				
+				kingTimeElement = document.createElement('div');
+				kingTimeElement.setAttribute('id', 'kingTimeElement');
+				kingTimeElement.innerHTML = "<b>Last King's Reward:</b> " + lastDateStr + " ";
+				timerDivElement.appendChild(kingTimeElement);
+				
+				lastKingRewardSumTimeElement = document.createElement('font');
+				lastKingRewardSumTimeElement.setAttribute('id', 'lastKingRewardSumTimeElement');
+				lastKingRewardSumTimeElement.innerHTML = "(Loading...)";
+				kingTimeElement.appendChild(lastKingRewardSumTimeElement);
+				
+				lastKingRewardDate = null;
+				lastDateStr = null;
+				
+				if (showLastPageLoadTime)
+				{
+					var nowDate = new Date();
+				
+					// last page load time
+					var loadTimeElement = document.createElement('div');
+					loadTimeElement.setAttribute('id', 'loadTimeElement');
+					loadTimeElement.innerHTML = "<b>Last Page Load: </b>" + nowDate.toDateString() + " " + nowDate.toTimeString().substring(0, 8);
+					timerDivElement.appendChild(loadTimeElement);
+					
+					loadTimeElement = null;
+					nowDate = null;
+				}
+			}
+			else
+			{
+				// player currently navigating other page instead of hunter camp
+				var helpTextElement = document.createElement('div');
+				helpTextElement.setAttribute('id', 'helpTextElement');
+				if (fbPlatform)
+				{
+					helpTextElement.innerHTML = "<b>Note:</b> MouseHunt AutoBot will only run at <a href='http://www.mousehuntgame.com/canvas/'>Hunter Camp</a>. This is to prevent the bot from interfering user's activity.";
+				}
+				else if (hiFivePlatform)
+				{
+					helpTextElement.innerHTML = "<b>Note:</b> MouseHunt AutoBot will only run at <a href='http://mousehunt.hi5.hitgrab.com/'>Hunter Camp</a>. This is to prevent the bot from interfering user's activity.";
+				}
+				else if (mhPlatform)
+				{
+					helpTextElement.innerHTML = "<b>Note:</b> MouseHunt AutoBot will only run at <a href='http://mousehuntgame.com/'>Hunter Camp</a>. This is to prevent the bot from interfering user's activity.";
+				}
+				timerDivElement.appendChild(helpTextElement);
+				
+				helpTextElement = null;
+			}
+			
+			var showPerference = getStorage('showPerference');
+			if (showPerference == null)
+			{
+				showPerference = false;
+				setStorage("showPerference", showPerference);
+			}
+			
+			var showPerferenceLinkDiv = document.createElement('div');
+			showPerferenceLinkDiv.setAttribute('id', 'showPerferenceLinkDiv');
+			showPerferenceLinkDiv.setAttribute('style', 'text-align:right');
+			timerDivElement.appendChild(showPerferenceLinkDiv);
+			
+			var showPerferenceLink = document.createElement('a');
+			showPerferenceLink.setAttribute('id', 'showPerferenceLink');
+			showPerferenceLink.setAttribute('name', 'showPerferenceLink');
+			showPerferenceLink.setAttribute('onclick', 'if (document.getElementById("showPerferenceLink").innerHTML == "[Hide Perference]") { document.getElementById("preferenceDiv").style.display="none";  document.getElementById("showPerferenceLink").innerHTML="[Show Perference]"; } else { document.getElementById("preferenceDiv").style.display="block"; document.getElementById("showPerferenceLink").innerHTML="[Hide Perference]"; }');
+			if (showPerference == true)
+				showPerferenceLink.innerHTML = '[Hide Perference]';
+			else
+				showPerferenceLink.innerHTML = '[Show Perference]';
+			showPerferenceLinkDiv.appendChild(showPerferenceLink);
+			
+			var hr2Element = document.createElement('hr');
+			timerDivElement.appendChild(hr2Element);
+			
+			var perferenceHTMLStr = '<table border="0" width="100%">';
+			if (aggressiveMode)
+			{
+				perferenceHTMLStr += '<tr><td style="height:24px; text-align:right;"><b>Aggressive Mode&nbsp;&nbsp;:&nbsp;&nbsp;</b></td><td style="height:24px"><input type="radio" id="AggressiveModeInputTrue" name="AggressiveModeInput" value="true" onchange="if (document.getElementById(\'AggressiveModeInputTrue\').checked == true) { document.getElementById(\'HornTimeDelayMinInput\').disabled=\'disabled\'; document.getElementById(\'HornTimeDelayMaxInput\').disabled=\'disabled\';}" checked="checked"/> True   <input type="radio" id="AggressiveModeInputFalse" name="AggressiveModeInput" value="false" onchange="if (document.getElementById(\'AggressiveModeInputFalse\').checked == true) { document.getElementById(\'HornTimeDelayMinInput\').disabled=\'\'; document.getElementById(\'HornTimeDelayMaxInput\').disabled=\'\';}"/> False</td></tr>';
+				perferenceHTMLStr += '<tr><td style="height:24px; text-align:right;"><b>Horn Time Delay&nbsp;&nbsp;:&nbsp;&nbsp;</b></td><td style="height:24px"><input type="text" id="HornTimeDelayMinInput" name="HornTimeDelayMinInput" disabled="disabled" value="' + hornTimeDelayMin.toString() + '"/> seconds ~ <input type="text" id="HornTimeDelayMaxInput" name="HornTimeDelayMaxInput" disabled="disabled" value="' + hornTimeDelayMax.toString() + '"/> seconds</td></tr>';
+			}
+			else
+			{
+				perferenceHTMLStr += '<tr><td style="height:24px; text-align:right;"><b>Aggressive Mode&nbsp;&nbsp;:&nbsp;&nbsp;</b></td><td style="height:24px"><input type="radio" id="AggressiveModeInputTrue" name="AggressiveModeInput" value="true" onchange="if (document.getElementById(\'AggressiveModeInputTrue\').checked == true) { document.getElementById(\'HornTimeDelayMinInput\').disabled=\'disabled\'; document.getElementById(\'HornTimeDelayMaxInput\').disabled=\'disabled\';}"/> True   <input type="radio" id="AggressiveModeInputFalse" name="AggressiveModeInput" value="false" onchange="if (document.getElementById(\'AggressiveModeInputFalse\').checked == true) { document.getElementById(\'HornTimeDelayMinInput\').disabled=\'\'; document.getElementById(\'HornTimeDelayMaxInput\').disabled=\'\';}" checked="checked"/> False</td></tr>';
+				perferenceHTMLStr += '<tr><td style="height:24px; text-align:right;"><b>Horn Time Delay&nbsp;&nbsp;:&nbsp;&nbsp;</b></td><td style="height:24px"><input type="text" id="HornTimeDelayMinInput" name="HornTimeDelayMinInput" value="' + hornTimeDelayMin.toString() + '"/> seconds ~ <input type="text" id="HornTimeDelayMaxInput" name="HornTimeDelayMaxInput" value="' + hornTimeDelayMax.toString() + '"/> seconds</td></tr>';
+			}
+			if (enableTrapCheck)
+			{
+				perferenceHTMLStr += '<tr><td style="height:24px; text-align:right;"><b>Trap Check&nbsp;&nbsp;:&nbsp;&nbsp;</b></td><td style="height:24px"><input type="radio" id="TrapCheckInputTrue" name="TrapCheckInput" value="true" onchange="if (document.getElementById(\'TrapCheckInputTrue\').checked == true) { document.getElementById(\'TrapCheckTimeOffsetInput\').disabled=\'\'; document.getElementById(\'TrapCheckTimeDelayMinInput\').disabled=\'\'; document.getElementById(\'TrapCheckTimeDelayMaxInput\').disabled=\'\';}" checked="checked"/> True   <input type="radio" id="TrapCheckInputFalse" name="TrapCheckInput" value="false" onchange="if (document.getElementById(\'TrapCheckInputFalse\').checked == true) { document.getElementById(\'TrapCheckTimeOffsetInput\').disabled=\'disabled\'; document.getElementById(\'TrapCheckTimeDelayMinInput\').disabled=\'disabled\'; document.getElementById(\'TrapCheckTimeDelayMaxInput\').disabled=\'disabled\';}"/> False</td></tr>';
+				perferenceHTMLStr += '<tr><td style="height:24px; text-align:right;"><b>Trap Check Time Offset&nbsp;&nbsp;:&nbsp;&nbsp;</b></td> <td style="height:24px"><input type="text" id="TrapCheckTimeOffsetInput" name="TrapCheckTimeOffsetInput" value="' + trapCheckTimeDiff.toString() + '"/> seconds</td></tr>';
+				perferenceHTMLStr += '<tr><td style="height:24px; text-align:right;"><b>Trap Check Time Delay&nbsp;&nbsp;:&nbsp;&nbsp;</b></td> <td style="height:24px"><input type="text" id="TrapCheckTimeDelayMinInput" name="TrapCheckTimeDelayMinInput" value="' + checkTimeDelayMin.toString() + '"/> seconds ~ <input type="text" id="TrapCheckTimeDelayMaxInput" name="TrapCheckTimeDelayMaxInput" value="' + checkTimeDelayMax.toString() + '"/> seconds</td></tr>';
+			}
+			else
+			{
+				perferenceHTMLStr += '<tr><td style="height:24px; text-align:right;"><b>Trap Check&nbsp;&nbsp;:&nbsp;&nbsp;</b></td><td style="height:24px"><input type="radio" id="TrapCheckInputTrue" name="TrapCheckInput" value="true" onchange="if (document.getElementById(\'TrapCheckInputTrue\').checked == true) { document.getElementById(\'TrapCheckTimeOffsetInput\').disabled=\'\'; document.getElementById(\'TrapCheckTimeDelayMinInput\').disabled=\'\'; document.getElementById(\'TrapCheckTimeDelayMaxInput\').disabled=\'\';}"/> True   <input type="radio" id="TrapCheckInputFalse" name="TrapCheckInput" value="false" onchange="if (document.getElementById(\'TrapCheckInputFalse\').checked == true) { document.getElementById(\'TrapCheckTimeOffsetInput\').disabled=\'disabled\'; document.getElementById(\'TrapCheckTimeDelayMinInput\').disabled=\'disabled\'; document.getElementById(\'TrapCheckTimeDelayMaxInput\').disabled=\'disabled\';}" checked="checked"/> False</td></tr>';
+				perferenceHTMLStr += '<tr><td style="height:24px; text-align:right;"><b>Trap Check Time Offset&nbsp;&nbsp;:&nbsp;&nbsp;</b></td> <td style="height:24px"><input type="text" id="TrapCheckTimeOffsetInput" name="TrapCheckTimeOffsetInput" disabled="disabled" value="' + trapCheckTimeDiff.toString() + '"/> seconds</td></tr>';
+				perferenceHTMLStr += '<tr><td style="height:24px; text-align:right;"><b>Trap Check Time Delay&nbsp;&nbsp;:&nbsp;&nbsp;</b></td> <td style="height:24px"><input type="text" id="TrapCheckTimeDelayMinInput" name="TrapCheckTimeDelayMinInput" disabled="disabled" value="' + checkTimeDelayMin.toString() + '"/> seconds ~ <input type="text" id="TrapCheckTimeDelayMaxInput" name="TrapCheckTimeDelayMaxInput" disabled="disabled" value="' + checkTimeDelayMax.toString() + '"/> seconds</td></tr>';
+			}
+			if (isKingWarningSound)
+			{
+				perferenceHTMLStr += '<tr><td style="height:24px; text-align:right;"><b>Play King Reward Sound&nbsp;&nbsp;:&nbsp;&nbsp;</b></td> <td style="height:24px"><input type="radio" id="PlayKingRewardSoundInputTrue" name="PlayKingRewardSoundInput" value="true" checked="checked"/> True   <input type="radio" id="PlayKingRewardSoundInputFalse" name="PlayKingRewardSoundInput" value="false" /> False</td></tr>';
+			}
+			else
+			{
+				perferenceHTMLStr += '<tr><td style="height:24px; text-align:right;"><b>Play King Reward Sound&nbsp;&nbsp;:&nbsp;&nbsp;</b></td> <td style="height:24px"><input type="radio" id="PlayKingRewardSoundInputTrue" name="PlayKingRewardSoundInput" value="true" /> True   <input type="radio" id="PlayKingRewardSoundInputFalse" name="PlayKingRewardSoundInput" value="false" checked="checked"/> False</td></tr>';
+			}
+			if (reloadKingReward)
+			{
+				perferenceHTMLStr += '<tr><td style="height:24px; text-align:right;"><b>King Reward Resume  :&nbsp;&nbsp;</b></td> <td style="height:24px"><input type="radio" id="KingRewardResumeInputTrue" name="KingRewardResumeInput" value="true" onchange="if (document.getElementById(\'KingRewardResumeInputTrue\').checked == true) { document.getElementById(\'KingRewardResumeTimeInput\').disabled=\'\'; }" checked="checked"/> True   <input type="radio" id="KingRewardResumeInputFalse" name="KingRewardResumeInput" value="false" onchange="if (document.getElementById(\'KingRewardResumeInputFalse\').checked == true) { document.getElementById(\'KingRewardResumeTimeInput\').disabled=\'disabled\'; }"/> False</td></tr>';
+				perferenceHTMLStr += '<tr><td style="height:24px; text-align:right;"><b>King Reward Resume Time  :&nbsp;&nbsp;</b></td> <td style="height:24px"><input type="text" id="KingRewardResumeTimeInput" name="KingRewardResumeTimeInput" value="' + kingPauseTimeMax.toString() + '"/> seconds</td></tr>';
+			}
+			else
+			{
+				perferenceHTMLStr += '<tr><td style="height:24px; text-align:right;"><b>King Reward Resume&nbsp;&nbsp;:&nbsp;&nbsp;</b></td> <td style="height:24px"><input type="radio" id="KingRewardResumeInputTrue" name="KingRewardResumeInput" value="true" onchange="if (document.getElementById(\'KingRewardResumeInputTrue\').checked == true) { document.getElementById(\'KingRewardResumeTimeInput\').disabled=\'\'; }"/> True   <input type="radio" id="KingRewardResumeInputFalse" name="KingRewardResumeInput" value="false" onchange="if (document.getElementById(\'KingRewardResumeInputFalse\').checked == true) { document.getElementById(\'KingRewardResumeTimeInput\').disabled=\'disabled\'; }" checked="checked"/> False</td></tr>';
+				perferenceHTMLStr += '<tr><td style="height:24px; text-align:right;"><b>King Reward Resume Time&nbsp;&nbsp;:&nbsp;&nbsp;</b></td> <td style="height:24px"><input type="text" id="KingRewardResumeTimeInput" name="KingRewardResumeTimeInput" disabled="disabled" value="' + kingPauseTimeMax.toString() + '"/> seconds</td></tr>';
+			}
+			if (fbPlatform)
+			{
+				perferenceHTMLStr += '<tr><td style="height:24px; text-align:right;" colspan="2">(Changes only take place after user save the preference) <input type="button" id="PerferenceSaveInput" value="Save" onclick="	\
+				if (document.getElementById(\'AggressiveModeInputTrue\').checked == true) { window.localStorage.setItem(\'AggressiveMode\', \'True\'); } else { window.localStorage.setItem(\'AggressiveMode\', \'False\'); }	\
+				window.localStorage.setItem(\'HornTimeDelayMin\', document.getElementById(\'HornTimeDelayMinInput\').value); window.localStorage.setItem(\'HornTimeDelayMax\', document.getElementById(\'HornTimeDelayMaxInput\').value);	\
+				if (document.getElementById(\'TrapCheckInputTrue\').checked == true) { window.localStorage.setItem(\'TrapCheck\', \'True\'); } else { window.localStorage.setItem(\'TrapCheck\', \'False\'); }	\
+				window.localStorage.setItem(\'TrapCheckTimeOffset\', document.getElementById(\'TrapCheckTimeOffsetInput\').value);	\
+				window.localStorage.setItem(\'TrapCheckTimeDelayMin\', document.getElementById(\'TrapCheckTimeDelayMinInput\').value); window.localStorage.setItem(\'TrapCheckTimeDelayMax\', document.getElementById(\'TrapCheckTimeDelayMaxInput\').value);	\
+				if (document.getElementById(\'PlayKingRewardSoundInputTrue\').checked == true) { window.localStorage.setItem(\'PlayKingRewardSound\', \'True\'); } else { window.localStorage.setItem(\'PlayKingRewardSound\', \'False\'); }	\
+				if (document.getElementById(\'KingRewardResumeInputTrue\').checked == true) { window.localStorage.setItem(\'KingRewardResume\', \'True\'); } else { window.localStorage.setItem(\'KingRewardResume\', \'False\'); }	\
+				window.localStorage.setItem(\'KingRewardResumeTime\', document.getElementById(\'KingRewardResumeTimeInput\').value);	\
+				window.location.href=\'http://www.mousehuntgame.com/canvas/\';"/></td></tr>';
+			}
+			else if (hiFivePlatform)
+			{
+				perferenceHTMLStr += '<tr><td style="height:24px; text-align:right;" colspan="2">(Changes only take place after user save the preference) <input type="button" id="PerferenceSaveInput" value="Save" onclick="	\
+				if (document.getElementById(\'AggressiveModeInputTrue\').checked == true) { window.localStorage.setItem(\'AggressiveMode\', \'True\'); } else { window.localStorage.setItem(\'AggressiveMode\', \'False\'); }	\
+				window.localStorage.setItem(\'HornTimeDelayMin\', document.getElementById(\'HornTimeDelayMinInput\').value); window.localStorage.setItem(\'HornTimeDelayMax\', document.getElementById(\'HornTimeDelayMaxInput\').value);	\
+				if (document.getElementById(\'TrapCheckInputTrue\').checked == true) { window.localStorage.setItem(\'TrapCheck\', \'True\'); } else { window.localStorage.setItem(\'TrapCheck\', \'False\'); }	\
+				window.localStorage.setItem(\'TrapCheckTimeOffset\', document.getElementById(\'TrapCheckTimeOffsetInput\').value);	\
+				window.localStorage.setItem(\'TrapCheckTimeDelayMin\', document.getElementById(\'TrapCheckTimeDelayMinInput\').value); window.localStorage.setItem(\'TrapCheckTimeDelayMax\', document.getElementById(\'TrapCheckTimeDelayMaxInput\').value);	\
+				if (document.getElementById(\'PlayKingRewardSoundInputTrue\').checked == true) { window.localStorage.setItem(\'PlayKingRewardSound\', \'True\'); } else { window.localStorage.setItem(\'PlayKingRewardSound\', \'False\'); }	\
+				if (document.getElementById(\'KingRewardResumeInputTrue\').checked == true) { window.localStorage.setItem(\'KingRewardResume\', \'True\'); } else { window.localStorage.setItem(\'KingRewardResume\', \'False\'); }	\
+				window.localStorage.setItem(\'KingRewardResumeTime\', document.getElementById(\'KingRewardResumeTimeInput\').value);	\
+				window.location.href=\'http://mousehunt.hi5.hitgrab.com/\';"/></td></tr>';
+			}
+			else if (mhPlatform)
+			{
+				perferenceHTMLStr += '<tr><td style="height:24px; text-align:right;" colspan="2">(Changes only take place after user save the preference) <input type="button" id="PerferenceSaveInput" value="Save" onclick="	\
+				if (document.getElementById(\'AggressiveModeInputTrue\').checked == true) { window.localStorage.setItem(\'AggressiveMode\', \'True\'); } else { window.localStorage.setItem(\'AggressiveMode\', \'False\'); }	\
+				window.localStorage.setItem(\'HornTimeDelayMin\', document.getElementById(\'HornTimeDelayMinInput\').value); window.localStorage.setItem(\'HornTimeDelayMax\', document.getElementById(\'HornTimeDelayMaxInput\').value);	\
+				if (document.getElementById(\'TrapCheckInputTrue\').checked == true) { window.localStorage.setItem(\'TrapCheck\', \'True\'); } else { window.localStorage.setItem(\'TrapCheck\', \'False\'); }	\
+				window.localStorage.setItem(\'TrapCheckTimeOffset\', document.getElementById(\'TrapCheckTimeOffsetInput\').value);	\
+				window.localStorage.setItem(\'TrapCheckTimeDelayMin\', document.getElementById(\'TrapCheckTimeDelayMinInput\').value); window.localStorage.setItem(\'TrapCheckTimeDelayMax\', document.getElementById(\'TrapCheckTimeDelayMaxInput\').value);	\
+				if (document.getElementById(\'PlayKingRewardSoundInputTrue\').checked == true) { window.localStorage.setItem(\'PlayKingRewardSound\', \'True\'); } else { window.localStorage.setItem(\'PlayKingRewardSound\', \'False\'); }	\
+				if (document.getElementById(\'KingRewardResumeInputTrue\').checked == true) { window.localStorage.setItem(\'KingRewardResume\', \'True\'); } else { window.localStorage.setItem(\'KingRewardResume\', \'False\'); }	\
+				window.localStorage.setItem(\'KingRewardResumeTime\', document.getElementById(\'KingRewardResumeTimeInput\').value);	\
+				window.location.href=\'http://mousehuntgame.com/\';"/></td></tr>';
+			}
+			perferenceHTMLStr += '</table>';
+			
+			var preferenceDiv = document.createElement('div');
+			preferenceDiv.setAttribute('id', 'preferenceDiv');
+			if (showPerference == true)
+				preferenceDiv.setAttribute('style', 'display: block');
+			else
+				preferenceDiv.setAttribute('style', 'display: none');
+			preferenceDiv.innerHTML = perferenceHTMLStr;
+			timerDivElement.appendChild(preferenceDiv);
+
+			var hr3Element = document.createElement('hr');
+			preferenceDiv.appendChild(hr3Element);
+			
+			// embed all msg to the page
+			headerElement.parentNode.insertBefore(timerDivElement, headerElement);
+			
+			timerDivElement = null;
+			hr1Element = null;
+			titleElement = null;
+			hr2Element = null;
+			hr3Element = null;
+		}
+		headerElement = null;
+	}
+}
+
+function embedScript()
+{
+    // create a javascript node
+    var scriptNode = document.createElement('script');
+    scriptNode.setAttribute('type', 'text/javascript');
+    scriptNode.innerHTML = '														\
+		function soundedHorn()														\
+		{																			\
+			if ("localStorage" in window && window["localStorage"] !== null)		\
+			{																		\
+				window.localStorage.setItem("soundedHorn", "true");					\
+			}																		\
+		}																			\
+		';
+		
+	// find the head node and insert the script into it
+    var headNode = document.documentElement.getElementsByTagName("head")[0];
+    headNode.appendChild(scriptNode);
+	
+	// change the function call of horn
+	var hornButtonLink = document.getElementsByClassName('hornbutton')[0].firstChild;
+	var oriStr = hornButtonLink.getAttribute('onclick').toString();
+	var index = oriStr.indexOf('return false;');
+	var modStr = oriStr.substring(0, index) + 'soundedHorn();' + oriStr.substring(index);
+	hornButtonLink.setAttribute('onclick', modStr);
+}
+
+function displayTimer(title, nextHornTime, checkTime)
+{
+	if (showTimerInTitle)
+	{
+		document.title = title;
+	}
+	
+	if (showTimerInPage)
+	{
+		nextHornTimeElement.innerHTML = "<b>Next Hunter Horn Time:</b> " + nextHornTime;
+		checkTimeElement.innerHTML = "<b>Next Trap Check Time:</b> " + checkTime;
+	}
+	
+	title = null;
+	nextHornTime = null;
+	checkTime = null;
+}
+
+function displayLocation(locStr)
+{
+	if (showTimerInPage && pauseAtInvalidLocation)
+	{
+		travelElement.innerHTML = "<b>Hunt Location:</b> " + locStr;
+	}
+}
+
+function displayKingRewardSumTime(timeStr)
+{
+	if (showTimerInPage)
+	{
+		if (timeStr)
+		{
+			lastKingRewardSumTimeElement.innerHTML = "(" + timeStr + ")";
+		}
+		else
+		{
+			lastKingRewardSumTimeElement.innerHTML = "";
+		}
+	}
+}
+
+function timeformat(time)
+{
+	var timeString;
+	var hr = Math.floor(time / 3600);
+	var min = Math.floor((time % 3600) / 60);
+	var sec = (time % 3600 % 60) % 60;
+	
+	if (hr > 0)
+	{
+		timeString = hr.toString() + " hr " + min.toString() + " min " + sec.toString() + " sec";
+	}
+	else if (min > 0)
+	{
+		timeString = min.toString() + " min " + sec.toString() + " sec";
+	}
+	else
+	{
+		timeString = sec.toString() + " sec";
+	}
+	
+	time = null;
+	hr = null;
+	min = null;
+	sec = null;
+	
+	return (timeString);
+}
+
+function timeFormatLong(time)
+{
+	var timeString;
+	
+	if (time != -1)
+	{
+		var day = Math.floor(time / 86400);
+		var hr = Math.floor((time % 86400) / 3600);
+		var min = Math.floor((time % 3600) / 60);
+		
+		if (day > 0)
+		{
+			timeString = day.toString() + " day " + hr.toString() + " hr " + min.toString() + " min ago";
+		}
+		else if (hr > 0)
+		{
+			timeString = hr.toString() + " hr " + min.toString() + " min ago";
+		}
+		else if (min > 0)
+		{
+			timeString = min.toString() + " min ago";
+		}
+		
+		time = null;
+		day = null;
+		hr = null;
+		min = null;
+	}
+	else
+	{
+		timeString = null;
+	}
+	
+	return (timeString);
+}
+
+function setStorage(name, value)
+{
+	// check if the web browser support HTML5 storage
+	if ('localStorage' in window && window['localStorage'] !== null)
+	{
+		window.localStorage.setItem(name, value);
+	}
+}
+
+function removeStorage(name)
+{
+	// check if the web browser support HTML5 storage
+	if ('localStorage' in window && window['localStorage'] !== null)
+	{
+		window.localStorage.removeItem(name);
+	}
+}
+
+function getStorage(name)
+{
+	// check if the web browser support HTML5 storage
+	if ('localStorage' in window && window['localStorage'] !== null)
+	{
+		return (window.localStorage.getItem(name));
+	}
+}
+
+function fireEvent(element, event)
+{
+	if (document.createEventObject)
+	{
+		// dispatch for IE
+		var evt = document.createEventObject();
+		return element.fireEvent('on' + event, evt)
+	}
+	else
+	{
+		// dispatch for firefox + others
+		var evt = document.createEvent("HTMLEvents");
+		evt.initEvent(event, true, true ); // event type,bubbling,cancelable
+		return !element.dispatchEvent(evt);
+	}
+}
+
+function getPageVariableForChrome(variableName)
+{
+	// google chrome only
+	var scriptElement = document.createElement("script");
+	scriptElement.setAttribute('id', "scriptElement");
+	scriptElement.setAttribute('type', "text/javascript");
+	scriptElement.innerHTML = "document.getElementById('scriptElement').innerText=" + variableName + ";";
+	document.body.appendChild(scriptElement);
+	
+	var value = scriptElement.innerHTML;
+	document.body.removeChild(scriptElement);
+	scriptElement = null;
+	
+	return value;
+}
+
+function checkResumeButton()
+{
+	var found = false;
+	
+	var linkElementList = document.getElementsByTagName('img');
+	if (linkElementList)
+	{
+		var i;
+		for (i = 0; i < linkElementList.length; ++i)
+		{
+			// check if it is a resume button
+			if (linkElementList[i].getAttribute('src').indexOf("resume_hunting_blue.gif") != -1)
+			{
+				// found resume button
+				
+				// simulate mouse click on the horn
+				fireEvent(linkElementList[i].parentNode, 'click');
+					
+				// reload url if click fail
+				window.setTimeout(function () { reloadWithMessage("Fail to click on resume button. Reloading...", false); }, 6000);
+					
+				// recheck if the resume button is click because some time even the url reload also fail
+				window.setTimeout(function () { checkResumeButton(); }, 10000);
+				
+				found = true;
+				break;
+			}
+		}
+		i = null;
+	}
+	
+	linkElementList = null;
+	
+	return (found);
+}
+
+function kingRewardAction()
+{
+	// update timer
+	displayTimer("King's Reward!", "King's Reward", "King's Reward!");
+	displayLocation("-");
+		
+	// play music if needed
+	playKingRewardSound();
+		
+	// focus on the answer input
+	var inputElementList = document.getElementsByTagName('input');
+	if (inputElementList)
+	{
+		var i;
+		for (i = 0; i < inputElementList.length; ++i)
+		{
+			// check if it is a resume button
+			if (inputElementList[i].getAttribute('name') == "puzzle_answer")
+			{
+				inputElementList[i].focus();
+				break;
+			}
+		}
+		i = null;
+	}
+	inputElementList = null;
+	
+	// record last king's reward time
+	var nowDate = new Date();
+	setStorage("lastKingRewardDate", nowDate.toString());
+	nowDate = null;
+
+	if (kingPauseTimeMax <= 0)
+	{
+		kingPauseTimeMax = 1;
+	}
+	
+	kingPauseTime = kingPauseTimeMax;
+	kingRewardCountdownTimer();
+}
+
+function kingRewardCountdownTimer()
+{
+	if (reloadKingReward)
+	{
+		kingPauseTime -= timerRefreshInterval;
+	}
+	
+	if (lastKingRewardSumTime != -1)
+	{
+		lastKingRewardSumTime += timerRefreshInterval;
+	}
+	
+	if (kingPauseTime <= 0)
+	{
+		// update timer
+		displayTimer("King's Reward - Reloading...", "Reloading...", "Reloading...");
+		
+		// simulate mouse click on the camp button
+		fireEvent(document.getElementsByClassName('campbutton')[0].firstChild, 'click');
+		
+		// reload the page if click on the camp button fail
+		window.setTimeout(function () { reloadWithMessage("Fail to click on camp button. Reloading...", false); }, 5000);
+	}
+	else
+	{
+		if (reloadKingReward)
+		{
+			// update timer
+			displayTimer("King's Reward - Reload in " + timeformat(kingPauseTime), 
+				"Reloading in " + timeformat(kingPauseTime), 
+				"Reloading in " + timeformat(kingPauseTime));
+		}
+			
+		// set king reward sum time
+		displayKingRewardSumTime(timeFormatLong(lastKingRewardSumTime));
+		
+		if (!checkResumeButton())
+		{
+			window.setTimeout(function () { (kingRewardCountdownTimer)() }, timerRefreshInterval * 1000);
+		}
+	}	
+}
+
+function trapCheck()
+{
+	// update timer
+	displayTimer("Checking The Trap...", "Checking trap now...", "Checking trap now...");
+	
+	// simulate mouse click on the camp button
+	fireEvent(document.getElementsByClassName('campbutton')[0].firstChild, 'click');
+		
+	// reload the page if click on camp button fail
+	window.setTimeout(function () { reloadWithMessage("Fail to click on camp button. Reloading...", false); }, 5000);
+}
+
+function soundHorn()
+{
+	// update timer
+	displayTimer("Ready to Blow The Horn...", "Ready to Blow The Horn...", "Ready to Blow The Horn...");
+	
+	setStorage("soundedHorn", "false");
+	
+	if (!aggressiveMode)
+	{
+		// safety mode, check the horn image is there or not before sound the horn
+	
+		var headerElement;
+		headerElement = document.getElementById('header');
+		if (headerElement)
+		{
+			// need to make sure that the horn image is ready before we can click on it
+			var headerStatus = headerElement.getAttribute('class');
+			if (headerStatus.indexOf("hornready") != -1)
+			{
+				// found the horn image, let's sound the horn!
+				
+				// update timer
+				displayTimer("Blowing The Horn...", "Blowing The Horn...", "Blowing The Horn...");
+				
+				// simulate mouse click on the horn
+				fireEvent(document.getElementsByClassName('hornbutton')[0].firstChild, 'click');
+				
+				// double check if the horn was already sounded
+				window.setTimeout(function () { afterSoundingHorn() }, 5000);
+			}
+			else if (headerStatus.indexOf("hornsounding") != -1 || headerStatus.indexOf("hornsounded") != -1)
+			{
+				// some one just sound the horn...
+				
+				// update timer
+				displayTimer("Synchronizing Data...", "Someone had just sound the horn. Synchronizing data...", "Someone had just sound the horn. Synchronizing data...");
+				
+				// load the new data
+				window.setTimeout(function () { afterSoundingHorn() }, 5000);
+			}
+			else if (headerStatus.indexOf("hornwaiting") != -1)
+			{
+				// the horn is not appearing, let check the time again
+				
+				// update timer
+				displayTimer("Synchronizing Data...", "Hunter horn is not ready yet. Synchronizing data...", "Hunter horn is not ready yet. Synchronizing data...");
+				
+				// sync the time again, maybe user already click the horn
+				retrieveData();
+				
+				checkJournalDate();
+				
+				// loop again
+				window.setTimeout(function () { countdownTimer() }, timerRefreshInterval * 1000);
+			}
+			else
+			{
+				// some one steal the horn!
+				
+				// update timer
+				displayTimer("Synchronizing Data...", "Hunter horn is missing. Synchronizing data...", "Hunter horn is missing. Synchronizing data...");
+				
+				// try to click on the horn
+				fireEvent(document.getElementsByClassName('hornbutton')[0].firstChild, 'click');
+				
+				// double check if the horn was already sounded
+				window.setTimeout(function () { afterSoundingHorn() }, 5000);
+			}
+			headerStatus = null;
+		}
+		else
+		{
+			// something wrong, can't even found the header...
+			
+			// reload the page see if thing get fixed
+			reloadWithMessage("Fail to find the horn header. Reloading...", false);
+		}
+		headerElement = null;
+	}
+	else
+	{
+		// aggressive mode, ignore whatever horn image is there or not, just sound the horn!
+		
+		// simulate mouse click on the horn
+		fireEvent(document.getElementsByClassName('hornbutton')[0].firstChild, 'click');
+		
+		// double check if the horn was already sounded
+		window.setTimeout(function () { afterSoundingHorn() }, 3000);
+	}
+}
+
+function afterSoundingHorn()
+{
+	setStorage("soundedHorn", "false");
+
+	var headerElement;
+	headerElement = document.getElementById('header');
+	if (headerElement)
+	{
+		// double check if the horn image is still visible after the script already sound it
+		var headerStatus = headerElement.getAttribute('class');
+		if (headerStatus.indexOf("hornready") != -1)
+		{
+			// seen like the horn is not functioning well
+			
+			// update timer
+			displayTimer("Blowing The Horn Again...", "Blowing The Horn Again...", "Blowing The Horn Again...");
+			
+			// simulate mouse click on the horn
+			fireEvent(document.getElementsByClassName('hornbutton')[0].firstChild, 'click');
+			
+			// increase the horn retry counter and check if the script is caugh in loop
+			++hornRetry;
+			if (hornRetry > hornRetryMax)
+			{
+				// reload the page see if thing get fixed
+				reloadWithMessage("Detected script caught in loop. Reloading...", true);
+				
+				// reset the horn retry counter
+				hornRetry = 0;
+			}
+			else
+			{
+				// check again later
+				window.setTimeout(function () { afterSoundingHorn() }, 1000);
+			}
+		}
+		else if (headerStatus.indexOf("hornsounding") != -1)
+		{
+			// the horn is already sound, but the network seen to slow on fetching the data
+			
+			// update timer
+			displayTimer("The horn sounding taken extra longer than normal...", "The horn sounding taken extra longer than normal...", "The horn sounding taken extra longer than normal...");
+			
+			// increase the horn retry counter and check if the script is caugh in loop
+			++hornRetry;
+			if (hornRetry > hornRetryMax)
+			{
+				// reload the page see if thing get fixed
+				reloadWithMessage("Detected script caught in loop. Reloading...", true);
+				
+				// reset the horn retry counter
+				hornRetry = 0;
+			}
+			else
+			{
+				// check again later
+				window.setTimeout(function () { afterSoundingHorn() }, 3000);
+			}
+		}
+		else
+		{
+			// everything look ok
+			
+			// update timer
+			displayTimer("Horn sounded. Synchronizing Data...", "Horn sounded. Synchronizing data...", "Horn sounded. Synchronizing data...");
+			
+			// reload data
+			retrieveData();
+			
+			// script continue as normal
+			window.setTimeout(function () { countdownTimer() }, timerRefreshInterval * 1000);
+			
+			// reset the horn retry counter
+			hornRetry = 0;
+		}
+		headerStatus = null;
+	}
+	headerElement = null;
+}
+
+function reloadPage(soundHorn)
+{
+	// reload the page
+	if (fbPlatform)
+	{
+		if (soundHorn)
+		{
+			window.location.href = "http://www.mousehuntgame.com/canvas/turn.php";
+		}
+		else
+		{
+			window.location.href = "http://www.mousehuntgame.com/canvas/";
+		}
+	}
+	else if (hiFivePlatform)
+	{
+		// for Hi5 only
+		if (soundHorn)
+		{
+			window.location.href = "http://mousehunt.hi5.hitgrab.com/turn.php";
+		}
+		else
+		{
+			window.location.href = "http://mousehunt.hi5.hitgrab.com/";
+		}
+	}
+	else if (mhPlatform)
+	{
+		// for mousehunt game only
+		if (soundHorn)
+		{
+			window.location.href = "http://mousehuntgame.com/turn.php";
+		}
+		else
+		{
+			window.location.href = "http://mousehuntgame.com/";
+		}
+	}
+}
+
+function reloadWithMessage(msg, soundHorn)
+{
+	// display the message
+	displayTimer(msg, msg, msg, msg);
+	
+	// reload the page
+	reloadPage(soundHorn);
+}
+
+function playKingRewardSound()
+{
+	if (isKingWarningSound)
+	{
+		var opera = false;
+		var firefox = false;
+		var chrome = false;
+	
+		try
+		{
+			// for firefox + greasmonkey
+			isKingReward = unsafeWindow.user.has_puzzle;
+			opera = true;
+		}
+		catch(e)
+		{
+			try
+			{
+				// for opera
+				isKingReward = user.has_puzzle;
+				firefox = true;
+			}
+			catch(e)
+			{
+				try
+				{
+					// chrome
+					isKingReward = (getPageVariableForChrome("user.has_puzzle").toString() == "false") ? false : true;
+					chrome = true;
+				}
+				catch(e)
+				{
+					// if everything fail... refresh the page...
+					window.setTimeout(function () { reloadWithMessage("Fail to retrieve data. Reloading...", false); }, 5000);
+					opera = false;
+					firefox = false;
+					chrome = false;
+				}
+			}
+		}
+		
+		if (chrome)
+		{
+			if (fbPlatform || mhPlatform)
+			{
+				var kingSound = document.createElement("div");
+				kingSound.innerHTML = "<embed name=\"kingreward\" src=\"http://images.norack.info/prodigy_-_girls.mid\" type=\"audio/midi\" autostart=\"true\" hidden=\"true\" loop=\"true\" mastersound enablejavascript=\"true\"><noembed><bgsound src=\"http://images.norack.info/prodigy_-_girls.mid\" loop=\"infinite\"></noembed></embed>";
+				document.getElementById("fb-root").appendChild(kingSound);
+			}
+			else if (hiFivePlatform)
+			{
+				var kingSound = document.createElement("div");
+				kingSound.innerHTML = "<embed name=\"kingreward\" src=\"http://images.norack.info/prodigy_-_girls.mid\" type=\"audio/midi\" autostart=\"true\" hidden=\"true\" loop=\"true\" mastersound enablejavascript=\"true\"><noembed><bgsound src=\"http://images.norack.info/prodigy_-_girls.mid\" loop=\"infinite\"></noembed></embed>";
+				document.getElementById("hgAppContainer").appendChild(kingSound);
+			}
+		}
+		else
+		{
+			// midi music data
+			var MIDI_DATA = 'data:audio/midi,' + 
+				'MThd%00%00%00%06%00%01%00%06%01%E0' + // &#12501;&#12449;&#12452;&#12523;&#12504;&#12483;&#12480;
+				'MTrk%00%00%01%67' + // Track header (data length)
+				'%00%FF%51%03%07%53%00%00%FF%03%05%47%69%72%6C%73%00%FF%58%04%04%02%07%53%8C%A7%78%FF%51%03%07%71%7C%78%FF%51%03%07%90%FB%78%FF%51%03%07%B1%89%78%FF%51%03%07%D3%34%78%FF%51%03%07%F6%0B%78%FF%51%03%08%1A%1D%78%FF%51%03%08%3F%7C%78%FF%51%03%08%52%AE%78%FF%51%03%08%7A%23%78%FF%51%03%08%A3%15%78%FF%51%03%08%CD%9B%78%FF%51%03%08%F9%CB%78%FF%51%03%09%27%C0%78%FF%51%03%09%57%94%78%FF%51%03%09%89%68%78%FF%51%03%09%BD%59%78%FF%51%03%09%F3%8D%78%FF%51%03%0A%2C%2A%78%FF%51%03%0A%67%5A%78%FF%51%03%0A%A5%4A%78%FF%51%03%0A%E6%2D%78%FF%51%03%0B%2A%3B%78%FF%51%03%0B%71%B0%78%FF%51%03%0B%BC%CE%78%FF%51%03%0B%E3%D4%78%FF%51%03%0C%35%00%78%FF%51%03%0C%8A%9D%78%FF%51%03%0C%E5%0E%78%FF%51%03%0D%44%BD%78%FF%51%03%0D%AA%22%78%FF%51%03%0E%15%C4%78%FF%51%03%0E%88%3C%78%FF%51%03%0F%02%36%78%FF%51%03%0F%84%75%78%FF%51%03%10%0F%D7%78%FF%51%03%10%A5%5D%78%FF%51%03%11%46%2B%78%FF%51%03%11%F3%96%78%FF%51%03%12%AF%29%78%FF%51%03%13%12%D0%78%FF%51%03%13%E7%1B%78%FF%51%03%14%CE%B4%78%FF%51%03%15%CC%5B%78%FF%51%03%16%E3%60%78%FF%51%03%18%17%C3%78%FF%51%03%19%6E%6A%78%FF%51%03%1A%ED%61%00%FF%2F%00%4D%54%72%6B%00%00%12%EC%00%FF%03%0A%6C%65%61%64%20%73%79%6E%74%68%00%B0%64%00%00%65%00%00%06%0C%00%E0%00%40%00%B1%64%00%00%65%00%00%06%0C%00%E1%00%40%00%C0%51%00%C1%51%00%B0%07%58%00%B1%07%58%00%B0%0A%40%00%B1%0A%40%00%B0%5D%00%00%B1%5D%00%00%B0%5B%00%00%B1%5B%00%00%B0%5C%00%00%B1%5C%00%00%B0%5F%00%00%B1%5F%00%81%F0%00%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%00%90%52%5F%78%80%52%50%00%90%50%5F%78%80%50%50%78%90%52%5F%78%80%52%50%78%90%50%5F%78%80%50%50%00%90%52%5F%78%80%52%50%82%68%90%4B%5F%78%80%4B%50%00%90%50%5F%78%80%50%50%00%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%00%90%52%5F%78%80%52%50%00%90%50%5F%78%80%50%50%78%90%52%5F%78%80%52%50%85%50%90%4B%5F%78%80%4B%50%00%90%50%5F%78%80%50%50%00%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%00%90%52%5F%78%80%52%50%00%90%50%5F%78%80%50%50%78%90%52%5F%78%80%52%50%78%90%50%5F%78%80%50%50%00%90%52%5F%78%80%52%50%82%68%90%4B%5F%78%80%4B%50%00%90%50%5F%78%80%50%50%00%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%00%90%52%5F%78%80%52%50%00%90%50%5F%78%80%50%50%78%90%52%5F%78%80%52%50%87%40%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%00%90%52%5F%78%80%52%50%00%90%50%5F%78%80%50%50%78%90%52%5F%78%80%52%50%78%90%50%5F%78%80%50%50%00%90%52%5F%78%80%52%50%82%68%90%4B%5F%78%80%4B%50%00%90%50%5F%78%80%50%50%00%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%00%90%52%5F%78%80%52%50%00%90%50%5F%78%80%50%50%78%90%52%5F%78%80%52%50%85%50%90%4B%5F%78%80%4B%50%00%90%50%5F%78%80%50%50%00%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%00%90%52%5F%78%80%52%50%00%90%50%5F%78%80%50%50%78%90%52%5F%78%80%52%50%78%90%50%5F%78%80%50%50%00%90%52%5F%78%80%52%50%82%68%90%4B%5F%78%80%4B%50%00%90%50%5F%78%80%50%50%00%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%00%90%52%5F%78%80%52%50%00%90%50%5F%78%80%50%50%78%90%52%5F%78%80%52%50%FF%40%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%00%90%52%5F%78%80%52%50%00%90%50%5F%78%80%50%50%78%90%52%5F%78%80%52%50%78%90%50%5F%78%80%50%50%00%90%52%5F%78%80%52%50%82%68%90%4B%5F%78%80%4B%50%00%90%50%5F%78%80%50%50%00%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%00%90%52%5F%78%80%52%50%00%90%50%5F%78%80%50%50%78%90%52%5F%78%80%52%50%85%50%90%4B%5F%78%80%4B%50%00%90%50%5F%78%80%50%50%00%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%00%90%52%5F%78%80%52%50%00%90%50%5F%78%80%50%50%78%90%52%5F%78%80%52%50%78%90%50%5F%78%80%50%50%00%90%52%5F%78%80%52%50%82%68%90%4B%5F%78%80%4B%50%00%90%50%5F%78%80%50%50%00%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%00%90%52%5F%78%80%52%50%00%90%50%5F%78%80%50%50%78%90%52%5F%78%80%52%50%87%40%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%00%90%52%5F%78%80%52%50%00%90%50%5F%78%80%50%50%78%90%52%5F%78%80%52%50%78%90%50%5F%78%80%50%50%00%90%52%5F%78%80%52%50%82%68%90%4B%5F%78%80%4B%50%00%90%50%5F%78%80%50%50%00%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%00%90%52%5F%78%80%52%50%00%90%50%5F%78%80%50%50%78%90%52%5F%78%80%52%50%85%50%90%4B%5F%78%80%4B%50%00%90%50%5F%78%80%50%50%00%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%00%90%52%5F%78%80%52%50%00%90%50%5F%78%80%50%50%78%90%52%5F%78%80%52%50%78%90%50%5F%78%80%50%50%00%90%52%5F%78%80%52%50%82%68%90%4B%5F%78%80%4B%50%00%90%50%5F%78%80%50%50%00%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%00%90%52%5F%78%80%52%50%00%90%50%5F%78%80%50%50%78%90%52%5F%78%80%52%50%87%40%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%8B%20%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%8B%20%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%8B%20%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%8B%20%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%8B%20%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%E5%20%90%3E%5F%00%33%5F%78%80%3E%50%00%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%3E%5F%00%33%5F%78%80%3E%50%00%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%3E%5F%00%33%5F%78%80%3E%50%00%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%3E%5F%00%33%5F%78%80%3E%50%00%33%50%00%90%33%5F%78%80%33%50%00%90%33%5F%78%80%33%50%00%90%33%5F%78%80%33%50%00%90%33%5F%78%80%33%50%00%90%33%5F%78%80%33%50%00%90%33%5F%78%80%33%50%00%90%32%5F%78%80%32%50%00%90%3E%5F%00%33%5F%78%80%3E%50%00%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%3E%5F%00%33%5F%78%80%3E%50%00%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%3E%5F%00%33%5F%78%80%3E%50%00%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%3E%5F%00%33%5F%78%80%3E%50%00%33%50%00%90%33%5F%78%80%33%50%00%90%33%5F%78%80%33%50%00%90%33%5F%78%80%33%50%00%90%33%5F%78%80%33%50%00%90%33%5F%78%80%33%50%00%90%33%5F%78%80%33%50%00%90%35%5F%78%80%35%50%00%90%41%5F%00%36%5F%78%80%41%50%00%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%41%5F%00%36%5F%78%80%41%50%00%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%41%5F%00%36%5F%78%80%41%50%00%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%41%5F%00%36%5F%78%80%41%50%00%36%50%00%90%36%5F%78%80%36%50%00%90%36%5F%78%80%36%50%00%90%36%5F%78%80%36%50%00%90%36%5F%78%80%36%50%00%90%36%5F%78%80%36%50%00%90%36%5F%78%80%36%50%00%90%35%5F%78%80%35%50%00%90%41%5F%00%36%5F%78%80%41%50%00%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%41%5F%00%36%5F%78%80%41%50%00%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%41%5F%00%36%5F%78%80%41%50%00%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%41%5F%00%36%5F%78%80%41%50%00%36%50%00%90%36%5F%78%80%36%50%00%90%36%5F%78%80%36%50%00%90%36%5F%78%80%36%50%00%90%36%5F%78%80%36%50%00%90%36%5F%78%80%36%50%00%90%36%5F%78%80%36%50%00%90%32%5F%78%80%32%50%00%90%3E%5F%00%33%5F%78%80%3E%50%00%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%3E%5F%00%33%5F%78%80%3E%50%00%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%3E%5F%00%33%5F%78%80%3E%50%00%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%3E%5F%00%33%5F%78%80%3E%50%00%33%50%00%90%33%5F%78%80%33%50%00%90%33%5F%78%80%33%50%00%90%33%5F%78%80%33%50%00%90%33%5F%78%80%33%50%00%90%33%5F%78%80%33%50%00%90%33%5F%78%80%33%50%00%90%35%5F%78%80%35%50%00%90%3E%5F%00%33%5F%78%80%3E%50%00%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%3E%5F%00%33%5F%78%80%3E%50%00%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%3E%5F%00%33%5F%78%80%3E%50%00%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%41%5F%00%36%5F%78%80%41%50%00%36%50%00%90%35%3F%78%80%35%50%00%90%41%5F%00%36%5F%78%80%41%50%00%36%50%00%90%36%5F%78%80%36%50%00%90%36%5F%78%80%36%50%00%90%36%5F%78%80%36%50%00%90%36%5F%78%80%36%50%00%90%36%5F%78%80%36%50%00%90%36%5F%78%80%36%50%00%90%36%5F%78%80%36%50%00%90%3E%5F%00%33%5F%78%80%3E%50%00%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%3E%5F%00%33%5F%78%80%3E%50%00%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%3E%5F%00%33%5F%78%80%3E%50%00%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%33%5F%78%80%33%50%00%90%32%3F%78%80%32%50%00%90%3E%5F%00%33%5F%78%80%3E%50%00%33%50%00%90%33%5F%78%80%33%50%00%90%33%5F%78%80%33%50%00%90%33%5F%78%80%33%50%00%90%33%5F%78%80%33%50%00%90%33%5F%78%80%33%50%00%90%33%5F%78%80%33%50%00%90%35%5F%78%80%35%50%00%90%41%5F%00%36%5F%78%80%41%50%00%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%41%5F%00%36%5F%78%80%41%50%00%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%41%5F%00%36%5F%78%80%41%50%00%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%36%5F%78%80%36%50%00%90%35%3F%78%80%35%50%00%90%41%5F%00%36%5F%78%80%41%50%00%36%50%00%90%36%5F%78%80%36%50%00%90%36%5F%78%80%36%50%00%90%36%5F%78%80%36%50%92%60%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%00%90%52%5F%78%80%52%50%00%90%50%5F%78%80%50%50%78%90%52%5F%78%80%52%50%78%90%50%5F%78%80%50%50%00%90%52%5F%78%80%52%50%82%68%90%4B%5F%78%80%4B%50%00%90%50%5F%78%80%50%50%00%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%00%90%52%5F%78%80%52%50%00%90%50%5F%78%80%50%50%78%90%52%5F%78%80%52%50%85%50%90%4B%5F%78%80%4B%50%00%90%50%5F%78%80%50%50%00%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%00%90%52%5F%78%80%52%50%00%90%50%5F%78%80%50%50%78%90%52%5F%78%80%52%50%78%90%50%5F%78%80%50%50%00%90%52%5F%78%80%52%50%82%68%90%4B%5F%78%80%4B%50%00%90%50%5F%78%80%50%50%00%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%00%90%52%5F%78%80%52%50%00%90%50%5F%78%80%50%50%78%90%52%5F%78%80%52%50%87%40%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%00%90%52%5F%78%80%52%50%00%90%50%5F%78%80%50%50%78%90%52%5F%78%80%52%50%78%90%50%5F%78%80%50%50%00%90%52%5F%78%80%52%50%82%68%90%4B%5F%78%80%4B%50%00%90%50%5F%78%80%50%50%00%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%00%90%52%5F%78%80%52%50%00%90%50%5F%78%80%50%50%78%90%52%5F%78%80%52%50%85%50%90%4B%5F%78%80%4B%50%00%90%50%5F%78%80%50%50%00%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%00%90%52%5F%78%80%52%50%00%90%50%5F%78%80%50%50%78%90%52%5F%78%80%52%50%78%90%50%5F%78%80%50%50%00%90%52%5F%78%80%52%50%82%68%90%4B%5F%78%80%4B%50%00%90%50%5F%78%80%50%50%00%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%00%90%52%5F%78%80%52%50%00%90%50%5F%78%80%50%50%78%90%52%5F%78%80%52%50%87%40%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%8B%20%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%8B%20%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%8B%20%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%8B%20%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%8B%20%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%8B%20%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%8B%20%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%8B%20%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%8B%20%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%8B%20%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%8B%20%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%8B%20%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%8B%20%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%8B%20%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%8B%20%91%54%5F%50%E1%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%81%54%50%00%E1%00%42%00%00%40%00%FF%2F%00%4D%54%72%6B%00%00%12%EC%00%FF%03%0A%66%6F%72%20%65%66%66%65%63%74%00%B2%64%00%00%65%00%00%06%0C%00%E2%00%40%00%B3%64%00%00%65%00%00%06%0C%00%E3%00%40%00%C2%53%00%C3%53%00%B2%07%58%00%B3%07%58%00%B2%0A%40%00%B3%0A%40%00%B2%5D%00%00%B3%5D%00%00%B2%5B%00%00%B3%5B%00%00%B2%5C%00%00%B3%5C%00%00%B2%5F%00%00%B3%5F%00%81%F0%00%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%00%92%52%5F%78%82%52%50%00%92%50%5F%78%82%50%50%78%92%52%5F%78%82%52%50%78%92%50%5F%78%82%50%50%00%92%52%5F%78%82%52%50%82%68%92%4B%5F%78%82%4B%50%00%92%50%5F%78%82%50%50%00%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%00%92%52%5F%78%82%52%50%00%92%50%5F%78%82%50%50%78%92%52%5F%78%82%52%50%85%50%92%4B%5F%78%82%4B%50%00%92%50%5F%78%82%50%50%00%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%00%92%52%5F%78%82%52%50%00%92%50%5F%78%82%50%50%78%92%52%5F%78%82%52%50%78%92%50%5F%78%82%50%50%00%92%52%5F%78%82%52%50%82%68%92%4B%5F%78%82%4B%50%00%92%50%5F%78%82%50%50%00%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%00%92%52%5F%78%82%52%50%00%92%50%5F%78%82%50%50%78%92%52%5F%78%82%52%50%87%40%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%00%92%52%5F%78%82%52%50%00%92%50%5F%78%82%50%50%78%92%52%5F%78%82%52%50%78%92%50%5F%78%82%50%50%00%92%52%5F%78%82%52%50%82%68%92%4B%5F%78%82%4B%50%00%92%50%5F%78%82%50%50%00%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%00%92%52%5F%78%82%52%50%00%92%50%5F%78%82%50%50%78%92%52%5F%78%82%52%50%85%50%92%4B%5F%78%82%4B%50%00%92%50%5F%78%82%50%50%00%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%00%92%52%5F%78%82%52%50%00%92%50%5F%78%82%50%50%78%92%52%5F%78%82%52%50%78%92%50%5F%78%82%50%50%00%92%52%5F%78%82%52%50%82%68%92%4B%5F%78%82%4B%50%00%92%50%5F%78%82%50%50%00%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%00%92%52%5F%78%82%52%50%00%92%50%5F%78%82%50%50%78%92%52%5F%78%82%52%50%FF%40%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%00%92%52%5F%78%82%52%50%00%92%50%5F%78%82%50%50%78%92%52%5F%78%82%52%50%78%92%50%5F%78%82%50%50%00%92%52%5F%78%82%52%50%82%68%92%4B%5F%78%82%4B%50%00%92%50%5F%78%82%50%50%00%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%00%92%52%5F%78%82%52%50%00%92%50%5F%78%82%50%50%78%92%52%5F%78%82%52%50%85%50%92%4B%5F%78%82%4B%50%00%92%50%5F%78%82%50%50%00%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%00%92%52%5F%78%82%52%50%00%92%50%5F%78%82%50%50%78%92%52%5F%78%82%52%50%78%92%50%5F%78%82%50%50%00%92%52%5F%78%82%52%50%82%68%92%4B%5F%78%82%4B%50%00%92%50%5F%78%82%50%50%00%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%00%92%52%5F%78%82%52%50%00%92%50%5F%78%82%50%50%78%92%52%5F%78%82%52%50%87%40%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%00%92%52%5F%78%82%52%50%00%92%50%5F%78%82%50%50%78%92%52%5F%78%82%52%50%78%92%50%5F%78%82%50%50%00%92%52%5F%78%82%52%50%82%68%92%4B%5F%78%82%4B%50%00%92%50%5F%78%82%50%50%00%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%00%92%52%5F%78%82%52%50%00%92%50%5F%78%82%50%50%78%92%52%5F%78%82%52%50%85%50%92%4B%5F%78%82%4B%50%00%92%50%5F%78%82%50%50%00%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%00%92%52%5F%78%82%52%50%00%92%50%5F%78%82%50%50%78%92%52%5F%78%82%52%50%78%92%50%5F%78%82%50%50%00%92%52%5F%78%82%52%50%82%68%92%4B%5F%78%82%4B%50%00%92%50%5F%78%82%50%50%00%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%00%92%52%5F%78%82%52%50%00%92%50%5F%78%82%50%50%78%92%52%5F%78%82%52%50%87%40%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%8B%20%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%8B%20%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%8B%20%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%8B%20%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%8B%20%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%E5%20%92%3E%5F%00%33%5F%78%82%3E%50%00%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%3E%5F%00%33%5F%78%82%3E%50%00%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%3E%5F%00%33%5F%78%82%3E%50%00%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%3E%5F%00%33%5F%78%82%3E%50%00%33%50%00%92%33%5F%78%82%33%50%00%92%33%5F%78%82%33%50%00%92%33%5F%78%82%33%50%00%92%33%5F%78%82%33%50%00%92%33%5F%78%82%33%50%00%92%33%5F%78%82%33%50%00%92%32%5F%78%82%32%50%00%92%3E%5F%00%33%5F%78%82%3E%50%00%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%3E%5F%00%33%5F%78%82%3E%50%00%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%3E%5F%00%33%5F%78%82%3E%50%00%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%3E%5F%00%33%5F%78%82%3E%50%00%33%50%00%92%33%5F%78%82%33%50%00%92%33%5F%78%82%33%50%00%92%33%5F%78%82%33%50%00%92%33%5F%78%82%33%50%00%92%33%5F%78%82%33%50%00%92%33%5F%78%82%33%50%00%92%35%5F%78%82%35%50%00%92%41%5F%00%36%5F%78%82%41%50%00%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%41%5F%00%36%5F%78%82%41%50%00%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%41%5F%00%36%5F%78%82%41%50%00%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%41%5F%00%36%5F%78%82%41%50%00%36%50%00%92%36%5F%78%82%36%50%00%92%36%5F%78%82%36%50%00%92%36%5F%78%82%36%50%00%92%36%5F%78%82%36%50%00%92%36%5F%78%82%36%50%00%92%36%5F%78%82%36%50%00%92%35%5F%78%82%35%50%00%92%41%5F%00%36%5F%78%82%41%50%00%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%41%5F%00%36%5F%78%82%41%50%00%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%41%5F%00%36%5F%78%82%41%50%00%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%41%5F%00%36%5F%78%82%41%50%00%36%50%00%92%36%5F%78%82%36%50%00%92%36%5F%78%82%36%50%00%92%36%5F%78%82%36%50%00%92%36%5F%78%82%36%50%00%92%36%5F%78%82%36%50%00%92%36%5F%78%82%36%50%00%92%32%5F%78%82%32%50%00%92%3E%5F%00%33%5F%78%82%3E%50%00%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%3E%5F%00%33%5F%78%82%3E%50%00%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%3E%5F%00%33%5F%78%82%3E%50%00%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%3E%5F%00%33%5F%78%82%3E%50%00%33%50%00%92%33%5F%78%82%33%50%00%92%33%5F%78%82%33%50%00%92%33%5F%78%82%33%50%00%92%33%5F%78%82%33%50%00%92%33%5F%78%82%33%50%00%92%33%5F%78%82%33%50%00%92%35%5F%78%82%35%50%00%92%3E%5F%00%33%5F%78%82%3E%50%00%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%3E%5F%00%33%5F%78%82%3E%50%00%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%3E%5F%00%33%5F%78%82%3E%50%00%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%41%5F%00%36%5F%78%82%41%50%00%36%50%00%92%35%3F%78%82%35%50%00%92%41%5F%00%36%5F%78%82%41%50%00%36%50%00%92%36%5F%78%82%36%50%00%92%36%5F%78%82%36%50%00%92%36%5F%78%82%36%50%00%92%36%5F%78%82%36%50%00%92%36%5F%78%82%36%50%00%92%36%5F%78%82%36%50%00%92%36%5F%78%82%36%50%00%92%3E%5F%00%33%5F%78%82%3E%50%00%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%3E%5F%00%33%5F%78%82%3E%50%00%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%3E%5F%00%33%5F%78%82%3E%50%00%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%33%5F%78%82%33%50%00%92%32%3F%78%82%32%50%00%92%3E%5F%00%33%5F%78%82%3E%50%00%33%50%00%92%33%5F%78%82%33%50%00%92%33%5F%78%82%33%50%00%92%33%5F%78%82%33%50%00%92%33%5F%78%82%33%50%00%92%33%5F%78%82%33%50%00%92%33%5F%78%82%33%50%00%92%35%5F%78%82%35%50%00%92%41%5F%00%36%5F%78%82%41%50%00%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%41%5F%00%36%5F%78%82%41%50%00%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%41%5F%00%36%5F%78%82%41%50%00%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%36%5F%78%82%36%50%00%92%35%3F%78%82%35%50%00%92%41%5F%00%36%5F%78%82%41%50%00%36%50%00%92%36%5F%78%82%36%50%00%92%36%5F%78%82%36%50%00%92%36%5F%78%82%36%50%92%60%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%00%92%52%5F%78%82%52%50%00%92%50%5F%78%82%50%50%78%92%52%5F%78%82%52%50%78%92%50%5F%78%82%50%50%00%92%52%5F%78%82%52%50%82%68%92%4B%5F%78%82%4B%50%00%92%50%5F%78%82%50%50%00%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%00%92%52%5F%78%82%52%50%00%92%50%5F%78%82%50%50%78%92%52%5F%78%82%52%50%85%50%92%4B%5F%78%82%4B%50%00%92%50%5F%78%82%50%50%00%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%00%92%52%5F%78%82%52%50%00%92%50%5F%78%82%50%50%78%92%52%5F%78%82%52%50%78%92%50%5F%78%82%50%50%00%92%52%5F%78%82%52%50%82%68%92%4B%5F%78%82%4B%50%00%92%50%5F%78%82%50%50%00%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%00%92%52%5F%78%82%52%50%00%92%50%5F%78%82%50%50%78%92%52%5F%78%82%52%50%87%40%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%00%92%52%5F%78%82%52%50%00%92%50%5F%78%82%50%50%78%92%52%5F%78%82%52%50%78%92%50%5F%78%82%50%50%00%92%52%5F%78%82%52%50%82%68%92%4B%5F%78%82%4B%50%00%92%50%5F%78%82%50%50%00%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%00%92%52%5F%78%82%52%50%00%92%50%5F%78%82%50%50%78%92%52%5F%78%82%52%50%85%50%92%4B%5F%78%82%4B%50%00%92%50%5F%78%82%50%50%00%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%00%92%52%5F%78%82%52%50%00%92%50%5F%78%82%50%50%78%92%52%5F%78%82%52%50%78%92%50%5F%78%82%50%50%00%92%52%5F%78%82%52%50%82%68%92%4B%5F%78%82%4B%50%00%92%50%5F%78%82%50%50%00%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%00%92%52%5F%78%82%52%50%00%92%50%5F%78%82%50%50%78%92%52%5F%78%82%52%50%87%40%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%8B%20%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%8B%20%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%8B%20%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%8B%20%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%8B%20%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%8B%20%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%8B%20%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%8B%20%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%8B%20%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%8B%20%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%8B%20%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%8B%20%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%8B%20%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%8B%20%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%8B%20%93%54%5F%50%E3%00%40%50%00%42%50%00%40%50%00%42%50%00%40%50%83%54%50%00%E3%00%42%00%00%40%00%FF%2F%00%4D%54%72%6B%00%00%0F%74%00%FF%03%0A%66%6F%72%20%65%66%66%65%63%74%00%B4%64%00%00%65%00%00%06%0C%00%E4%00%40%00%B5%64%00%00%65%00%00%06%0C%00%E5%00%40%00%C4%21%00%C5%21%00%B4%07%7F%00%B5%07%7F%00%B4%0A%40%00%B5%0A%40%00%B4%5D%00%00%B5%5D%00%00%B4%5B%00%00%B5%5B%00%00%B4%5C%00%00%B5%5C%00%00%B4%5F%00%00%B5%5F%00%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%85%50%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%00%94%20%5F%82%68%84%20%50%00%94%20%5F%83%60%84%20%50%84%58%94%23%5F%83%60%84%23%50%78%94%23%5F%81%70%84%23%50%00%94%21%5F%83%60%84%21%50%78%94%21%5F%78%84%21%50%00%94%23%5F%78%84%23%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%85%50%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%00%94%20%5F%82%68%84%20%50%00%94%20%5F%83%60%84%20%50%84%58%94%23%5F%83%60%84%23%50%78%94%23%5F%81%70%84%23%50%00%94%21%5F%83%60%84%21%50%78%94%21%5F%78%84%21%50%00%94%23%5F%78%84%23%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%85%50%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%00%94%20%5F%82%68%84%20%50%00%94%20%5F%83%60%84%20%50%84%58%94%23%5F%83%60%84%23%50%78%94%23%5F%81%70%84%23%50%00%94%21%5F%83%60%84%21%50%78%94%21%5F%78%84%21%50%00%94%23%5F%78%84%23%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%85%50%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%00%94%20%5F%82%68%84%20%50%00%94%20%5F%83%60%84%20%50%84%58%94%23%5F%83%60%84%23%50%78%94%23%5F%81%70%84%23%50%00%94%21%5F%83%60%84%21%50%78%94%21%5F%78%84%21%50%00%94%23%5F%78%84%23%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%85%50%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%00%94%20%5F%82%68%84%20%50%00%94%20%5F%83%60%84%20%50%84%58%94%23%5F%83%60%84%23%50%78%94%23%5F%81%70%84%23%50%00%94%21%5F%83%60%84%21%50%78%94%21%5F%78%84%21%50%00%94%23%5F%78%84%23%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%85%50%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%00%94%20%5F%82%68%84%20%50%00%94%20%5F%83%60%84%20%50%84%58%94%23%5F%83%60%84%23%50%78%94%23%5F%81%70%84%23%50%00%94%21%5F%83%60%84%21%50%78%94%21%5F%78%84%21%50%00%94%23%5F%78%84%23%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%85%50%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%00%94%20%5F%82%68%84%20%50%00%94%20%5F%83%60%84%20%50%84%58%94%23%5F%83%60%84%23%50%78%94%23%5F%81%70%84%23%50%00%94%21%5F%83%60%84%21%50%78%94%21%5F%78%84%21%50%00%94%23%5F%78%84%23%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%85%50%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%00%94%20%5F%82%68%84%20%50%00%94%20%5F%83%60%84%20%50%84%58%94%23%5F%83%60%84%23%50%78%94%23%5F%81%70%84%23%50%00%94%21%5F%83%60%84%21%50%78%94%21%5F%78%84%21%50%00%94%23%5F%78%84%23%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%85%50%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%00%94%20%5F%82%68%84%20%50%00%94%20%5F%83%60%84%20%50%84%58%94%23%5F%83%60%84%23%50%78%94%23%5F%81%70%84%23%50%00%94%21%5F%83%60%84%21%50%78%94%21%5F%78%84%21%50%00%94%23%5F%78%84%23%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%85%50%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%00%94%20%5F%82%68%84%20%50%00%94%20%5F%83%60%84%20%50%84%58%94%23%5F%83%60%84%23%50%78%94%23%5F%81%70%84%23%50%00%94%21%5F%83%60%84%21%50%78%94%21%5F%78%84%21%50%00%94%23%5F%78%84%23%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%85%50%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%00%94%20%5F%82%68%84%20%50%00%94%20%5F%83%60%84%20%50%84%58%94%23%5F%83%60%84%23%50%78%94%23%5F%81%70%84%23%50%00%94%21%5F%83%60%84%21%50%78%94%21%5F%78%84%21%50%00%94%23%5F%78%84%23%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%85%50%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%00%94%20%5F%82%68%84%20%50%00%94%20%5F%83%60%84%20%50%82%68%94%23%5F%87%40%84%23%50%00%94%27%5F%87%40%84%27%50%00%94%20%5F%A9%20%84%20%50%83%60%94%20%5F%9E%00%84%20%50%81%FF%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%85%50%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%00%94%20%5F%82%68%84%20%50%00%94%20%5F%83%60%84%20%50%84%58%94%23%5F%83%60%84%23%50%78%94%23%5F%81%70%84%23%50%00%94%21%5F%83%60%84%21%50%78%94%21%5F%78%84%21%50%00%94%23%5F%78%84%23%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%85%50%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%00%94%20%5F%82%68%84%20%50%00%94%20%5F%83%60%84%20%50%84%58%94%23%5F%83%60%84%23%50%78%94%23%5F%81%70%84%23%50%00%94%21%5F%83%60%84%21%50%78%94%21%5F%78%84%21%50%00%94%23%5F%78%84%23%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%85%50%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%00%94%20%5F%82%68%84%20%50%00%94%20%5F%83%60%84%20%50%84%58%94%23%5F%83%60%84%23%50%78%94%23%5F%81%70%84%23%50%00%94%21%5F%83%60%84%21%50%78%94%21%5F%78%84%21%50%00%94%23%5F%78%84%23%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%85%50%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%00%94%20%5F%82%68%84%20%50%00%94%20%5F%83%60%84%20%50%84%58%94%23%5F%83%60%84%23%50%78%94%23%5F%81%70%84%23%50%00%94%21%5F%83%60%84%21%50%78%94%21%5F%78%84%21%50%00%94%23%5F%78%84%23%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%85%50%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%00%94%20%5F%82%68%84%20%50%00%94%20%5F%83%60%84%20%50%84%58%94%23%5F%83%60%84%23%50%78%94%23%5F%81%70%84%23%50%00%94%21%5F%83%60%84%21%50%78%94%21%5F%78%84%21%50%00%94%23%5F%78%84%23%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%85%50%94%20%5F%78%84%20%50%00%94%20%5F%83%60%84%20%50%00%94%20%5F%82%68%84%20%50%00%94%20%5F%83%60%84%20%50%84%58%94%23%5F%83%60%84%23%50%78%94%23%5F%81%70%84%23%50%00%94%21%5F%83%60%84%21%50%78%94%21%5F%78%84%21%50%00%94%23%5F%78%84%23%50%00%94%20%5F%83%60%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%82%68%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%82%68%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%82%68%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%78%84%20%50%00%94%23%5F%87%40%84%23%50%00%94%27%5F%87%40%84%27%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%82%68%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%82%68%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%82%68%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%78%84%20%50%00%94%23%5F%87%40%84%23%50%00%94%27%5F%87%40%84%27%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%82%68%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%82%68%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%82%68%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%78%84%20%50%00%94%23%5F%87%40%84%23%50%00%94%27%5F%87%40%84%27%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%82%68%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%00%94%20%5F%81%70%84%20%50%82%68%94%20%5F%81%70%84%20%50%00%94%20%5F%78%84%20%50%00%94%20%5F%81%70%84%20%50%81%70%94%20%5F%78%84%20%50%00%94%20%5F%78%84%20%50%00%B4%07%7C%00%B5%07%7C%00%94%20%5F%78%B4%07%78%00%B5%07%78%78%B4%07%73%00%B5%07%73%78%B4%07%6F%00%B5%07%6F%78%B4%07%6B%00%B5%07%6B%78%B4%07%67%00%B5%07%67%78%B4%07%62%00%B5%07%62%78%B4%07%5E%00%B5%07%5E%78%B4%07%5A%00%B5%07%5A%78%B4%07%56%00%B5%07%56%78%B4%07%51%00%B5%07%51%78%B4%07%4D%00%B5%07%4D%78%B4%07%49%00%B5%07%49%78%B4%07%45%00%B5%07%45%78%B4%07%40%00%B5%07%40%78%B4%07%3C%00%B5%07%3C%78%B4%07%38%00%B5%07%38%00%84%20%50%00%FF%2F%00%4D%54%72%6B%00%00%0F%74%00%FF%03%0A%73%79%6E%74%68%20%62%61%73%73%00%B6%64%00%00%65%00%00%06%0C%00%E6%00%40%00%B7%64%00%00%65%00%00%06%0C%00%E7%00%40%00%C6%51%00%C7%51%00%B6%07%7F%00%B7%07%7F%00%B6%0A%40%00%B7%0A%40%00%B6%5D%00%00%B7%5D%00%00%B6%5B%00%00%B7%5B%00%00%B6%5C%00%00%B7%5C%00%00%B6%5F%00%00%B7%5F%00%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%85%50%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%00%96%20%5F%82%68%86%20%50%00%96%20%5F%83%60%86%20%50%84%58%96%23%5F%83%60%86%23%50%78%96%23%5F%81%70%86%23%50%00%96%21%5F%83%60%86%21%50%78%96%21%5F%78%86%21%50%00%96%23%5F%78%86%23%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%85%50%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%00%96%20%5F%82%68%86%20%50%00%96%20%5F%83%60%86%20%50%84%58%96%23%5F%83%60%86%23%50%78%96%23%5F%81%70%86%23%50%00%96%21%5F%83%60%86%21%50%78%96%21%5F%78%86%21%50%00%96%23%5F%78%86%23%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%85%50%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%00%96%20%5F%82%68%86%20%50%00%96%20%5F%83%60%86%20%50%84%58%96%23%5F%83%60%86%23%50%78%96%23%5F%81%70%86%23%50%00%96%21%5F%83%60%86%21%50%78%96%21%5F%78%86%21%50%00%96%23%5F%78%86%23%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%85%50%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%00%96%20%5F%82%68%86%20%50%00%96%20%5F%83%60%86%20%50%84%58%96%23%5F%83%60%86%23%50%78%96%23%5F%81%70%86%23%50%00%96%21%5F%83%60%86%21%50%78%96%21%5F%78%86%21%50%00%96%23%5F%78%86%23%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%85%50%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%00%96%20%5F%82%68%86%20%50%00%96%20%5F%83%60%86%20%50%84%58%96%23%5F%83%60%86%23%50%78%96%23%5F%81%70%86%23%50%00%96%21%5F%83%60%86%21%50%78%96%21%5F%78%86%21%50%00%96%23%5F%78%86%23%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%85%50%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%00%96%20%5F%82%68%86%20%50%00%96%20%5F%83%60%86%20%50%84%58%96%23%5F%83%60%86%23%50%78%96%23%5F%81%70%86%23%50%00%96%21%5F%83%60%86%21%50%78%96%21%5F%78%86%21%50%00%96%23%5F%78%86%23%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%85%50%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%00%96%20%5F%82%68%86%20%50%00%96%20%5F%83%60%86%20%50%84%58%96%23%5F%83%60%86%23%50%78%96%23%5F%81%70%86%23%50%00%96%21%5F%83%60%86%21%50%78%96%21%5F%78%86%21%50%00%96%23%5F%78%86%23%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%85%50%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%00%96%20%5F%82%68%86%20%50%00%96%20%5F%83%60%86%20%50%84%58%96%23%5F%83%60%86%23%50%78%96%23%5F%81%70%86%23%50%00%96%21%5F%83%60%86%21%50%78%96%21%5F%78%86%21%50%00%96%23%5F%78%86%23%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%85%50%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%00%96%20%5F%82%68%86%20%50%00%96%20%5F%83%60%86%20%50%84%58%96%23%5F%83%60%86%23%50%78%96%23%5F%81%70%86%23%50%00%96%21%5F%83%60%86%21%50%78%96%21%5F%78%86%21%50%00%96%23%5F%78%86%23%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%85%50%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%00%96%20%5F%82%68%86%20%50%00%96%20%5F%83%60%86%20%50%84%58%96%23%5F%83%60%86%23%50%78%96%23%5F%81%70%86%23%50%00%96%21%5F%83%60%86%21%50%78%96%21%5F%78%86%21%50%00%96%23%5F%78%86%23%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%85%50%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%00%96%20%5F%82%68%86%20%50%00%96%20%5F%83%60%86%20%50%84%58%96%23%5F%83%60%86%23%50%78%96%23%5F%81%70%86%23%50%00%96%21%5F%83%60%86%21%50%78%96%21%5F%78%86%21%50%00%96%23%5F%78%86%23%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%85%50%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%00%96%20%5F%82%68%86%20%50%00%96%20%5F%83%60%86%20%50%82%68%96%23%5F%87%40%86%23%50%00%96%27%5F%87%40%86%27%50%00%96%20%5F%A9%20%86%20%50%83%60%96%20%5F%9E%00%86%20%50%81%FF%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%85%50%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%00%96%20%5F%82%68%86%20%50%00%96%20%5F%83%60%86%20%50%84%58%96%23%5F%83%60%86%23%50%78%96%23%5F%81%70%86%23%50%00%96%21%5F%83%60%86%21%50%78%96%21%5F%78%86%21%50%00%96%23%5F%78%86%23%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%85%50%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%00%96%20%5F%82%68%86%20%50%00%96%20%5F%83%60%86%20%50%84%58%96%23%5F%83%60%86%23%50%78%96%23%5F%81%70%86%23%50%00%96%21%5F%83%60%86%21%50%78%96%21%5F%78%86%21%50%00%96%23%5F%78%86%23%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%85%50%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%00%96%20%5F%82%68%86%20%50%00%96%20%5F%83%60%86%20%50%84%58%96%23%5F%83%60%86%23%50%78%96%23%5F%81%70%86%23%50%00%96%21%5F%83%60%86%21%50%78%96%21%5F%78%86%21%50%00%96%23%5F%78%86%23%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%85%50%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%00%96%20%5F%82%68%86%20%50%00%96%20%5F%83%60%86%20%50%84%58%96%23%5F%83%60%86%23%50%78%96%23%5F%81%70%86%23%50%00%96%21%5F%83%60%86%21%50%78%96%21%5F%78%86%21%50%00%96%23%5F%78%86%23%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%85%50%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%00%96%20%5F%82%68%86%20%50%00%96%20%5F%83%60%86%20%50%84%58%96%23%5F%83%60%86%23%50%78%96%23%5F%81%70%86%23%50%00%96%21%5F%83%60%86%21%50%78%96%21%5F%78%86%21%50%00%96%23%5F%78%86%23%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%85%50%96%20%5F%78%86%20%50%00%96%20%5F%83%60%86%20%50%00%96%20%5F%82%68%86%20%50%00%96%20%5F%83%60%86%20%50%84%58%96%23%5F%83%60%86%23%50%78%96%23%5F%81%70%86%23%50%00%96%21%5F%83%60%86%21%50%78%96%21%5F%78%86%21%50%00%96%23%5F%78%86%23%50%00%96%20%5F%83%60%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%82%68%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%82%68%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%82%68%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%78%86%20%50%00%96%23%5F%87%40%86%23%50%00%96%27%5F%87%40%86%27%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%82%68%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%82%68%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%82%68%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%78%86%20%50%00%96%23%5F%87%40%86%23%50%00%96%27%5F%87%40%86%27%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%82%68%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%82%68%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%82%68%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%78%86%20%50%00%96%23%5F%87%40%86%23%50%00%96%27%5F%87%40%86%27%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%82%68%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%00%96%20%5F%81%70%86%20%50%82%68%96%20%5F%81%70%86%20%50%00%96%20%5F%78%86%20%50%00%96%20%5F%81%70%86%20%50%81%70%96%20%5F%78%86%20%50%00%96%20%5F%78%86%20%50%00%B6%07%7C%00%B7%07%7C%00%96%20%5F%78%B6%07%78%00%B7%07%78%78%B6%07%73%00%B7%07%73%78%B6%07%6F%00%B7%07%6F%78%B6%07%6B%00%B7%07%6B%78%B6%07%67%00%B7%07%67%78%B6%07%62%00%B7%07%62%78%B6%07%5E%00%B7%07%5E%78%B6%07%5A%00%B7%07%5A%78%B6%07%56%00%B7%07%56%78%B6%07%51%00%B7%07%51%78%B6%07%4D%00%B7%07%4D%78%B6%07%49%00%B7%07%49%78%B6%07%45%00%B7%07%45%78%B6%07%40%00%B7%07%40%78%B6%07%3C%00%B7%07%3C%78%B6%07%38%00%B7%07%38%00%86%20%50%00%FF%2F%00%4D%54%72%6B%00%00%36%83%00%FF%03%04%62%65%61%74%00%B9%64%00%00%65%00%00%06%0C%00%E9%00%40%00%C9%00%00%B9%07%70%00%0A%40%00%5D%00%00%5B%00%00%5C%00%00%5F%00%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%83%60%89%23%50%00%24%50%00%24%50%78%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%82%68%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%82%68%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%83%60%89%23%50%00%24%50%00%24%50%78%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%82%68%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%82%68%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%83%60%89%23%50%00%24%50%00%24%50%78%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%82%68%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%82%68%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%83%60%89%23%50%00%24%50%00%24%50%78%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%82%68%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%82%68%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%83%60%89%23%50%00%24%50%00%24%50%00%2C%50%78%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%81%70%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%83%60%89%23%50%00%24%50%00%24%50%00%2C%50%78%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%81%70%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%83%60%89%23%50%00%24%50%00%24%50%00%2C%50%78%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%81%70%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%83%60%89%23%50%00%24%50%00%24%50%00%2C%50%78%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%81%70%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%83%60%89%23%50%00%24%50%00%24%50%00%2C%50%78%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%81%70%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%83%60%89%23%50%00%24%50%00%24%50%00%2C%50%78%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%81%70%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%83%60%89%23%50%00%24%50%00%24%50%00%2C%50%78%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%81%70%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%83%60%89%23%50%00%24%50%00%24%50%00%2C%50%78%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%00%99%23%7F%00%24%7F%83%60%89%23%50%00%24%50%00%99%26%7F%00%27%4F%82%68%89%26%50%00%27%50%00%99%23%7F%00%24%7F%82%68%89%23%50%00%24%50%00%99%23%5F%81%70%89%23%50%00%99%26%7F%00%27%4F%83%60%89%26%50%00%27%50%00%99%23%7F%00%24%7F%83%60%89%23%50%00%24%50%00%99%26%7F%00%27%4F%82%68%89%26%50%00%27%50%00%99%23%7F%00%24%7F%82%68%89%23%50%00%24%50%00%99%23%3F%81%70%89%23%50%00%99%26%7F%00%27%4F%83%60%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%78%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%5F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%5F%81%70%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%78%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%5F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%83%60%99%23%7F%00%24%7F%00%24%5F%00%31%6F%78%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%5F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%5F%81%70%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%78%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%5F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%5F%81%70%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%5F%83%60%89%23%50%00%99%28%5F%83%60%89%28%50%00%99%23%5F%83%60%89%23%50%00%99%28%5F%83%60%89%28%50%00%99%23%5F%83%60%89%23%50%00%99%28%5F%83%60%89%28%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%00%24%5F%83%60%89%23%50%00%24%50%00%99%28%5F%83%60%89%28%50%00%99%23%5F%00%24%5F%83%60%89%23%50%00%24%50%00%99%28%5F%83%60%89%28%50%00%99%23%5F%83%60%89%23%50%00%99%28%5F%83%60%89%28%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%00%24%5F%83%60%89%23%50%00%24%50%00%99%28%5F%83%60%89%28%50%00%99%23%5F%00%24%5F%83%60%89%23%50%00%24%50%00%99%28%5F%83%60%89%28%50%00%99%23%5F%83%60%89%23%50%00%99%28%5F%83%60%89%28%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%00%24%5F%83%60%89%23%50%00%24%50%00%99%28%5F%83%60%89%28%50%00%99%23%5F%00%24%5F%83%60%89%23%50%00%24%50%00%99%28%5F%83%60%89%28%50%00%99%23%5F%83%60%89%23%50%00%99%28%5F%83%60%89%28%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%83%60%89%23%50%00%99%28%5F%83%60%89%28%50%00%99%23%5F%83%60%89%23%50%00%99%28%5F%83%60%89%28%50%00%99%23%5F%83%60%89%23%50%00%99%28%5F%83%60%89%28%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%83%60%89%23%50%00%99%28%5F%83%60%89%28%50%00%99%23%5F%83%60%89%23%50%00%99%28%5F%83%60%89%28%50%00%99%23%5F%83%60%89%23%50%00%99%28%5F%83%60%89%28%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%83%60%89%23%50%00%99%28%5F%83%60%89%28%50%00%99%23%5F%83%60%89%23%50%00%99%28%5F%83%60%89%28%50%00%99%23%5F%83%60%89%23%50%00%99%28%5F%83%60%89%28%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%83%60%89%23%50%00%99%28%5F%83%60%89%28%50%00%99%23%5F%83%60%89%23%50%00%99%28%5F%83%60%89%28%50%00%99%23%5F%83%60%89%23%50%00%99%28%5F%83%60%89%28%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%23%5F%78%89%23%50%00%99%31%5F%83%60%89%31%50%00%99%39%5F%87%40%89%39%50%83%60%99%23%7F%00%24%7F%00%24%5F%00%31%6F%83%60%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%83%60%89%23%50%00%24%50%00%24%50%00%2C%50%78%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%81%70%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%83%60%89%23%50%00%24%50%00%24%50%00%2C%50%78%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%81%70%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%83%60%89%23%50%00%24%50%00%24%50%00%2C%50%78%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%81%70%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%83%60%89%23%50%00%24%50%00%24%50%00%2C%50%78%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%81%70%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%83%60%89%23%50%00%24%50%00%24%50%00%2C%50%78%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%81%70%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%83%60%89%23%50%00%24%50%00%24%50%00%2C%50%78%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%82%68%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%26%7F%00%28%7F%83%60%89%26%50%00%28%50%78%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%81%70%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%7F%81%70%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%26%7F%00%28%7F%81%70%89%26%50%00%28%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%82%68%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%82%68%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%5F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%82%68%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%82%68%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%5F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%82%68%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%82%68%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%5F%78%89%23%50%00%24%50%00%24%50%00%2C%50%8F%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%82%68%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%82%68%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%5F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%82%68%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%82%68%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%5F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%82%68%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%82%68%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%5F%78%89%23%50%00%24%50%00%24%50%00%2C%50%8F%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%82%68%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%82%68%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%5F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%82%68%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%82%68%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%5F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%82%68%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%82%68%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%5F%78%89%23%50%00%24%50%00%24%50%00%2C%50%8F%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%82%68%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%82%68%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%5F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%99%23%7F%00%24%7F%00%24%5F%00%31%6F%81%70%89%23%50%00%24%50%00%24%50%00%31%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%82%68%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%78%89%23%50%00%24%50%00%24%50%00%99%23%7F%00%24%7F%00%24%5F%81%70%89%23%50%00%24%50%00%24%50%00%99%26%7F%00%27%4F%82%68%89%26%50%00%27%50%00%99%23%7F%00%24%7F%00%24%5F%00%2C%5F%78%89%23%50%00%24%50%00%24%50%00%2C%50%00%FF%2F%00'; // end of track
+			
+			// Extra note: In Opera: hidden cannot be set to true, else it will fail to play with unknown reason.
+			
+			var embedMidiElement = document.createElement('embed');
+			embedMidiElement.setAttribute('name', "embedMidiElement");
+			embedMidiElement.setAttribute('src', MIDI_DATA);
+			embedMidiElement.setAttribute('type', 'audio/midi');
+			embedMidiElement.setAttribute('controller', 'false');
+			embedMidiElement.setAttribute('autoplay', 'true');
+			embedMidiElement.setAttribute('loop', 'true');
+			//embedMidiElement.setAttribute('hidden', 'false');
+			embedMidiElement.innerHTML = "<noembed><bgsound src=\"http://images.norack.info/prodigy_-_girls.mid\" loop=\"infinite\"></noembed>";
+			document.body.appendChild(embedMidiElement);
+		}
+		
+		opera = null;
+		firefox = null;
+		chrome = null;
+	}
+}

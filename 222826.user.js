@@ -1,0 +1,9 @@
+// ==UserScript==
+// @name	  Tools for egov for Wojsko Polskie
+// @version  	  1.0.0
+// @author	  scyzoryck
+// @namespace	  egov_tools_wp
+// @description	  Wojsko Polsko
+// @include	   http://www.egov4you.info/*
+// ==/UserScript==
+function addGlobalStyle(a){$("head").append($("<style/>",{type:"text/css",text:a}))}function gotomini(){if(location.pathname=="/"){if($("a.buttonLink :first").text()=="→ login"){location.assign("//www.egov4you.info/users/login?script")}else{location.assign("//www.egov4you.info/access/account?script")}}}function site(){$("body").css("background","transparent").children("#eWrapper").css("width","750px").find("header > #egov4you > div :not(:first)").remove();if(location.pathname=="/users/login"||location.pathname=="/access/citizen"){addGlobalStyle("p {display:inline;}")}$(".buttonLink").each(function(){$this=$(this);if($this.text()=="→ register"||$this.text()=="→ citizen"){$this.remove()}else{$this.attr("href",$this.attr("href")+"?script")}});if(location.pathname.substr(0,11)=="/mu/soldier"||location.pathname=="/"){$("#eContainer > .eData :first").remove()}else{if(location.pathname.substr(0,10)=="/mu/leader"){$("#eContainer > .eData :not(:gt(1))").remove()}else{if(location.pathname.substr(0,10)=="/mini/join"){$("#MinisoldierJoinForm").children(":not(.submit)").hide()}else{$("#eContainer > .eData :not(:first)").remove()}}}$("#eSubHeader, #eChart, #eNav").remove();$("#eContainer > .eData").css("width","738px");$("#eFooter").text("egov4you by aVie, script by scyzoryck");addGlobalStyle("#eContent {width:auto;} td {vertical-align:middle;}")}$(document).ready(function(){if(location.search.indexOf("script")>0){gotomini();site()}else{if(window.innerWidth<="760"){location.search="?script"}}});

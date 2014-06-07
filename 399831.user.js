@@ -1,0 +1,11 @@
+// ==UserScript==
+// @name        Medusa-Economy-List
+// @description Medusa-Economy-List
+// @include     http://medusa.regionh.dk/*
+// @include     http://medusa.regionh.dk/*
+// ==/UserScript==
+
+
+document.getElementById("lstAccount").innerHTML = '<option value="A03 L-36310-00003 Almen(FSH,HEL,HIH)">A03 L-36310-00003 Almen(FSH,HEL,HIH) (L-36310-00003)</option> <option value="M44 L-36319-00044 Almen(FSH, HEL, HIH)">M44 L-36319-00044 Almen(FSH, HEL, HIH) (L-36319-00044)</option> <option value="M49 L-36319-00049 Scopi(FSH, HEL, HIH)">M49 L-36319-00049 Scopi(FSH, HEL, HIH) (L-36319-00049)</option> <option value="R26 L-36320-00026 Almen(FSH, HEL, HIH)">R26 L-36320-00026 Almen(FSH, HEL, HIH) (L-36320-00026)</option> <option value="R36 L-36320-00036 Scopi(FSH, HEL, HIH)">R36 L-36320-00036 Scopi(FSH, HEL, HIH) (L-36320-00036)</option> <option value="S48 L-36320-00048 Almen(FSH, HEL, HIH)">S48 L-36320-00048 Almen(FSH, HEL, HIH) (L-36320-00048)</option> <option value="S58 L-36320-00058 Scopi(FSH, HEL, HIH)">S58 L-36320-00058 Scopi(FSH, HEL, HIH) (L-36320-00058)</option> <option value="V03 L-36320-00003 Almen(FSH, HEL, HIH)">V03 L-36320-00003 Almen(FSH, HEL, HIH) (L-36320-00003)</option>';
+
+document.getElementById("ddlBusiness").innerHTML = '<option value=" Amager Hospital"> Amager Hospital (191512)</option><option value=" Bispebjerg Hospital"> Bispebjerg Hospital (191513)</option><option value=" Bornholms Hospital"> Bornholms Hospital (191514)</option><option value=" Frederiksberg Hospital"> Frederiksberg Hospital (191515)</option><option value=" Frederikssunds Hospital"> Frederikssunds Hospital (191516)</option><option value=" Gentofte Hospital"> Gentofte Hospital (191517)</option><option value=" Glostrup Hospital"> Glostrup Hospital (191518)</option><option value=" Helsingør Hospital"> Helsingør Hospital (191519)</option><option value=" Herlev Hospital"> Herlev Hospital (191520)</option><option <option selected="selected" value=" Hillerød Hospital"> Hillerød Hospital (191521)</option><option value=" Hvidovre Hospital"> Hvidovre Hospital (191522)</option><option value=" IMT Borgervænget 7"> IMT Borgervænget 7 (191525)</option><option value=" IMT Medico"> IMT Medico (191511)</option><option value=" Psykiatrivirksomheden"> Psykiatrivirksomheden (191524)</option><option value=" Rigshospitalet"> Rigshospitalet (191523)</option>';

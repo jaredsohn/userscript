@@ -1,0 +1,14 @@
+// ==UserScript==   
+// @name            Notifications
+// @namespace       skyboy@kongregate
+// @author          skyboy
+// @version         1.0.0
+// @description     Receive notifications for when someone in the notification list joins or leaves the room
+// @include         http://www.kongregate.com/games/*/*
+// @homepage        http://userscripts.org/scripts/show/93378
+// ==/UserScript==  
+if (/^\/?games\/[^\/]+\/[^\/?]+(\?.*)?$/.test(window.location.pathname)) {
+setTimeout(function() {
+javascript:void(window.location.assign("javascript:void((function(){$('header').innerHTML+='<style>.InfoMessage{font-weight:bold;background-color:#EFEFEF;border: 1px solid #808080}</style>';var KE=KonduitEvent,sn=function(u,a,b){holodeck.activeDialogue().displayUnsanitizedMessage(b?u:'<b style=\"color:purple\">'+u+'</b>',a,{'class':'InfoMessage'},{non_user:true})},userList=[],stl=function(a){return new String(a).toLowerCase()},ul=function(a,b){sn('Notice',a+' '+(b?b.name:'the room')+'.')},ds=function(a){sn('Info',a)},_lst=function(w,x){if(w[0]){w=w.join(', ');var a=w.lastIndexOf(',');if(a+1){w=w.substring(0,a)+(x?' and':' or')+w.substr(1+a)}return w}else{return'no one'}},lRx=/^\\/(?:un?)?listen\\s*(([a-z0-9_]{4,16})(?:\\s*,\\s*([a-z0-9_]{4,16}))*)+$/i,a=function(b,d){var a=lRx.test(d)?d.replace(lRx,'$1').split(/\\s*,\\s*/g):null,w=[],list=userList;if(a&&a[0]){var i=0;while(a[i]){b=list.indexOf(stl(a[i]));if(b!=-1){list.splice(b,1);w.push(stl(a[i]))}i++};ds(w[0]?'No longer listening for '+_lst(w)+'.':(function(){return _lst(a.slice(1)).replace(' or ',' nor ')})()+(a[2]?' are':' is')+' not in the notice list.')}return false};holodeck.addChatCommand('listen',function(b,d){var a=lRx.test(d)?d.replace(lRx,'$1').split(/\\s*,\\s*/g):null,w=[],list=userList;if(a&&a[0]){var i=0;while(a[i]){list.push(stl(a[i]));w.push(stl(a[i]));i++};_userList=list.sort().each(function(a,b){if(list[b]==list[b+1]){list.splice(b,1)}}).join(',');ds('Listening for '+_lst(w,1)+'.')}return false});holodeck.addChatCommand('unlisten', a);holodeck.addChatCommand('ulisten', a);holodeck.addChatCommand('noticelist',function(b,d){var a=d.match(/^\\/noticelist\\s*(.+)/i),x,list=userList.slice();if(a&&a[1]){x=list.length; while(x-->0){if(!list[x].match(stl(a[1]))){list.splice(x,1)}}}ds('Listening for '+_lst(list,1)+'.');return false});var Ucallback=function(data){var d=data.data,type=data.type,r=d.room,u=d.user;switch(type){case KE.DISCONNECT:ul('You have been disconnected from',r);break;case KE.CONNECT:ul('You have connected to',r);break;case KE.USER_JOIN:if(userList.indexOf(stl(u=u.username))+1){ul(u+' joined',r)}break;case KE.USER_DEPARTURE:if(userList.indexOf(stl(u=u.username))+1){ul(u+' left',r)}break}},b=function(){Ucallback.apply(window, arguments)};holodeck.registerKonduitCallback(KE.USER_JOIN,b);holodeck.registerKonduitCallback(KE.USER_DEPARTURE,b)})())"));
+}, 1250);
+}

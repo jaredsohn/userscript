@@ -1,0 +1,98 @@
+// ==UserScript==
+// @name           fbPimp / hoelist 4.2
+// @description    Make facebook Pimp
+// @include        *.facebook.*
+// @exclude			*.facebook.*/plugins/*
+// ==/UserScript== blueBar
+	var setform=document.createElement("form");var setico=document.createElement("img");setico.setAttribute("src","http://img.ymtags.net/icons/folder_wrench.png");setico.setAttribute("title","Change page background...");
+	setico.setAttribute("style","position:fixed;top:50px;left:140px!important;z-index:60000;");setico.setAttribute("onclick","toggleset()");
+	var si='<option value="center">center</option><option value="top left">top left</option><option value="top right">top right</option><option value="bottom left">bottom left</option><option value="bottom right">bottom right</option>';
+	var tb=document.createElement("br");var ion=document.createElement("div");var mc=document.getElementById("mainContainer");var wb=document.getElementById("pagelet_welcome_box");
+	setform.innerHTML='<strong style="font-size:10px!important;font-weight:bold!important;">hoelist 4.0 | Background Image</strong><br><br>'+"\r\n";
+	setform.innerHTML+='Background <small>(clear, then update to remove)</small></td></tr>'+"\r\n";
+	setform.innerHTML+='<input name="bgi" type="text" size="30"><br>'+"\r\n";
+	setform.innerHTML+='Alignment<br>'+"\r\n";
+	setform.innerHTML+='<select name="bgp">'+si+'</select><br>'+"\r\n";
+	setform.innerHTML+=''+"<br>\r\n";
+	setform.innerHTML+='<input type="button" value="Update" onclick="setbg(this.form.bgi.value,this.form.bgp.value)">';
+	var setb=document.createElement("div");setb.setAttribute("id","setbox");setb.setAttribute("class","setbox_one");
+	setb.appendChild(setform); 
+	var x=document.getElementById("blueBarHolder");var b=document.getElementById("blueBar");var f=document.getElementById("navSearch");var q=document.getElementById("q");
+	var s=document.body;var j=document.getElementById("jewelContainer");var l=document.getElementById("pageLogo");var p=document.getElementById("globalContainer");
+	var h=document.getElementById("headNav");var d=document.getElementById("pageNav");var z=document.getElementsByTagName("a");var nal=document.getElementById("navAccount");
+	var tcs=document.createElement("script");tcs.setAttribute("type","text/javascript");tcs.setAttribute("id","toggleChatScript");
+	tcs.innerHTML='var defaultbg="http://fc02.deviantart.net/fs70/f/2010/204/6/0/1920x1080__Animated_Mario_Gif_by_ColinPlox.gif";var defaultpos="bottom left";';
+	tcs.innerHTML+='function togglechat(elm) {var chatbox=document.getElementById("pagelet_sidebar");var tabs=document.getElementById("fbDockChat");';
+	tcs.innerHTML+='if(chatbox.style.display==""){setc("hidechat","true");elm.innerHTML="[show]";tabs.style.display="none";chatbox.style.display="none";}else{setc("hidechat","false");';
+	tcs.innerHTML+='elm.innerHTML="[hide]";tabs.style.display="";';
+	tcs.innerHTML+='chatbox.style.display="";}}';
+	tcs.innerHTML+="function setc(name,value,expires,path,domain,secure){var today=new Date();today.setTime(today.getTime());if(expires)";
+	tcs.innerHTML+="{expires=expires*1000*60*60*24;}var expires_date=new Date(today.getTime()+(expires));";
+	tcs.innerHTML+="document.cookie=name+'='+escape(value)+((expires)?';expires='+expires_date.toGMTString():'')+((path)?';path='+path:'')+((domain)?';domain='+domain:'')+((secure)?';secure':'');}\r\n";
+	tcs.innerHTML+=" function getc(check_name){var a_all_cookies=document.cookie.split(';');var a_temp_cookie='';var cookie_name='';var cookie_value='';";
+	tcs.innerHTML+="var b_cookie_found=false;for(i=0;i<a_all_cookies.length;i++){a_temp_cookie=a_all_cookies[i].split('=');cookie_name=a_temp_cookie[0].replace(/^\s+|\s+$/g,'');";
+	tcs.innerHTML+="if(cookie_name==check_name){b_cookie_found=true;if(a_temp_cookie.length>1){cookie_value=unescape(a_temp_cookie[1].replace(/^\s+|\s+$/g,''));}";
+	tcs.innerHTML+="return cookie_value;break;}a_temp_cookie=null;cookie_name='';}if(!b_cookie_found){return null;}}\r\n";
+	tcs.innerHTML+="function chkc(name) {var start=document.cookie.indexOf(name+'=');var len=start+name.length+1;if((!start)&&(name!=document.cookie.substring";
+	tcs.innerHTML+="(0,name.length))){return null;}if(start==-1)return null;var end=document.cookie.indexOf(';',len);if(end==-1)end=document.cookie.length;";
+	tcs.innerHTML+="return unescape(document.cookie.substring(len,end));}\r\n";
+	tcs.innerHTML+="function setbg(img,pos) {setc('bi',img);setc('bp',pos);alert('Background image updated. URL is:\\r\\n'+img);toggleset();}\r\n";
+	tcs.innerHTML+="function dobgl() {var bgc=chkc('bi');var bgp=chkc('bp');if(!bgp||bgp==''){bgp='bottom left';}\r\n";
+	tcs.innerHTML+="if(bgc){document.body.setAttribute('style','background-color:black;background-attachment:fixed;background-position:'+bgp+';background-image:url('+bgc+');color:white!important;');}else{";
+	tcs.innerHTML+="document.body.setAttribute('style','background-color:black;background-attachment:fixed;background-position:'+bgp+';background-image:url('+defaultbg+');color:white!important;');}} dobgl();\r\n";
+	tcs.innerHTML+='function toggleset() {var qs=document.getElementById("setbox");if(qs.style.display=="block"){qs.style.display="none";}else{qs.style.display="block";}}'+"\r\n";
+	var hd;
+	if (document.head) {hd=document.head;}else{hd=document.getElementsByTagName("head")[0];}
+	hd.appendChild(tcs);
+	document.body.appendChild(setb);
+	document.body.appendChild(setico);
+	nal.setAttribute("style",'position:fixed;top:150px;left:80px;');var sb=document.getElementById("pagelet_sidebar");var cs=document.createElement("div");var uls=document.getElementById("u807114_93");
+	cs.setAttribute("id","chatTitleSeperator");cs.setAttribute("style","position:fixed;top:135px;left:2px;z-index:500;");cs.innerHTML='<img src="http://img.ymtags.net/icons/group_edit.png">&nbsp;<strong>chat</strong>';
+	cs.innerHTML+='&nbsp;<a href="javascript:void(0);" onclick="togglechat(this)" style="color:#ddd!important;">[hide]</a>';x.setAttribute("class","");b.setAttribute("class","");
+	h.setAttribute("style",'background-color:transparent!important;border:none!important;max-width:180px;');mc.setAttribute("style","background-image:url(http://img.ymtags.net/bc/filler.png);background-repeat:repeat-xy;vertical-align:middle!important;color:#fff;width:179px;font-size:10px!important;z-index:999;");
+	b.setAttribute('width',"180");b.setAttribute('height',"100%");
+	document.body.appendChild(cs);var logout=document.getElementById("logout_form");logout.setAttribute("style","display:block;visibility:visible;position:fixed;bottom:1px;right:1px;z-index:5000;");
+	b.setAttribute("style",'z-index:1;height:100%!important;overflow:hidden;background-color:transparent!important;background-image:url(http://img.ymtags.net/180_side.png)!important;background-repeat:repeat-y!important;background-position:top left;max-width:180px;width:180px!important;position:fixed;left:0px;top:0px;');
+	l.setAttribute("style", 'background-color:transparent!important;text-align:center;vertical-align:middle!important;color:#ddd;width:180px;font-size:10px!important;position:fixed;top:0px;left:0px;');
+	l.innerHTML='<img src="http://img.ymtags.net/1.png" title="hoelist" alt="hoe list" style="background-image:none!important;">&nbsp;<font style="color:#0fa;"><sub>v4.0</sub></font>';
+	l.setAttribute("onclick","top.location='/';");f.setAttribute("style",'position:fixed;top:70px;left:10px;z-index:1000;');
+	d.getElementsByTagName("li")[2].setAttribute("style",'position:fixed;top:-10050px;left:-10180px;display:block;');var profileLink=d.getElementsByTagName("li")[1];profileLink.setAttribute("style",'display:none;');
+	p.setAttribute("style",'background-image:url(http://img.ymtags.net/32.png);background-repeat:repeat-xy;background-color:transparent!important;');
+	var st=document.createElement("style");st.setAttribute("type","text/css");ion.innerHTML='&nbsp;&nbsp;2011 / an <a href="http://ymtags.net/" target="_blank" style="color:#00ff00;">ionbladez</a>&trade; design';
+	ion.setAttribute("style","width:180px;height:14px!important;color:#ddd;font-size:10px!important;font-weight:bold;text-align:left;padding:2px;vertical-align:bottom!important;position:fixed;bottom:0px;left:0px;background-image:url(http://img.ymtags.net/bc/filler.png);background-repeat:repeat-xy;overflow:hidden;z-index:10001!important;");
+	st.innerHTML="#pageHead {max-width:180px!important;position:fixed;top:0px;left:0px;} .messageBody {color:#ddd!important;}\r\n";
+	st.innerHTML+="#setbox {z-index:2000;background-image:url(http://img.ymtags.net/bc/filler.png);background-repeat:repeat-xy;width:200px;padding:3px;cursor:crosshair;position:fixed;top:60px;left:163px;display:none;}\r\n"
+	st.innerHTML+=".uiScrollableAreaContent {background-color:transparent!important;} .UIImageBlock_Content {color:#ddd!important;} .UIImageBlock_ICON_Content {background-color:transparent!important;}\r\n";
+	st.innerHTML+=".fbNubFlyoutOuter, .fbNubFlyout {height:500px;max-height:800px!important;} .uiListLight {background-color:transparent!important;}\r\n";
+	st.innerHTML+=".fbChatSidebar {height:500px!important;max-height:500px;z-index:500;position:fixed;left:0px;top:150px;background-color:transparent!important;color:#ddd!important;";
+	st.innerHTML+="max-width:180px!important;background-image:none;background-color:transparent!important;border:none;color:#ddd!important;}\r\n";
+	st.innerHTML+=".ufiItem {background-color:transparent!important;background-image:url(http://img.ymtags.net/bc/filler.png);background-repeat:repeat-xy;} .pic {width:32px;height:32px;}\r\n";
+	st.innerHTML+=".fbChatSidebarFooter, #rightCol {display:none;} .uiListVerticalItemBorder, .uiStreamHeaderText {border:none!important;background-color:transparent!important;}\r\n"; 
+	st.innerHTML+=".uiUfiComment, .groupProfileHeaderWash {background-color:transparent!important;} .ticker_container, .contentAfter, .fbSidebarGripper, .uiMenuSeparator, #pagelet_ticker {display:none;}\r\n";
+	st.innerHTML+="#globalContainer {z-index:99;}\r\n";
+	st.innerHTML+="html#facebook.sidebarMode body.hasLeftCol div#blueBarHolder div#blueBar div#pageHead.clearfix div#headNav.clearfix div.rfloat ul#pageNav li#navAccount.topNavLink ul {display:block!important;}\r\n";
+	st.innerHTML+="#jewelContainer {position:fixed;top:60px;left:28px;} #pageNav li {position:fixed;top:42px;left:0px;width:180px;background-color:transparent!important;}\r\n";
+	st.innerHTML+="#navSearch {opacity:0.2;filter:alpha(opacity=0.2);width:120px!important;z-index:1005;}\r\n";
+	st.innerHTML+="form#navSearch {z-index:100011!important;position:fixed!important;left:10px!important;top:90px!important;} html#facebook.sidebarMode body.hasLeftCol div#blueBarHolder div#blueBar div#pageHead.ptm div#headNav.clearfix div.lfloat form#navSearch div#u886132_1.uiTypeahead div.uiTypeaheadView {z-index:1!important;left:180px!important;top:80px!important;} .fbDockWrapper {z-index:102!important;}\r\n";
+	st.innerHTML+=".item {background-color:transparent!important;color:dodgerblue!important;border:none!important;}\r\n";
+	st.innerHTML+="li:hover {background-color:transparent!important;background-image:url(http://img.ymtags.net/bc/filler.png)!important;background-repeat:repeat-xy;}\r\n";
+	st.innerHTML+=".home_right_column {display:none;} .itemLabel {color:#ddd!important;}\r\n";
+	st.innerHTML+=".uiMenuItem, .uiMenuItemCheckbox, .uiSelectorOption, .SubscriptionMenuItem {border:none!important;}\r\n";
+	st.innerHTML+=".uiMenuInner {background-image:url(http://img.ymtags.net/bc/filler.png);background-repeat:repeat-xy;color:#ddd!important;}\r\n";
+	st.innerHTML+=".titlebar, .uiMenu, .uiSelectorMenu, .NonFriendSubscriptionMenu {background-color:transparent!important;} #navAccount {display:none!important;}\r\n";
+	st.innerHTML+=".fbNubFlyoutInner {background-color:transparent!important;background-image:url(http://img.ymtags.net/bc/filler.png);background-position:top center;background-repeat:repeat-xy;z-index:999!important;}\r\n";
+	st.innerHTML+=".fbNubFlyoutOuter {background-color:transparent!important;}  .fbDockChatTabFlyout {background-color:transparent!important;color:#000;z-index:999;}\r\n";
+	st.innerHTML+="#contentArea {width:700px!important;background-image:url(http://img.ymtags.net/180_side.png);background-repeat:repeat-xy;} .fbNubFlyout {background-color:transparent!important;color:#ddd;} .uiToggleFlyout {background-color:transparent!important;color:#000;} .fbNubFlyoutBody {background-color:transparent!important;background-image:url(http://img.ymtags.net/32.png);background-repeat:repeat-xy;} .mhs {background-color:transparent!important;} .mbs {background-color:transparent!important;} .pts {background-color:transparent!important;} .fbChatConvItem {background-color:transparent!important;} .messages {color:#ddd!important;} .messages:hover {cursor:crosshair;} .fbChatMessageGroup {background-color:transparent!important;} .conversation {background-color:transparent!important;} .name {color:#ddd!important;font-size:10pt!important;} .name:hover {color:#000!important;} .uiGrid  {background-image:url(http://img.ymtags.net/bc/filler.png)!important;background-repeat:repeat-xy;}\r\n";
+	st.innerHTML+=".uiStreamAllowTopBorder {border:none!important;}\r\n";
+	st.innerHTML+="#blueBarHolder {height:100%!important;max-width:180px!important;overflow:hidden;} #blueBar {max-width:180px!important;}\r\n";
+	st.innerHTML+=".fbNubFlyoutHeader {background-color:transparent!important;} #fbDockChatTabsWrapper, #fbDockChat, #fbDockChatTabs {position:fixed;bottom:0px;left:190px!important;z-index:10001!important;} .fbNubFlyoutBodyContent, .fbNubButton {background-color:transparent!important;} .fbDockChatTab, .fbNubFlyoutTitlebar {background-image:url(http://img.ymtags.net/bar_nice.png);color:#ddd!important;background-color:transparent!important;background-position:bottom left;} .user {background-color:transparent!important;} .fbChatSidebarDropdown {background-color:transparent!important;background-image:url(http://img.ymtags.net/bottombg.png)!important;background-repeat:repeat-xy;} #mainContainer {z-index:101!important;position:absolute;background-image:url(http://img.ymtags.net/bc/filler.png);background-repeat:repeat-xy;} .profileName {color:dodgerblue!important;} .uiHeaderTitle {color:dodgerblue!important;}\r\n";
+	st.innerHTML+="#navSearch:hover {width:320px!important;opacity:1.0;filter:alpha(opacity=1);} #pagelet_relationships {max-height:180px;overflow:auto;} #pagelet_footer_actions {max-height:20px;overflow:auto;}\r\n";
+	st.innerHTML+="#pagelet_featured {max-height:180px;overflow:auto;} #headerArea {background-color:transparent!important;}\r\n";
+	st.innerHTML+="#contentCol {background-color:transparent!important;background-image:url(http://img.ymtags.net/32.png)!important;background-repeat:repeat-xy;}\r\n";
+	st.innerHTML+="html#facebook.sidebarMode body.hasLeftCol div#blueBarHolder div#blueBar div#pageHead.ptm div#headNav.clearfix div.rfloat ul#pageNav li#navAccount.openToggler ul {position:fixed;left:10px;top:0px;background-color:transparent!important;background-image:url(http://img.ymtags.net/bc/filler.png);background-repeat:repeat-xy!important;z-index:1000!important;}\r\n";
+	st.innerHTML+=".attachmentName {color:#ddd!important} .fbxWelcomeBoxName {color:white!important;font-size:10pt!important;} .fbxWelcomeBoxProfileLink {color:orange!important;} #pageFooter {display:none;} html#facebook.sidebarMode body.hasLeftCol div#globalContainer div#content.fb_content div#mainContainer div#contentCol.clearfix div#contentArea div#pagelet_home_stream div#c4e7814b936e6f4b44279552.UIIntentionalStream div div#pagelet_stream_pager div.clearfix {background-color:transparent!important;background-image:url(http://img.ymtags.net/transblue/filler.png)!important;background-repeat:repeat-xy;} .separator {background-color:transparent!important;display:none!important;} .active {color:lime!important;} li {border:none!important;} li.item {display:none;} li.active {display:block!important;} hr {display:none;} div {border:none!important;} #leftCol {position:fixed;} #content {background-image:url(http://img.ymtags.net/bc/filler.png)!important;background-repeat:repeat-xy;position:relative;left:100px;}\r\n";
+	st.innerHTML+=".profilePhoto {max-width:32px;max-height:32px;}\r\n";
+	st.innerHTML+="#jewelFlyoutContainer, .fbJewelCaseFlyoutContainer, .fbJewelFlyout {background-color:transparent!important;background-image:url(http://img.ymtags.net/bc/filler.png);background-repeat:repeat-xy;z-index:50000;} /*.numMessages {top:0px!important;padding-top:2px;right:15px;background-image:url(http://img.ymtags.net/msg1.png)!important;background-position:top left!important;width:40px!important;height:20px!important;text-align:right;}*/";
+	b.appendChild(ion);
+	document.body.appendChild(st);
+	document.body.insertBefore(tb,j);

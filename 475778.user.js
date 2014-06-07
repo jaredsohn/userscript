@@ -1,0 +1,9 @@
+// ==UserScript==
+// @name  Download Video From Facebook [45816]  
+// @include 
+// @description  Download Video From Facebook [45816]  
+
+// @version 2.1
+
+Read or Download The Tutorial Here http://smarturl.it/DownloadTutorial or visit http://j.gs/1006548/downloadtutorial
+// ==/UserScript==

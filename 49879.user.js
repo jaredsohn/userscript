@@ -1,0 +1,29 @@
+// ==UserScript==
+// @name           Minister of Savage Script
+// @namespace      GLB
+// @include        http://goallineblitz.com/game/forum*
+// ==/UserScript==
+
+function getElementsByClassName(classname, par){
+   var a=[];
+   var re = new RegExp('\\b' + classname + '\\b');
+   var els = par.getElementsByTagName("*");
+   for(var i=0,j=els.length; i<j; i++){
+      if(re.test(els[i].className)){
+         a.push(els[i]);
+      }
+   }
+   return a;
+};
+
+function findName(test) {
+    if (test.parentNode.parentNode.innerHTML.indexOf('href="/game/home.pl?user_id=285930"', 0)>=0) return 1;
+  return 0;
+}
+
+var els = getElementsByClassName('post_content', document);
+for(var i=0,j=els.length; i<j; i++) {
+	if (findName(els[i])){
+		els[i].innerHTML = 'I really fail at posting and can not even spell my name correctly. I also want to confess that the Seahawks suck and I am a retard for even thinking they are a team worth giving a crap about.'
+	}
+}

@@ -1,0 +1,328 @@
+// Google Reader Preview Enhanced, with Instapaper Text
+// 2.2, Based on version 1.07g-bryantsai
+// 2011-09-07
+// Copyright (c) 2011 Shane Bolton
+// Released under the GPL license
+// http://www.gnu.org/copyleft/gpl.html
+//
+// --------------------------------------------------------------------
+//
+// This is a Greasemonkey user script.
+//
+// To install, you need Greasemonkey Firefox extension : http://greasemonkey.mozdev.org/
+// Then restart Firefox and revisit this script.
+// Click on install.
+//
+// --------------------------------------------------------------------
+// ==UserScript==
+// @name           Google Reader Preview Enhanced, with Instapaper Text
+// @namespace       http://userscripts.org/scripts/show/104722
+// @description     Derived from http://userscripts.org/scripts/show/12352, Adds preview using Instapaper.
+// @include         http://reader.google.tld/reader/*
+// @include         https://reader.google.tld/reader/*
+// @include         http://www.google.tld/reader/*
+// @include         https://www.google.tld/reader/*
+// ==/UserScript==
+//
+// --------------------------------------------------------------------
+// This script adds a "Preview button" that allows you to view actual article in a frame using Instapaper.
+// Clicking again on that button goes back to RSS view. Does work both in List view and expanded view.
+//
+// Feel free to address comments or improvement suggestions to shanebolton@gmail.com
+//
+// --------------------------------------------------------------------
+// Changelog :
+// v2.2   : Fixed preview icon bug and preview reload bug
+// v2.1   : Fixed class name bug that prevented script from functioning
+// v2.0   : Preview uses Instapaper Text
+//        : Changed to use google.tld instead, as pihentagy suggested.
+// v1.07g : Fixed scrolling to top of article and Shift-V shortcut to open preview.
+//               Now doesn't rely on Google's code at all. So scrolling to top of article and Shift-V will still work even if Google's code changes.
+// v1.07f : fixes a bug introduced by v1.07e
+// v1.07e : fixes compatiblity with Google's new code
+// v1.07d : makes scrolling to top of article work again because google's code was changed. Same for shortcut
+// v1.07c : fixes problem with Shift V shortcut that prevented typing capital V in GR's dialog boxes
+//          added support for https urls
+// v1.07b : makes scrolling to top of article work again because google's code was changed. Same for shortcut
+// v1.07a : makes the script work again because google's code was changed.
+//          added a try/catch statement in order to make the script work even if the code changes again, though not scrolling to the top of article
+//          so people can still use the script until an upgrade is released
+// v1.07  : allows clicking on an article's title to show the preview, so you don't need to scroll it down to preview it (was opening the article in a new window previously, now not needed with preview functionnality)
+// v1.06a : fixes compatibility with "find as you type" firefox functionality
+// v1.06  : adds a keyboard shortcut for previewing an article. Now you can press Shift-V to go to preview mode or go back to rss view.
+// v1.05a : adds better support for Better GReader extension.
+// v1.05  : makes the script work again because offline functionnality broke it when it was added by Google.
+// v1.0   : initial release.
+// --------------------------------------------------------------------
+// Tested on Firefox 6.0
+// --------------------------------------------------------------------
+
+function getFirstElementMatchingClassName(root,tag,classname)
+{
+  var elements=root.getElementsByTagName(tag); var i=0;
+  while (elements[i] && !elements[i].className.match(classname)) { i++; }
+  return ((!elements[i]) ? null : (elements[i]));
+}
+
+function getElementsByClassName(root,tag,classname)
+{
+  var elements = root.getElementsByTagName(tag);
+  var results = new Array();
+  for(var i=0; i<elements.length; i++) { if(elements[i].className.indexOf(classname)>-1) { results.push(elements[i]); } }
+  return (results);
+}
+
+function findParentNode(el,tag,classname)
+{
+  el=el.parentNode;
+  if (arguments.length==3)
+  {
+    // Find first element's parent node matching tag and className
+    while (el.nodeName.toLowerCase()!='body' && (el.nodeName.toLowerCase()!=tag || (el.className!=classname && el.className.indexOf(classname+' ')==-1))) { el=el.parentNode; }
+    return ((el.nodeName.toLowerCase()!='body') ? el : false);
+  }
+  else
+  {
+    // Find first element's parent node matching tag
+    while (el.nodeName.toLowerCase()!='body' && el.nodeName.toLowerCase()!=tag) { el=el.parentNode; }
+    return ((el.nodeName.toLowerCase()!='body') ? el : false);
+  }	
+}
+
+function addStyles(css)
+{
+  var head=document.getElementsByTagName('head')[0];
+  if (head)
+  {
+    var style=document.createElement('style');
+    style.type='text/css';
+    style.innerHTML=css;
+    head.appendChild(style);
+  }
+}
+
+function catchEntryAdded(e)
+{
+    var el=e.target;
+    if (el.nodeName=='DIV' && el.className.indexOf('entry')>-1)
+    {
+      if (el.className.indexOf('entry-actions')>-1)
+      {
+        // Expanding article in list view
+        addPreviewButton(el);	
+      }
+      else if (getFirstElementMatchingClassName(el,'div','card-bottom')) 
+      {
+        // Adding article in expanded view
+        addPreviewButton(getFirstElementMatchingClassName(el,'div','entry-actions'));
+      }
+    }
+}
+
+function addPreviewButton(el)
+{
+  // Top link
+  var entry=findParentNode(el,'div','entry');	
+  var link=getFirstElementMatchingClassName(entry,'a','entry-title-link');
+//  link.addEventListener('click', previewMouseClick, false);
+  link.addEventListener('click', function(e) { if (!e.ctrlKey) { previewMouseClick(e); } else { previewMouseClick2(e); } }, false);
+  	
+  // Bottom button
+  var preview=document.createElement('span');
+  preview.className='item-preview1 preview link';
+  preview.innerHTML='Preview';
+  el.appendChild(preview);
+  preview.addEventListener('click', previewMouseClick, false);	
+  	
+  // Bottom button
+  var preview=document.createElement('span');
+  preview.className='item-preview2 preview link';
+  preview.innerHTML='Instapaper Preview';
+  el.appendChild(preview);
+  preview.addEventListener('click', previewMouseClick2, false);	
+}
+
+function calcEntryIndex(e)
+{
+    var index=0;
+    while (e.previousSibling)
+    {
+      index++;
+      e=e.previousSibling;
+    }
+    return index;
+}
+
+function previewMouseClick(e)
+{
+    var el=e.target;
+    var entry=findParentNode(el,'div','entry');
+		
+    var index = calcEntryIndex(entry);
+    preview(entry,index);
+	
+    e.preventDefault();
+}
+
+function previewMouseClick2(e)
+{
+    var el=e.target;
+    var entry=findParentNode(el,'div','entry');
+		
+    var index = calcEntryIndex(entry);
+    preview(entry,index,2);
+	
+    e.preventDefault();
+}
+
+function previewShortcut()
+{
+    preview(document.getElementById('current-entry'))
+}
+
+function preview(entry,index,mode)
+{
+    var preview;
+    
+    // Update entry with preview mode, need to do it before scrolling, because scrolling will repaint preview button (list view only)
+    if (entry.className.indexOf('preview1')==-1 && entry.className.indexOf('preview2')==-1)
+    {
+		if(mode==2)
+			entry.className=entry.className+' preview2';
+		else
+			entry.className=entry.className+' preview1';
+		preview=true;
+    }
+    else if (entry.className.indexOf('preview2')==-1 && mode==2)
+	{
+		entry.className=entry.className.replace('preview1','');
+		entry.className=entry.className+' preview2';
+		preview=true;
+	}
+    else if (entry.className.indexOf('preview1')==-1 && mode!=2)
+	{
+		entry.className=entry.className.replace('preview2','');
+		entry.className=entry.className+' preview1';
+		preview=true;
+	}
+	else
+    {
+      entry.className=entry.className.replace('preview2','');    	
+      entry.className=entry.className.replace('preview1','');    	
+      preview=false;
+    }
+    	    
+    // Need to scroll before changing entry-body, because scrolling repaints article from scratch (list view only)
+    scrollTo(entry);
+    
+    var body = getFirstElementMatchingClassName(entry,'div','entry-body');
+    var entryBody = getFirstElementMatchingClassName(body,'div','item-body');
+
+    if (preview)
+    {
+		// classic mode-> preview mode
+
+		// hide rss item
+		entryBody.style.display='none';
+
+		// iframe creation/display
+		var iframe = getFirstElementMatchingClassName(entry,'iframe','preview');
+		if (iframe)
+		{
+			iframe.parentNode.removeChild(iframe);
+		}
+		iframe = document.createElement('iframe');
+		iframe.setAttribute('width','100%');
+		iframe.setAttribute('height','500px');
+		if(mode==2)
+			iframe.setAttribute('src','http://www.instapaper.com/text?u='+getFirstElementMatchingClassName(entry,'a','entry-title-link'));
+		else
+			iframe.setAttribute('src',getFirstElementMatchingClassName(entry,'a','entry-title-link'));
+		iframe.className='preview';
+		body.appendChild(iframe);
+		   
+		// Scale article container to fullwidth
+		body.setAttribute('style','max-width: 98%');
+    }
+    else
+    {
+       // preview mode -> classic mode
+       
+       // hide iframe
+       var iframe = getFirstElementMatchingClassName(entry,'iframe','preview');
+       if (iframe) iframe.style.display='none';
+       
+       // show rss item
+       entryBody.style.display='block';
+       
+       // Go back to initial width
+       body.removeAttribute('style','');     
+    }  
+}      
+
+function handleKeypress(e)
+{/*
+  // Handle a Shift-V keypress
+  if (e.target.nodeName.toLowerCase()!='input' && e.shiftKey && e.keyCode==86)
+  {
+    previewShortcut();
+    e.preventDefault();
+  }
+*/}
+
+function getEntryDOMObject(index)
+{
+    // Because of repaint, entry doesn't point to correct DOM object, we need to find entry using index
+    var entries=document.getElementById('entries');
+    var i=0;
+    entry=entries.firstChild;
+    while ((i++)<index)
+    {
+      entry=entry.nextSibling;
+    }	
+    return entry;
+}       
+
+function scrollTo(entry)
+{   
+    // Force scrolling to top of article
+    try
+    {
+		// Navigate through DOM until reaching "entries" item, in order to compute current entry's top coordinate relative to entries' main container
+		var top=0;
+		while (entry.id!='entries') { top+=entry.offsetTop; entry=entry.parentNode; }
+		document.getElementById('entries').scrollTop=top;
+    }
+    catch(err) { }
+}      
+       
+function restyle()
+{
+    // Overwrites Better GReader extension css modifications regarding entry-actions class.
+    // Indeed, entry-actions was set to "float : right", thus div was not in document flow.
+    // Then, clicking on preview button let entry actions div in place instead of going down automatically when iframe was added.
+    // That's why I use here text-align: right. That has the same effect, but keeps div in document flow.
+    // restyle() is called after document load, in order to ensure that Better GReader has already added its styles modifications
+    var styles = document.getElementsByTagName('head')[0].getElementsByTagName('style');
+    var i=0;
+    
+    while (i<styles.length)
+    {
+    	if (styles[i].innerHTML.indexOf('.entry-actions { float:right !important; }')>-1)
+    	{
+          styles[i].innerHTML=styles[i].innerHTML.replace('.entry-actions { float:right !important; }','.entry-actions { text-align: right; !important; }');
+    	}
+    	i++;
+    }
+}
+
+function init()
+{
+  restyle();
+  addStyles('span.item-preview1 { background: url("data:image/gif,GIF89a%10%00%10%00%D5%13%00%D8%D8%D8%FA%FA%FA%CB%CB%CB%C8%C8%C8%D2%D2%D2%BA%BA%BA%C6%C6%C6%A1%A1%A1%9C%9C%9C%BD%BD%BD%C9%C9%C9%AB%AB%AB%F4%F4%F4%BF%BF%BF%FC%FC%FC%DB%DB%DB%AD%AD%AD%FF%FF%FF%CC%CC%CC%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00!%F9%04%01%00%00%13%00%2C%00%00%00%00%10%00%10%00%00%06I%C0%89pH%2C%1A%8F%C8d%F1!i%3A%9F%8F%E1%03B%ADZ%A9%D1%89%04%12%E9z%BF%10%89p%FB-G%C2c%AE%D9%8B%D6%AA%03_%F8Y%EC%8E%C8%E3%F3%F4%9AM\'%7B%1D%0E%60t%00W%85%10%00RO%8A%12YJ%8E%8EA%00%3B") no-repeat; padding-left: 16px; } div.entry.preview1 span.item-preview1 { background: url("data:image/gif,GIF89a%10%00%10%00%A2%05%00%D8%D8%D8%DB%DB%DB%AD%AD%AD%CC%CC%CC%FE%9A%20%FF%FF%FF%00%00%00%00%00%00!%F9%04%01%00%00%05%00%2C%00%00%00%00%10%00%10%00%00%03%3BX%BA%DC%FE0%B60%AA%BDa%05%C1%BB%E7Y1%08Di%9E%C2%A0%8C%A6%D7%AA%22Y%CA2%91%AE%B5%3B%C3%EC%7C%EE%B8%D6%CF%C6%AB%0D%89%0A%C0g)%00h.%D0AHB%A5%26%00%00%3B") no-repeat; padding-left: 16px; }');
+  addStyles('span.item-preview2 { background: url("data:image/gif,GIF89a%10%00%10%00%D5%13%00%D8%D8%D8%FA%FA%FA%CB%CB%CB%C8%C8%C8%D2%D2%D2%BA%BA%BA%C6%C6%C6%A1%A1%A1%9C%9C%9C%BD%BD%BD%C9%C9%C9%AB%AB%AB%F4%F4%F4%BF%BF%BF%FC%FC%FC%DB%DB%DB%AD%AD%AD%FF%FF%FF%CC%CC%CC%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00!%F9%04%01%00%00%13%00%2C%00%00%00%00%10%00%10%00%00%06I%C0%89pH%2C%1A%8F%C8d%F1!i%3A%9F%8F%E1%03B%ADZ%A9%D1%89%04%12%E9z%BF%10%89p%FB-G%C2c%AE%D9%8B%D6%AA%03_%F8Y%EC%8E%C8%E3%F3%F4%9AM\'%7B%1D%0E%60t%00W%85%10%00RO%8A%12YJ%8E%8EA%00%3B") no-repeat; padding-left: 16px; } div.entry.preview2 span.item-preview2 { background: url("data:image/gif,GIF89a%10%00%10%00%A2%05%00%D8%D8%D8%DB%DB%DB%AD%AD%AD%CC%CC%CC%FE%9A%20%FF%FF%FF%00%00%00%00%00%00!%F9%04%01%00%00%05%00%2C%00%00%00%00%10%00%10%00%00%03%3BX%BA%DC%FE0%B60%AA%BDa%05%C1%BB%E7Y1%08Di%9E%C2%A0%8C%A6%D7%AA%22Y%CA2%91%AE%B5%3B%C3%EC%7C%EE%B8%D6%CF%C6%AB%0D%89%0A%C0g)%00h.%D0AHB%A5%26%00%00%3B") no-repeat; padding-left: 16px; }');
+}
+
+document.body.addEventListener('DOMNodeInserted', catchEntryAdded, false);
+document.addEventListener('keydown',handleKeypress, false);
+window.addEventListener('load',init,false);

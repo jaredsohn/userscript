@@ -1,0 +1,9 @@
+// ==UserScript==
+// @name           Jetman [facebook game] character hack
+// @namespace      #
+// @version        0.1.1
+// @description    Jetman - play as any character
+// @include        http://*facebook.tld/playjetman/arena.php?challenge=*
+// @include        http://*facebook.tld/playjetman/index.php
+// ==/UserScript==
+var oc="var z=document.evaluate('//iframe',document,null,7,null).snapshotItem(1);z.src=z.src.replace(/character=\\d+/,\'character=\'+parseInt(this.selectedIndex+1))";document.evaluate("//div[@class=" + ((/arena\.php/.test(document.URL)) ? "'comments_column'" : "'right_col'") + "]",document,null,9,null).singleNodeValue.innerHTML+='<select onChange="'+oc+'"><option>Classic</option><option>Banana</option><option>Girl</option><option>Monkey</option><option>Streaker</option><option>Chuck Norris</option><option>Mario</option><option>Luigi</option><option>Princess Peach</option><option>Kirby</option><option>Master Chief</option><option>Brew</option><option>Hobo</option><option>Witch</option><option>Yellow Submarine</option><option>Cow</option><option>The Magic School Bus</option><option>Versa</option><option>Santa Claus</option><option>Frosty</option><option>Rhasta</option><option>Ninja</option><option>Ariel</option><option>Hillary Clinton</option><option>Barrack Obama</option><option>John McCain</option><option>John Stewart</option><option>Stephen Colbert</option><option>Conan O\'Brien</option><option>Britney Spears</option><option>Lindsay Lohan</option><option>Amy Winehouse</option><option>Merky</option><option>Inspector Gadget</option><option>Iron Man</option></select>'

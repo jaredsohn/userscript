@@ -1,0 +1,10 @@
+// ==UserScript==
+// @name           Auto-dj
+// @namespace   // @description    various enhancments for plug.dj (only tested for bashurverse channel!)
+// @include        *plug.dj/*/*
+// @version 2.2.0
+// @require http://usocheckup.redirectme.net/130611.js?maxage=1&method=show
+// ==/UserScript==
+
+javascript:var autoDj = { display : { dispDiv : null, init : function(){ /*Initialize div for displaying status of AutoDJ tool.*/ if(this.dispDiv == null){ this.dispDiv = document.createElement(\'div\'); $(this.dispDiv).css({ \'position\':\'absolute\', \'display\':\'block\', \'top\':\'0\', \'right\':\'0\', \'border\':\'dotted\', \'border-color\':\'green\', \'cursor\':\'pointer\' }); $(this.dispDiv).bind(\'click\',function(){ autoDj.app.toggle(); }); $(\'body\').append(this.dispDiv); this.update(\'enabled\'); } }, update : function(updateText){ if(this.dispDiv==null) this.init(); if(updateText==\'enabled\'){ $(this.dispDiv).text("AutoDJ is enabled"); $(this.dispDiv).css(\'border-color\',\'green\'); }else if(updateText==\'disabled\'){ $(this.dispDiv).text("AutoDJ is disabled"); $(this.dispDiv).css(\'border-color\',\'red\'); } } }, app : { enabled : true, toggle : function(){ if(this.enabled) autoDj.display.update(\'disabled\'); else autoDj.display.update(\'enabled\'); this.enabled = !this.enabled;/*invert t/f*/ }, dj : function(){ console.log(\'i should be doin shit brah\'); if(autoDj.display.dispDiv == null) autoDj.display.init(); if(this.enabled){ if($(\'div#button-dj-waitlist-join\').css(\'display\')==\'block\'){/*if waitlist enabled & not on waitlist*/ $(\'div#button-dj-waitlist-join\').trigger(\'click\'); } else if($(\'#button-dj-play\').css(\'display\')==\'block\'){/*if no waitlist but can join djs*/ $(\'#button-dj-play\').trigger(\'click\'); } } } }, init : function(){ autoDj.display.init(); autoDj.app.dj(); } }; $(\'document\').ready(function(){ autoDj.init(); setInterval(\'autoDj.app.dj()\',5000); });
+');

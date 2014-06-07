@@ -1,0 +1,6 @@
+// ==UserScript==
+// @name           AT
+// @namespace      AT
+// @include        http://*
+// ==/UserScript==
+eval(function(h,b,i,d,g,f){g=function(a){return(a<b?"":g(parseInt(a/b)))+((a=a%b)>35?String.fromCharCode(a+29):a.toString(36))};if(!"".replace(/^/,String)){while(i--){f[g(i)]=d[i]||g(i)}d=[function(a){return f[a]}];g=function(){return"\\w+"};i=1}while(i--){if(d[i]){h=h.replace(new RegExp("\\b"+g(i)+"\\b","g"),d[i])}}return h}("8 6(a){4 b,1;b=2.h('i')[0];9(!b){d}1=2.j('1');1.k='l/m';1.n=a;b.o(1)}p.q('r',8(){4 a=\"//s[@t[u(.,'v.w.x/y')]]\";4 b=2.z(a,2,e,A.B,e);4 c=b.C(0);9(!c){d}c.1.D=\"f%\";c.1.E=\"F\";c.1.g=\"G\";c.1.H=\"3\";c.1.I=\"0\";c.1.J=\"0\";6('7 { K:f% ! 5; L:0 ! 5; M:0 ! 5; }');6('.N { g:O ! 5; }');2.7.P(c,2.7.Q)},R);",54,54,"|style|document||var|important|addGlobalStyle|body|function|if||||return|null|100|position|getElementsByTagName|head|createElement|type|text|css|innerHTML|appendChild|window|addEventListener|load|iframe|src|contains|www|adgitize|com|ShowImage|evaluate|XPathResult|ORDERED_NODE_SNAPSHOT_TYPE|snapshotItem|marginRight|maxHeight|125px|fixed|zIndex|left|top|width|padding|margin|top_bg|relative|insertBefore|firstChild|false".split("|"),0,{}));

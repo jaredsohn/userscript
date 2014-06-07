@@ -1,0 +1,40 @@
+// ==UserScript==
+// @name           Maxlength
+// @description    Disables maxlength attribute for textboxes.
+// @include        *nettby.no/community/edit_article.php?community_id=*
+
+// ==/UserScript==
+
+var limited;
+limited=document.evaluate(
+'//input[@type="hidden"]',
+document, 
+null, 
+XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,null);
+for (var i=0; i<limited.snapshotLength; i++)
+limited.snapshotItem(i).setAttribute('type', 'visible');  
+
+
+var limited;
+limited=document.evaluate(
+'//input[@"style", "display:none"]',
+document, 
+null, 
+XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,null);
+for (var i=0; i<limited.snapshotLength; i++)
+limited.snapshotItem(i).setAttribute("style", "display:all") ;  
+
+function addGlobalStyle(css) {
+    var head, style;
+    head = document.getElementsByTagName('head')[0];
+    if (!head) { return; }
+    style = document.createElement('style');
+    style.type = 'text/css';
+    style.innerHTML = css;
+    head.appendChild(style);
+}
+
+addGlobalStyle(
+'html, body  {Display: all;}' +
+'a, div  {Display: all;}' +
+'head {Display: all;}' );
